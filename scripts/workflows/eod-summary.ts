@@ -16,7 +16,7 @@ import { spawn } from 'node:child_process';
 import { mkdirSync, writeFileSync, existsSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { notifyEODSummary } from '@apolitical-assistant/shared';
+import { notifyEODSummary } from '../../packages/shared/src/notify.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = join(__dirname, '../..');

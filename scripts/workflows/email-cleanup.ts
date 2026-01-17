@@ -16,7 +16,7 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as readline from 'node:readline';
-import { notifyEmailCleanup } from '@apolitical-assistant/shared';
+import { notifyEmailCleanup } from '../../packages/shared/src/notify.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = join(__dirname, '../..');

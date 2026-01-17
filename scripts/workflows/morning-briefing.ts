@@ -16,7 +16,7 @@ import { execSync, spawn } from 'node:child_process';
 import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { notifyBriefingReady } from '@apolitical-assistant/shared';
+import { notifyBriefingReady } from '../../packages/shared/src/notify.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = join(__dirname, '../..');

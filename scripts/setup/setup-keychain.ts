@@ -6,9 +6,11 @@ import {
   getCredential,
   hasCredential,
   listConfiguredCredentials,
+} from '../../packages/shared/src/keychain.js';
+import {
   type CredentialKey,
   CREDENTIAL_DESCRIPTIONS,
-} from '@apolitical-assistant/shared';
+} from '../../packages/shared/src/types.js';
 
 const CREDENTIALS: CredentialKey[] = [
   'google-oauth-client-id',
