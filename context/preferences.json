@@ -1,0 +1,57 @@
+{
+  "user": {
+    "email": "",
+    "name": "",
+    "timezone": "Europe/London",
+    "title": "Director of Engineering"
+  },
+  "workingHours": {
+    "start": "09:00",
+    "end": "18:00",
+    "days": ["monday", "tuesday", "wednesday", "thursday", "friday"]
+  },
+  "scheduling": {
+    "morningBriefingTime": "08:00",
+    "eodSummaryTime": "17:00"
+  },
+  "integrations": {
+    "slack": {
+      "priorityChannels": [],
+      "dmNotifications": true
+    },
+    "github": {
+      "watchedRepos": [],
+      "prReviewNotifications": true
+    },
+    "linear": {
+      "teams": [],
+      "defaultProject": ""
+    },
+    "calendar": {
+      "primaryCalendar": "",
+      "ignoredCalendars": []
+    }
+  },
+  "briefing": {
+    "includeWeather": false,
+    "includeNews": false,
+    "maxEmailsToShow": 10,
+    "maxMeetingsToShow": 10
+  },
+  "emailCleanup": {
+    "autoArchiveAfterDays": 30,
+    "neverDeleteFrom": [],
+    "alwaysArchive": [],
+    "unsubscribeCandidates": []
+  },
+  "notifications": {
+    "enabled": true,
+    "sound": "default",
+    "urgentOnly": false
+  },
+  "customPrompts": {
+    "meetingPrep": "",
+    "emailDraft": "",
+    "documentReview": ""
+  }
+}

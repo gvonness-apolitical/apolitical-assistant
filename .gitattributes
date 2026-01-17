@@ -1,0 +1,10 @@
+# git-crypt encrypted files
+context/** filter=git-crypt diff=git-crypt
+context/**/* filter=git-crypt diff=git-crypt
+
+# Ensure consistent line endings
+* text=auto
+*.ts text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.sh text eol=lf
