@@ -329,20 +329,19 @@ Requires a Personal Access Token (classic or fine-grained).
 
 ### Notion
 
-1. **Create an Integration**
-   - Go to [Notion Integrations](https://www.notion.so/my-integrations)
-   - Click "New integration"
-   - Name it and select your workspace
-   - Copy the **Internal Integration Token**
+Notion uses **hosted OAuth** - no API key setup required. When you first use Notion tools in Claude, you'll be prompted to authorize via browser.
 
-2. **Share Pages with Integration**
-   - Open any Notion page you want accessible
-   - Click "..." → "Add connections" → Select your integration
+1. **Authorize When Prompted**
+   - Claude will provide an authorization link
+   - Click it and sign in to Notion
+   - Select the pages you want to grant access to
 
-3. **Store the Token**
-   ```bash
-   npm run setup  # Save as 'notion-api-key'
-   ```
+2. **Share Parent Pages for Broad Access**
+   - When authorizing, select top-level workspace pages (e.g., "Engineering", "Projects")
+   - All child/nested pages will inherit access automatically
+   - This avoids having to share individual pages
+
+> **Note**: Creating a Notion integration requires workspace owner status. The hosted OAuth approach bypasses this requirement.
 
 ---
 

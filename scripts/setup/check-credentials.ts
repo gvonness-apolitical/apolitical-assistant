@@ -309,42 +309,6 @@ async function checkLinear(): Promise<CheckResult> {
   }
 }
 
-async function checkNotion(): Promise<CheckResult> {
-  const token = getCredential('notion-api-key' as CredentialKey);
-
-  if (!token) {
-    return { valid: false, error: 'Integration token not configured' };
-  }
-
-  try {
-    const response = await fetch('https://api.notion.com/v1/users/me', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Notion-Version': '2022-06-28',
-      },
-    });
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        return { valid: false, error: 'Token invalid. Check your Notion integration.' };
-      }
-      return { valid: false, error: `API error: ${response.status}` };
-    }
-
-    const user = await response.json() as {
-      type: string;
-      bot?: { owner: { type: string; workspace?: boolean } };
-    };
-
-    return {
-      valid: true,
-      details: `Integration type: ${user.type}`,
-    };
-  } catch (error) {
-    return { valid: false, error: error instanceof Error ? error.message : 'Unknown error' };
-  }
-}
-
 async function checkHumaans(): Promise<CheckResult> {
   const token = getCredential('humaans-api-token' as CredentialKey);
 
@@ -426,12 +390,6 @@ const CREDENTIAL_CHECKS: CredentialCheck[] = [
     name: 'Linear',
     check: checkLinear,
     refreshCommand: 'npm run setup (then update linear-api-key)',
-  },
-  {
-    key: 'notion-api-key' as CredentialKey,
-    name: 'Notion',
-    check: checkNotion,
-    refreshCommand: 'npm run setup (then update notion-api-key)',
   },
   {
     key: 'humaans-api-token' as CredentialKey,
