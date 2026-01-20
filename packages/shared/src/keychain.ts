@@ -49,7 +49,7 @@ export function setCredential(key: CredentialKey, value: string): void {
       `security add-generic-password -s "${service}" -a "${account}" -w "${value.replace(/"/g, '\\"')}"`,
       { encoding: 'utf-8' }
     );
-  } catch (error) {
+  } catch {
     throw new KeychainError(`Failed to store credential: ${key}`, key);
   }
 }
@@ -90,8 +90,6 @@ export function listConfiguredCredentials(): CredentialKey[] {
     'linear-api-key',
     'humaans-api-token',
     'incidentio-api-key',
-    'lattice-api-key',
-    'notion-api-key',
   ];
 
   return keys.filter((key) => hasCredential(key));
@@ -100,7 +98,7 @@ export function listConfiguredCredentials(): CredentialKey[] {
 /**
  * Get credentials required for a specific service
  */
-export function getServiceCredentials(service: 'google' | 'slack' | 'github' | 'linear' | 'humaans' | 'incidentio' | 'lattice' | 'notion'): Record<string, string | null> {
+export function getServiceCredentials(service: 'google' | 'slack' | 'github' | 'linear' | 'humaans' | 'incidentio'): Record<string, string | null> {
   const serviceKeys: Record<typeof service, CredentialKey[]> = {
     google: ['google-oauth-client-id', 'google-oauth-client-secret', 'google-refresh-token'],
     slack: ['slack-token'],
@@ -108,8 +106,6 @@ export function getServiceCredentials(service: 'google' | 'slack' | 'github' | '
     linear: ['linear-api-key'],
     humaans: ['humaans-api-token'],
     incidentio: ['incidentio-api-key'],
-    lattice: ['lattice-api-key'],
-    notion: ['notion-api-key'],
   };
 
   const keys = serviceKeys[service];

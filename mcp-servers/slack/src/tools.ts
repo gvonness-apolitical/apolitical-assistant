@@ -1,4 +1,3 @@
-import { z } from 'zod';
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 
 const SLACK_API_BASE = 'https://slack.com/api';

@@ -36,7 +36,7 @@ function getTimestamp(): string {
   return new Date().toISOString().replace(/[:.]/g, '-');
 }
 
-function getTomorrowDateString(): string {
+function _getTomorrowDateString(): string {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   return tomorrow.toISOString().split('T')[0]!;
@@ -153,7 +153,7 @@ async function generateEODSummary(): Promise<void> {
     const summaryContent = await runClaudeCommand(EOD_PROMPT + contextNote);
 
     // Calculate day stats (placeholder - would integrate with actual tracking)
-    const dayStats = {
+    const _dayStats = {
       meetings: 'Review calendar for count',
       emailsSent: 'Review sent folder',
       prsReviewed: 'Check GitHub activity',
