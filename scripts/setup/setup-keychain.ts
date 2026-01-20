@@ -160,19 +160,20 @@ async function interactiveSetup() {
       }
       break;
 
-    case '3':
+    case '3': {
       console.log('\nAvailable credentials:');
-      CREDENTIALS.forEach((key, index) => {
-        console.log(`  ${index + 1}. ${key}`);
+      CREDENTIALS.forEach((key, idx) => {
+        console.log(`  ${idx + 1}. ${key}`);
       });
       const indexStr = await question('\nSelect credential number: ');
-      const index = parseInt(indexStr, 10) - 1;
-      if (index >= 0 && index < CREDENTIALS.length) {
-        await configureCredential(CREDENTIALS[index]!);
+      const selectedIndex = parseInt(indexStr, 10) - 1;
+      if (selectedIndex >= 0 && selectedIndex < CREDENTIALS.length) {
+        await configureCredential(CREDENTIALS[selectedIndex]!);
       } else {
         console.log('Invalid selection.');
       }
       break;
+    }
 
     case '4':
       await testCredentials();

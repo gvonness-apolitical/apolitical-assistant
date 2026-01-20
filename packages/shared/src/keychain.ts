@@ -49,7 +49,7 @@ export function setCredential(key: CredentialKey, value: string): void {
       `security add-generic-password -s "${service}" -a "${account}" -w "${value.replace(/"/g, '\\"')}"`,
       { encoding: 'utf-8' }
     );
-  } catch (error) {
+  } catch {
     throw new KeychainError(`Failed to store credential: ${key}`, key);
   }
 }
