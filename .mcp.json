@@ -31,8 +31,8 @@
       }
     },
     "notion": {
-      "type": "sse",
-      "url": "https://mcp.notion.com/mcp"
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.notion.com/mcp"]
     },
     "humaans": {
       "command": "node",
