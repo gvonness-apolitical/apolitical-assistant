@@ -64,6 +64,7 @@ uninstall_plist() {
 # Handle command line arguments
 case "${1:-install}" in
     install)
+        install_plist "com.apolitical.check-credentials.plist"
         install_plist "com.apolitical.morning-briefing.plist"
         install_plist "com.apolitical.eod-summary.plist"
         # Note: email-cleanup is interactive, so we don't schedule it by default
@@ -73,6 +74,7 @@ case "${1:-install}" in
         ;;
 
     uninstall)
+        uninstall_plist "com.apolitical.check-credentials.plist"
         uninstall_plist "com.apolitical.morning-briefing.plist"
         uninstall_plist "com.apolitical.email-cleanup.plist"
         uninstall_plist "com.apolitical.eod-summary.plist"
@@ -81,7 +83,7 @@ case "${1:-install}" in
     status)
         echo "Checking agent status..."
         echo ""
-        for plist in com.apolitical.morning-briefing com.apolitical.eod-summary; do
+        for plist in com.apolitical.check-credentials com.apolitical.morning-briefing com.apolitical.eod-summary; do
             if launchctl list | grep -q "$plist"; then
                 echo -e "  ${GREEN}✓${NC} $plist is loaded"
             else
@@ -102,8 +104,9 @@ echo -e "${GREEN}  Done!${NC}"
 echo -e "${GREEN}========================================${NC}"
 echo ""
 echo "Schedule:"
-echo "  - Morning Briefing: 8:00 AM (Mon-Sun)"
-echo "  - EOD Summary: 5:00 PM (Mon-Sun)"
+echo "  - Credential Check: 7:45 AM (daily)"
+echo "  - Morning Briefing: 8:00 AM (daily)"
+echo "  - EOD Summary: 5:00 PM (daily)"
 echo ""
 echo "To check status: $0 status"
 echo "To uninstall: $0 uninstall"

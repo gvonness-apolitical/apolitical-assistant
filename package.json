@@ -13,6 +13,7 @@
     "typecheck": "turbo run typecheck",
     "setup": "tsx scripts/setup/setup-keychain.ts",
     "google-auth": "tsx scripts/setup/google-oauth.ts",
+    "check-credentials": "tsx scripts/setup/check-credentials.ts",
     "morning-briefing": "tsx scripts/workflows/morning-briefing.ts",
     "email-cleanup": "tsx scripts/workflows/email-cleanup.ts",
     "eod-summary": "tsx scripts/workflows/eod-summary.ts"
