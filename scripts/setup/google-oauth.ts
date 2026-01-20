@@ -233,6 +233,7 @@ async function main() {
     console.log('  Google OAuth Setup Complete!');
     console.log('========================================\n');
     console.log('You can now use the Google MCP server.');
+    process.exit(0);
 
   } catch (error) {
     console.error('\n\x1b[31mError:\x1b[0m', error instanceof Error ? error.message : error);
