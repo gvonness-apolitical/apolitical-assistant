@@ -18,8 +18,8 @@ export type CredentialKey = z.infer<typeof CredentialKeySchema>;
 export const CREDENTIAL_DESCRIPTIONS: Record<CredentialKey, string> = {
   'google-oauth-client-id': 'Google OAuth Client ID (from Google Cloud Console)',
   'google-oauth-client-secret': 'Google OAuth Client Secret',
-  'google-refresh-token': 'Google OAuth Refresh Token',
-  'slack-token': 'Slack Bot Token (xoxb-...)',
+  'google-refresh-token': 'Google OAuth Refresh Token (run: npm run google-auth)',
+  'slack-token': 'Slack User Token (xoxp-...) - from OAuth & Permissions',
   'github-token': 'GitHub Personal Access Token',
   'linear-api-key': 'Linear API Key',
   'humaans-api-token': 'Humaans API Token',
