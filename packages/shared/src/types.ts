@@ -9,7 +9,6 @@ export const CredentialKeySchema = z.enum([
   'linear-api-key',
   'humaans-api-token',
   'incidentio-api-key',
-  'lattice-api-key',
   'notion-api-key',
 ]);
 
@@ -24,7 +23,6 @@ export const CREDENTIAL_DESCRIPTIONS: Record<CredentialKey, string> = {
   'linear-api-key': 'Linear API Key',
   'humaans-api-token': 'Humaans API Token',
   'incidentio-api-key': 'Incident.io API Key',
-  'lattice-api-key': 'Lattice API Key',
   'notion-api-key': 'Notion Integration Token',
 };
 

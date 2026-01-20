@@ -1,6 +1,6 @@
 # Apolitical Engineering Leadership Assistant
 
-A Claude-powered assistant for the Director of Engineering that integrates with Gmail, Slack, Google Drive/Docs, Google Calendar, GitHub, Linear, Humaans, Incident.io, Notion, and Lattice.
+A Claude-powered assistant for the Director of Engineering that integrates with Gmail, Slack, Google Drive/Docs, Google Calendar, GitHub, Linear, Humaans, Incident.io, and Notion.
 
 ## Features
 
@@ -37,8 +37,7 @@ apolitical-assistant/
 │   ├── google/           # Gmail, Calendar, Drive, Docs, Sheets, Slides
 │   ├── slack/            # Slack search, channels, DMs
 │   ├── humaans/          # Humaans HR integration
-│   ├── incident-io/      # Incident.io integration
-│   └── lattice/          # Lattice performance integration
+│   └── incident-io/      # Incident.io integration
 ├── scripts/
 │   ├── setup/            # Installation and configuration
 │   └── workflows/        # Automated workflow scripts
@@ -56,7 +55,6 @@ apolitical-assistant/
 | Slack | Search, channels, DMs, users |
 | Humaans | HR, org chart, time off |
 | Incident.io | Incidents and follow-ups |
-| Lattice | Reviews, goals, 1:1s |
 
 ### External MCP Servers
 | Service | Purpose |
@@ -374,23 +372,6 @@ Requires a Personal Access Token (classic or fine-grained).
    ```bash
    npm run setup  # Save as 'incidentio-api-key'
    ```
-
----
-
-### Lattice
-
-1. **Get API Key**
-   - Log in to [Lattice](https://lattice.com/)
-   - Go to Admin → Integrations → API
-   - Generate an API key
-   - Copy the key
-
-2. **Store the Key**
-   ```bash
-   npm run setup  # Save as 'lattice-api-key'
-   ```
-
-> **Note**: Lattice API access may require an Enterprise plan. Contact your Lattice admin if you don't see API options.
 
 ---
 

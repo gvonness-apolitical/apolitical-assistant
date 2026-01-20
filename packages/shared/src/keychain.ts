@@ -90,7 +90,6 @@ export function listConfiguredCredentials(): CredentialKey[] {
     'linear-api-key',
     'humaans-api-token',
     'incidentio-api-key',
-    'lattice-api-key',
     'notion-api-key',
   ];
 
@@ -100,7 +99,7 @@ export function listConfiguredCredentials(): CredentialKey[] {
 /**
  * Get credentials required for a specific service
  */
-export function getServiceCredentials(service: 'google' | 'slack' | 'github' | 'linear' | 'humaans' | 'incidentio' | 'lattice' | 'notion'): Record<string, string | null> {
+export function getServiceCredentials(service: 'google' | 'slack' | 'github' | 'linear' | 'humaans' | 'incidentio' | 'notion'): Record<string, string | null> {
   const serviceKeys: Record<typeof service, CredentialKey[]> = {
     google: ['google-oauth-client-id', 'google-oauth-client-secret', 'google-refresh-token'],
     slack: ['slack-token'],
@@ -108,7 +107,6 @@ export function getServiceCredentials(service: 'google' | 'slack' | 'github' | '
     linear: ['linear-api-key'],
     humaans: ['humaans-api-token'],
     incidentio: ['incidentio-api-key'],
-    lattice: ['lattice-api-key'],
     notion: ['notion-api-key'],
   };
 

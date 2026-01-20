@@ -400,34 +400,6 @@ async function checkIncidentIo(): Promise<CheckResult> {
   }
 }
 
-async function checkLattice(): Promise<CheckResult> {
-  const token = getCredential('lattice-api-key' as CredentialKey);
-
-  if (!token) {
-    return { valid: false, error: 'API key not configured' };
-  }
-
-  try {
-    const response = await fetch('https://api.latticehq.com/v1/users?per_page=1', {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    if (!response.ok) {
-      if (response.status === 401) {
-        return { valid: false, error: 'API key invalid. Generate a new key in Lattice.' };
-      }
-      if (response.status === 403) {
-        return { valid: false, error: 'API access forbidden. Lattice API may require Enterprise plan.' };
-      }
-      return { valid: false, error: `API error: ${response.status}` };
-    }
-
-    return { valid: true, details: 'API key valid' };
-  } catch (error) {
-    return { valid: false, error: error instanceof Error ? error.message : 'Unknown error' };
-  }
-}
-
 // ==================== MAIN LOGIC ====================
 
 const CREDENTIAL_CHECKS: CredentialCheck[] = [
@@ -472,12 +444,6 @@ const CREDENTIAL_CHECKS: CredentialCheck[] = [
     name: 'Incident.io',
     check: checkIncidentIo,
     refreshCommand: 'npm run setup (then update incidentio-api-key)',
-  },
-  {
-    key: 'lattice-api-key' as CredentialKey,
-    name: 'Lattice',
-    check: checkLattice,
-    refreshCommand: 'npm run setup (then update lattice-api-key)',
   },
 ];
 
