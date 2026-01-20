@@ -10,8 +10,7 @@ dist/
 .env.local
 .env.*.local
 
-# Claude
-.claude
+# Claude - keeping .claude in git for this project
 
 # IDE
 .idea/

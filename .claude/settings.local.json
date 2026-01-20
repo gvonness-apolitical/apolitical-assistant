@@ -1,0 +1,52 @@
+{
+  "mcpServers": {
+    "google": {
+      "command": "node",
+      "args": ["./mcp-servers/google/dist/index.js"],
+      "env": {
+        "GOOGLE_CLIENT_ID": "{{keychain:apolitical-assistant-google-oauth-client-id}}",
+        "GOOGLE_CLIENT_SECRET": "{{keychain:apolitical-assistant-google-oauth-client-secret}}",
+        "GOOGLE_REFRESH_TOKEN": "{{keychain:apolitical-assistant-google-refresh-token}}"
+      }
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "{{keychain:apolitical-assistant-github-token}}"
+      }
+    },
+    "linear": {
+      "type": "sse",
+      "url": "https://mcp.linear.app/sse",
+      "headers": {
+        "Authorization": "Bearer {{keychain:apolitical-assistant-linear-api-key}}"
+      }
+    },
+    "slack": {
+      "command": "node",
+      "args": ["./mcp-servers/slack/dist/index.js"],
+      "env": {
+        "SLACK_TOKEN": "{{keychain:apolitical-assistant-slack-token}}"
+      }
+    },
+    "notion": {
+      "type": "sse",
+      "url": "https://mcp.notion.com/mcp"
+    },
+    "humaans": {
+      "command": "node",
+      "args": ["./mcp-servers/humaans/dist/index.js"],
+      "env": {
+        "HUMAANS_API_TOKEN": "{{keychain:apolitical-assistant-humaans-api-token}}"
+      }
+    },
+    "incident-io": {
+      "command": "node",
+      "args": ["./mcp-servers/incident-io/dist/index.js"],
+      "env": {
+        "INCIDENTIO_API_KEY": "{{keychain:apolitical-assistant-incidentio-api-key}}"
+      }
+    }
+  }
+}
