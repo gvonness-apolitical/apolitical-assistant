@@ -34,6 +34,8 @@ apolitical-assistant/
 │   ├── shared/           # Shared utilities (keychain, notifications)
 │   └── context-store/    # SQLite persistence layer
 ├── mcp-servers/
+│   ├── google/           # Gmail, Calendar, Drive, Docs, Sheets, Slides
+│   ├── slack/            # Slack search, channels, DMs
 │   ├── humaans/          # Humaans HR integration
 │   ├── incident-io/      # Incident.io integration
 │   └── lattice/          # Lattice performance integration
@@ -47,21 +49,21 @@ apolitical-assistant/
 
 ## Integrations
 
-### External MCP Servers (pre-built)
+### Custom MCP Servers (included in this repo)
 | Service | Purpose |
 |---------|---------|
-| Google Workspace | Gmail, Calendar, Drive, Docs |
-| GitHub | Repos, PRs, Issues |
-| Linear | Project management |
-| Slack | Team communication |
-| Notion | Documentation |
-
-### Custom MCP Servers (included)
-| Service | Purpose |
-|---------|---------|
+| Google | Gmail, Calendar, Drive, Docs, Sheets, Slides |
+| Slack | Search, channels, DMs, users |
 | Humaans | HR, org chart, time off |
 | Incident.io | Incidents and follow-ups |
 | Lattice | Reviews, goals, 1:1s |
+
+### External MCP Servers
+| Service | Purpose |
+|---------|---------|
+| GitHub | Repos, PRs, Issues |
+| Linear | Project management (hosted) |
+| Notion | Documentation (hosted) |
 
 ## Setup
 
@@ -80,21 +82,13 @@ npm install
 
 ### 2. Configure Credentials
 
-Run the interactive setup wizard:
+Run the interactive setup wizard to store credentials in macOS Keychain:
 
 ```bash
 npm run setup
 ```
 
-This will guide you through adding credentials to macOS Keychain:
-- Google OAuth credentials
-- Slack bot token
-- GitHub personal access token
-- Linear API key
-- Humaans API token
-- Incident.io API key
-- Lattice API key
-- Notion integration token
+See [Obtaining API Credentials](#obtaining-api-credentials) below for detailed instructions on getting each token.
 
 ### 3. Build the Project
 
@@ -224,6 +218,181 @@ npm run build --workspace=@apolitical-assistant/mcp-humaans
 2. Copy structure from existing server
 3. Implement tools in `src/tools.ts`
 4. Add configuration to `.claude/settings.json`
+
+## Obtaining API Credentials
+
+### Google (Gmail, Calendar, Drive, Docs, Sheets, Slides)
+
+Requires creating a Google Cloud project with OAuth credentials.
+
+1. **Create a Google Cloud Project**
+   - Go to [Google Cloud Console](https://console.cloud.google.com/)
+   - Sign in with your Google Workspace account
+   - Create a new project (e.g., "Personal Assistant")
+
+2. **Enable APIs**
+   - Go to "APIs & Services" → "Library"
+   - Enable: Gmail API, Google Calendar API, Google Drive API, Google Docs API, Google Sheets API, Google Slides API
+
+3. **Configure OAuth Consent Screen**
+   - Go to "APIs & Services" → "OAuth consent screen" (or "Google Auth Platform")
+   - Select "Internal" (for Workspace accounts - tokens won't expire)
+   - Fill in app name, support email
+   - Under "Data Access" or "Scopes", add:
+     - `gmail.modify`
+     - `calendar.readonly`
+     - `drive.metadata.readonly`
+     - `documents.readonly`
+     - `spreadsheets.readonly`
+     - `presentations.readonly`
+
+4. **Create OAuth Credentials**
+   - Go to "Credentials" (or "Clients")
+   - Create OAuth client ID → Desktop app
+   - Copy **Client ID** and **Client Secret**
+
+5. **Store and Authorize**
+   ```bash
+   npm run setup          # Store Client ID and Client Secret
+   npm run google-auth    # Authorize and get refresh token
+   ```
+
+---
+
+### Slack
+
+Requires creating a Slack App with user token scopes.
+
+1. **Create a Slack App**
+   - Go to [Slack API Apps](https://api.slack.com/apps)
+   - Click "Create New App" → "From scratch"
+   - Name it and select your workspace
+
+2. **Add User Token Scopes**
+   - Go to "OAuth & Permissions"
+   - Under "User Token Scopes" (not Bot Token Scopes), add:
+     - `search:read` (or `search:read.public`)
+     - `channels:history`
+     - `channels:read`
+     - `groups:history`
+     - `groups:read`
+     - `im:history`
+     - `im:read`
+     - `users:read`
+
+3. **Install to Workspace**
+   - Click "Install to Workspace"
+   - Authorize the app
+   - Copy the **User OAuth Token** (`xoxp-...`)
+
+4. **Store the Token**
+   ```bash
+   npm run setup  # Save as 'slack-token'
+   ```
+
+> **Note**: Using a User Token means the app acts as you, accessing only what you can already see. No admin approval needed unless your workspace restricts app installation.
+
+---
+
+### GitHub
+
+Requires a Personal Access Token (classic or fine-grained).
+
+1. **Create a Personal Access Token**
+   - Go to [GitHub Settings → Developer Settings → Personal Access Tokens](https://github.com/settings/tokens)
+   - Click "Generate new token" (classic) or "Fine-grained tokens"
+
+2. **Select Scopes** (for classic tokens)
+   - `repo` - Full repository access
+   - `read:org` - Read org membership
+   - `read:user` - Read user profile
+
+3. **Copy and Store**
+   ```bash
+   npm run setup  # Save as 'github-token'
+   ```
+
+---
+
+### Linear
+
+1. **Create an API Key**
+   - Go to [Linear Settings → API](https://linear.app/settings/api)
+   - Click "Create key"
+   - Give it a label (e.g., "Personal Assistant")
+   - Copy the key
+
+2. **Store the Key**
+   ```bash
+   npm run setup  # Save as 'linear-api-key'
+   ```
+
+---
+
+### Notion
+
+1. **Create an Integration**
+   - Go to [Notion Integrations](https://www.notion.so/my-integrations)
+   - Click "New integration"
+   - Name it and select your workspace
+   - Copy the **Internal Integration Token**
+
+2. **Share Pages with Integration**
+   - Open any Notion page you want accessible
+   - Click "..." → "Add connections" → Select your integration
+
+3. **Store the Token**
+   ```bash
+   npm run setup  # Save as 'notion-api-key'
+   ```
+
+---
+
+### Humaans
+
+1. **Get API Token**
+   - Log in to [Humaans](https://app.humaans.io/)
+   - Go to Settings → API → Generate new token
+   - Copy the token
+
+2. **Store the Token**
+   ```bash
+   npm run setup  # Save as 'humaans-api-token'
+   ```
+
+---
+
+### Incident.io
+
+1. **Create an API Key**
+   - Log in to [Incident.io](https://app.incident.io/)
+   - Go to Settings → API Keys
+   - Create a new key with read permissions
+   - Copy the key
+
+2. **Store the Key**
+   ```bash
+   npm run setup  # Save as 'incidentio-api-key'
+   ```
+
+---
+
+### Lattice
+
+1. **Get API Key**
+   - Log in to [Lattice](https://lattice.com/)
+   - Go to Admin → Integrations → API
+   - Generate an API key
+   - Copy the key
+
+2. **Store the Key**
+   ```bash
+   npm run setup  # Save as 'lattice-api-key'
+   ```
+
+> **Note**: Lattice API access may require an Enterprise plan. Contact your Lattice admin if you don't see API options.
+
+---
 
 ## Security
 
