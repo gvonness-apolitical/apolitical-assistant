@@ -4,30 +4,30 @@
       "command": "node",
       "args": ["./mcp-servers/google/dist/index.js"],
       "env": {
-        "GOOGLE_CLIENT_ID": "{{keychain:apolitical-assistant-google-oauth-client-id}}",
-        "GOOGLE_CLIENT_SECRET": "{{keychain:apolitical-assistant-google-oauth-client-secret}}",
-        "GOOGLE_REFRESH_TOKEN": "{{keychain:apolitical-assistant-google-refresh-token}}"
+        "GOOGLE_CLIENT_ID": "${GOOGLE_CLIENT_ID}",
+        "GOOGLE_CLIENT_SECRET": "${GOOGLE_CLIENT_SECRET}",
+        "GOOGLE_REFRESH_TOKEN": "${GOOGLE_REFRESH_TOKEN}"
       }
     },
     "github": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-github"],
       "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "{{keychain:apolitical-assistant-github-token}}"
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}"
       }
     },
     "linear": {
       "type": "sse",
       "url": "https://mcp.linear.app/sse",
       "headers": {
-        "Authorization": "Bearer {{keychain:apolitical-assistant-linear-api-key}}"
+        "Authorization": "Bearer ${LINEAR_API_KEY}"
       }
     },
     "slack": {
       "command": "node",
       "args": ["./mcp-servers/slack/dist/index.js"],
       "env": {
-        "SLACK_TOKEN": "{{keychain:apolitical-assistant-slack-token}}"
+        "SLACK_TOKEN": "${SLACK_TOKEN}"
       }
     },
     "notion": {
@@ -38,14 +38,14 @@
       "command": "node",
       "args": ["./mcp-servers/humaans/dist/index.js"],
       "env": {
-        "HUMAANS_API_TOKEN": "{{keychain:apolitical-assistant-humaans-api-token}}"
+        "HUMAANS_API_TOKEN": "${HUMAANS_API_TOKEN}"
       }
     },
     "incident-io": {
       "command": "node",
       "args": ["./mcp-servers/incident-io/dist/index.js"],
       "env": {
-        "INCIDENTIO_API_KEY": "{{keychain:apolitical-assistant-incidentio-api-key}}"
+        "INCIDENTIO_API_KEY": "${INCIDENTIO_API_KEY}"
       }
     }
   }

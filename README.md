@@ -142,6 +142,11 @@ Use Claude CLI directly with all integrations:
 
 ```bash
 cd /path/to/apolitical-assistant
+
+# Export credentials from Keychain (required before first use in each terminal session)
+source scripts/setup/export-credentials.sh
+
+# Start Claude with MCP integrations
 claude
 
 # Example queries:
@@ -151,6 +156,8 @@ claude
 # "Show active incidents"
 # "What are my top priorities today?"
 ```
+
+**Tip:** Add `source /path/to/apolitical-assistant/scripts/setup/export-credentials.sh` to your shell profile (`.zshrc` or `.bashrc`) to auto-export credentials.
 
 ## Configuration
 
@@ -164,7 +171,7 @@ Edit `context/preferences.json` to customize:
 
 ### MCP Server Configuration
 
-Edit `.claude/settings.json` to modify MCP server settings.
+Edit `.claude/settings.local.json` to modify MCP server settings.
 
 ## Troubleshooting
 
