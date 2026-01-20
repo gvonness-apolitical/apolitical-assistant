@@ -21,8 +21,6 @@ const CREDENTIALS: CredentialKey[] = [
   'linear-api-key',
   'humaans-api-token',
   'incidentio-api-key',
-  'lattice-api-key',
-  'notion-api-key',
 ];
 
 const rl = readline.createInterface({
