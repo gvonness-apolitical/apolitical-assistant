@@ -1,9 +1,9 @@
 import Database from 'better-sqlite3';
 import { randomUUID } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Todo, Meeting, CommunicationLog, BriefingData } from '@apolitical-assistant/shared';
+import type { Todo, Meeting, CommunicationLog, BriefingData, TodoSource, TodoStatus } from '@apolitical-assistant/shared';
 import {
   type TodoRow,
   type MeetingRow,
@@ -22,6 +22,20 @@ import {
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+export interface ListTodosOptions {
+  status?: TodoStatus | TodoStatus[];
+  source?: TodoSource | TodoSource[];
+  excludeSnoozed?: boolean;
+  onlySnoozed?: boolean;
+  onlyStale?: boolean;
+  staleDays?: number;
+  updatedBefore?: string;
+  completedAfter?: string;
+  limit?: number;
+  orderBy?: 'priority' | 'due_date' | 'created_at' | 'deadline' | 'urgency';
+  orderDirection?: 'ASC' | 'DESC';
+}
+
 export class ContextStore {
   private db: Database.Database;
 
@@ -32,9 +46,24 @@ export class ContextStore {
   }
 
   private runMigrations(): void {
-    const migrationPath = join(__dirname, 'migrations', '001_initial.sql');
-    const migration = readFileSync(migrationPath, 'utf-8');
-    this.db.exec(migration);
+    const migrationsDir = join(__dirname, 'migrations');
+    const migrationFiles = readdirSync(migrationsDir)
+      .filter((f) => f.endsWith('.sql'))
+      .sort();
+
+    for (const file of migrationFiles) {
+      const migrationPath = join(migrationsDir, file);
+      const migration = readFileSync(migrationPath, 'utf-8');
+      try {
+        this.db.exec(migration);
+      } catch (error) {
+        // Ignore errors for already-applied migrations (e.g., duplicate column)
+        const message = error instanceof Error ? error.message : String(error);
+        if (!message.includes('duplicate column')) {
+          throw error;
+        }
+      }
+    }
   }
 
   close(): void {
@@ -48,8 +77,16 @@ export class ContextStore {
     const row = todoToRow({ ...todo, id });
 
     this.db.prepare(`
-      INSERT INTO todos (id, title, description, priority, due_date, source, source_id, status)
-      VALUES (@id, @title, @description, @priority, @due_date, @source, @source_id, @status)
+      INSERT INTO todos (
+        id, title, description, priority, base_priority, urgency,
+        request_date, due_date, deadline, source, source_id, source_url, source_urls,
+        status, snoozed_until, stale_notified_at, fingerprint, tags, completed_at, archived_at
+      )
+      VALUES (
+        @id, @title, @description, @priority, @base_priority, @urgency,
+        @request_date, @due_date, @deadline, @source, @source_id, @source_url, @source_urls,
+        @status, @snoozed_until, @stale_notified_at, @fingerprint, @tags, @completed_at, @archived_at
+      )
     `).run(row);
 
     return this.getTodo(id)!;
@@ -60,28 +97,94 @@ export class ContextStore {
     return row ? todoRowToTodo(row) : null;
   }
 
-  listTodos(options: {
-    status?: Todo['status'];
-    source?: string;
-    limit?: number;
-    orderBy?: 'priority' | 'due_date' | 'created_at';
-  } = {}): Todo[] {
-    const { status, source, limit = 100, orderBy = 'priority' } = options;
+  getTodoByFingerprint(fingerprint: string): Todo | null {
+    const row = this.db
+      .prepare('SELECT * FROM todos WHERE fingerprint = ? AND status NOT IN (?, ?)')
+      .get(fingerprint, 'completed', 'archived') as TodoRow | undefined;
+    return row ? todoRowToTodo(row) : null;
+  }
+
+  getTodoBySourceId(source: TodoSource, sourceId: string): Todo | null {
+    const row = this.db
+      .prepare('SELECT * FROM todos WHERE source = ? AND source_id = ?')
+      .get(source, sourceId) as TodoRow | undefined;
+    return row ? todoRowToTodo(row) : null;
+  }
+
+  listTodos(options: ListTodosOptions = {}): Todo[] {
+    const {
+      status,
+      source,
+      excludeSnoozed = false,
+      onlySnoozed = false,
+      onlyStale = false,
+      staleDays = 14,
+      updatedBefore,
+      completedAfter,
+      limit = 100,
+      orderBy = 'priority',
+      orderDirection,
+    } = options;
 
     let query = 'SELECT * FROM todos WHERE 1=1';
     const params: Record<string, unknown> = {};
 
+    // Status filter (supports single or array)
     if (status) {
-      query += ' AND status = @status';
-      params.status = status;
+      if (Array.isArray(status)) {
+        const placeholders = status.map((_, i) => `@status${i}`).join(', ');
+        query += ` AND status IN (${placeholders})`;
+        status.forEach((s, i) => {
+          params[`status${i}`] = s;
+        });
+      } else {
+        query += ' AND status = @status';
+        params.status = status;
+      }
     }
 
+    // Source filter (supports single or array)
     if (source) {
-      query += ' AND source = @source';
-      params.source = source;
+      if (Array.isArray(source)) {
+        const placeholders = source.map((_, i) => `@source${i}`).join(', ');
+        query += ` AND source IN (${placeholders})`;
+        source.forEach((s, i) => {
+          params[`source${i}`] = s;
+        });
+      } else {
+        query += ' AND source = @source';
+        params.source = source;
+      }
     }
 
-    query += ` ORDER BY ${orderBy} ${orderBy === 'priority' ? 'ASC' : 'DESC'}`;
+    // Snooze filters
+    if (excludeSnoozed) {
+      query += " AND (snoozed_until IS NULL OR snoozed_until <= datetime('now'))";
+    }
+    if (onlySnoozed) {
+      query += " AND snoozed_until IS NOT NULL AND snoozed_until > datetime('now')";
+    }
+
+    // Stale filter
+    if (onlyStale) {
+      query += ` AND status IN ('pending', 'in_progress')`;
+      query += ` AND updated_at < datetime('now', '-${staleDays} days')`;
+      query += " AND (snoozed_until IS NULL OR snoozed_until <= datetime('now'))";
+    }
+
+    if (updatedBefore) {
+      query += ' AND updated_at < @updatedBefore';
+      params.updatedBefore = updatedBefore;
+    }
+
+    if (completedAfter) {
+      query += ' AND completed_at >= @completedAfter';
+      params.completedAfter = completedAfter;
+    }
+
+    // Determine order direction
+    const dir = orderDirection ?? (orderBy === 'priority' || orderBy === 'urgency' ? 'ASC' : 'DESC');
+    query += ` ORDER BY ${orderBy} ${dir}`;
     query += ' LIMIT @limit';
     params.limit = limit;
 
@@ -108,13 +211,61 @@ export class ContextStore {
       fields.push('priority = @priority');
       params.priority = updates.priority;
     }
+    if (updates.basePriority !== undefined) {
+      fields.push('base_priority = @base_priority');
+      params.base_priority = updates.basePriority;
+    }
+    if (updates.urgency !== undefined) {
+      fields.push('urgency = @urgency');
+      params.urgency = updates.urgency;
+    }
+    if (updates.requestDate !== undefined) {
+      fields.push('request_date = @request_date');
+      params.request_date = updates.requestDate;
+    }
     if (updates.dueDate !== undefined) {
       fields.push('due_date = @due_date');
       params.due_date = updates.dueDate;
     }
+    if (updates.deadline !== undefined) {
+      fields.push('deadline = @deadline');
+      params.deadline = updates.deadline;
+    }
+    if (updates.sourceUrl !== undefined) {
+      fields.push('source_url = @source_url');
+      params.source_url = updates.sourceUrl;
+    }
+    if (updates.sourceUrls !== undefined) {
+      fields.push('source_urls = @source_urls');
+      params.source_urls = updates.sourceUrls ? JSON.stringify(updates.sourceUrls) : null;
+    }
     if (updates.status !== undefined) {
       fields.push('status = @status');
       params.status = updates.status;
+    }
+    if (updates.snoozedUntil !== undefined) {
+      fields.push('snoozed_until = @snoozed_until');
+      params.snoozed_until = updates.snoozedUntil;
+    }
+    if (updates.staleNotifiedAt !== undefined) {
+      fields.push('stale_notified_at = @stale_notified_at');
+      params.stale_notified_at = updates.staleNotifiedAt;
+    }
+    if (updates.fingerprint !== undefined) {
+      fields.push('fingerprint = @fingerprint');
+      params.fingerprint = updates.fingerprint;
+    }
+    if (updates.tags !== undefined) {
+      fields.push('tags = @tags');
+      params.tags = updates.tags ? JSON.stringify(updates.tags) : null;
+    }
+    if (updates.completedAt !== undefined) {
+      fields.push('completed_at = @completed_at');
+      params.completed_at = updates.completedAt;
+    }
+    if (updates.archivedAt !== undefined) {
+      fields.push('archived_at = @archived_at');
+      params.archived_at = updates.archivedAt;
     }
 
     if (fields.length > 0) {
@@ -125,9 +276,69 @@ export class ContextStore {
     return this.getTodo(id);
   }
 
+  completeTodo(id: string): Todo | null {
+    const now = new Date().toISOString();
+    return this.updateTodo(id, {
+      status: 'completed',
+      completedAt: now,
+      snoozedUntil: undefined, // Clear snooze when completing
+    });
+  }
+
+  snoozeTodo(id: string, until: string): Todo | null {
+    return this.updateTodo(id, {
+      snoozedUntil: until,
+    });
+  }
+
+  unsnoozeTodo(id: string): Todo | null {
+    return this.updateTodo(id, {
+      snoozedUntil: undefined,
+    });
+  }
+
+  archiveTodo(id: string): Todo | null {
+    const now = new Date().toISOString();
+    return this.updateTodo(id, {
+      status: 'archived',
+      archivedAt: now,
+    });
+  }
+
+  getCompletedTodosForArchive(olderThanDays: number): Todo[] {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - olderThanDays);
+
+    const rows = this.db
+      .prepare(
+        `SELECT * FROM todos
+         WHERE status = 'completed'
+         AND completed_at IS NOT NULL
+         AND completed_at < ?
+         ORDER BY completed_at ASC`
+      )
+      .all(cutoff.toISOString()) as TodoRow[];
+
+    return rows.map(todoRowToTodo);
+  }
+
+  getStaleTodos(staleDays: number = 14): Todo[] {
+    return this.listTodos({
+      onlyStale: true,
+      staleDays,
+    });
+  }
+
   deleteTodo(id: string): boolean {
     const result = this.db.prepare('DELETE FROM todos WHERE id = ?').run(id);
     return result.changes > 0;
+  }
+
+  bulkDeleteTodos(ids: string[]): number {
+    if (ids.length === 0) return 0;
+    const placeholders = ids.map(() => '?').join(', ');
+    const result = this.db.prepare(`DELETE FROM todos WHERE id IN (${placeholders})`).run(...ids);
+    return result.changes;
   }
 
   // ==================== MEETINGS ====================
