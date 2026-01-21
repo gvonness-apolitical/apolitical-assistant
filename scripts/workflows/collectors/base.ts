@@ -17,7 +17,7 @@ import type {
   CollectionResult,
   RawTodoItem,
 } from './types.js';
-import { getCachePath, loadTodoConfig } from './config.js';
+import { getCachePath, loadTodoConfig, getCollectionStartDate } from './config.js';
 
 export abstract class BaseCollector implements TodoCollector {
   abstract readonly source: TodoSource;
@@ -66,8 +66,20 @@ export abstract class BaseCollector implements TodoCollector {
         console.log(`[${this.name}] Found ${rawItems.length} raw items`);
       }
 
+      // Filter items by collection start date if set
+      const collectionStartDate = getCollectionStartDate();
+      const filteredItems = collectionStartDate
+        ? this.filterByStartDate(rawItems, collectionStartDate, options)
+        : rawItems;
+
+      if (options.verbose && collectionStartDate && filteredItems.length !== rawItems.length) {
+        console.log(
+          `[${this.name}] Filtered ${rawItems.length - filteredItems.length} items before ${collectionStartDate}`
+        );
+      }
+
       // Convert raw items to TODOs
-      for (const raw of rawItems) {
+      for (const raw of filteredItems) {
         try {
           const todo = this.createTodo(raw);
           todos.push(todo);
@@ -182,5 +194,39 @@ export abstract class BaseCollector implements TodoCollector {
     if (options?.verbose && !options?.quiet) {
       console.log(`[${this.name}] ${message}`);
     }
+  }
+
+  /**
+   * Filter raw items to only include those on or after the start date.
+   * Uses requestDate, dueDate, or deadline to determine the item's date.
+   */
+  protected filterByStartDate(
+    items: RawTodoItem[],
+    startDate: string,
+    options?: CollectOptions
+  ): RawTodoItem[] {
+    const startDateObj = new Date(startDate);
+    startDateObj.setHours(0, 0, 0, 0);
+
+    return items.filter((item) => {
+      // Use the earliest available date for comparison
+      const itemDate = item.requestDate || item.dueDate || item.deadline;
+
+      if (!itemDate) {
+        // If no date, include the item (can't determine if it's before start date)
+        return true;
+      }
+
+      const itemDateObj = new Date(itemDate);
+      itemDateObj.setHours(0, 0, 0, 0);
+
+      const include = itemDateObj >= startDateObj;
+
+      if (!include && options?.verbose) {
+        this.log(`Excluding "${item.title}" (date: ${itemDate} < ${startDate})`, options);
+      }
+
+      return include;
+    });
   }
 }

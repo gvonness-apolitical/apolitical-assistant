@@ -30,7 +30,8 @@
     "todos:archive": "tsx scripts/workflows/todo-archive.ts",
     "todos:interactive": "tsx scripts/workflows/todo-interactive.ts",
     "todos:weekly": "tsx scripts/workflows/todo-weekly.ts",
-    "todos:notify": "tsx scripts/workflows/todo-notify.ts"
+    "todos:notify": "tsx scripts/workflows/todo-notify.ts",
+    "todos:reset": "tsx scripts/workflows/todo-reset.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
