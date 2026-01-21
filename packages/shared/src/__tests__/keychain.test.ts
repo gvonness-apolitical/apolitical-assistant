@@ -1,9 +1,9 @@
-import { jest, describe, it, expect, beforeEach } from '@jest/globals';
+import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 import * as childProcess from 'node:child_process';
 
 // Mock child_process module
-jest.mock('node:child_process', () => ({
-  execSync: jest.fn(),
+vi.mock('node:child_process', () => ({
+  execSync: vi.fn(),
 }));
 
 // Import after mocking
@@ -17,11 +17,11 @@ import {
   KeychainError,
 } from '../keychain.js';
 
-const mockedExecSync = childProcess.execSync as jest.MockedFunction<typeof childProcess.execSync>;
+const mockedExecSync = childProcess.execSync as Mock;
 
 describe('keychain', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('getCredential', () => {

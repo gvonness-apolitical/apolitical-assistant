@@ -1,16 +1,16 @@
-import { jest, describe, it, expect, beforeEach } from '@jest/globals';
+import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 import * as childProcess from 'node:child_process';
 import { EventEmitter } from 'node:events';
 
 // Mock child_process module
-jest.mock('node:child_process', () => ({
-  spawn: jest.fn(),
+vi.mock('node:child_process', () => ({
+  spawn: vi.fn(),
 }));
 
 // Import after mocking
 import { getDateString, getTimestamp, runClaudeCommand } from '../workflow-utils.js';
 
-const mockedSpawn = childProcess.spawn as jest.MockedFunction<typeof childProcess.spawn>;
+const mockedSpawn = childProcess.spawn as Mock;
 
 describe('workflow-utils', () => {
   describe('getDateString', () => {
@@ -51,21 +51,21 @@ describe('workflow-utils', () => {
 
   describe('runClaudeCommand', () => {
     beforeEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
     });
 
     it('should resolve with stdout when command succeeds', async () => {
       const mockStdout = new EventEmitter();
       const mockStderr = new EventEmitter();
       const mockStdin = {
-        write: jest.fn(),
-        end: jest.fn(),
+        write: vi.fn(),
+        end: vi.fn(),
       };
       const mockProcess = {
         stdout: mockStdout,
         stderr: mockStderr,
         stdin: mockStdin,
-        on: jest.fn((event: string, callback: (code: number) => void) => {
+        on: vi.fn((event: string, callback: (code: number) => void) => {
           if (event === 'close') {
             // Simulate async close with success
             setTimeout(() => callback(0), 10);
@@ -91,14 +91,14 @@ describe('workflow-utils', () => {
       const mockStdout = new EventEmitter();
       const mockStderr = new EventEmitter();
       const mockStdin = {
-        write: jest.fn(),
-        end: jest.fn(),
+        write: vi.fn(),
+        end: vi.fn(),
       };
       const mockProcess = {
         stdout: mockStdout,
         stderr: mockStderr,
         stdin: mockStdin,
-        on: jest.fn((event: string, callback: (code: number) => void) => {
+        on: vi.fn((event: string, callback: (code: number) => void) => {
           if (event === 'close') {
             setTimeout(() => callback(1), 10);
           }
@@ -118,14 +118,14 @@ describe('workflow-utils', () => {
       const mockStdout = new EventEmitter();
       const mockStderr = new EventEmitter();
       const mockStdin = {
-        write: jest.fn(),
-        end: jest.fn(),
+        write: vi.fn(),
+        end: vi.fn(),
       };
       const mockProcess = {
         stdout: mockStdout,
         stderr: mockStderr,
         stdin: mockStdin,
-        on: jest.fn((event: string, callback: (err: Error) => void) => {
+        on: vi.fn((event: string, callback: (err: Error) => void) => {
           if (event === 'error') {
             setTimeout(() => callback(new Error('spawn failed')), 10);
           }
@@ -143,14 +143,14 @@ describe('workflow-utils', () => {
       const mockStdout = new EventEmitter();
       const mockStderr = new EventEmitter();
       const mockStdin = {
-        write: jest.fn(),
-        end: jest.fn(),
+        write: vi.fn(),
+        end: vi.fn(),
       };
       const mockProcess = {
         stdout: mockStdout,
         stderr: mockStderr,
         stdin: mockStdin,
-        on: jest.fn((event: string, callback: (code: number) => void) => {
+        on: vi.fn((event: string, callback: (code: number) => void) => {
           if (event === 'close') {
             setTimeout(() => callback(0), 10);
           }

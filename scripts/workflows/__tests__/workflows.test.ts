@@ -1,35 +1,34 @@
-import { jest, describe, it, expect, beforeEach, afterEach } from '@jest/globals';
+import { describe, it, expect, beforeEach, vi, type Mock } from 'vitest';
 import * as fs from 'node:fs';
-import * as path from 'node:path';
 
 // Mock dependencies
-jest.mock('node:fs', () => ({
-  mkdirSync: jest.fn(),
-  writeFileSync: jest.fn(),
-  existsSync: jest.fn(),
-  readFileSync: jest.fn(),
+vi.mock('node:fs', () => ({
+  mkdirSync: vi.fn(),
+  writeFileSync: vi.fn(),
+  existsSync: vi.fn(),
+  readFileSync: vi.fn(),
 }));
 
-jest.mock('../../packages/shared/src/notify.js', () => ({
-  notifyBriefingReady: jest.fn(),
-  notifyEmailCleanup: jest.fn(),
-  notifyEODSummary: jest.fn(),
+vi.mock('../../../packages/shared/src/notify.js', () => ({
+  notifyBriefingReady: vi.fn(),
+  notifyEmailCleanup: vi.fn(),
+  notifyEODSummary: vi.fn(),
 }));
 
-jest.mock('../../packages/shared/src/workflow-utils.js', () => ({
-  getDateString: jest.fn(() => '2026-01-21'),
-  getTimestamp: jest.fn(() => '2026-01-21T12-00-00-000Z'),
-  runClaudeCommand: jest.fn(() => Promise.resolve('Mock output')),
+vi.mock('../../../packages/shared/src/workflow-utils.js', () => ({
+  getDateString: vi.fn(() => '2026-01-21'),
+  getTimestamp: vi.fn(() => '2026-01-21T12-00-00-000Z'),
+  runClaudeCommand: vi.fn(() => Promise.resolve('Mock output')),
 }));
 
 describe('Workflow Scripts', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('Directory Setup', () => {
     it('should create output directories', () => {
-      const mockedMkdirSync = fs.mkdirSync as jest.MockedFunction<typeof fs.mkdirSync>;
+      const mockedMkdirSync = fs.mkdirSync as Mock;
 
       // Simulate directory creation
       mockedMkdirSync.mockReturnValue(undefined);
@@ -43,7 +42,7 @@ describe('Workflow Scripts', () => {
 
   describe('File Operations', () => {
     it('should check if file exists', () => {
-      const mockedExistsSync = fs.existsSync as jest.MockedFunction<typeof fs.existsSync>;
+      const mockedExistsSync = fs.existsSync as Mock;
 
       mockedExistsSync.mockReturnValueOnce(true).mockReturnValueOnce(false);
 
@@ -52,7 +51,7 @@ describe('Workflow Scripts', () => {
     });
 
     it('should write file content', () => {
-      const mockedWriteFileSync = fs.writeFileSync as jest.MockedFunction<typeof fs.writeFileSync>;
+      const mockedWriteFileSync = fs.writeFileSync as Mock;
 
       fs.writeFileSync('/test/file.md', 'content');
 
@@ -62,14 +61,14 @@ describe('Workflow Scripts', () => {
 
   describe('Workflow Utils Integration', () => {
     it('should use shared date utilities', async () => {
-      const { getDateString, getTimestamp } = await import('../../packages/shared/src/workflow-utils.js');
+      const { getDateString, getTimestamp } = await import('../../../packages/shared/src/workflow-utils.js');
 
       expect(getDateString()).toBe('2026-01-21');
       expect(getTimestamp()).toBe('2026-01-21T12-00-00-000Z');
     });
 
     it('should use shared Claude command runner', async () => {
-      const { runClaudeCommand } = await import('../../packages/shared/src/workflow-utils.js');
+      const { runClaudeCommand } = await import('../../../packages/shared/src/workflow-utils.js');
 
       const result = await runClaudeCommand('test prompt');
 

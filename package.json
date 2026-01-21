@@ -11,8 +11,9 @@
     "dev": "turbo run dev",
     "lint": "eslint 'packages/**/*.ts' 'mcp-servers/**/*.ts' 'scripts/**/*.ts'",
     "typecheck": "turbo run typecheck",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
     "setup": "tsx scripts/setup/setup-keychain.ts",
     "google-auth": "tsx scripts/setup/google-oauth.ts",
     "check-credentials": "tsx scripts/setup/check-credentials.ts",
@@ -22,15 +23,14 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
-    "@types/jest": "^29.5.0",
     "@types/node": "^20.10.0",
+    "@vitest/coverage-v8": "^2.1.0",
     "eslint": "^9.39.2",
-    "jest": "^29.7.0",
-    "ts-jest": "^29.1.0",
     "tsx": "^4.0.0",
     "turbo": "^2.0.0",
     "typescript": "^5.3.0",
-    "typescript-eslint": "^8.53.1"
+    "typescript-eslint": "^8.53.1",
+    "vitest": "^2.1.0"
   },
   "packageManager": "npm@10.2.0",
   "engines": {

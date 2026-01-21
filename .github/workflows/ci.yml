@@ -50,7 +50,7 @@ jobs:
         run: npm ci
 
       - name: Run tests
-        run: npm test -- --coverage --coverageReporters=text --coverageReporters=lcov
+        run: npm run test:coverage
 
       - name: Upload coverage
         uses: codecov/codecov-action@v4
