@@ -1,0 +1,61 @@
+{
+  "defaultFromDate": "2024-10-01",
+  "chunkSize": "week",
+  "delayBetweenCollectors": 1000,
+  "delayBetweenChunks": 5000,
+  "maxRetries": 3,
+  "retryDelay": 60000,
+  "sources": {
+    "email": {
+      "enabled": true,
+      "batchSize": 100
+    },
+    "slack": {
+      "enabled": true,
+      "fromDate": "2024-12-01",
+      "batchSize": 200
+    },
+    "github": {
+      "enabled": true,
+      "fromDate": "2024-07-01",
+      "batchSize": 100
+    },
+    "linear": {
+      "enabled": true,
+      "batchSize": 50
+    },
+    "notion": {
+      "enabled": true,
+      "batchSize": 100
+    },
+    "google-docs": {
+      "enabled": true,
+      "batchSize": 100
+    },
+    "google-slides": {
+      "enabled": true,
+      "batchSize": 100
+    },
+    "humaans": {
+      "enabled": true,
+      "batchSize": 50
+    },
+    "incident-io": {
+      "enabled": true,
+      "batchSize": 50
+    },
+    "gemini-notes": {
+      "enabled": true,
+      "batchSize": 100
+    },
+    "dev-analytics": {
+      "enabled": true,
+      "fromDate": "2024-01-01",
+      "batchSize": 50
+    },
+    "calendar": {
+      "enabled": true,
+      "batchSize": 250
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "outputPath": "output/briefings",
+  "logsPath": "logs",
+  "morning": {
+    "sections": ["schedule", "communications", "incidents", "team", "todos", "quickActions"],
+    "todoLimit": 10,
+    "staleDays": 14,
+    "includeMeetingPrep": true,
+    "includeEmailTriageStats": true
+  },
+  "eod": {
+    "sections": ["completed", "inProgress", "blockers", "tomorrow"],
+    "lookbackHours": 12
+  },
+  "weekly": {
+    "sections": ["highlights", "metrics", "incidents", "teamUpdates", "nextWeek"],
+    "includeSummary": true,
+    "includeTeamMetrics": true
+  },
+  "notifications": {
+    "enabled": true,
+    "sound": true
+  }
+}

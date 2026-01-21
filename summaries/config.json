@@ -1,0 +1,14 @@
+{
+  "archivePath": "./summaries/archive",
+  "cachePath": "./summaries/cache",
+  "retention": {
+    "daily": 90,
+    "weekly": 365,
+    "monthly": 730,
+    "quarterly": -1,
+    "h1-h2": -1,
+    "yearly": -1
+  },
+  "autoCreateTodos": true,
+  "trendsAnalysis": true
+}

@@ -11,6 +11,11 @@ import {
   type BriefingRow,
   type PreferenceRow,
   type StoredBriefing,
+  type SummaryRow,
+  type SummaryTodoRow,
+  type StoredSummary,
+  type SummaryTodoLink,
+  type SummaryFidelity,
   todoRowToTodo,
   todoToRow,
   meetingRowToMeeting,
@@ -18,6 +23,9 @@ import {
   communicationLogRowToLog,
   logToRow,
   briefingRowToBriefing,
+  summaryRowToSummary,
+  summaryToRow,
+  summaryTodoRowToLink,
 } from './models.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -34,6 +42,10 @@ export interface ListTodosOptions {
   limit?: number;
   orderBy?: 'priority' | 'due_date' | 'created_at' | 'deadline' | 'urgency';
   orderDirection?: 'ASC' | 'DESC';
+  // Summary integration filters
+  summaryId?: string;
+  summaryPeriod?: string;
+  category?: string;
 }
 
 export class ContextStore {
@@ -80,12 +92,14 @@ export class ContextStore {
       INSERT INTO todos (
         id, title, description, priority, base_priority, urgency,
         request_date, due_date, deadline, source, source_id, source_url, source_urls,
-        status, snoozed_until, stale_notified_at, fingerprint, tags, completed_at, archived_at
+        status, snoozed_until, stale_notified_at, fingerprint, tags, completed_at, archived_at,
+        summary_id, summary_period, summary_item_id, category
       )
       VALUES (
         @id, @title, @description, @priority, @base_priority, @urgency,
         @request_date, @due_date, @deadline, @source, @source_id, @source_url, @source_urls,
-        @status, @snoozed_until, @stale_notified_at, @fingerprint, @tags, @completed_at, @archived_at
+        @status, @snoozed_until, @stale_notified_at, @fingerprint, @tags, @completed_at, @archived_at,
+        @summary_id, @summary_period, @summary_item_id, @category
       )
     `).run(row);
 
@@ -124,6 +138,9 @@ export class ContextStore {
       limit = 100,
       orderBy = 'priority',
       orderDirection,
+      summaryId,
+      summaryPeriod,
+      category,
     } = options;
 
     let query = 'SELECT * FROM todos WHERE 1=1';
@@ -180,6 +197,20 @@ export class ContextStore {
     if (completedAfter) {
       query += ' AND completed_at >= @completedAfter';
       params.completedAfter = completedAfter;
+    }
+
+    // Summary integration filters
+    if (summaryId) {
+      query += ' AND summary_id = @summaryId';
+      params.summaryId = summaryId;
+    }
+    if (summaryPeriod) {
+      query += ' AND summary_period = @summaryPeriod';
+      params.summaryPeriod = summaryPeriod;
+    }
+    if (category) {
+      query += ' AND category = @category';
+      params.category = category;
     }
 
     // Determine order direction
@@ -266,6 +297,23 @@ export class ContextStore {
     if (updates.archivedAt !== undefined) {
       fields.push('archived_at = @archived_at');
       params.archived_at = updates.archivedAt;
+    }
+    // Summary integration fields
+    if (updates.summaryId !== undefined) {
+      fields.push('summary_id = @summary_id');
+      params.summary_id = updates.summaryId;
+    }
+    if (updates.summaryPeriod !== undefined) {
+      fields.push('summary_period = @summary_period');
+      params.summary_period = updates.summaryPeriod;
+    }
+    if (updates.summaryItemId !== undefined) {
+      fields.push('summary_item_id = @summary_item_id');
+      params.summary_item_id = updates.summaryItemId;
+    }
+    if (updates.category !== undefined) {
+      fields.push('category = @category');
+      params.category = updates.category;
     }
 
     if (fields.length > 0) {
@@ -530,5 +578,129 @@ export class ContextStore {
   deletePreference(key: string): boolean {
     const result = this.db.prepare('DELETE FROM preferences WHERE key = ?').run(key);
     return result.changes > 0;
+  }
+
+  // ==================== SUMMARIES ====================
+
+  createSummary(summary: Omit<StoredSummary, 'generatedAt'> & { generatedAt?: string }): StoredSummary {
+    const row = summaryToRow(summary);
+
+    this.db.prepare(`
+      INSERT OR REPLACE INTO summaries (
+        id, fidelity, period, start_date, end_date, file_path,
+        source_summaries, stats, generated_at
+      )
+      VALUES (
+        @id, @fidelity, @period, @start_date, @end_date, @file_path,
+        @source_summaries, @stats, @generated_at
+      )
+    `).run(row);
+
+    return this.getSummary(summary.id)!;
+  }
+
+  getSummary(id: string): StoredSummary | null {
+    const row = this.db.prepare('SELECT * FROM summaries WHERE id = ?').get(id) as SummaryRow | undefined;
+    return row ? summaryRowToSummary(row) : null;
+  }
+
+  getSummaryByPeriod(fidelity: SummaryFidelity, period: string): StoredSummary | null {
+    const row = this.db
+      .prepare('SELECT * FROM summaries WHERE fidelity = ? AND period = ?')
+      .get(fidelity, period) as SummaryRow | undefined;
+    return row ? summaryRowToSummary(row) : null;
+  }
+
+  listSummaries(options: {
+    fidelity?: SummaryFidelity;
+    startDateAfter?: string;
+    startDateBefore?: string;
+    limit?: number;
+  } = {}): StoredSummary[] {
+    const { fidelity, startDateAfter, startDateBefore, limit = 100 } = options;
+
+    let query = 'SELECT * FROM summaries WHERE 1=1';
+    const params: Record<string, unknown> = {};
+
+    if (fidelity) {
+      query += ' AND fidelity = @fidelity';
+      params.fidelity = fidelity;
+    }
+
+    if (startDateAfter) {
+      query += ' AND start_date >= @startDateAfter';
+      params.startDateAfter = startDateAfter;
+    }
+
+    if (startDateBefore) {
+      query += ' AND start_date <= @startDateBefore';
+      params.startDateBefore = startDateBefore;
+    }
+
+    query += ' ORDER BY start_date DESC LIMIT @limit';
+    params.limit = limit;
+
+    const rows = this.db.prepare(query).all(params) as SummaryRow[];
+    return rows.map(summaryRowToSummary);
+  }
+
+  deleteSummary(id: string): boolean {
+    const result = this.db.prepare('DELETE FROM summaries WHERE id = ?').run(id);
+    return result.changes > 0;
+  }
+
+  // ==================== SUMMARY-TODO LINKS ====================
+
+  linkTodoToSummary(summaryId: string, todoId: string, createdBySummary: boolean = false): void {
+    this.db.prepare(`
+      INSERT OR REPLACE INTO summary_todos (summary_id, todo_id, created_by_summary)
+      VALUES (@summary_id, @todo_id, @created_by_summary)
+    `).run({
+      summary_id: summaryId,
+      todo_id: todoId,
+      created_by_summary: createdBySummary ? 1 : 0,
+    });
+  }
+
+  unlinkTodoFromSummary(summaryId: string, todoId: string): boolean {
+    const result = this.db
+      .prepare('DELETE FROM summary_todos WHERE summary_id = ? AND todo_id = ?')
+      .run(summaryId, todoId);
+    return result.changes > 0;
+  }
+
+  getTodosForSummary(summaryId: string): Todo[] {
+    const rows = this.db.prepare(`
+      SELECT t.* FROM todos t
+      JOIN summary_todos st ON t.id = st.todo_id
+      WHERE st.summary_id = ?
+      ORDER BY t.priority ASC
+    `).all(summaryId) as TodoRow[];
+
+    return rows.map(todoRowToTodo);
+  }
+
+  getSummaryTodoLinks(summaryId: string): SummaryTodoLink[] {
+    const rows = this.db
+      .prepare('SELECT * FROM summary_todos WHERE summary_id = ?')
+      .all(summaryId) as SummaryTodoRow[];
+
+    return rows.map(summaryTodoRowToLink);
+  }
+
+  getTodoSummaryProgress(summaryPeriod: string): {
+    created: number;
+    completed: number;
+    pending: number;
+    inProgress: number;
+  } {
+    const todos = this.listTodos({ summaryPeriod, limit: 1000 });
+
+    return {
+      created: todos.length,
+      completed: todos.filter(t => t.status === 'completed').length,
+      pending: todos.filter(t => t.status === 'pending').length,
+      inProgress: todos.filter(t => t.status === 'in_progress').length,
+    };
   }
 }

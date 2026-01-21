@@ -37,6 +37,10 @@ export const TodoSourceSchema = z.enum([
   'github',
   'linear',
   'manual',
+  'dev-analytics',
+  'calendar',
+  'incident-io',
+  'summary',
 ]);
 
 export type TodoSource = z.infer<typeof TodoSourceSchema>;
@@ -44,6 +48,10 @@ export type TodoSource = z.infer<typeof TodoSourceSchema>;
 export const TodoStatusSchema = z.enum(['pending', 'in_progress', 'completed', 'archived']);
 
 export type TodoStatus = z.infer<typeof TodoStatusSchema>;
+
+export const TodoCategorySchema = z.enum(['engineering', 'management', 'business']);
+
+export type TodoCategory = z.infer<typeof TodoCategorySchema>;
 
 export const TodoSchema = z.object({
   id: z.string(),
@@ -64,10 +72,16 @@ export const TodoSchema = z.object({
   staleNotifiedAt: z.string().optional(),                  // Last stale notification timestamp
   fingerprint: z.string().optional(),                      // For deduplication
   tags: z.array(z.string()).optional(),                    // Tags for categorization
+  category: TodoCategorySchema.optional(),                  // Engineering/Management/Business
   createdAt: z.string(),
   updatedAt: z.string(),
   completedAt: z.string().optional(),
   archivedAt: z.string().optional(),
+
+  // Summary integration
+  summaryId: z.string().optional(),                        // Linked summary that created this TODO
+  summaryPeriod: z.string().optional(),                    // Period of source summary (e.g., "2025-01-15")
+  summaryItemId: z.string().optional(),                    // ID of the summary item this TODO was created from
 });
 
 export type Todo = z.infer<typeof TodoSchema>;
