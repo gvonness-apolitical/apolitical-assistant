@@ -26,6 +26,7 @@ export const CREDENTIAL_DESCRIPTIONS: Record<CredentialKey, string> = {
 
 export const TodoSourceSchema = z.enum([
   'google-docs',
+  'google-slides',
   'notion',
   'slack',
   'humaans',

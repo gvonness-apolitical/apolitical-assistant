@@ -31,6 +31,7 @@ export interface TodoConfig {
     email: { enabled: boolean; patterns: string[] };
     slack: { enabled: boolean; channels: string[] };
     googleDocs: { enabled: boolean; docIds: string[] };
+    googleSlides: { enabled: boolean; presentationIds: string[] };
     notion: { enabled: boolean };
     humaans: { enabled: boolean };
     geminiNotes: { enabled: boolean };
@@ -66,6 +67,7 @@ const DEFAULT_CONFIG: TodoConfig = {
     },
     slack: { enabled: true, channels: [] },
     googleDocs: { enabled: true, docIds: [] },
+    googleSlides: { enabled: true, presentationIds: [] },
     notion: { enabled: true },
     humaans: { enabled: true },
     geminiNotes: { enabled: true },
