@@ -1,6 +1,9 @@
 # git-crypt encrypted files
+# Directories containing sensitive data
 context/** filter=git-crypt diff=git-crypt
 context/**/* filter=git-crypt diff=git-crypt
+hr/** filter=git-crypt diff=git-crypt
+hr/**/* filter=git-crypt diff=git-crypt
 
 # Ensure consistent line endings
 * text=auto

@@ -36,3 +36,10 @@ coverage/
 # OS files
 Thumbs.db
 initial_prompt.txt
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Team profiles - raw data excluded (profiles themselves are git-crypt encrypted)
+hr/team-profiles/data/
