@@ -138,6 +138,48 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
     npx tsx scripts/setup/setup-keychain.ts
 fi
 
+# Add credential export to shell profile
+echo ""
+echo -e "${YELLOW}Shell profile setup...${NC}"
+
+EXPORT_LINE="source \"$PROJECT_ROOT/scripts/setup/export-credentials.sh\""
+SHELL_PROFILE=""
+
+# Detect shell profile
+if [ -f "$HOME/.zshrc" ]; then
+    SHELL_PROFILE="$HOME/.zshrc"
+elif [ -f "$HOME/.bashrc" ]; then
+    SHELL_PROFILE="$HOME/.bashrc"
+elif [ -f "$HOME/.bash_profile" ]; then
+    SHELL_PROFILE="$HOME/.bash_profile"
+fi
+
+if [ -n "$SHELL_PROFILE" ]; then
+    # Check if already added
+    if grep -q "export-credentials.sh" "$SHELL_PROFILE" 2>/dev/null; then
+        echo -e "  ${GREEN}✓${NC} Credential export already in $SHELL_PROFILE"
+    else
+        echo -e "Add credential export to $SHELL_PROFILE?"
+        echo -e "This allows Claude MCP servers to access your credentials automatically."
+        echo ""
+        read -p "Add to shell profile? (y/n): " -n 1 -r
+        echo ""
+
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            echo "" >> "$SHELL_PROFILE"
+            echo "# Apolitical Assistant - export credentials for Claude MCP servers" >> "$SHELL_PROFILE"
+            echo "$EXPORT_LINE" >> "$SHELL_PROFILE"
+            echo -e "  ${GREEN}✓${NC} Added to $SHELL_PROFILE"
+            echo -e "  ${YELLOW}!${NC} Run 'source $SHELL_PROFILE' or restart your terminal"
+        else
+            echo -e "  ${YELLOW}!${NC} Skipped. Run manually: source scripts/setup/export-credentials.sh"
+        fi
+    fi
+else
+    echo -e "  ${YELLOW}!${NC} No shell profile found. Add this to your shell config:"
+    echo -e "      $EXPORT_LINE"
+fi
+
 # Final instructions
 echo ""
 echo -e "${GREEN}========================================${NC}"
@@ -146,8 +188,9 @@ echo -e "${GREEN}========================================${NC}"
 echo ""
 echo -e "Next steps:"
 echo -e "  1. Configure credentials: ${BLUE}npm run setup${NC}"
-echo -e "  2. Install launchd agents: ${BLUE}bash scripts/setup/install-launchd.sh${NC}"
-echo -e "  3. Test with Claude: ${BLUE}claude mcp list${NC}"
+echo -e "  2. Complete Google OAuth: ${BLUE}npm run google-auth${NC}"
+echo -e "  3. Install launchd agents: ${BLUE}bash scripts/setup/install-launchd.sh${NC}"
+echo -e "  4. Test with Claude: ${BLUE}claude mcp list${NC}"
 echo ""
 echo -e "Useful commands:"
 echo -e "  ${BLUE}npm run morning-briefing${NC}  - Generate morning briefing"

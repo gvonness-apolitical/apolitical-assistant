@@ -11,12 +11,12 @@
  * 4. Only acts on confirmed items
  */
 
-import { spawn } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as readline from 'node:readline';
 import { notifyEmailCleanup } from '../../packages/shared/src/notify.js';
+import { getTimestamp, runClaudeCommand } from '../../packages/shared/src/workflow-utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = join(__dirname, '../..');
@@ -25,10 +25,6 @@ const LOGS_DIR = join(PROJECT_ROOT, 'logs');
 
 // Ensure directories exist
 mkdirSync(LOGS_DIR, { recursive: true });
-
-function getTimestamp(): string {
-  return new Date().toISOString().replace(/[:.]/g, '-');
-}
 
 const ANALYSIS_PROMPT = `You are an email cleanup assistant for a Director of Engineering.
 
@@ -70,41 +66,6 @@ interface EmailSuggestion {
   date: string;
   action: 'ARCHIVE' | 'DELETE' | 'UNSUBSCRIBE';
   reason: string;
-}
-
-async function runClaudeCommand(prompt: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const claude = spawn('claude', ['--print', '--output-format', 'text'], {
-      cwd: PROJECT_ROOT,
-      stdio: ['pipe', 'pipe', 'pipe'],
-    });
-
-    let stdout = '';
-    let stderr = '';
-
-    claude.stdout.on('data', (data) => {
-      stdout += data.toString();
-    });
-
-    claude.stderr.on('data', (data) => {
-      stderr += data.toString();
-    });
-
-    claude.on('close', (code) => {
-      if (code === 0) {
-        resolve(stdout);
-      } else {
-        reject(new Error(`Claude exited with code ${code}: ${stderr}`));
-      }
-    });
-
-    claude.on('error', (err) => {
-      reject(err);
-    });
-
-    claude.stdin.write(prompt);
-    claude.stdin.end();
-  });
 }
 
 function question(rl: readline.Interface, prompt: string): Promise<string> {
@@ -191,7 +152,7 @@ ${unsubscribes.map((s) => `- ID: ${s.id} - From: ${s.from} - "${s.subject}"`).jo
 Execute these actions and report what was done.`;
 
   try {
-    const result = await runClaudeCommand(executePrompt);
+    const result = await runClaudeCommand(executePrompt, { cwd: PROJECT_ROOT });
     console.log('\nCleanup Results:');
     console.log(result);
   } catch (error) {
@@ -208,7 +169,7 @@ async function runEmailCleanup(): Promise<void> {
 
   try {
     // Get suggestions from Claude
-    const response = await runClaudeCommand(ANALYSIS_PROMPT);
+    const response = await runClaudeCommand(ANALYSIS_PROMPT, { cwd: PROJECT_ROOT });
 
     // Parse the JSON response
     let suggestions: EmailSuggestion[];

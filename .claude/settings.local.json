@@ -1,0 +1,11 @@
+{
+  "enabledMcpjsonServers": [
+    "google",
+    "github",
+    "linear",
+    "slack",
+    "notion",
+    "humaans",
+    "incident-io"
+  ]
+}
