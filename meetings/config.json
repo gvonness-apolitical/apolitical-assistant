@@ -1,0 +1,14 @@
+{
+  "outputPath": "meetings/output",
+  "directReports": [],
+  "meetingTypeOverrides": {},
+  "oneOnOneSettings": {
+    "lookbackDays": 14,
+    "includeGitHubActivity": true,
+    "includeLinearIssues": true,
+    "includeSlackHighlights": true,
+    "includeEmailThreads": false,
+    "includeTimeOff": true,
+    "actionItemStaleDays": 14
+  }
+}

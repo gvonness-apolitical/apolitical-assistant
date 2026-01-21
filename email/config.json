@@ -1,0 +1,21 @@
+{
+  "defaultQuery": "is:unread",
+  "maxResults": 100,
+  "autoDeleteHighConfidence": false,
+  "autoArchiveHighConfidence": false,
+  "feedbackEnabled": true,
+  "minFeedbackForSuggestion": 5,
+  "categorySettings": {
+    "respond": {
+      "createTodos": true,
+      "defaultPriority": "P2"
+    },
+    "delegate": {
+      "notifyDelegate": false,
+      "defaultDelegates": []
+    },
+    "fyi": {
+      "includeInSummary": true
+    }
+  }
+}

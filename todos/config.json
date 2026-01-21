@@ -2,6 +2,7 @@
   "archiveAfterDays": 14,
   "retentionMonths": 12,
   "staleDays": 14,
+  "autoCreateFromSummaries": true,
   "notifications": {
     "dayBefore": true,
     "dayOf": true,

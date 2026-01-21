@@ -35,6 +35,9 @@ export interface TodoConfig {
     notion: { enabled: boolean };
     humaans: { enabled: boolean };
     geminiNotes: { enabled: boolean };
+    devAnalytics: { enabled: boolean; reportsPath?: string };
+    calendar: { enabled: boolean };
+    incidentIo: { enabled: boolean };
   };
 }
 
@@ -71,6 +74,9 @@ const DEFAULT_CONFIG: TodoConfig = {
     notion: { enabled: true },
     humaans: { enabled: true },
     geminiNotes: { enabled: true },
+    devAnalytics: { enabled: true },
+    calendar: { enabled: true },
+    incidentIo: { enabled: true },
   },
 };
 
