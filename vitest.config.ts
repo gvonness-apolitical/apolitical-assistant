@@ -1,6 +1,13 @@
 import { defineConfig } from 'vitest/config';
+import { resolve } from 'node:path';
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      '@apolitical-assistant/shared': resolve(__dirname, 'packages/shared/src/index.ts'),
+      '@apolitical-assistant/context-store': resolve(__dirname, 'packages/context-store/src/index.ts'),
+    },
+  },
   test: {
     globals: true,
     environment: 'node',
