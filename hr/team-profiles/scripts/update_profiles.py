@@ -32,14 +32,16 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
-import yaml
+from utils import load_config, load_json_file, save_json_file, DATA_DIR, PROJECT_DIR
+from utils.formatters import (
+    format_email_section,
+    format_meeting_section,
+    format_slack_section,
+)
 
 # Configuration
 SCRIPT_DIR = Path(__file__).parent
-PROJECT_DIR = SCRIPT_DIR.parent
-CONFIG_PATH = PROJECT_DIR / "config.yaml"
 PROFILES_DIR = PROJECT_DIR / "profiles"
-DATA_DIR = PROJECT_DIR / "data"
 TEMPLATE_PATH = PROJECT_DIR / "templates" / "profile_template.md"
 HUMAANS_DATA_PATH = DATA_DIR / "humaans"
 NOTION_DATA_PATH = DATA_DIR / "notion"
@@ -56,12 +58,6 @@ MANUAL_SECTIONS = {5, 6, 7, 8, 9, 10}  # Leadership, Engineering Values, Skills,
 APPEND_ONLY_SECTIONS = {11, 12}  # 1:1 Notes, Evidence Log
 
 
-def load_config() -> dict:
-    """Load configuration from config.yaml"""
-    with open(CONFIG_PATH) as f:
-        return yaml.safe_load(f)
-
-
 def load_template() -> str:
     """Load the profile template"""
     with open(TEMPLATE_PATH) as f:
@@ -71,19 +67,13 @@ def load_template() -> str:
 def load_slack_data(member_key: str) -> Optional[dict]:
     """Load Slack analysis data for a team member"""
     slack_file = DATA_DIR / "slack" / f"{member_key}_slack.json"
-    if slack_file.exists():
-        with open(slack_file) as f:
-            return json.load(f)
-    return None
+    return load_json_file(slack_file)
 
 
 def load_analytics_data(member_key: str) -> Optional[dict]:
     """Load analytics data for a team member"""
     analytics_file = DATA_DIR / "analytics" / f"{member_key}_analytics.json"
-    if analytics_file.exists():
-        with open(analytics_file) as f:
-            return json.load(f)
-    return None
+    return load_json_file(analytics_file)
 
 
 def load_humaans_data(email: str) -> Optional[dict]:
@@ -91,18 +81,12 @@ def load_humaans_data(email: str) -> Optional[dict]:
     # Email-based filename (sanitize for filesystem)
     safe_email = email.replace("@", "_at_").replace(".", "_")
     humaans_file = HUMAANS_DATA_PATH / f"{safe_email}.json"
-    if humaans_file.exists():
-        with open(humaans_file) as f:
-            return json.load(f)
-    return None
+    return load_json_file(humaans_file)
 
 
 def load_rfc_engagement_data() -> Optional[dict]:
     """Load RFC engagement data from Notion export"""
-    if RFC_ENGAGEMENT_FILE.exists():
-        with open(RFC_ENGAGEMENT_FILE) as f:
-            return json.load(f)
-    return None
+    return load_json_file(RFC_ENGAGEMENT_FILE)
 
 
 def get_rfc_data_for_member(email: str) -> Optional[dict]:
@@ -115,10 +99,7 @@ def get_rfc_data_for_member(email: str) -> Optional[dict]:
 
 def load_email_engagement_data() -> Optional[dict]:
     """Load email engagement data from the JSON file"""
-    if EMAIL_ENGAGEMENT_FILE.exists():
-        with open(EMAIL_ENGAGEMENT_FILE) as f:
-            return json.load(f)
-    return None
+    return load_json_file(EMAIL_ENGAGEMENT_FILE)
 
 
 def get_email_data_for_member(email: str) -> Optional[dict]:
@@ -131,10 +112,7 @@ def get_email_data_for_member(email: str) -> Optional[dict]:
 
 def load_meeting_engagement_data() -> Optional[dict]:
     """Load meeting engagement data from the JSON file"""
-    if MEETING_ENGAGEMENT_FILE.exists():
-        with open(MEETING_ENGAGEMENT_FILE) as f:
-            return json.load(f)
-    return None
+    return load_json_file(MEETING_ENGAGEMENT_FILE)
 
 
 def get_meeting_data_for_member(email: str) -> Optional[dict]:
@@ -389,11 +367,9 @@ def merge_profiles(
 
 def save_humaans_data(email: str, data: dict):
     """Save Humaans data for a team member"""
-    HUMAANS_DATA_PATH.mkdir(parents=True, exist_ok=True)
     safe_email = email.replace("@", "_at_").replace(".", "_")
     humaans_file = HUMAANS_DATA_PATH / f"{safe_email}.json"
-    with open(humaans_file, "w") as f:
-        json.dump(data, f, indent=2, default=str)
+    save_json_file(humaans_file, data)
 
 
 def fetch_humaans_data(config: dict) -> dict:
@@ -429,56 +405,6 @@ def fetch_humaans_data(config: dict) -> dict:
             print(f"    Error: {e}")
 
     return results
-
-
-def format_slack_section(slack_data: Optional[dict]) -> str:
-    """Format Slack data for the profile"""
-    if not slack_data or "public_channels" not in slack_data:
-        return """### Public Channels
-
-| Metric | Value |
-|--------|-------|
-| **Total Messages** | *Not yet analyzed* |
-| **Average Message Length** | |
-| **Messages per Week** | |
-| **Most Active Channels** | |
-| **Peak Activity Times** | |
-
-**Communication Patterns:**
-- Tone and voice: *To be assessed*
-- Clarity and structure: *To be assessed*
-- Technical vs. non-technical balance: *To be assessed*
-- Engagement style: *To be assessed*
-- Collaboration indicators: *To be assessed*"""
-
-    public = slack_data["public_channels"]
-    metrics = public.get("metrics", {})
-    channels = public.get("channel_breakdown", {})
-
-    # Top channels
-    top_channels = ", ".join(list(channels.keys())[:5]) if channels else "N/A"
-
-    # Peak times
-    peak_hour = metrics.get("peak_activity_hour")
-    peak_day = metrics.get("peak_activity_day")
-    peak_time = f"{peak_hour}:00" if peak_hour is not None else "N/A"
-
-    return f"""### Public Channels
-
-| Metric | Value |
-|--------|-------|
-| **Total Messages** | {metrics.get('total_messages', 'N/A')} |
-| **Average Message Length** | {metrics.get('average_message_length', 'N/A')} chars |
-| **Messages per Week** | {metrics.get('messages_per_week', 'N/A')} |
-| **Most Active Channels** | {top_channels} |
-| **Peak Activity Times** | {peak_day or 'N/A'} @ {peak_time} |
-
-**Communication Patterns:**
-- Tone and voice: *To be assessed*
-- Clarity and structure: *To be assessed*
-- Technical vs. non-technical balance: *To be assessed*
-- Engagement style: *To be assessed*
-- Collaboration indicators: *To be assessed*"""
 
 
 def format_analytics_section(analytics_data: Optional[dict]) -> str:
@@ -614,160 +540,6 @@ def format_rfc_section(rfc_data: Optional[dict]) -> tuple:
     rfc_date = full_rfc_data.get("analysis_date", "Unknown") if full_rfc_data else "Not available"
 
     return (authored_count, contributed_count, authored_list, contributed_list, rfc_date)
-
-
-def format_email_section(email_data: Optional[dict]) -> tuple:
-    """
-    Format email engagement data for profile insertion.
-
-    Returns tuple of:
-    - total_emails: str
-    - avg_length: str
-    - response_rate: str
-    - avg_response_time: str
-    - patterns: str (formatted bullet list)
-    - notable: str (formatted bullet list)
-    - email_date: str
-    - email_period: str
-    """
-    if not email_data:
-        return (
-            "*Not yet analyzed*",
-            "",
-            "",
-            "",
-            "*To be assessed*",
-            "*None captured*",
-            "Not analyzed",
-            "N/A",
-        )
-
-    metrics = email_data.get("metrics", {})
-    patterns = email_data.get("patterns", {})
-    notable = email_data.get("notable_emails", [])
-
-    # Format metrics
-    total_emails = str(metrics.get("total_emails", "*Not yet analyzed*"))
-    avg_length = str(metrics.get("average_length", "")) if metrics.get("average_length") else ""
-    response_rate = str(metrics.get("response_rate", "")) if metrics.get("response_rate") else ""
-    avg_response_time = str(metrics.get("average_response_time", "")) if metrics.get("average_response_time") else ""
-
-    # Format communication patterns
-    pattern_items = []
-    if patterns.get("tone"):
-        pattern_items.append(f"Tone: {patterns['tone']}")
-    if patterns.get("clarity"):
-        pattern_items.append(f"Clarity: {patterns['clarity']}")
-    if patterns.get("responsiveness"):
-        pattern_items.append(f"Responsiveness: {patterns['responsiveness']}")
-    if patterns.get("detail_level"):
-        pattern_items.append(f"Detail level: {patterns['detail_level']}")
-    if patterns.get("proactiveness"):
-        pattern_items.append(f"Proactiveness: {patterns['proactiveness']}")
-
-    formatted_patterns = "\n".join(f"- {item}" for item in pattern_items) if pattern_items else "*To be assessed*"
-
-    # Format notable emails
-    if notable:
-        notable_items = []
-        for email in notable[:5]:  # Limit to 5 examples
-            date = email.get("date", "Unknown date")
-            subject = email.get("subject", "No subject")
-            summary = email.get("summary", "")
-            notable_items.append(f"- **{date}**: {subject}" + (f" - {summary}" if summary else ""))
-        formatted_notable = "\n".join(notable_items)
-    else:
-        formatted_notable = "*None captured*"
-
-    # Get dates
-    email_date = email_data.get("analysis_date", "Not analyzed")
-    email_period = email_data.get("analysis_period", "N/A")
-
-    return (
-        total_emails,
-        avg_length,
-        response_rate,
-        avg_response_time,
-        formatted_patterns,
-        formatted_notable,
-        email_date,
-        email_period,
-    )
-
-
-def format_meeting_section(meeting_data: Optional[dict]) -> tuple:
-    """
-    Format meeting engagement data for profile insertion.
-
-    Returns tuple of:
-    - meetings_attended: str
-    - contribution_mentions: str
-    - action_items: str
-    - engagement_summary: str (formatted bullet list)
-    - notable_contributions: str (formatted bullet list)
-    - meeting_date: str
-    - meeting_period: str
-    """
-    if not meeting_data:
-        return (
-            "*Not yet analyzed*",
-            "",
-            "",
-            "*To be assessed*",
-            "*None captured*",
-            "Not analyzed",
-            "N/A",
-        )
-
-    metrics = meeting_data.get("metrics", {})
-    patterns = meeting_data.get("engagement_patterns", {})
-    notable = meeting_data.get("notable_contributions", [])
-
-    # Format metrics
-    meetings_attended = str(metrics.get("meetings_attended", "*Not yet analyzed*"))
-    contribution_mentions = str(metrics.get("contribution_mentions", "")) if metrics.get("contribution_mentions") else ""
-    action_items = str(metrics.get("action_items_assigned", "")) if metrics.get("action_items_assigned") else ""
-
-    # Format engagement patterns
-    pattern_items = []
-    if patterns.get("participation_level"):
-        pattern_items.append(f"Participation: {patterns['participation_level']}")
-    if patterns.get("contribution_quality"):
-        pattern_items.append(f"Contribution quality: {patterns['contribution_quality']}")
-    if patterns.get("initiative"):
-        pattern_items.append(f"Initiative: {patterns['initiative']}")
-    if patterns.get("collaboration"):
-        pattern_items.append(f"Collaboration: {patterns['collaboration']}")
-    if patterns.get("follow_through"):
-        pattern_items.append(f"Follow-through: {patterns['follow_through']}")
-
-    engagement_summary = "\n".join(f"- {item}" for item in pattern_items) if pattern_items else "*To be assessed*"
-
-    # Format notable contributions
-    if notable:
-        notable_items = []
-        for contrib in notable[:5]:  # Limit to 5 examples
-            meeting = contrib.get("meeting", "Unknown meeting")
-            date = contrib.get("date", "Unknown date")
-            contribution = contrib.get("contribution", "")
-            notable_items.append(f"- **{meeting}** ({date}): {contribution}")
-        notable_contributions = "\n".join(notable_items)
-    else:
-        notable_contributions = "*None captured*"
-
-    # Get dates
-    meeting_date = meeting_data.get("analysis_date", "Not analyzed")
-    meeting_period = meeting_data.get("analysis_period", "N/A")
-
-    return (
-        meetings_attended,
-        contribution_mentions,
-        action_items,
-        engagement_summary,
-        notable_contributions,
-        meeting_date,
-        meeting_period,
-    )
 
 
 def generate_profile(member: dict, template: str, created_date: str = None) -> str:

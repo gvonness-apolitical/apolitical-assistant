@@ -12,11 +12,11 @@
  * - Outstanding todos
  */
 
-import { spawn } from 'node:child_process';
 import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { notifyBriefingReady } from '../../packages/shared/src/notify.js';
+import { getDateString, getTimestamp, runClaudeCommand } from '../../packages/shared/src/workflow-utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = join(__dirname, '../..');
@@ -27,14 +27,6 @@ const LOGS_DIR = join(PROJECT_ROOT, 'logs');
 // Ensure directories exist
 mkdirSync(OUTPUT_DIR, { recursive: true });
 mkdirSync(LOGS_DIR, { recursive: true });
-
-function getDateString(): string {
-  return new Date().toISOString().split('T')[0]!;
-}
-
-function getTimestamp(): string {
-  return new Date().toISOString().replace(/[:.]/g, '-');
-}
 
 const BRIEFING_PROMPT = `You are an executive assistant for the Director of Engineering. Generate a concise morning briefing for today.
 
@@ -71,42 +63,6 @@ Please gather information and create a briefing with the following sections:
 Format the briefing as clean markdown. Be concise - this should be scannable in under 2 minutes.
 Focus on actionable information and things that need my attention today.`;
 
-async function runClaudeCommand(prompt: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const claude = spawn('claude', ['--print', '--output-format', 'text'], {
-      cwd: PROJECT_ROOT,
-      stdio: ['pipe', 'pipe', 'pipe'],
-    });
-
-    let stdout = '';
-    let stderr = '';
-
-    claude.stdout.on('data', (data) => {
-      stdout += data.toString();
-    });
-
-    claude.stderr.on('data', (data) => {
-      stderr += data.toString();
-    });
-
-    claude.on('close', (code) => {
-      if (code === 0) {
-        resolve(stdout);
-      } else {
-        reject(new Error(`Claude exited with code ${code}: ${stderr}`));
-      }
-    });
-
-    claude.on('error', (err) => {
-      reject(err);
-    });
-
-    // Send the prompt to Claude
-    claude.stdin.write(prompt);
-    claude.stdin.end();
-  });
-}
-
 async function generateBriefing(): Promise<void> {
   const dateString = getDateString();
   const timestamp = getTimestamp();
@@ -128,7 +84,7 @@ async function generateBriefing(): Promise<void> {
     }
 
     // Run Claude with the briefing prompt
-    const briefingContent = await runClaudeCommand(BRIEFING_PROMPT);
+    const briefingContent = await runClaudeCommand(BRIEFING_PROMPT, { cwd: PROJECT_ROOT });
 
     // Add header with metadata
     const fullBriefing = `# Morning Briefing - ${dateString}

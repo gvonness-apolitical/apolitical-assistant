@@ -8,30 +8,15 @@ job roles, levels, and organizational information.
 API Reference: https://docs.humaans.io/api/
 """
 
-import subprocess
 from datetime import datetime
 from typing import Optional
 
 import requests
 
-# Keychain configuration (matches the TypeScript implementation)
-SERVICE_PREFIX = "apolitical-assistant-"
+from utils import get_credential
+
+# Humaans API configuration
 HUMAANS_API_BASE = "https://app.humaans.io/api"
-
-
-def get_credential(key: str) -> Optional[str]:
-    """Get a credential from macOS Keychain (same as TypeScript implementation)"""
-    service = f"{SERVICE_PREFIX}{key}"
-    try:
-        result = subprocess.run(
-            ["security", "find-generic-password", "-s", service, "-w"],
-            capture_output=True,
-            text=True,
-            check=True,
-        )
-        return result.stdout.strip()
-    except subprocess.CalledProcessError:
-        return None
 
 
 class HumaansClient:
@@ -269,20 +254,10 @@ def fetch_all_team_data(emails: list[str]) -> dict:
 if __name__ == "__main__":
     # Test the client
     import sys
-    import yaml
 
-    # Load config to get team member emails
-    script_dir = __file__
-    if isinstance(script_dir, str):
-        from pathlib import Path
+    from utils import load_config
 
-        script_dir = Path(script_dir).parent
-        config_path = script_dir.parent / "config.yaml"
-    else:
-        config_path = "../config.yaml"
-
-    with open(config_path) as f:
-        config = yaml.safe_load(f)
+    config = load_config()
 
     emails = [m["email"] for m in config["team_members"]]
 

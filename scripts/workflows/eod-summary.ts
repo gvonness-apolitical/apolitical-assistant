@@ -12,11 +12,11 @@
  * - Tomorrow's preview
  */
 
-import { spawn } from 'node:child_process';
 import { mkdirSync, writeFileSync, existsSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { notifyEODSummary } from '../../packages/shared/src/notify.js';
+import { getDateString, getTimestamp, runClaudeCommand } from '../../packages/shared/src/workflow-utils.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = join(__dirname, '../..');
@@ -27,20 +27,6 @@ const LOGS_DIR = join(PROJECT_ROOT, 'logs');
 // Ensure directories exist
 mkdirSync(OUTPUT_DIR, { recursive: true });
 mkdirSync(LOGS_DIR, { recursive: true });
-
-function getDateString(): string {
-  return new Date().toISOString().split('T')[0]!;
-}
-
-function getTimestamp(): string {
-  return new Date().toISOString().replace(/[:.]/g, '-');
-}
-
-function _getTomorrowDateString(): string {
-  const tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  return tomorrow.toISOString().split('T')[0]!;
-}
 
 const EOD_PROMPT = `You are an executive assistant for the Director of Engineering. Generate an end-of-day summary for today.
 
@@ -86,41 +72,6 @@ Please gather information and create a summary with the following sections:
 
 Format as clean markdown. Focus on capturing important context that will be useful when starting tomorrow.`;
 
-async function runClaudeCommand(prompt: string): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const claude = spawn('claude', ['--print', '--output-format', 'text'], {
-      cwd: PROJECT_ROOT,
-      stdio: ['pipe', 'pipe', 'pipe'],
-    });
-
-    let stdout = '';
-    let stderr = '';
-
-    claude.stdout.on('data', (data) => {
-      stdout += data.toString();
-    });
-
-    claude.stderr.on('data', (data) => {
-      stderr += data.toString();
-    });
-
-    claude.on('close', (code) => {
-      if (code === 0) {
-        resolve(stdout);
-      } else {
-        reject(new Error(`Claude exited with code ${code}: ${stderr}`));
-      }
-    });
-
-    claude.on('error', (err) => {
-      reject(err);
-    });
-
-    claude.stdin.write(prompt);
-    claude.stdin.end();
-  });
-}
-
 async function generateEODSummary(): Promise<void> {
   const dateString = getDateString();
   const timestamp = getTimestamp();
@@ -150,14 +101,7 @@ async function generateEODSummary(): Promise<void> {
     }
 
     // Run Claude with the EOD prompt
-    const summaryContent = await runClaudeCommand(EOD_PROMPT + contextNote);
-
-    // Calculate day stats (placeholder - would integrate with actual tracking)
-    const _dayStats = {
-      meetings: 'Review calendar for count',
-      emailsSent: 'Review sent folder',
-      prsReviewed: 'Check GitHub activity',
-    };
+    const summaryContent = await runClaudeCommand(EOD_PROMPT + contextNote, { cwd: PROJECT_ROOT });
 
     // Add header with metadata
     const fullSummary = `# End of Day Summary - ${dateString}

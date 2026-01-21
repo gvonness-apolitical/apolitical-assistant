@@ -19,31 +19,19 @@ Usage:
 
 import json
 from datetime import datetime
-from pathlib import Path
 from typing import Optional
 
-import yaml
+from utils import load_config, load_json_file, DATA_DIR
+from utils.formatters import format_email_section  # Re-export for backwards compatibility
 
-# Configuration
-SCRIPT_DIR = Path(__file__).parent
-PROJECT_DIR = SCRIPT_DIR.parent
-CONFIG_PATH = PROJECT_DIR / "config.yaml"
-DATA_DIR = PROJECT_DIR / "data" / "email"
-EMAIL_ENGAGEMENT_FILE = DATA_DIR / "email_engagement.json"
-
-
-def load_config() -> dict:
-    """Load configuration from config.yaml"""
-    with open(CONFIG_PATH) as f:
-        return yaml.safe_load(f)
+# Email-specific data directory
+EMAIL_DATA_DIR = DATA_DIR / "email"
+EMAIL_ENGAGEMENT_FILE = EMAIL_DATA_DIR / "email_engagement.json"
 
 
 def load_email_engagement_data() -> Optional[dict]:
     """Load email engagement data from the JSON file"""
-    if EMAIL_ENGAGEMENT_FILE.exists():
-        with open(EMAIL_ENGAGEMENT_FILE) as f:
-            return json.load(f)
-    return None
+    return load_json_file(EMAIL_ENGAGEMENT_FILE)
 
 
 def get_email_data_for_member(email: str) -> Optional[dict]:
@@ -54,79 +42,7 @@ def get_email_data_for_member(email: str) -> Optional[dict]:
     return email_data.get("team_engagement", {}).get(email)
 
 
-def format_email_section(email_data: Optional[dict]) -> tuple:
-    """
-    Format email data for profile insertion.
-
-    Returns tuple of:
-    - total_emails: str (count or "Not yet analyzed")
-    - avg_length: str (average length or empty)
-    - response_rate: str (response rate or empty)
-    - avg_response_time: str (average response time or empty)
-    - communication_patterns: str (bullet list of patterns)
-    - notable_emails: str (bullet list of notable examples)
-    - email_date: str (analysis date or "Not analyzed")
-    """
-    if not email_data:
-        return (
-            "*Not yet analyzed*",
-            "",
-            "",
-            "",
-            "*To be assessed*",
-            "*None captured*",
-            "Not analyzed",
-        )
-
-    metrics = email_data.get("metrics", {})
-    patterns = email_data.get("patterns", {})
-    notable = email_data.get("notable_emails", [])
-
-    # Format metrics
-    total_emails = str(metrics.get("total_emails", "*Not yet analyzed*"))
-    avg_length = str(metrics.get("average_length", "")) if metrics.get("average_length") else ""
-    response_rate = str(metrics.get("response_rate", "")) if metrics.get("response_rate") else ""
-    avg_response_time = str(metrics.get("average_response_time", "")) if metrics.get("average_response_time") else ""
-
-    # Format communication patterns
-    pattern_items = []
-    if patterns.get("tone"):
-        pattern_items.append(f"Tone: {patterns['tone']}")
-    if patterns.get("clarity"):
-        pattern_items.append(f"Clarity: {patterns['clarity']}")
-    if patterns.get("responsiveness"):
-        pattern_items.append(f"Responsiveness: {patterns['responsiveness']}")
-    if patterns.get("detail_level"):
-        pattern_items.append(f"Detail level: {patterns['detail_level']}")
-    if patterns.get("proactiveness"):
-        pattern_items.append(f"Proactiveness: {patterns['proactiveness']}")
-
-    communication_patterns = "\n".join(f"- {item}" for item in pattern_items) if pattern_items else "*To be assessed*"
-
-    # Format notable emails
-    if notable:
-        notable_items = []
-        for email in notable[:5]:  # Limit to 5 examples
-            date = email.get("date", "Unknown date")
-            subject = email.get("subject", "No subject")
-            summary = email.get("summary", "")
-            notable_items.append(f"- **{date}**: {subject}" + (f" - {summary}" if summary else ""))
-        notable_emails = "\n".join(notable_items)
-    else:
-        notable_emails = "*None captured*"
-
-    # Get analysis date
-    email_date = email_data.get("analysis_date", "Not analyzed")
-
-    return (
-        total_emails,
-        avg_length,
-        response_rate,
-        avg_response_time,
-        communication_patterns,
-        notable_emails,
-        email_date,
-    )
+# Note: format_email_section is imported from utils.formatters at the top of this file
 
 
 def create_empty_email_data() -> dict:
@@ -169,7 +85,7 @@ def create_empty_email_data() -> dict:
 
 def init_data_file():
     """Initialize the email engagement data file if it doesn't exist"""
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    EMAIL_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
     if not EMAIL_ENGAGEMENT_FILE.exists():
         data = create_empty_email_data()

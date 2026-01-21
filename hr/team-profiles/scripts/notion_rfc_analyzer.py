@@ -12,8 +12,6 @@ Uses the Notion API to fetch data from the Proposals (aka RFCs) database.
 
 import argparse
 import json
-import os
-import subprocess
 import sys
 from collections import defaultdict
 from datetime import datetime
@@ -21,38 +19,14 @@ from pathlib import Path
 from typing import Optional
 
 import requests
-import yaml
 
-# Configuration
-SERVICE_PREFIX = "apolitical-assistant-"
-SCRIPT_DIR = Path(__file__).parent
-PROJECT_DIR = SCRIPT_DIR.parent
-CONFIG_PATH = PROJECT_DIR / "config.yaml"
-DATA_DIR = PROJECT_DIR / "data" / "notion"
+from utils import get_credential, load_config, DATA_DIR
+
+# Notion-specific data directory
+NOTION_DATA_DIR = DATA_DIR / "notion"
 
 # RFC Database ID
 RFC_DATABASE_ID = "090aa88f-f28d-43cb-9d1d-deeb91ce0cc6"
-
-
-def get_credential(key: str) -> Optional[str]:
-    """Get a credential from macOS Keychain"""
-    service = f"{SERVICE_PREFIX}{key}"
-    try:
-        result = subprocess.run(
-            ["security", "find-generic-password", "-s", service, "-w"],
-            capture_output=True,
-            text=True,
-            check=True,
-        )
-        return result.stdout.strip()
-    except subprocess.CalledProcessError:
-        return None
-
-
-def load_config() -> dict:
-    """Load configuration from config.yaml"""
-    with open(CONFIG_PATH) as f:
-        return yaml.safe_load(f)
 
 
 class NotionClient:
@@ -393,7 +367,7 @@ def main():
 
     # Save results
     if not args.summary_only:
-        output_dir = Path(args.output) if args.output else DATA_DIR
+        output_dir = Path(args.output) if args.output else NOTION_DATA_DIR
         output_dir.mkdir(parents=True, exist_ok=True)
 
         # Save detailed JSON

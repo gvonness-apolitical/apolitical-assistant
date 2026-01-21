@@ -10,8 +10,6 @@ Uses the same Keychain credentials as the main apolitical-assistant project.
 
 import argparse
 import json
-import os
-import subprocess
 import sys
 from collections import defaultdict
 from datetime import datetime, timedelta
@@ -19,35 +17,11 @@ from pathlib import Path
 from typing import Optional
 
 import requests
-import yaml
 
-# Configuration
-SERVICE_PREFIX = "apolitical-assistant-"
-SCRIPT_DIR = Path(__file__).parent
-PROJECT_DIR = SCRIPT_DIR.parent
-CONFIG_PATH = PROJECT_DIR / "config.yaml"
-DATA_DIR = PROJECT_DIR / "data" / "slack"
+from utils import get_credential, load_config, DATA_DIR
 
-
-def get_credential(key: str) -> Optional[str]:
-    """Get a credential from macOS Keychain (same as TypeScript implementation)"""
-    service = f"{SERVICE_PREFIX}{key}"
-    try:
-        result = subprocess.run(
-            ["security", "find-generic-password", "-s", service, "-w"],
-            capture_output=True,
-            text=True,
-            check=True,
-        )
-        return result.stdout.strip()
-    except subprocess.CalledProcessError:
-        return None
-
-
-def load_config() -> dict:
-    """Load configuration from config.yaml"""
-    with open(CONFIG_PATH) as f:
-        return yaml.safe_load(f)
+# Slack-specific data directory
+SLACK_DATA_DIR = DATA_DIR / "slack"
 
 
 class SlackAnalyzer:
@@ -321,7 +295,7 @@ def analyze_person(config: dict, person_name: str, months: int = 12) -> dict:
 
 def analyze_all(config: dict, months: int = 12, output_dir: Path = None) -> list:
     """Analyze all team members"""
-    output_dir = output_dir or DATA_DIR
+    output_dir = output_dir or SLACK_DATA_DIR
     output_dir.mkdir(parents=True, exist_ok=True)
 
     results = []

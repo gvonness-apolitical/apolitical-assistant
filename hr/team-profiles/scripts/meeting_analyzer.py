@@ -19,31 +19,19 @@ Usage:
 
 import json
 from datetime import datetime
-from pathlib import Path
 from typing import Optional
 
-import yaml
+from utils import load_config, load_json_file, DATA_DIR
+from utils.formatters import format_meeting_section  # Re-export for backwards compatibility
 
-# Configuration
-SCRIPT_DIR = Path(__file__).parent
-PROJECT_DIR = SCRIPT_DIR.parent
-CONFIG_PATH = PROJECT_DIR / "config.yaml"
-DATA_DIR = PROJECT_DIR / "data" / "meetings"
-MEETING_ENGAGEMENT_FILE = DATA_DIR / "meeting_engagement.json"
-
-
-def load_config() -> dict:
-    """Load configuration from config.yaml"""
-    with open(CONFIG_PATH) as f:
-        return yaml.safe_load(f)
+# Meeting-specific data directory
+MEETING_DATA_DIR = DATA_DIR / "meetings"
+MEETING_ENGAGEMENT_FILE = MEETING_DATA_DIR / "meeting_engagement.json"
 
 
 def load_meeting_engagement_data() -> Optional[dict]:
     """Load meeting engagement data from the JSON file"""
-    if MEETING_ENGAGEMENT_FILE.exists():
-        with open(MEETING_ENGAGEMENT_FILE) as f:
-            return json.load(f)
-    return None
+    return load_json_file(MEETING_ENGAGEMENT_FILE)
 
 
 def get_meeting_data_for_member(email: str) -> Optional[dict]:
@@ -54,79 +42,7 @@ def get_meeting_data_for_member(email: str) -> Optional[dict]:
     return meeting_data.get("team_engagement", {}).get(email)
 
 
-def format_meeting_section(meeting_data: Optional[dict]) -> tuple:
-    """
-    Format meeting data for profile insertion.
-
-    Returns tuple of:
-    - meetings_attended: str (count or "Not yet analyzed")
-    - contribution_mentions: str (count or empty)
-    - action_items_assigned: str (count or empty)
-    - engagement_summary: str (bullet list of patterns)
-    - notable_contributions: str (bullet list of notable examples)
-    - meeting_date: str (analysis date or "Not analyzed")
-    - meeting_period: str (analysis period or "N/A")
-    """
-    if not meeting_data:
-        return (
-            "*Not yet analyzed*",
-            "",
-            "",
-            "*To be assessed*",
-            "*None captured*",
-            "Not analyzed",
-            "N/A",
-        )
-
-    metrics = meeting_data.get("metrics", {})
-    patterns = meeting_data.get("engagement_patterns", {})
-    notable = meeting_data.get("notable_contributions", [])
-
-    # Format metrics
-    meetings_attended = str(metrics.get("meetings_attended", "*Not yet analyzed*"))
-    contribution_mentions = str(metrics.get("contribution_mentions", "")) if metrics.get("contribution_mentions") else ""
-    action_items_assigned = str(metrics.get("action_items_assigned", "")) if metrics.get("action_items_assigned") else ""
-
-    # Format engagement patterns
-    pattern_items = []
-    if patterns.get("participation_level"):
-        pattern_items.append(f"Participation: {patterns['participation_level']}")
-    if patterns.get("contribution_quality"):
-        pattern_items.append(f"Contribution quality: {patterns['contribution_quality']}")
-    if patterns.get("initiative"):
-        pattern_items.append(f"Initiative: {patterns['initiative']}")
-    if patterns.get("collaboration"):
-        pattern_items.append(f"Collaboration: {patterns['collaboration']}")
-    if patterns.get("follow_through"):
-        pattern_items.append(f"Follow-through on actions: {patterns['follow_through']}")
-
-    engagement_summary = "\n".join(f"- {item}" for item in pattern_items) if pattern_items else "*To be assessed*"
-
-    # Format notable contributions
-    if notable:
-        notable_items = []
-        for contrib in notable[:5]:  # Limit to 5 examples
-            meeting = contrib.get("meeting", "Unknown meeting")
-            date = contrib.get("date", "Unknown date")
-            contribution = contrib.get("contribution", "")
-            notable_items.append(f"- **{meeting}** ({date}): {contribution}")
-        notable_contributions = "\n".join(notable_items)
-    else:
-        notable_contributions = "*None captured*"
-
-    # Get dates
-    meeting_date = meeting_data.get("analysis_date", "Not analyzed")
-    meeting_period = meeting_data.get("analysis_period", "N/A")
-
-    return (
-        meetings_attended,
-        contribution_mentions,
-        action_items_assigned,
-        engagement_summary,
-        notable_contributions,
-        meeting_date,
-        meeting_period,
-    )
+# Note: format_meeting_section is imported from utils.formatters at the top of this file
 
 
 def create_empty_meeting_data() -> dict:
@@ -168,7 +84,7 @@ def create_empty_meeting_data() -> dict:
 
 def init_data_file():
     """Initialize the meeting engagement data file if it doesn't exist"""
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    MEETING_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
     if not MEETING_ENGAGEMENT_FILE.exists():
         data = create_empty_meeting_data()
