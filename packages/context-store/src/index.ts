@@ -1,2 +1,2 @@
-export { ContextStore } from './store.js';
+export { ContextStore, type ListTodosOptions } from './store.js';
 export * from './models.js';

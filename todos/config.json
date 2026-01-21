@@ -1,0 +1,52 @@
+{
+  "archiveAfterDays": 14,
+  "retentionMonths": 12,
+  "staleDays": 14,
+  "notifications": {
+    "dayBefore": true,
+    "dayOf": true,
+    "overdue": true
+  },
+  "deduplication": {
+    "enabled": true,
+    "fuzzyThreshold": 0.85
+  },
+  "collectors": {
+    "github": {
+      "enabled": true,
+      "reviewRequestsOnly": true
+    },
+    "linear": {
+      "enabled": true,
+      "assignedOnly": true
+    },
+    "email": {
+      "enabled": true,
+      "patterns": [
+        "action required",
+        "action needed",
+        "please review",
+        "awaiting your",
+        "follow up",
+        "follow-up"
+      ]
+    },
+    "slack": {
+      "enabled": true,
+      "channels": []
+    },
+    "googleDocs": {
+      "enabled": true,
+      "docIds": []
+    },
+    "notion": {
+      "enabled": true
+    },
+    "humaans": {
+      "enabled": true
+    },
+    "geminiNotes": {
+      "enabled": true
+    }
+  }
+}
