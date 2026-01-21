@@ -18,13 +18,11 @@
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ContextStore } from '@apolitical-assistant/context-store';
-import type { Todo, TodoSource, TodoStatus } from '@apolitical-assistant/shared';
+import type { Todo, TodoSource } from '@apolitical-assistant/shared';
 import {
   calculateEffectivePriority,
   formatTodoForDisplay,
-  getPriorityIndicator,
   isStale,
-  formatDate,
   getDaysUntilDate,
 } from '@apolitical-assistant/shared';
 

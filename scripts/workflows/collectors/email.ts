@@ -11,7 +11,7 @@ import { getCredential } from '@apolitical-assistant/shared';
 import type { CollectOptions, RawTodoItem } from './types.js';
 import { BaseCollector } from './base.js';
 
-interface GmailMessage {
+interface _GmailMessage {
   id: string;
   threadId: string;
   snippet: string;

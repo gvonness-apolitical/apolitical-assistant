@@ -14,7 +14,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { writeFileSync } from 'node:fs';
 import { ContextStore } from '@apolitical-assistant/context-store';
-import type { Todo, TodoSource } from '@apolitical-assistant/shared';
+import type { TodoSource } from '@apolitical-assistant/shared';
 import {
   formatDate,
   isStale,

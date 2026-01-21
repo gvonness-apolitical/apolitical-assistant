@@ -20,7 +20,6 @@ import { getDateString, getTimestamp, runClaudeCommand } from '../../packages/sh
 import { ContextStore } from '../../packages/context-store/src/store.js';
 import {
   getTodosForBriefing,
-  formatDate,
   getPriorityIndicator,
   calculateEffectivePriority,
   getRelativeDateDescription,
@@ -122,7 +121,7 @@ function generateTodoContext(): string {
     } finally {
       store.close();
     }
-  } catch (error) {
+  } catch {
     context = '\nNote: Could not load TODOs from database. Run `npm run todos:collect` to populate.\n';
   }
 
