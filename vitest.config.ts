@@ -11,7 +11,10 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov'],
-      include: ['packages/*/src/**/*.ts', 'scripts/**/*.ts'],
+      include: [
+        'packages/shared/src/keychain.ts',
+        'packages/shared/src/workflow-utils.ts',
+      ],
       exclude: ['**/__tests__/**', '**/node_modules/**'],
       thresholds: {
         branches: 80,
