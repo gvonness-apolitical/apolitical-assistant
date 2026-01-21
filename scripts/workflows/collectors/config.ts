@@ -131,3 +131,40 @@ export function getCachePath(): string {
 export function getArchivePath(): string {
   return join(PROJECT_ROOT, 'todos/archive');
 }
+
+export function getResetStatePath(): string {
+  return join(PROJECT_ROOT, 'todos/reset-state.json');
+}
+
+export interface ResetState {
+  resetAt: string;
+  collectFromDate: string;
+}
+
+/**
+ * Load the reset state if it exists.
+ * Returns null if no reset has been performed.
+ */
+export function loadResetState(): ResetState | null {
+  const resetStatePath = getResetStatePath();
+
+  if (!existsSync(resetStatePath)) {
+    return null;
+  }
+
+  try {
+    const content = readFileSync(resetStatePath, 'utf-8');
+    return JSON.parse(content) as ResetState;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Get the date from which to collect TODOs.
+ * Returns the reset date if set, otherwise null (collect all).
+ */
+export function getCollectionStartDate(): string | null {
+  const resetState = loadResetState();
+  return resetState?.collectFromDate ?? null;
+}
