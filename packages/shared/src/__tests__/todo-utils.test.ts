@@ -25,6 +25,8 @@ function createTodo(overrides: Partial<Todo> = {}): Todo {
     id: 'test-id-123',
     title: 'Test TODO',
     priority: 3,
+    basePriority: 3,
+    urgency: 3,
     status: 'pending',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -592,7 +594,7 @@ describe('todo-utils', () => {
 
       const result = getTodosForBriefing(todos);
       expect(result.overdue).toHaveLength(1);
-      expect(result.overdue[0].title).toBe('Overdue task');
+      expect(result.overdue[0]!.title).toBe('Overdue task');
     });
 
     it('should categorize items due today', () => {
@@ -606,7 +608,7 @@ describe('todo-utils', () => {
 
       const result = getTodosForBriefing(todos);
       expect(result.dueToday).toHaveLength(1);
-      expect(result.dueToday[0].title).toBe('Due today');
+      expect(result.dueToday[0]!.title).toBe('Due today');
     });
 
     it('should categorize high priority items', () => {
@@ -615,6 +617,7 @@ describe('todo-utils', () => {
           id: '1',
           title: 'High priority',
           priority: 1,
+          basePriority: 1,
         }),
       ];
 
