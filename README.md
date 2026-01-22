@@ -9,6 +9,7 @@ A Claude-powered assistant for the Director of Engineering that integrates with 
 - **Meeting Prep**: Context gathering for upcoming meetings
 - **EOD Summaries**: End-of-day review and tomorrow preview
 - **TODO Management**: Multi-source task collection, priority tracking, and deadline notifications
+- **Task Helper**: Contextual assistance for TODOs with smart mode selection, response drafting, and MCP integration
 - **Ad-hoc Assistance**: Document drafting, research, and queries
 
 ## Quick Start
@@ -42,13 +43,16 @@ apolitical-assistant/
 ├── scripts/
 │   ├── setup/            # Installation and configuration
 │   └── workflows/        # Automated workflow scripts
-│       └── collectors/   # TODO source collectors
+│       ├── collectors/   # TODO source collectors
+│       └── task-helper/  # Contextual task assistance system
 ├── launchd/              # macOS launch agent configs
 ├── context/              # Encrypted user data (git-crypt)
 ├── todos/                # TODO config and archives (git-crypt encrypted)
 │   ├── config.json       # TODO system configuration
 │   ├── cache/            # Collector cache (last fetch timestamps)
 │   └── archive/          # Monthly archive files
+├── task-helper/          # Task helper configuration
+│   └── config.json       # Task helper settings
 └── output/               # Generated briefings
 ```
 
@@ -134,6 +138,10 @@ npm run eod-summary
 npm run todos                 # Display active TODOs
 npm run todos:collect         # Collect TODOs from all sources
 npm run todos:interactive     # Interactive TODO manager
+
+# Task Helper (see Task Helper section below for details)
+npm run task:help             # Interactive task assistance
+npm run task:help:list        # List available TODOs for help
 ```
 
 ### Scheduled Tasks
@@ -481,6 +489,164 @@ The TODO system automatically integrates with morning briefings. The briefing in
 - **Stale TODOs** - Items that may need review
 
 No additional configuration needed - TODOs appear automatically when you run `npm run morning-briefing`.
+
+---
+
+## Task Helper
+
+A contextual task assistance system that provides intelligent help for TODOs based on their source and type. The helper gathers relevant context, provides insights, drafts responses, and where possible, applies changes directly via MCP integrations.
+
+### Features
+
+- **Smart mode auto-selection**: Automatically chooses the best helper mode based on TODO source
+- **Multi-source context gathering**: Pulls relevant context from GitHub, Linear, Email, Slack, Notion, Calendar, and Incidents
+- **Context caching**: Avoids redundant API calls with intelligent TTL-based caching
+- **Multiple output options**: MCP write (direct posting), clipboard, file, or display
+- **Source-specific prompts**: Tailored prompt templates for quality responses
+
+### Quick Start
+
+```bash
+# Interactive mode - select a TODO and get help
+npm run task:help
+
+# List available TODOs
+npm run task:help:list
+
+# Help with a specific TODO
+npm run task:help -- --id=<todo_id> --mode=respond
+```
+
+### Commands Reference
+
+| Command | Description |
+|---------|-------------|
+| `npm run task:help` | Interactive task assistance |
+| `npm run task:help:list` | List available TODOs |
+| `npm run task:help -- --id=X` | Help with specific TODO |
+| `npm run task:help -- --id=X --mode=respond` | Draft a response |
+| `npm run task:help -- --id=X --mode=review` | Provide review feedback |
+| `npm run task:help -- --id=X --mode=summarize` | Summarize context |
+| `npm run task:help -- --id=X --mode=schedule` | Help with scheduling |
+| `npm run task:help -- --id=X --mode=complete` | Help complete the TODO |
+| `npm run task:help -- --id=X --output=clipboard` | Copy output to clipboard |
+| `npm run task:help -- --source=github` | Filter by source |
+| `npm run task:help -- --refresh` | Force refresh cached context |
+
+### Helper Modes
+
+| Mode | Description | Best For |
+|------|-------------|----------|
+| `respond` | Draft a response (email reply, PR comment, etc.) | Email, Slack, GitHub issues |
+| `review` | Provide review points and feedback | GitHub PRs, documents, proposals |
+| `summarize` | Summarize context and provide insights | Notion pages, incidents, complex threads |
+| `schedule` | Help schedule or prepare for meetings | Calendar items, meeting requests |
+| `complete` | Help complete or close the TODO | Linear tasks, action items |
+
+### Smart Mode Selection
+
+The helper automatically suggests the best mode based on TODO source:
+
+| Source | Default Mode | Reasoning |
+|--------|--------------|-----------|
+| GitHub PR | `review` | PRs typically need review feedback |
+| GitHub Issue | `respond` | Issues need response/comment |
+| Linear | `respond` | Tasks often need status updates |
+| Email | `respond` | Emails need replies |
+| Slack | `respond` | Messages need replies |
+| Notion | `summarize` | Pages often need summary/insights |
+| Meeting/Calendar | `schedule` | Meetings involve scheduling |
+| Incident | `summarize` | Incidents need status summary |
+
+### Context Depth
+
+Control how much context is gathered:
+
+| Depth | What's Included |
+|-------|-----------------|
+| `minimal` | Just the TODO source details |
+| `standard` | + thread/comments + related items + people context |
+| `comprehensive` | + cross-source search + business context + wider context |
+
+```bash
+# Use comprehensive context for thorough analysis
+npm run task:help -- --id=X --depth=comprehensive
+```
+
+### Output Types
+
+| Output | Description | When to Use |
+|--------|-------------|-------------|
+| `mcp` | Post directly via MCP (GitHub, Linear, Notion) | When you want to post immediately |
+| `clipboard` | Copy to clipboard | For email, Slack, or manual posting |
+| `file` | Save to file | For archiving or sharing |
+| `display` | Show in terminal | For review before taking action |
+
+### Configuration
+
+Edit `task-helper/config.json` to customize:
+
+```json
+{
+  "defaults": {
+    "mode": "respond",
+    "outputType": "display",
+    "depth": "standard",
+    "options": {
+      "includeThread": true,
+      "includeRelated": true,
+      "includePeople": true,
+      "includeCalendar": false,
+      "maxThreadMessages": 20,
+      "maxRelatedItems": 10
+    }
+  },
+  "sourceDefaults": {
+    "github": { "preferredMode": "review", "preferredOutput": "mcp" },
+    "linear": { "preferredMode": "respond", "preferredOutput": "mcp" },
+    "email": { "preferredMode": "respond", "preferredOutput": "clipboard" },
+    "slack": { "preferredMode": "respond", "preferredOutput": "clipboard" }
+  },
+  "cache": {
+    "enabled": true
+  },
+  "prompts": {
+    "tone": "professional",
+    "includeSignature": false
+  }
+}
+```
+
+### MCP Write Support
+
+The task helper can post directly to supported platforms:
+
+| Source | MCP Write Support | Actions |
+|--------|-------------------|---------|
+| GitHub | ✅ Yes | Post comments, create reviews |
+| Linear | ✅ Yes | Post comments, update issues |
+| Notion | ✅ Yes | Add comments to pages |
+| Email | ❌ No (clipboard) | Copy for manual sending |
+| Slack | ❌ No (clipboard) | Copy for manual posting |
+
+### Examples
+
+```bash
+# Review a GitHub PR
+npm run task:help -- --id=abc123 --mode=review --output=mcp
+
+# Draft an email reply and copy to clipboard
+npm run task:help -- --id=def456 --mode=respond --output=clipboard
+
+# Summarize an incident with full context
+npm run task:help -- --id=ghi789 --mode=summarize --depth=comprehensive
+
+# Help complete a Linear task
+npm run task:help -- --id=jkl012 --mode=complete
+
+# Get help with all GitHub TODOs
+npm run task:help -- --source=github
+```
 
 ---
 
