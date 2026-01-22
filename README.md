@@ -88,12 +88,30 @@ apolitical-assistant/
 npm install
 ```
 
-### 2. Configure Credentials
+### 2. Configure Credentials and Paths
 
-Run the interactive setup wizard to store credentials in macOS Keychain:
+Run the interactive setup wizard to store credentials in macOS Keychain and configure paths:
 
 ```bash
 npm run setup
+```
+
+The setup wizard provides options to:
+1. Set up all credentials at once
+2. Configure individual credentials
+3. Test credential access
+4. Configure paths (e.g., dev-analytics reports directory)
+
+**Dev Analytics Reports Path**: If you use the dev-analytics collector for delivery metrics, you'll need to configure the path to your reports directory. This can be done via the setup wizard (option 4) or by editing `data/config/todos/config.json`:
+
+```json
+{
+  "collectors": {
+    "devAnalytics": {
+      "reportsPath": "/path/to/your/delivery-reports"
+    }
+  }
+}
 ```
 
 See [Obtaining API Credentials](#obtaining-api-credentials) below for detailed instructions on getting each token.
