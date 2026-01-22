@@ -10,11 +10,12 @@ This assistant uses Claude Code with MCP (Model Context Protocol) servers to pro
 
 - **Morning Briefings**: Daily summary of calendar, emails, incidents, and priorities
 - **Email Triage**: Intelligent email categorisation with user confirmation
-- **Meeting Prep**: Context gathering for upcoming meetings
+- **Meeting Prep & Scheduling**: Context gathering and smart scheduling with availability checking
 - **Meeting Notes**: Process Gemini auto-transcripts into structured notes
-- **EOD Summaries**: End-of-day review and handoff notes
-- **Blocker Analysis**: Check what's blocking a person or project
-- **Ad-hoc Assistance**: Document drafting, research, summarisation
+- **EOD & Weekly Reviews**: End-of-day summaries and weekly retrospectives
+- **Blocker & Status Analysis**: Check what's blocking a person, project, or team
+- **Context Finder**: Search across all systems for information on any topic
+- **Response Drafting**: Draft replies to emails, Slack, PRs, and Linear tickets
 
 ## Available Skills
 
@@ -54,19 +55,19 @@ Use `/[skill-name]` in Claude Code to invoke workflows:
 ```
 apolitical-assistant/
 ├── .claude/
-│   ├── CLAUDE.md              # Assistant instructions
-│   ├── commands/              # Skill definitions
+│   ├── CLAUDE.md              # Assistant instructions and guidelines
+│   ├── commands/              # Skill definitions (13 skills)
 │   └── settings.local.json    # Local MCP permissions
 ├── mcp-servers/
-│   ├── google/                # Gmail, Calendar, Drive, Docs
-│   ├── slack/                 # Slack integration
-│   ├── humaans/               # HR integration
-│   └── incident-io/           # Incident.io integration
-├── morning-briefing/          # Daily briefing output
-├── meetings/output/           # Meeting prep and notes
+│   ├── google/                # Gmail, Calendar, Drive, Docs, Sheets, Slides
+│   ├── slack/                 # Slack channels, DMs, search, messaging
+│   ├── humaans/               # HR, org chart, time off
+│   └── incident-io/           # Incidents and follow-ups
+├── morning-briefing/          # Daily briefings
+├── meetings/output/           # Meeting prep and notes (by type)
 ├── tech-notes/                # Technical documentation
-├── context/                   # Session context files
-└── 121/                       # 1:1 meeting archives
+├── context/                   # Session notes, EOD, weekly reviews
+└── 121/                       # Raw 1:1 transcripts from Gemini
 ```
 
 ## Integrations
@@ -223,10 +224,13 @@ Then use natural conversation or invoke skills:
 
 ## Output Directories
 
-- `morning-briefing/YYYY-MM-DD.md` - Daily briefings
-- `meetings/output/[type]/YYYY-MM-DD-[name].md` - Meeting prep and notes
-- `tech-notes/[topic].md` - Technical deep dives
-- `context/YYYY-MM-DD-session.md` - Session context
+| Directory | Contents |
+|-----------|----------|
+| `morning-briefing/` | Daily briefings (`YYYY-MM-DD.md`) |
+| `meetings/output/` | Meeting prep and notes by type (`one-on-ones/`, `squad/`, `planning/`, `external/`, `general/`) |
+| `tech-notes/` | Technical documentation and deep dives |
+| `context/` | Session notes, EOD summaries, weekly reviews |
+| `121/` | Raw 1:1 meeting transcripts from Gemini |
 
 ## License
 

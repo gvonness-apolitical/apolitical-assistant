@@ -36,7 +36,7 @@ Wrap up the day with a summary and handoff notes.
 - Threads to monitor
 - People to follow up with
 
-Save to `eod-summary/YYYY-MM-DD.md`
+Save to `context/eod-YYYY-MM-DD.md`
 
 ## Notes
 - Update session context file if useful context for next session

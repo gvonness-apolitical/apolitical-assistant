@@ -37,7 +37,9 @@ Create a meeting prep note with:
 - Outstanding items to follow up on
 - Decisions needed
 
-Save to `meetings/output/prep/YYYY-MM-DD-[meeting-slug].md`
+Save to `meetings/output/[meeting-type]/YYYY-MM-DD-[attendee-or-title]-prep.md`
+
+Meeting types: `one-on-ones/`, `squad/`, `planning/`, `external/`, `general/`
 
 ## Notes
 - For 1:1s, also check Humaans for any time off or role changes

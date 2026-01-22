@@ -118,11 +118,19 @@ When drafting documents:
 
 ## Output Directories
 
-- `morning-briefing/` - Daily briefings (YYYY-MM-DD.md)
-- `meetings/output/` - Meeting prep and notes by type (one-on-ones/, squad/, planning/, external/, general/)
+- `morning-briefing/` - Daily briefings (`YYYY-MM-DD.md`)
+- `meetings/output/` - Meeting prep and notes by type:
+  - `one-on-ones/` - 1:1 meeting notes
+  - `squad/` - Squad/team meetings
+  - `planning/` - Planning sessions
+  - `external/` - External calls
+  - `general/` - Everything else
 - `tech-notes/` - Technical documentation and deep dives
-- `context/` - Session context files (YYYY-MM-DD-session.md)
-- `121/` - 1:1 meeting archives from Gemini
+- `context/` - Session context and summaries:
+  - `YYYY-MM-DD-session.md` - Session notes
+  - `eod-YYYY-MM-DD.md` - End of day summaries
+  - `weekly-review-YYYY-MM-DD.md` - Weekly reviews
+- `121/` - 1:1 meeting archives from Gemini (raw transcripts)
 
 ## Project Context
 
