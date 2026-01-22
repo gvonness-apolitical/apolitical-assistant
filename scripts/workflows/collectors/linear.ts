@@ -101,42 +101,16 @@ export class LinearCollector extends BaseCollector {
   ): Promise<RawTodoItem[]> {
     const items: RawTodoItem[] = [];
 
-    // Build variables for the query
-    const variables: Record<string, unknown> = { userId };
-
-    // Add date filters if provided
-    if (options?.startDate) {
-      variables.startDate = `${options.startDate}T00:00:00Z`;
-    }
-    if (options?.endDate) {
-      variables.endDate = `${options.endDate}T23:59:59Z`;
-    }
-
-    // Determine which query to use based on date filters
-    const hasDateFilter = options?.startDate || options?.endDate;
-
-    // Build the filter part of the query
-    const filterParts = [
-      'assignee: { id: { eq: $userId } }',
-      'state: { type: { nin: ["completed", "canceled"] } }',
-    ];
-
-    if (hasDateFilter) {
-      const dateFilters: string[] = [];
-      if (options?.startDate) dateFilters.push('gte: $startDate');
-      if (options?.endDate) dateFilters.push('lte: $endDate');
-      filterParts.push(`updatedAt: { ${dateFilters.join(', ')} }`);
-    }
-
-    const variableDecls = hasDateFilter
-      ? '$userId: String!, $startDate: DateTime, $endDate: DateTime'
-      : '$userId: String!';
+    // Note: Linear doesn't support meaningful historical backfill.
+    // We always query current assigned issues regardless of date range.
+    // The backfill date parameters are ignored for this collector.
 
     const query = `
-      query(${variableDecls}) {
+      query($userId: String!) {
         issues(
           filter: {
-            ${filterParts.join('\n            ')}
+            assignee: { id: { eq: $userId } }
+            state: { type: { nin: ["completed", "canceled"] } }
           }
           first: 50
           orderBy: updatedAt
@@ -172,7 +146,7 @@ export class LinearCollector extends BaseCollector {
     try {
       const response = await this.executeQuery<{
         issues: { nodes: LinearIssue[] };
-      }>(query, token, variables);
+      }>(query, token, { userId });
 
       this.log(`Found ${response.issues.nodes.length} assigned issues`, options);
 
