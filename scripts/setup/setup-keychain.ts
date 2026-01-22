@@ -1,6 +1,8 @@
 #!/usr/bin/env npx tsx
 
 import * as readline from 'node:readline';
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 import {
   setCredential,
   getCredential,
@@ -11,6 +13,7 @@ import {
   type CredentialKey,
   CREDENTIAL_DESCRIPTIONS,
 } from '../../packages/shared/src/types.js';
+import { TODOS_CONFIG_PATH, getProjectRoot } from '../../packages/shared/src/paths.js';
 
 const CREDENTIALS: CredentialKey[] = [
   'google-oauth-client-id',
@@ -22,6 +25,77 @@ const CREDENTIALS: CredentialKey[] = [
   'humaans-api-token',
   'incidentio-api-key',
 ];
+
+// Path configurations
+interface PathConfig {
+  key: string;
+  description: string;
+  configPath: string[];  // Path within the config object
+  defaultValue: string;
+  validate?: (path: string) => boolean;
+}
+
+const PATH_CONFIGS: PathConfig[] = [
+  {
+    key: 'dev-analytics-reports',
+    description: 'Path to apolitical-dev-analytics reports directory',
+    configPath: ['collectors', 'devAnalytics', 'reportsPath'],
+    defaultValue: join(getProjectRoot(), '../apolitical-dev-analytics/reports'),
+    validate: (path: string) => existsSync(path),
+  },
+];
+
+interface TodoConfig {
+  collectors?: {
+    devAnalytics?: {
+      enabled?: boolean;
+      reportsPath?: string;
+    };
+    [key: string]: unknown;
+  };
+  [key: string]: unknown;
+}
+
+function loadConfig(): TodoConfig {
+  if (!existsSync(TODOS_CONFIG_PATH)) {
+    return {};
+  }
+  try {
+    return JSON.parse(readFileSync(TODOS_CONFIG_PATH, 'utf-8'));
+  } catch {
+    return {};
+  }
+}
+
+function saveConfig(config: TodoConfig): void {
+  const dir = dirname(TODOS_CONFIG_PATH);
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(TODOS_CONFIG_PATH, JSON.stringify(config, null, 2), 'utf-8');
+}
+
+function getConfigValue(config: TodoConfig, path: string[]): string | undefined {
+  let current: unknown = config;
+  for (const key of path) {
+    if (current && typeof current === 'object' && key in current) {
+      current = (current as Record<string, unknown>)[key];
+    } else {
+      return undefined;
+    }
+  }
+  return typeof current === 'string' ? current : undefined;
+}
+
+function setConfigValue(config: TodoConfig, path: string[], value: string): void {
+  let current: Record<string, unknown> = config;
+  for (let i = 0; i < path.length - 1; i++) {
+    const key = path[i]!;
+    if (!(key in current) || typeof current[key] !== 'object') {
+      current[key] = {};
+    }
+    current = current[key] as Record<string, unknown>;
+  }
+  current[path[path.length - 1]!] = value;
+}
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -84,7 +158,7 @@ function questionHidden(prompt: string): Promise<string> {
 
 function printHeader() {
   console.log('\n========================================');
-  console.log('  Apolitical Assistant - Credential Setup');
+  console.log('  Apolitical Assistant - Setup');
   console.log('========================================\n');
 }
 
@@ -99,6 +173,74 @@ function printStatus() {
   }
 
   console.log('');
+}
+
+function printPathStatus() {
+  console.log('Current path configuration:\n');
+
+  const config = loadConfig();
+
+  for (const pathConfig of PATH_CONFIGS) {
+    const value = getConfigValue(config, pathConfig.configPath);
+    const isSet = !!value;
+    const isValid = value && pathConfig.validate ? pathConfig.validate(value) : true;
+
+    if (isSet && isValid) {
+      console.log(`  \x1b[32m✓\x1b[0m ${pathConfig.key}`);
+      console.log(`    ${value}`);
+    } else if (isSet && !isValid) {
+      console.log(`  \x1b[33m!\x1b[0m ${pathConfig.key} (path not found)`);
+      console.log(`    ${value}`);
+    } else {
+      console.log(`  \x1b[90m-\x1b[0m ${pathConfig.key} (using default)`);
+      console.log(`    ${pathConfig.defaultValue}`);
+    }
+  }
+
+  console.log('');
+}
+
+async function configurePath(pathConfig: PathConfig): Promise<boolean> {
+  console.log(`\n${pathConfig.description}`);
+
+  const config = loadConfig();
+  const currentValue = getConfigValue(config, pathConfig.configPath);
+
+  if (currentValue) {
+    console.log(`Current value: ${currentValue}`);
+  } else {
+    console.log(`Default value: ${pathConfig.defaultValue}`);
+  }
+
+  const newValue = await question('\nEnter new path (or press Enter to keep current): ');
+
+  if (!newValue.trim()) {
+    console.log('Keeping current value.');
+    return false;
+  }
+
+  const resolvedPath = newValue.trim();
+
+  // Validate the path if validator exists
+  if (pathConfig.validate && !pathConfig.validate(resolvedPath)) {
+    console.log(`\x1b[33mWarning: Path does not exist: ${resolvedPath}\x1b[0m`);
+    const proceed = await question('Save anyway? (y/n): ');
+    if (proceed.toLowerCase() !== 'y') {
+      console.log('Cancelled.');
+      return false;
+    }
+  }
+
+  setConfigValue(config, pathConfig.configPath, resolvedPath);
+  saveConfig(config);
+  console.log('\x1b[32m✓ Path saved to config\x1b[0m');
+  return true;
+}
+
+async function configureAllPaths() {
+  for (const pathConfig of PATH_CONFIGS) {
+    await configurePath(pathConfig);
+  }
 }
 
 async function configureCredential(key: CredentialKey): Promise<boolean> {
@@ -134,16 +276,18 @@ async function configureCredential(key: CredentialKey): Promise<boolean> {
 async function interactiveSetup() {
   printHeader();
   printStatus();
+  printPathStatus();
 
   console.log('Options:');
   console.log('  1. Configure all credentials');
   console.log('  2. Configure missing credentials only');
   console.log('  3. Configure a specific credential');
-  console.log('  4. Test credentials');
-  console.log('  5. Exit');
+  console.log('  4. Configure paths');
+  console.log('  5. Test credentials');
+  console.log('  6. Exit');
   console.log('');
 
-  const choice = await question('Select an option (1-5): ');
+  const choice = await question('Select an option (1-6): ');
 
   switch (choice) {
     case '1':
@@ -175,11 +319,33 @@ async function interactiveSetup() {
       break;
     }
 
-    case '4':
+    case '4': {
+      if (PATH_CONFIGS.length === 1) {
+        await configurePath(PATH_CONFIGS[0]!);
+      } else {
+        console.log('\nAvailable paths:');
+        PATH_CONFIGS.forEach((config, idx) => {
+          console.log(`  ${idx + 1}. ${config.key}`);
+        });
+        console.log(`  ${PATH_CONFIGS.length + 1}. Configure all paths`);
+        const indexStr = await question('\nSelect path number: ');
+        const selectedIndex = parseInt(indexStr, 10) - 1;
+        if (selectedIndex === PATH_CONFIGS.length) {
+          await configureAllPaths();
+        } else if (selectedIndex >= 0 && selectedIndex < PATH_CONFIGS.length) {
+          await configurePath(PATH_CONFIGS[selectedIndex]!);
+        } else {
+          console.log('Invalid selection.');
+        }
+      }
+      break;
+    }
+
+    case '5':
       await testCredentials();
       break;
 
-    case '5':
+    case '6':
       console.log('Goodbye!');
       rl.close();
       return;
@@ -190,6 +356,7 @@ async function interactiveSetup() {
 
   // Show updated status and loop
   printStatus();
+  printPathStatus();
   await interactiveSetup();
 }
 
