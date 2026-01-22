@@ -9,8 +9,6 @@
  *   npm run todos:interactive
  */
 
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { createInterface } from 'node:readline';
 import { execSync } from 'node:child_process';
 import { ContextStore } from '@apolitical-assistant/context-store';
@@ -21,11 +19,8 @@ import {
   getStatusIndicator,
   formatDate,
   addDays,
+  DB_PATH,
 } from '@apolitical-assistant/shared';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT = join(__dirname, '../..');
-const DB_PATH = join(PROJECT_ROOT, 'context/store.db');
 
 const rl = createInterface({
   input: process.stdin,

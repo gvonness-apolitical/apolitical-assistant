@@ -5,34 +5,35 @@
  */
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync } from 'node:fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { loadBackfillConfig, getProjectRoot } from '../config/load.js';
+import { dirname } from 'node:path';
+import {
+  BACKFILL_PROGRESS_PATH,
+  COLLECTED_CACHE_DIR,
+  BACKFILL_AUDIT_PATH,
+} from '@apolitical-assistant/shared';
+import { loadBackfillConfig } from '../config/load.js';
 import type { BackfillProgress, BackfillProgressEntry } from './types.js';
 import type { CollectorSource } from '../config/schemas.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT = getProjectRoot();
 
 /**
  * Get path to backfill progress file
  */
 export function getProgressPath(): string {
-  return join(PROJECT_ROOT, 'collected/backfill-progress.json');
+  return BACKFILL_PROGRESS_PATH;
 }
 
 /**
  * Get path to collected items cache
  */
 export function getCollectedCachePath(): string {
-  return join(PROJECT_ROOT, 'collected/cache');
+  return COLLECTED_CACHE_DIR;
 }
 
 /**
  * Get path to audit log
  */
 export function getAuditLogPath(): string {
-  return join(PROJECT_ROOT, 'collected/audit.jsonl');
+  return BACKFILL_AUDIT_PATH;
 }
 
 /**

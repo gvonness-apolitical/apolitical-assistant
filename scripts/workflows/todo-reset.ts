@@ -13,17 +13,17 @@
  *   npm run todos:reset -- --keep-completed  # Preserve completed TODOs
  */
 
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { readdirSync, unlinkSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { ContextStore } from '../../packages/context-store/src/store.js';
 import { createInterface } from 'node:readline';
+import {
+  DB_PATH,
+  TODO_CACHE_DIR,
+  TODOS_DIR,
+} from '@apolitical-assistant/shared';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT = join(__dirname, '../..');
-const DB_PATH = join(PROJECT_ROOT, 'context/store.db');
-const CACHE_DIR = join(PROJECT_ROOT, 'todos/cache');
-const CONFIG_DIR = join(PROJECT_ROOT, 'todos');
+const CACHE_DIR = TODO_CACHE_DIR;
+const CONFIG_DIR = TODOS_DIR;
 
 interface ResetOptions {
   fromDate: string;

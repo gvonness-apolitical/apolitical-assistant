@@ -12,17 +12,13 @@
  *   npm run todos:archive -- --dry-run # Show what would be archived
  */
 
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { ContextStore } from '@apolitical-assistant/context-store';
 import type { Todo } from '@apolitical-assistant/shared';
+import { DB_PATH, TODOS_ARCHIVE_DIR } from '@apolitical-assistant/shared';
 import { loadTodoConfig } from './collectors/config.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT = join(__dirname, '../..');
-const DB_PATH = join(PROJECT_ROOT, 'context/store.db');
-const ARCHIVE_DIR = join(PROJECT_ROOT, 'todos/archive');
+const ARCHIVE_DIR = TODOS_ARCHIVE_DIR;
 
 interface ArchiveOptions {
   days: number;

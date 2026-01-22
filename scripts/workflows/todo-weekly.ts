@@ -10,8 +10,6 @@
  *   npm run todos:weekly -- --output file.md # Save to file
  */
 
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { writeFileSync } from 'node:fs';
 import { ContextStore } from '@apolitical-assistant/context-store';
 import type { TodoSource } from '@apolitical-assistant/shared';
@@ -19,12 +17,9 @@ import {
   formatDate,
   isStale,
   getDaysUntilDate,
+  DB_PATH,
 } from '@apolitical-assistant/shared';
 import { loadTodoConfig } from './collectors/config.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT = join(__dirname, '../..');
-const DB_PATH = join(PROJECT_ROOT, 'context/store.db');
 
 interface WeeklyOptions {
   output?: string;

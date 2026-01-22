@@ -11,19 +11,14 @@
  *   npm run todos:notify -- --quiet   # Silent mode (for cron)
  */
 
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { ContextStore } from '@apolitical-assistant/context-store';
-import { sendNotification } from '@apolitical-assistant/shared';
 import {
+  sendNotification,
   getDaysUntilDate,
   formatDate,
+  DB_PATH,
 } from '@apolitical-assistant/shared';
 import { loadTodoConfig } from './collectors/config.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT = join(__dirname, '../..');
-const DB_PATH = join(PROJECT_ROOT, 'context/store.db');
 
 interface NotifyOptions {
   quiet: boolean;

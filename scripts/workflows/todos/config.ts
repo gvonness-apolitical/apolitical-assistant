@@ -4,19 +4,23 @@
  * Configuration loading and management for the TODOs module.
  */
 
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { join } from 'node:path';
+import {
+  getProjectRoot,
+  DB_PATH,
+  TODOS_DIR,
+  TODOS_CONFIG_PATH,
+  TODOS_ARCHIVE_DIR,
+  TODO_CACHE_DIR,
+} from '@apolitical-assistant/shared';
 import { TodoConfigSchema, type TodoConfig } from './types.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT = join(__dirname, '../../..');
-
-export const DB_PATH = join(PROJECT_ROOT, 'context/store.db');
-export const TODOS_DIR = join(PROJECT_ROOT, 'todos');
-export const CONFIG_PATH = join(TODOS_DIR, 'config.json');
-export const ARCHIVE_DIR = join(TODOS_DIR, 'archive');
-export const CACHE_DIR = join(TODOS_DIR, 'cache');
+// Re-export paths for backwards compatibility
+export { DB_PATH, TODOS_DIR };
+export const CONFIG_PATH = TODOS_CONFIG_PATH;
+export const ARCHIVE_DIR = TODOS_ARCHIVE_DIR;
+export const CACHE_DIR = TODO_CACHE_DIR;
 
 /**
  * Default configuration
@@ -97,6 +101,8 @@ export function ensureDirectories(): void {
   mkdirSync(ARCHIVE_DIR, { recursive: true });
   mkdirSync(CACHE_DIR, { recursive: true });
 }
+
+const PROJECT_ROOT = getProjectRoot();
 
 /**
  * Get the archive file path for a given date
