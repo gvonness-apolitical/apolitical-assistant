@@ -20,16 +20,34 @@ This assistant uses Claude Code with MCP (Model Context Protocol) servers to pro
 
 Use `/[skill-name]` in Claude Code to invoke workflows:
 
+### Daily Operations
 | Skill | Purpose |
 |-------|---------|
 | `/morning-briefing` | Generate daily briefing |
+| `/end-of-day` | Generate EOD summary |
 | `/triage-inbox` | Review and categorise emails |
+
+### Meetings
+| Skill | Purpose |
+|-------|---------|
 | `/prep-meeting [meeting]` | Prepare for an upcoming meeting |
 | `/meeting-notes [doc-id]` | Process Gemini notes into structured format |
-| `/end-of-day` | Generate EOD summary |
+| `/schedule-meeting [attendees] [topic]` | Smart scheduling with availability checking |
+
+### Communication
+| Skill | Purpose |
+|-------|---------|
 | `/draft-email [message-id]` | Draft an email response |
+| `/respond-to [url/id]` | Draft response to email, Slack, PR, or Linear |
 | `/summarise [url]` | Summarise a thread, document, or conversation |
+
+### Research & Status
+| Skill | Purpose |
+|-------|---------|
+| `/find-context [person/project/topic]` | Search all systems for context |
+| `/team-status [squad]` | Comprehensive team status |
 | `/whats-blocking [person/project]` | Check blockers |
+| `/weekly-review` | End-of-week summary and retrospective |
 
 ## Project Structure
 
@@ -54,12 +72,12 @@ apolitical-assistant/
 ## Integrations
 
 ### Custom MCP Servers (included)
-| Service | Purpose |
-|---------|---------|
-| Google | Gmail, Calendar, Drive, Docs, Sheets, Slides |
-| Slack | Search, channels, DMs, users |
+| Service | Capabilities |
+|---------|--------------|
+| Google | Gmail (read/send/draft), Calendar (read/create/freebusy), Drive, Docs, Sheets, Slides |
+| Slack | Search, read channels/DMs, send messages, add reactions |
 | Humaans | HR, org chart, time off |
-| Incident.io | Incidents and follow-ups |
+| Incident.io | Incidents (read/create/update), follow-ups (read/create) |
 
 ### External MCP Servers
 | Service | Purpose |
@@ -67,6 +85,99 @@ apolitical-assistant/
 | GitHub | Repos, PRs, Issues |
 | Linear | Project management |
 | Notion | Documentation |
+
+## Required Scopes & Permissions
+
+Each integration requires specific API permissions. If you only need read operations, you can omit the write scopes.
+
+### Google OAuth Scopes
+
+Configure these in your Google Cloud Console OAuth consent screen.
+
+**Required for read operations:**
+| Scope | Purpose |
+|-------|---------|
+| `gmail.readonly` | Read and search emails |
+| `calendar.readonly` | View calendar events |
+| `drive.readonly` | Search and list files |
+| `documents.readonly` | Read Google Docs content |
+| `spreadsheets.readonly` | Read Google Sheets |
+| `presentations.readonly` | Read Google Slides |
+
+**Required for write operations:**
+| Scope | Purpose |
+|-------|---------|
+| `gmail.send` | Send emails |
+| `gmail.compose` | Create drafts |
+| `calendar.events` | Create/update calendar events |
+| `calendar.freebusy` | Check availability (for `/schedule-meeting`) |
+
+Full scope URLs use the prefix `https://www.googleapis.com/auth/`
+
+### Slack App Scopes
+
+Configure these in your Slack App's OAuth & Permissions settings.
+
+**Required for read operations:**
+| Scope | Purpose |
+|-------|---------|
+| `channels:read` | List public channels |
+| `groups:read` | List private channels |
+| `im:read` | List DM conversations |
+| `mpim:read` | List group DMs |
+| `channels:history` | Read public channel messages |
+| `groups:history` | Read private channel messages |
+| `im:history` | Read DM messages |
+| `mpim:history` | Read group DM messages |
+| `users:read` | List users |
+| `users:read.email` | Get user emails |
+| `search:read` | Search messages |
+
+**Required for write operations:**
+| Scope | Purpose |
+|-------|---------|
+| `chat:write` | Send messages to channels and DMs |
+| `reactions:write` | Add emoji reactions |
+
+### Incident.io API Key
+
+Create an API key at incident.io with these permissions:
+
+| Permission | Purpose |
+|------------|---------|
+| Incidents: Read | List and view incidents |
+| Incidents: Write | Create and update incidents |
+| Follow-ups: Read | List follow-up actions |
+| Follow-ups: Write | Create follow-up actions |
+| Severities: Read | List severity levels |
+
+### Humaans API Key
+
+Create an API key at app.humaans.io with read access to:
+- People
+- Time off requests
+- Org structure / reporting
+
+### GitHub (External MCP)
+
+Uses the official GitHub MCP server. Requires a GitHub Personal Access Token with:
+- `repo` - Full repository access
+- `read:org` - Read org membership
+- `read:user` - Read user profile
+
+### Linear (External MCP)
+
+Uses the official Linear MCP server. Requires a Linear API key with access to:
+- Issues (read/write)
+- Projects (read)
+- Teams (read)
+- Users (read)
+
+### Notion (External MCP)
+
+Uses the official Notion MCP server. Requires a Notion integration token with:
+- Read access to pages and databases you want to query
+- Search capability enabled
 
 ## Setup
 

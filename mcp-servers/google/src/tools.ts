@@ -92,6 +92,98 @@ export function createTools(): Tool[] {
         required: ['messageIds'],
       },
     },
+    {
+      name: 'gmail_send_message',
+      description: 'Send an email message. Requires gmail.send scope.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          to: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'Array of recipient email addresses',
+          },
+          subject: {
+            type: 'string',
+            description: 'Email subject line',
+          },
+          body: {
+            type: 'string',
+            description: 'Email body (plain text)',
+          },
+          cc: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'Array of CC email addresses',
+          },
+          bcc: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'Array of BCC email addresses',
+          },
+          replyToMessageId: {
+            type: 'string',
+            description: 'Message ID to reply to (sets In-Reply-To and References headers)',
+          },
+          threadId: {
+            type: 'string',
+            description: 'Thread ID to add the message to',
+          },
+        },
+        required: ['to', 'subject', 'body'],
+      },
+    },
+    {
+      name: 'gmail_create_draft',
+      description: 'Create a draft email (not sent). Useful for composing emails that need review before sending.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          to: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'Array of recipient email addresses',
+          },
+          subject: {
+            type: 'string',
+            description: 'Email subject line',
+          },
+          body: {
+            type: 'string',
+            description: 'Email body (plain text)',
+          },
+          cc: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'Array of CC email addresses',
+          },
+          bcc: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'Array of BCC email addresses',
+          },
+          replyToMessageId: {
+            type: 'string',
+            description: 'Message ID to reply to',
+          },
+        },
+        required: ['to', 'subject', 'body'],
+      },
+    },
+    {
+      name: 'gmail_get_attachments',
+      description: 'Get list of attachments for a Gmail message with their metadata',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          messageId: {
+            type: 'string',
+            description: 'The Gmail message ID',
+          },
+        },
+        required: ['messageId'],
+      },
+    },
 
     // Calendar Tools
     {
@@ -135,6 +227,142 @@ export function createTools(): Tool[] {
             type: 'string',
             default: 'primary',
             description: 'Calendar ID (defaults to primary)',
+          },
+        },
+        required: ['eventId'],
+      },
+    },
+    {
+      name: 'calendar_list_calendars',
+      description: 'List all calendars the user has access to, including meeting rooms and shared calendars',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          showHidden: {
+            type: 'boolean',
+            default: false,
+            description: 'Include hidden calendars',
+          },
+        },
+      },
+    },
+    {
+      name: 'calendar_get_freebusy',
+      description: 'Check availability (free/busy) for multiple calendars within a time range. Useful for finding meeting slots.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          timeMin: {
+            type: 'string',
+            description: 'Start of time range (ISO format)',
+          },
+          timeMax: {
+            type: 'string',
+            description: 'End of time range (ISO format)',
+          },
+          calendarIds: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'Array of calendar IDs to check (use email addresses for people, resource IDs for rooms)',
+          },
+        },
+        required: ['timeMin', 'timeMax', 'calendarIds'],
+      },
+    },
+    {
+      name: 'calendar_create_event',
+      description: 'Create a new calendar event with attendees and optional meeting room',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          summary: {
+            type: 'string',
+            description: 'Event title',
+          },
+          description: {
+            type: 'string',
+            description: 'Event description',
+          },
+          start: {
+            type: 'string',
+            description: 'Start time (ISO format)',
+          },
+          end: {
+            type: 'string',
+            description: 'End time (ISO format)',
+          },
+          attendees: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'Array of attendee email addresses',
+          },
+          location: {
+            type: 'string',
+            description: 'Event location or meeting room',
+          },
+          conferenceData: {
+            type: 'boolean',
+            default: false,
+            description: 'Generate a Google Meet link',
+          },
+          calendarId: {
+            type: 'string',
+            default: 'primary',
+            description: 'Calendar to create event on',
+          },
+          sendNotifications: {
+            type: 'boolean',
+            default: true,
+            description: 'Send email invitations to attendees',
+          },
+        },
+        required: ['summary', 'start', 'end'],
+      },
+    },
+    {
+      name: 'calendar_update_event',
+      description: 'Update an existing calendar event',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          eventId: {
+            type: 'string',
+            description: 'The event ID to update',
+          },
+          summary: {
+            type: 'string',
+            description: 'New event title',
+          },
+          description: {
+            type: 'string',
+            description: 'New event description',
+          },
+          start: {
+            type: 'string',
+            description: 'New start time (ISO format)',
+          },
+          end: {
+            type: 'string',
+            description: 'New end time (ISO format)',
+          },
+          attendees: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'Array of attendee email addresses (replaces existing)',
+          },
+          location: {
+            type: 'string',
+            description: 'New location',
+          },
+          calendarId: {
+            type: 'string',
+            default: 'primary',
+            description: 'Calendar the event is on',
+          },
+          sendNotifications: {
+            type: 'boolean',
+            default: true,
+            description: 'Send update notifications to attendees',
           },
         },
         required: ['eventId'],
@@ -190,6 +418,25 @@ export function createTools(): Tool[] {
           documentId: {
             type: 'string',
             description: 'The Google Doc ID',
+          },
+        },
+        required: ['documentId'],
+      },
+    },
+    {
+      name: 'docs_get_comments',
+      description: 'Get comments and suggestions on a Google Doc (uses Drive API)',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          documentId: {
+            type: 'string',
+            description: 'The Google Doc ID',
+          },
+          includeResolved: {
+            type: 'boolean',
+            default: false,
+            description: 'Include resolved comments',
           },
         },
         required: ['documentId'],
@@ -457,6 +704,164 @@ export async function handleToolCall(
         break;
       }
 
+      case 'gmail_send_message': {
+        const { to, subject, body, cc, bcc, replyToMessageId, threadId } = args as {
+          to: string[];
+          subject: string;
+          body: string;
+          cc?: string[];
+          bcc?: string[];
+          replyToMessageId?: string;
+          threadId?: string;
+        };
+
+        // Build RFC 2822 message
+        const messageParts: string[] = [];
+        messageParts.push(`To: ${to.join(', ')}`);
+        if (cc && cc.length > 0) messageParts.push(`Cc: ${cc.join(', ')}`);
+        if (bcc && bcc.length > 0) messageParts.push(`Bcc: ${bcc.join(', ')}`);
+        messageParts.push(`Subject: ${subject}`);
+        if (replyToMessageId) {
+          messageParts.push(`In-Reply-To: ${replyToMessageId}`);
+          messageParts.push(`References: ${replyToMessageId}`);
+        }
+        messageParts.push('Content-Type: text/plain; charset=utf-8');
+        messageParts.push('');
+        messageParts.push(body);
+
+        const rawMessage = messageParts.join('\r\n');
+        const encodedMessage = Buffer.from(rawMessage)
+          .toString('base64')
+          .replace(/\+/g, '-')
+          .replace(/\//g, '_')
+          .replace(/=+$/, '');
+
+        const requestBody: Record<string, unknown> = { raw: encodedMessage };
+        if (threadId) requestBody.threadId = threadId;
+
+        const url = 'https://gmail.googleapis.com/gmail/v1/users/me/messages/send';
+        const response = await auth.fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody),
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Gmail send error: ${response.status} - ${errorText}`);
+        }
+
+        const data = (await response.json()) as { id: string; threadId: string };
+        result = {
+          success: true,
+          messageId: data.id,
+          threadId: data.threadId,
+        };
+        break;
+      }
+
+      case 'gmail_create_draft': {
+        const { to, subject, body, cc, bcc, replyToMessageId } = args as {
+          to: string[];
+          subject: string;
+          body: string;
+          cc?: string[];
+          bcc?: string[];
+          replyToMessageId?: string;
+        };
+
+        // Build RFC 2822 message
+        const messageParts: string[] = [];
+        messageParts.push(`To: ${to.join(', ')}`);
+        if (cc && cc.length > 0) messageParts.push(`Cc: ${cc.join(', ')}`);
+        if (bcc && bcc.length > 0) messageParts.push(`Bcc: ${bcc.join(', ')}`);
+        messageParts.push(`Subject: ${subject}`);
+        if (replyToMessageId) {
+          messageParts.push(`In-Reply-To: ${replyToMessageId}`);
+          messageParts.push(`References: ${replyToMessageId}`);
+        }
+        messageParts.push('Content-Type: text/plain; charset=utf-8');
+        messageParts.push('');
+        messageParts.push(body);
+
+        const rawMessage = messageParts.join('\r\n');
+        const encodedMessage = Buffer.from(rawMessage)
+          .toString('base64')
+          .replace(/\+/g, '-')
+          .replace(/\//g, '_')
+          .replace(/=+$/, '');
+
+        const url = 'https://gmail.googleapis.com/gmail/v1/users/me/drafts';
+        const response = await auth.fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: { raw: encodedMessage } }),
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Gmail draft error: ${response.status} - ${errorText}`);
+        }
+
+        const data = (await response.json()) as { id: string; message: { id: string } };
+        result = {
+          success: true,
+          draftId: data.id,
+          messageId: data.message.id,
+          note: 'Draft created. Open Gmail to review and send.',
+        };
+        break;
+      }
+
+      case 'gmail_get_attachments': {
+        const { messageId } = args as { messageId: string };
+        const url = `https://gmail.googleapis.com/gmail/v1/users/me/messages/${messageId}?format=full`;
+
+        const response = await auth.fetch(url);
+        if (!response.ok) throw new Error(`Gmail API error: ${response.status}`);
+
+        const data = (await response.json()) as {
+          payload: {
+            parts?: Array<{
+              filename?: string;
+              mimeType: string;
+              body?: { attachmentId?: string; size?: number };
+              parts?: Array<{
+                filename?: string;
+                mimeType: string;
+                body?: { attachmentId?: string; size?: number };
+              }>;
+            }>;
+          };
+        };
+
+        const attachments: Array<{ filename: string; mimeType: string; size: number; attachmentId: string }> = [];
+
+        const extractAttachments = (parts: typeof data.payload.parts) => {
+          if (!parts) return;
+          for (const part of parts) {
+            if (part.filename && part.body?.attachmentId) {
+              attachments.push({
+                filename: part.filename,
+                mimeType: part.mimeType,
+                size: part.body.size || 0,
+                attachmentId: part.body.attachmentId,
+              });
+            }
+            if (part.parts) extractAttachments(part.parts);
+          }
+        };
+
+        extractAttachments(data.payload.parts);
+
+        result = {
+          messageId,
+          attachmentCount: attachments.length,
+          attachments,
+        };
+        break;
+      }
+
       // Calendar handlers
       case 'calendar_list_events': {
         const {
@@ -524,6 +929,229 @@ export async function handleToolCall(
         if (!response.ok) throw new Error(`Calendar API error: ${response.status}`);
 
         result = await response.json();
+        break;
+      }
+
+      case 'calendar_list_calendars': {
+        const { showHidden = false } = args as { showHidden?: boolean };
+
+        const url = new URL('https://www.googleapis.com/calendar/v3/users/me/calendarList');
+        if (showHidden) url.searchParams.set('showHidden', 'true');
+
+        const response = await auth.fetch(url.toString());
+        if (!response.ok) throw new Error(`Calendar API error: ${response.status}`);
+
+        const data = (await response.json()) as {
+          items: Array<{
+            id: string;
+            summary: string;
+            description?: string;
+            primary?: boolean;
+            accessRole: string;
+            backgroundColor?: string;
+          }>;
+        };
+
+        result = data.items.map((cal) => ({
+          id: cal.id,
+          name: cal.summary,
+          description: cal.description,
+          primary: cal.primary || false,
+          accessRole: cal.accessRole,
+          isRoom: cal.id.includes('resource.calendar.google.com'),
+        }));
+        break;
+      }
+
+      case 'calendar_get_freebusy': {
+        const { timeMin, timeMax, calendarIds } = args as {
+          timeMin: string;
+          timeMax: string;
+          calendarIds: string[];
+        };
+
+        const url = 'https://www.googleapis.com/calendar/v3/freeBusy';
+        const response = await auth.fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            timeMin,
+            timeMax,
+            items: calendarIds.map((id) => ({ id })),
+          }),
+        });
+
+        if (!response.ok) throw new Error(`Calendar API error: ${response.status}`);
+
+        const data = (await response.json()) as {
+          calendars: Record<string, { busy: Array<{ start: string; end: string }> }>;
+        };
+
+        // Transform to more usable format
+        const availability: Record<string, { busy: Array<{ start: string; end: string }>; busyCount: number }> = {};
+        for (const [calId, info] of Object.entries(data.calendars)) {
+          availability[calId] = {
+            busy: info.busy,
+            busyCount: info.busy.length,
+          };
+        }
+
+        result = {
+          timeRange: { start: timeMin, end: timeMax },
+          calendars: availability,
+        };
+        break;
+      }
+
+      case 'calendar_create_event': {
+        const {
+          summary,
+          description,
+          start,
+          end,
+          attendees,
+          location,
+          conferenceData: addConference,
+          calendarId = 'primary',
+          sendNotifications = true,
+        } = args as {
+          summary: string;
+          description?: string;
+          start: string;
+          end: string;
+          attendees?: string[];
+          location?: string;
+          conferenceData?: boolean;
+          calendarId?: string;
+          sendNotifications?: boolean;
+        };
+
+        const eventBody: Record<string, unknown> = {
+          summary,
+          start: { dateTime: start },
+          end: { dateTime: end },
+        };
+
+        if (description) eventBody.description = description;
+        if (location) eventBody.location = location;
+        if (attendees && attendees.length > 0) {
+          eventBody.attendees = attendees.map((email) => ({ email }));
+        }
+
+        // Add Google Meet link if requested
+        if (addConference) {
+          eventBody.conferenceData = {
+            createRequest: {
+              requestId: `meet-${Date.now()}`,
+              conferenceSolutionKey: { type: 'hangoutsMeet' },
+            },
+          };
+        }
+
+        const url = new URL(
+          `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events`
+        );
+        url.searchParams.set('sendUpdates', sendNotifications ? 'all' : 'none');
+        if (addConference) url.searchParams.set('conferenceDataVersion', '1');
+
+        const response = await auth.fetch(url.toString(), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(eventBody),
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Calendar create error: ${response.status} - ${errorText}`);
+        }
+
+        const data = (await response.json()) as {
+          id: string;
+          htmlLink: string;
+          hangoutLink?: string;
+          summary: string;
+          start: { dateTime: string };
+          end: { dateTime: string };
+        };
+
+        result = {
+          success: true,
+          eventId: data.id,
+          title: data.summary,
+          start: data.start.dateTime,
+          end: data.end.dateTime,
+          link: data.htmlLink,
+          meetLink: data.hangoutLink,
+        };
+        break;
+      }
+
+      case 'calendar_update_event': {
+        const {
+          eventId,
+          summary,
+          description,
+          start,
+          end,
+          attendees,
+          location,
+          calendarId = 'primary',
+          sendNotifications = true,
+        } = args as {
+          eventId: string;
+          summary?: string;
+          description?: string;
+          start?: string;
+          end?: string;
+          attendees?: string[];
+          location?: string;
+          calendarId?: string;
+          sendNotifications?: boolean;
+        };
+
+        // First get existing event to preserve fields not being updated
+        const getUrl = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events/${encodeURIComponent(eventId)}`;
+        const getResponse = await auth.fetch(getUrl);
+        if (!getResponse.ok) throw new Error(`Calendar API error: ${getResponse.status}`);
+
+        const existingEvent = (await getResponse.json()) as Record<string, unknown>;
+
+        // Update only provided fields
+        if (summary !== undefined) existingEvent.summary = summary;
+        if (description !== undefined) existingEvent.description = description;
+        if (start !== undefined) existingEvent.start = { dateTime: start };
+        if (end !== undefined) existingEvent.end = { dateTime: end };
+        if (location !== undefined) existingEvent.location = location;
+        if (attendees !== undefined) {
+          existingEvent.attendees = attendees.map((email) => ({ email }));
+        }
+
+        const url = new URL(getUrl);
+        url.searchParams.set('sendUpdates', sendNotifications ? 'all' : 'none');
+
+        const response = await auth.fetch(url.toString(), {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(existingEvent),
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Calendar update error: ${response.status} - ${errorText}`);
+        }
+
+        const data = (await response.json()) as {
+          id: string;
+          htmlLink: string;
+          summary: string;
+        };
+
+        result = {
+          success: true,
+          eventId: data.id,
+          title: data.summary,
+          link: data.htmlLink,
+        };
         break;
       }
 
@@ -607,6 +1235,62 @@ export async function handleToolCall(
         result = {
           title: doc.title,
           content: textContent,
+        };
+        break;
+      }
+
+      case 'docs_get_comments': {
+        const { documentId, includeResolved = false } = args as {
+          documentId: string;
+          includeResolved?: boolean;
+        };
+
+        // Use Drive API comments endpoint
+        const url = new URL(`https://www.googleapis.com/drive/v3/files/${documentId}/comments`);
+        url.searchParams.set('fields', 'comments(id,content,author,createdTime,resolved,replies)');
+        if (!includeResolved) {
+          // API doesn't have a direct filter, we'll filter client-side
+        }
+
+        const response = await auth.fetch(url.toString());
+        if (!response.ok) throw new Error(`Drive API error: ${response.status}`);
+
+        const data = (await response.json()) as {
+          comments: Array<{
+            id: string;
+            content: string;
+            author: { displayName: string; emailAddress?: string };
+            createdTime: string;
+            resolved: boolean;
+            replies?: Array<{
+              content: string;
+              author: { displayName: string; emailAddress?: string };
+              createdTime: string;
+            }>;
+          }>;
+        };
+
+        let comments = data.comments || [];
+        if (!includeResolved) {
+          comments = comments.filter((c) => !c.resolved);
+        }
+
+        result = {
+          documentId,
+          commentCount: comments.length,
+          comments: comments.map((c) => ({
+            id: c.id,
+            content: c.content,
+            author: c.author.displayName,
+            authorEmail: c.author.emailAddress,
+            createdTime: c.createdTime,
+            resolved: c.resolved,
+            replies: c.replies?.map((r) => ({
+              content: r.content,
+              author: r.author.displayName,
+              createdTime: r.createdTime,
+            })),
+          })),
         };
         break;
       }
