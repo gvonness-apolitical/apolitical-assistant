@@ -43,6 +43,16 @@ You have access to the following integrations through MCP servers:
 - Track incident follow-ups
 - Access postmortems
 
+### Task Helper System
+The assistant includes a task helper system (`npm run task:help`) that provides contextual assistance for TODOs:
+- **Respond mode**: Draft responses for emails, PR comments, Slack messages
+- **Review mode**: Provide code review feedback, document reviews
+- **Summarize mode**: Summarize complex threads, incidents, documents
+- **Schedule mode**: Help with meeting scheduling and preparation
+- **Complete mode**: Assist in closing out tasks and action items
+
+The helper automatically gathers context from the TODO's source and related systems, caches results to avoid redundant API calls, and can post directly to GitHub, Linear, and Notion via MCP.
+
 ## Guidelines
 
 ### Communication Style
@@ -118,6 +128,14 @@ Help maintain inbox zero by:
 - Suggesting unsubscribes
 - Flagging emails that need responses
 - Always confirm before any deletions
+
+### Task Assistance
+When helping with a specific TODO:
+- Use `npm run task:help -- --id=<id>` to get contextual assistance
+- The helper gathers thread context, related items, and people information
+- Choose the appropriate mode: respond, review, summarize, schedule, or complete
+- For GitHub/Linear/Notion TODOs, can post directly via MCP
+- For email/Slack TODOs, copy output to clipboard for manual posting
 
 ## Project Context
 

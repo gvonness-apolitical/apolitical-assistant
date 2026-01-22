@@ -8,11 +8,12 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
     }
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && cp -r src/migrations dist/",
     "dev": "tsc --watch",
     "typecheck": "tsc --noEmit"
   },
