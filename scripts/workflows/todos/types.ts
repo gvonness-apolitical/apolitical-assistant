@@ -5,43 +5,23 @@
  */
 
 import { z } from 'zod';
-import { TodoSchema, TodoSourceSchema, TodoStatusSchema, TodoCategorySchema } from '@apolitical-assistant/shared';
+import {
+  TodoSchema,
+  TodoSourceSchema,
+  TodoStatusSchema,
+  TodoCategorySchema,
+} from '@apolitical-assistant/shared';
 
-// Re-export base types
+// Re-export base types from shared package
 export { TodoSchema, TodoSourceSchema, TodoStatusSchema, TodoCategorySchema };
 export type { Todo, TodoSource, TodoStatus, TodoCategory } from '@apolitical-assistant/shared';
 
-/**
- * Options for collecting TODOs
- */
-export interface CollectOptions {
-  verbose?: boolean;
-  quiet?: boolean;
-  incremental?: boolean;
-  source?: z.infer<typeof TodoSourceSchema>;
-  startDate?: string;
-  endDate?: string;
-}
-
-/**
- * Result from a collection operation
- */
-export interface CollectionResult {
-  source: z.infer<typeof TodoSourceSchema>;
-  todos: z.infer<typeof TodoSchema>[];
-  errors: string[];
-  durationMs: number;
-}
-
-/**
- * Processing statistics
- */
-export interface ProcessingStats {
-  created: number;
-  updated: number;
-  skipped: number;
-  errors: number;
-}
+// Re-export collector types from shared package
+export type {
+  CollectOptions,
+  CollectionResult,
+  ProcessingStats,
+} from '@apolitical-assistant/shared';
 
 /**
  * Options for creating a TODO from a summary

@@ -21,9 +21,13 @@ export default defineConfig({
       include: [
         'packages/shared/src/keychain.ts',
         'packages/shared/src/workflow-utils.ts',
+        'packages/shared/src/todo-utils.ts',
+        'packages/context-store/src/models.ts',
+        'packages/context-store/src/store.ts',
       ],
       exclude: ['**/__tests__/**', '**/node_modules/**'],
       thresholds: {
+        // Global thresholds
         branches: 80,
         functions: 80,
         lines: 80,

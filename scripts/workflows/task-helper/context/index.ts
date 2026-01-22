@@ -5,6 +5,7 @@
  */
 
 import type { Todo } from '@apolitical-assistant/shared';
+import { toErrorMessage } from '@apolitical-assistant/shared';
 import type {
   TaskContext,
   GatherOptions,
@@ -125,7 +126,7 @@ export async function gatherContext(
     sources.push({
       source,
       status: 'failed',
-      error: error instanceof Error ? error.message : String(error),
+      error: toErrorMessage(error),
       durationMs: Date.now() - startTime,
     });
     sourceResult = await gatherGenericContext(todo, gatherOptions);
@@ -155,7 +156,7 @@ export async function gatherContext(
       sources.push({
         source: 'wider',
         status: 'failed',
-        error: error instanceof Error ? error.message : String(error),
+        error: toErrorMessage(error),
       });
     }
   }
@@ -193,7 +194,7 @@ export async function gatherContextBatch(
           {
             source: todo.source ?? 'unknown',
             status: 'failed',
-            error: error instanceof Error ? error.message : String(error),
+            error: toErrorMessage(error),
           },
         ],
       };

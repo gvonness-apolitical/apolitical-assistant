@@ -7,6 +7,7 @@
 import { gzipSync } from 'node:zlib';
 import { writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { toErrorMessage } from '@apolitical-assistant/shared';
 import type { CollectorSource } from '../config/schemas.js';
 import type {
   RawCollectedItem,
@@ -266,7 +267,7 @@ export async function backfillSourceChunk(
       console.log(`  [${source}] Collected ${itemsCollected} items`);
     }
   } catch (error) {
-    const errorMsg = error instanceof Error ? error.message : String(error);
+    const errorMsg = toErrorMessage(error);
     errors.push(errorMsg);
     if (options?.verbose) {
       console.error(`  [${source}] Error: ${errorMsg}`);

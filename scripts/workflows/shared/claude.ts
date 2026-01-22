@@ -5,6 +5,7 @@
  */
 
 import { execSync, spawn } from 'node:child_process';
+import { toErrorMessage } from '@apolitical-assistant/shared';
 
 /**
  * Claude response
@@ -37,7 +38,7 @@ export async function invokeClaudeSimple(prompt: string): Promise<ClaudeResponse
     return {
       content: '',
       success: false,
-      error: error instanceof Error ? error.message : String(error),
+      error: toErrorMessage(error),
     };
   }
 }

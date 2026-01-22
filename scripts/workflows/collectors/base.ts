@@ -9,7 +9,7 @@ import { join } from 'node:path';
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import type { Todo, TodoSource } from '@apolitical-assistant/shared';
-import { generateFingerprint } from '@apolitical-assistant/shared';
+import { generateFingerprint, toError } from '@apolitical-assistant/shared';
 import type {
   TodoCollector,
   CollectorCache,
@@ -84,7 +84,7 @@ export abstract class BaseCollector implements TodoCollector {
           const todo = this.createTodo(raw);
           todos.push(todo);
         } catch (error) {
-          errors.push(error instanceof Error ? error : new Error(String(error)));
+          errors.push(toError(error));
         }
       }
 
@@ -98,7 +98,7 @@ export abstract class BaseCollector implements TodoCollector {
         console.log(`[${this.name}] Created ${todos.length} TODOs with ${errors.length} errors`);
       }
     } catch (error) {
-      errors.push(error instanceof Error ? error : new Error(String(error)));
+      errors.push(toError(error));
       if (options.verbose) {
         console.error(`[${this.name}] Collection failed:`, error);
       }

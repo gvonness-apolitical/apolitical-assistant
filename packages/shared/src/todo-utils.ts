@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import type { Todo, TodoSource } from './types.js';
+import { TODO_DEFAULTS, DEDUPLICATION, BRIEFING_DEFAULTS } from './constants.js';
 
 // ==================== PRIORITY CALCULATION ====================
 
@@ -171,7 +172,7 @@ function levenshteinDistance(str1: string, str2: string): number {
 export function findDuplicates(
   newTodo: { title: string; sourceId?: string; source?: TodoSource },
   existing: Todo[],
-  threshold: number = 0.85
+  threshold: number = DEDUPLICATION.FUZZY_THRESHOLD
 ): Todo[] {
   const newFingerprint = generateFingerprint(newTodo.title);
   const duplicates: Todo[] = [];
@@ -400,7 +401,7 @@ export function formatTodoForDisplay(todo: Todo, options: { verbose?: boolean } 
 /**
  * Check if a TODO is considered stale.
  */
-export function isStale(todo: Todo, staleDays: number = 14): boolean {
+export function isStale(todo: Todo, staleDays: number = TODO_DEFAULTS.STALE_DAYS): boolean {
   // Only pending/in_progress can be stale
   if (todo.status !== 'pending' && todo.status !== 'in_progress') return false;
 
@@ -435,7 +436,7 @@ export interface TodosForBriefing {
  * Get TODOs organized for morning briefing.
  */
 export function getTodosForBriefing(todos: Todo[], options: { limit?: number; staleDays?: number } = {}): TodosForBriefing {
-  const { limit = 5, staleDays = 14 } = options;
+  const { limit = BRIEFING_DEFAULTS.MAX_TODOS, staleDays = TODO_DEFAULTS.STALE_DAYS } = options;
   const now = new Date();
 
   // Filter out completed/archived and snoozed
