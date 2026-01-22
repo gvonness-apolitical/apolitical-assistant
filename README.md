@@ -650,6 +650,84 @@ npm run task:help -- --source=github
 
 ---
 
+## Backfill
+
+The backfill system populates historical data from collectors. This is useful for establishing baseline context before running summaries or when you need to catch up on missed collection periods.
+
+### Quick Start
+
+```bash
+# Backfill from a specific date to today
+npm run backfill -- --from=2024-10-01
+
+# Check what would be collected (dry run)
+npm run backfill -- --from=2024-10-01 --dry-run
+```
+
+### Commands Reference
+
+| Command | Description |
+|---------|-------------|
+| `npm run backfill -- --from=DATE` | Backfill from DATE to today |
+| `npm run backfill -- --from=DATE --to=DATE` | Backfill a specific date range |
+| `npm run backfill -- --from=DATE --source=SOURCE` | Backfill only a specific source |
+| `npm run backfill -- --status` | Show backfill status and progress |
+| `npm run backfill -- --resume` | Resume a previously interrupted backfill |
+| `npm run backfill -- --reset` | Reset backfill state and start fresh |
+
+### Options
+
+| Option | Description |
+|--------|-------------|
+| `--from` | Start date (YYYY-MM-DD format, required) |
+| `--to` | End date (YYYY-MM-DD format, defaults to today) |
+| `--source` | Specific source to backfill (e.g., `slack`, `github`, `linear`) |
+| `--dry-run` | Show what would be collected without making changes |
+| `--verbose` | Show detailed progress output |
+| `--resume` | Continue from where a previous backfill stopped |
+| `--status` | Display current backfill status |
+| `--reset` | Clear backfill state and start fresh |
+
+### Examples
+
+```bash
+# Backfill last quarter
+npm run backfill -- --from=2024-10-01 --to=2024-12-31
+
+# Backfill only Slack messages
+npm run backfill -- --from=2024-10-01 --source=slack
+
+# Verbose mode for debugging
+npm run backfill -- --from=2024-10-01 --verbose
+
+# Check status of ongoing backfill
+npm run backfill -- --status
+
+# Resume after interruption
+npm run backfill -- --resume
+```
+
+### Recommended Workflow
+
+Before generating summaries, ensure you have sufficient historical context:
+
+1. **Run initial backfill** - Populate at least 30 days of historical data
+   ```bash
+   npm run backfill -- --from=$(date -v-30d +%Y-%m-%d)
+   ```
+
+2. **Verify collection** - Check that data was collected
+   ```bash
+   npm run backfill -- --status
+   ```
+
+3. **Generate summaries** - Now you can generate meaningful summaries
+   ```bash
+   npm run summary:daily
+   ```
+
+---
+
 ## Configuration
 
 ### User Preferences
