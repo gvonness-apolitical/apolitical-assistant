@@ -55,12 +55,6 @@ export const COLLECTED_CACHE_DIR = join(CACHE_DIR, 'collected');
 /** Task helper cache directory */
 export const TASK_HELPER_CACHE_DIR = join(CACHE_DIR, 'task-helper');
 
-/** Backfill progress file */
-export const BACKFILL_PROGRESS_PATH = join(CACHE_DIR, 'backfill-progress.json');
-
-/** Backfill audit log */
-export const BACKFILL_AUDIT_PATH = join(CACHE_DIR, 'backfill-audit.jsonl');
-
 /** Todo collector cache directory */
 export const TODO_CACHE_DIR = join(CACHE_DIR, 'todos');
 
@@ -139,9 +133,6 @@ export const TODOS_CONFIG_PATH = join(CONFIG_DIR, 'todos.json');
 
 /** Email triage config */
 export const EMAIL_TRIAGE_CONFIG_PATH = join(CONFIG_DIR, 'email.json');
-
-/** Backfill config */
-export const BACKFILL_CONFIG_PATH = join(CONFIG_DIR, 'backfill.json');
 
 // =============================================================================
 // Helper Functions

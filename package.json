@@ -42,8 +42,6 @@
     "summary:yearly": "tsx scripts/workflows/summaries/cli.ts yearly",
     "summary:search": "tsx scripts/workflows/summaries/cli.ts search",
     "summary:diff": "tsx scripts/workflows/summaries/cli.ts diff",
-    "backfill": "tsx scripts/workflows/backfill/cli.ts",
-    "backfill:summaries": "tsx scripts/workflows/backfill/cli.ts summaries",
     "email:triage": "tsx scripts/workflows/email/cli.ts triage",
     "email:rules": "tsx scripts/workflows/email/cli.ts rules",
     "email:stats": "tsx scripts/workflows/email/cli.ts stats",

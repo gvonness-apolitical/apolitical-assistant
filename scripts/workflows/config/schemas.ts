@@ -33,30 +33,6 @@ export const SummaryConfigSchema = z.object({
 export type SummaryConfig = z.infer<typeof SummaryConfigSchema>;
 
 /**
- * Backfill source configuration
- */
-const BackfillSourceConfigSchema = z.object({
-  enabled: z.boolean().default(true),
-  fromDate: z.string().optional(),
-  batchSize: z.number().default(100),
-});
-
-/**
- * Backfill configuration
- */
-export const BackfillConfigSchema = z.object({
-  defaultFromDate: z.string().default('2024-01-01'),
-  chunkSize: z.enum(['day', 'week', 'month']).default('week'),
-  delayBetweenCollectors: z.number().default(2000),
-  delayBetweenChunks: z.number().default(1000),
-  maxRetries: z.number().default(3),
-  retryDelay: z.number().default(5000),
-  sources: z.record(CollectorSourceSchema, BackfillSourceConfigSchema).optional(),
-});
-
-export type BackfillConfig = z.infer<typeof BackfillConfigSchema>;
-
-/**
  * Load and validate a configuration file
  */
 export function loadConfig<T>(

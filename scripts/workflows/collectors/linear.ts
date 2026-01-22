@@ -101,10 +101,6 @@ export class LinearCollector extends BaseCollector {
   ): Promise<RawTodoItem[]> {
     const items: RawTodoItem[] = [];
 
-    // Note: Linear doesn't support meaningful historical backfill.
-    // We always query current assigned issues regardless of date range.
-    // The backfill date parameters are ignored for this collector.
-
     const query = `
       query($userId: String!) {
         issues(
