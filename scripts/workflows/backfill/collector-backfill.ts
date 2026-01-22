@@ -221,7 +221,12 @@ export async function backfillSourceChunk(
 
     // Use retry logic for API calls
     const result = await withRetry(
-      () => collector.collect({ verbose: options?.verbose }),
+      () =>
+        collector.collect({
+          verbose: options?.verbose,
+          startDate: chunk.start,
+          endDate: chunk.end,
+        }),
       {
         maxRetries: getMaxRetries(),
         baseDelayMs: getRetryDelay(),
