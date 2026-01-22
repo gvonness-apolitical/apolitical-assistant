@@ -4,19 +4,23 @@
  * Configuration loading and management for the task helper module.
  */
 
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { z } from 'zod';
+import {
+  getProjectRoot,
+  DB_PATH as SHARED_DB_PATH,
+  TASK_HELPER_CACHE_DIR,
+  CONFIG_DIR,
+} from '@apolitical-assistant/shared';
 import type { HelperMode, OutputType, ContextDepth } from './types.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT = join(__dirname, '../../..');
+const PROJECT_ROOT = getProjectRoot();
 
-export const DB_PATH = join(PROJECT_ROOT, 'context/store.db');
-export const TASK_HELPER_DIR = join(PROJECT_ROOT, 'task-helper');
+export const DB_PATH = SHARED_DB_PATH;
+export const TASK_HELPER_DIR = join(CONFIG_DIR, 'task-helper');
 export const CONFIG_PATH = join(TASK_HELPER_DIR, 'config.json');
-export const CACHE_DIR = join(TASK_HELPER_DIR, 'cache');
+export const CACHE_DIR = TASK_HELPER_CACHE_DIR;
 
 /**
  * Context cache TTL by source (in minutes)

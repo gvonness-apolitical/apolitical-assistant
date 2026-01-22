@@ -13,8 +13,6 @@
  *   npm run todos:collect -- --incremental   # Only fetch since last run
  */
 
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { mkdirSync } from 'node:fs';
 import { ContextStore } from '@apolitical-assistant/context-store';
 import type { Todo, TodoSource } from '@apolitical-assistant/shared';
@@ -22,6 +20,7 @@ import {
   findDuplicates,
   mergeDuplicates,
   calculateEffectivePriority,
+  DB_PATH,
 } from '@apolitical-assistant/shared';
 import {
   getEnabledCollectors,
@@ -31,10 +30,6 @@ import {
   type CollectionResult,
   type CollectOptions,
 } from './collectors/index.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT = join(__dirname, '../..');
-const DB_PATH = join(PROJECT_ROOT, 'context/store.db');
 
 interface CollectScriptOptions extends CollectOptions {
   source?: TodoSource;

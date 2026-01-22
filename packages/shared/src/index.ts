@@ -3,6 +3,7 @@ export * from './errors.js';
 export * from './keychain.js';
 export * from './logger.js';
 export * from './notify.js';
+export * from './paths.js';
 export * from './todo-utils.js';
 export * from './types/index.js';
 export * from './workflow-utils.js';

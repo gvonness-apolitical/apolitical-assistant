@@ -11,14 +11,8 @@
  *   npm run todos:snooze <id> --unsnooze            # Remove snooze
  */
 
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { ContextStore } from '@apolitical-assistant/context-store';
-import { addDays, formatDate } from '@apolitical-assistant/shared';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT = join(__dirname, '../..');
-const DB_PATH = join(PROJECT_ROOT, 'context/store.db');
+import { addDays, formatDate, DB_PATH } from '@apolitical-assistant/shared';
 
 interface SnoozeOptions {
   id: string;

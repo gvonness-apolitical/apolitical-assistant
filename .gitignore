@@ -25,11 +25,19 @@ logs/
 *.log
 npm-debug.log*
 
-# Output files (generated briefings, etc.)
-output/
+# Data directory (new unified structure)
+# Ignore all data contents except .gitkeep and config files
+data/cache/**
+data/output/**
+data/store/**
+!data/**/.gitkeep
 
-# Runtime data
+# Legacy data directories (will be removed after migration)
+output/
 context/store.db
+collected/
+backfill/
+task-helper/
 *.db-journal
 
 # Planning artifacts

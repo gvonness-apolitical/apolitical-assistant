@@ -13,8 +13,7 @@
  */
 
 import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { notifyBriefingReady } from '../../packages/shared/src/notify.js';
 import { getDateString, getTimestamp, runClaudeCommand } from '../../packages/shared/src/workflow-utils.js';
 import { ContextStore } from '../../packages/context-store/src/store.js';
@@ -25,13 +24,15 @@ import {
   getRelativeDateDescription,
 } from '../../packages/shared/src/todo-utils.js';
 import type { Todo } from '../../packages/shared/src/types.js';
+import {
+  BRIEFINGS_DIR,
+  DB_PATH,
+  getProjectRoot,
+} from '@apolitical-assistant/shared';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT = join(__dirname, '../..');
-
-const OUTPUT_DIR = join(PROJECT_ROOT, 'output/briefings');
+const PROJECT_ROOT = getProjectRoot();
+const OUTPUT_DIR = BRIEFINGS_DIR;
 const LOGS_DIR = join(PROJECT_ROOT, 'logs');
-const DB_PATH = join(PROJECT_ROOT, 'context/store.db');
 
 // Ensure directories exist
 mkdirSync(OUTPUT_DIR, { recursive: true });

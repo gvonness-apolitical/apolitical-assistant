@@ -6,11 +6,15 @@
 
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
+import {
+  getProjectRoot,
+  BRIEFINGS_CONFIG_PATH,
+  BRIEFINGS_DIR,
+  DB_PATH,
+} from '@apolitical-assistant/shared';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT = join(__dirname, '../../..');
+const PROJECT_ROOT = getProjectRoot();
 
 /**
  * Briefing configuration schema
@@ -101,15 +105,14 @@ const DEFAULT_CONFIG: BriefingsConfig = {
  * Get config file path
  */
 export function getConfigPath(): string {
-  return join(PROJECT_ROOT, 'briefings/config.json');
+  return BRIEFINGS_CONFIG_PATH;
 }
 
 /**
  * Get output directory path
  */
 export function getOutputPath(): string {
-  const config = loadBriefingsConfig();
-  return join(PROJECT_ROOT, config.outputPath);
+  return BRIEFINGS_DIR;
 }
 
 /**
@@ -124,7 +127,7 @@ export function getLogsPath(): string {
  * Get database path
  */
 export function getDatabasePath(): string {
-  return join(PROJECT_ROOT, 'context/store.db');
+  return DB_PATH;
 }
 
 /**

@@ -11,13 +11,8 @@
  *   npm run todos:complete -- --undo <id>    # Mark as pending (undo complete)
  */
 
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { ContextStore } from '@apolitical-assistant/context-store';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT = join(__dirname, '../..');
-const DB_PATH = join(PROJECT_ROOT, 'context/store.db');
+import { DB_PATH } from '@apolitical-assistant/shared';
 
 interface CompleteOptions {
   ids: string[];

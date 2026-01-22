@@ -4,7 +4,28 @@
  * Types for TODO collectors that gather tasks from various sources.
  */
 
+import { z } from 'zod';
 import type { Todo, TodoSource } from './core.js';
+
+/**
+ * Sources that have active collectors (subset of TodoSource).
+ */
+export const CollectorSourceSchema = z.enum([
+  'email',
+  'slack',
+  'github',
+  'linear',
+  'notion',
+  'google-docs',
+  'google-slides',
+  'humaans',
+  'incident-io',
+  'gemini-notes',
+  'dev-analytics',
+  'calendar',
+]);
+
+export type CollectorSource = z.infer<typeof CollectorSourceSchema>;
 
 /**
  * Options passed to collectors when collecting TODOs.

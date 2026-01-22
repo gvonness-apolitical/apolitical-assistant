@@ -15,8 +15,6 @@
  *   npm run todos -- --verbose # Show priority explanations
  */
 
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { ContextStore } from '@apolitical-assistant/context-store';
 import type { Todo, TodoSource } from '@apolitical-assistant/shared';
 import {
@@ -24,11 +22,8 @@ import {
   formatTodoForDisplay,
   isStale,
   getDaysUntilDate,
+  DB_PATH,
 } from '@apolitical-assistant/shared';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT = join(__dirname, '../..');
-const DB_PATH = join(PROJECT_ROOT, 'context/store.db');
 
 interface DisplayOptions {
   all: boolean;

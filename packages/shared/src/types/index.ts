@@ -29,6 +29,8 @@ export {
 
 // Collector types
 export {
+  CollectorSourceSchema,
+  type CollectorSource,
   type CollectOptions,
   type CollectionResult,
   type CollectorCache,

@@ -4,13 +4,16 @@
  * Loads configuration from todos/config.json with sensible defaults.
  */
 
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { readFileSync, existsSync } from 'node:fs';
+import {
+  getProjectRoot as getSharedProjectRoot,
+  TODOS_CONFIG_PATH,
+  TODO_CACHE_DIR,
+  TODOS_ARCHIVE_DIR,
+  TODO_RESET_STATE_PATH,
+} from '@apolitical-assistant/shared';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT = join(__dirname, '../../..');
-const CONFIG_PATH = join(PROJECT_ROOT, 'todos/config.json');
+const CONFIG_PATH = TODOS_CONFIG_PATH;
 
 export interface TodoConfig {
   archiveAfterDays: number;
@@ -126,20 +129,19 @@ export function getConfigPath(): string {
   return CONFIG_PATH;
 }
 
-export function getProjectRoot(): string {
-  return PROJECT_ROOT;
-}
+// Re-export getProjectRoot from shared for backwards compatibility
+export const getProjectRoot = getSharedProjectRoot;
 
 export function getCachePath(): string {
-  return join(PROJECT_ROOT, 'todos/cache');
+  return TODO_CACHE_DIR;
 }
 
 export function getArchivePath(): string {
-  return join(PROJECT_ROOT, 'todos/archive');
+  return TODOS_ARCHIVE_DIR;
 }
 
 export function getResetStatePath(): string {
-  return join(PROJECT_ROOT, 'todos/reset-state.json');
+  return TODO_RESET_STATE_PATH;
 }
 
 export interface ResetState {
