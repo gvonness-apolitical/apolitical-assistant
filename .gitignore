@@ -25,23 +25,9 @@ logs/
 *.log
 npm-debug.log*
 
-# Data directory (new unified structure)
-# Ignore all data contents except .gitkeep and config files
-data/cache/**
-data/output/**
-data/store/**
-!data/**/.gitkeep
-
-# Legacy data directories (will be removed after migration)
-output/
-context/store.db
-collected/
-backfill/
-task-helper/
+# SQLite databases
+*.db
 *.db-journal
-
-# Planning artifacts
-IMPLEMENTATION_PLAN.md
 
 # Turbo
 .turbo/
@@ -52,11 +38,7 @@ coverage/
 
 # OS files
 Thumbs.db
-initial_prompt.txt
 
 # Python cache
 __pycache__/
 *.pyc
-
-# Team profiles - raw data excluded (profiles themselves are git-crypt encrypted)
-hr/team-profiles/data/

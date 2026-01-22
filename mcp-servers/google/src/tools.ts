@@ -47,6 +47,51 @@ export function createTools(): Tool[] {
         properties: {},
       },
     },
+    {
+      name: 'gmail_trash',
+      description: 'Move Gmail messages to trash. Requires gmail.modify scope.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          messageIds: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'Array of Gmail message IDs to trash',
+          },
+        },
+        required: ['messageIds'],
+      },
+    },
+    {
+      name: 'gmail_delete',
+      description: 'Permanently delete Gmail messages (cannot be undone). Requires gmail.modify scope.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          messageIds: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'Array of Gmail message IDs to permanently delete',
+          },
+        },
+        required: ['messageIds'],
+      },
+    },
+    {
+      name: 'gmail_archive',
+      description: 'Archive Gmail messages (remove from inbox but keep in All Mail). Requires gmail.modify scope.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          messageIds: {
+            type: 'array',
+            items: { type: 'string' },
+            description: 'Array of Gmail message IDs to archive',
+          },
+        },
+        required: ['messageIds'],
+      },
+    },
 
     // Calendar Tools
     {
@@ -327,6 +372,88 @@ export async function handleToolCall(
           name: l.name,
           type: l.type,
         }));
+        break;
+      }
+
+      case 'gmail_trash': {
+        const { messageIds } = args as { messageIds: string[] };
+        const results: Array<{ id: string; success: boolean; error?: string }> = [];
+
+        for (const messageId of messageIds) {
+          try {
+            const url = `https://gmail.googleapis.com/gmail/v1/users/me/messages/${messageId}/trash`;
+            const response = await auth.fetch(url, { method: 'POST' });
+            if (!response.ok) {
+              results.push({ id: messageId, success: false, error: `HTTP ${response.status}` });
+            } else {
+              results.push({ id: messageId, success: true });
+            }
+          } catch (err) {
+            results.push({ id: messageId, success: false, error: String(err) });
+          }
+        }
+
+        result = {
+          trashed: results.filter((r) => r.success).length,
+          failed: results.filter((r) => !r.success).length,
+          details: results,
+        };
+        break;
+      }
+
+      case 'gmail_delete': {
+        const { messageIds } = args as { messageIds: string[] };
+        const results: Array<{ id: string; success: boolean; error?: string }> = [];
+
+        for (const messageId of messageIds) {
+          try {
+            const url = `https://gmail.googleapis.com/gmail/v1/users/me/messages/${messageId}`;
+            const response = await auth.fetch(url, { method: 'DELETE' });
+            if (!response.ok) {
+              results.push({ id: messageId, success: false, error: `HTTP ${response.status}` });
+            } else {
+              results.push({ id: messageId, success: true });
+            }
+          } catch (err) {
+            results.push({ id: messageId, success: false, error: String(err) });
+          }
+        }
+
+        result = {
+          deleted: results.filter((r) => r.success).length,
+          failed: results.filter((r) => !r.success).length,
+          details: results,
+        };
+        break;
+      }
+
+      case 'gmail_archive': {
+        const { messageIds } = args as { messageIds: string[] };
+        const results: Array<{ id: string; success: boolean; error?: string }> = [];
+
+        for (const messageId of messageIds) {
+          try {
+            const url = `https://gmail.googleapis.com/gmail/v1/users/me/messages/${messageId}/modify`;
+            const response = await auth.fetch(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ removeLabelIds: ['INBOX'] }),
+            });
+            if (!response.ok) {
+              results.push({ id: messageId, success: false, error: `HTTP ${response.status}` });
+            } else {
+              results.push({ id: messageId, success: true });
+            }
+          } catch (err) {
+            results.push({ id: messageId, success: false, error: String(err) });
+          }
+        }
+
+        result = {
+          archived: results.filter((r) => r.success).length,
+          failed: results.filter((r) => !r.success).length,
+          details: results,
+        };
         break;
       }
 
