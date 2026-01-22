@@ -5,7 +5,7 @@
  */
 
 import { z } from 'zod';
-import { CollectorSourceSchema } from '../config/schemas.js';
+import { CollectorSourceSchema } from '@apolitical-assistant/shared';
 
 /**
  * Summary fidelity levels

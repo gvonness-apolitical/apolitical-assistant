@@ -5,7 +5,7 @@
  */
 
 import { toError } from '@apolitical-assistant/shared';
-import type { CollectorSource } from '../config/schemas.js';
+import type { CollectorSource } from '@apolitical-assistant/shared';
 
 /**
  * Rate limit profiles for different sources

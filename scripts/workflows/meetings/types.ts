@@ -5,7 +5,7 @@
  */
 
 import { z } from 'zod';
-import type { CollectorSource } from '../config/schemas.js';
+import type { CollectorSource } from '@apolitical-assistant/shared';
 
 /**
  * Meeting type classification
