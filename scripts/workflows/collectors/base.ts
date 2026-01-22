@@ -9,7 +9,7 @@ import { join } from 'node:path';
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import type { Todo, TodoSource } from '@apolitical-assistant/shared';
-import { generateFingerprint, toError } from '@apolitical-assistant/shared';
+import { generateFingerprint, toError, createLogger, type Logger } from '@apolitical-assistant/shared';
 import type {
   TodoCollector,
   CollectorCache,
@@ -24,6 +24,7 @@ export abstract class BaseCollector implements TodoCollector {
   abstract readonly name: string;
 
   protected config = loadTodoConfig();
+  protected logger: Logger = createLogger('collector');
   private cacheDir = getCachePath();
 
   abstract isEnabled(): boolean;
@@ -39,6 +40,12 @@ export abstract class BaseCollector implements TodoCollector {
     const todos: Todo[] = [];
     let wasIncremental = false;
 
+    // Configure logger based on options
+    this.logger = createLogger(this.name, {
+      quiet: options.quiet,
+      verbose: options.verbose,
+    });
+
     if (!this.isEnabled()) {
       return {
         source: this.source,
@@ -53,18 +60,14 @@ export abstract class BaseCollector implements TodoCollector {
       const cache = this.getCache();
       wasIncremental = options.incremental === true && cache !== null;
 
-      if (options.verbose) {
-        console.log(`[${this.name}] Starting collection (incremental: ${wasIncremental})`);
-      }
+      this.logger.debug(`Starting collection (incremental: ${wasIncremental})`);
 
       const rawItems = await this.collectRaw({
         ...options,
         incremental: wasIncremental,
       });
 
-      if (options.verbose) {
-        console.log(`[${this.name}] Found ${rawItems.length} raw items`);
-      }
+      this.logger.debug(`Found ${rawItems.length} raw items`);
 
       // Filter items by collection start date if set
       const collectionStartDate = getCollectionStartDate();
@@ -72,9 +75,9 @@ export abstract class BaseCollector implements TodoCollector {
         ? this.filterByStartDate(rawItems, collectionStartDate, options)
         : rawItems;
 
-      if (options.verbose && collectionStartDate && filteredItems.length !== rawItems.length) {
-        console.log(
-          `[${this.name}] Filtered ${rawItems.length - filteredItems.length} items before ${collectionStartDate}`
+      if (collectionStartDate && filteredItems.length !== rawItems.length) {
+        this.logger.debug(
+          `Filtered ${rawItems.length - filteredItems.length} items before ${collectionStartDate}`
         );
       }
 
@@ -94,14 +97,10 @@ export abstract class BaseCollector implements TodoCollector {
         lastSourceIds: rawItems.map((item) => item.sourceId),
       });
 
-      if (options.verbose) {
-        console.log(`[${this.name}] Created ${todos.length} TODOs with ${errors.length} errors`);
-      }
+      this.logger.debug(`Created ${todos.length} TODOs with ${errors.length} errors`);
     } catch (error) {
       errors.push(toError(error));
-      if (options.verbose) {
-        console.error(`[${this.name}] Collection failed:`, error);
-      }
+      this.logger.error('Collection failed:', error);
     }
 
     return {
@@ -188,12 +187,10 @@ export abstract class BaseCollector implements TodoCollector {
   }
 
   /**
-   * Log a message if verbose mode is enabled.
+   * Log a debug message. Uses the logger configured during collect().
    */
-  protected log(message: string, options?: CollectOptions): void {
-    if (options?.verbose && !options?.quiet) {
-      console.log(`[${this.name}] ${message}`);
-    }
+  protected log(message: string, _options?: CollectOptions): void {
+    this.logger.debug(message);
   }
 
   /**
