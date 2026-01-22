@@ -5,6 +5,7 @@
  */
 
 import { randomUUID } from 'node:crypto';
+import { toErrorMessage } from '@apolitical-assistant/shared';
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import type {
@@ -144,7 +145,7 @@ async function generateDirectSummary(
         source: collector.source,
         status: 'failed',
         itemsCollected: 0,
-        error: error instanceof Error ? error.message : String(error),
+        error: toErrorMessage(error),
       });
       warnings.push(`Failed to collect from ${collector.name}: ${error}`);
     }

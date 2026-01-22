@@ -2,6 +2,10 @@
  * Email Triage Actions
  *
  * Execute actions on emails (delete, archive, label, etc.)
+ *
+ * NOTE: Individual email actions require MCP Gmail integration which is not
+ * yet implemented. These functions will throw NotImplementedError when called.
+ * Use the batch functions for now which handle this gracefully.
  */
 
 import type {
@@ -9,269 +13,161 @@ import type {
   ActionResult,
   BatchActionRequest,
 } from './types.js';
-import { loadEmailTriageConfig } from './config.js';
+
+/**
+ * Error thrown when attempting to use unimplemented email actions
+ */
+export class EmailActionNotImplementedError extends Error {
+  constructor(action: string) {
+    super(
+      `Email action "${action}" is not yet implemented. ` +
+      `MCP Gmail integration required. See: scripts/workflows/email/README.md`
+    );
+    this.name = 'EmailActionNotImplementedError';
+  }
+}
 
 /**
  * Delete an email (move to trash)
+ * @throws EmailActionNotImplementedError - MCP Gmail integration not yet implemented
  */
-export async function deleteEmail(emailId: string): Promise<ActionResult> {
-  // TODO: Implement via MCP Gmail integration
-  // await mcp__google__gmail_trash({ messageId: emailId });
-
-  console.log(`[Placeholder] Would delete email: ${emailId}`);
-
-  return {
-    emailId,
-    action: 'delete',
-    success: true,
-  };
+export async function deleteEmail(_emailId: string): Promise<ActionResult> {
+  throw new EmailActionNotImplementedError('delete');
 }
 
 /**
  * Archive an email (remove from inbox)
+ * @throws EmailActionNotImplementedError - MCP Gmail integration not yet implemented
  */
-export async function archiveEmail(emailId: string): Promise<ActionResult> {
-  // TODO: Implement via MCP Gmail integration
-  // Remove INBOX label to archive
-  // await mcp__google__gmail_modify({ messageId: emailId, removeLabelIds: ['INBOX'] });
-
-  console.log(`[Placeholder] Would archive email: ${emailId}`);
-
-  return {
-    emailId,
-    action: 'archive',
-    success: true,
-  };
+export async function archiveEmail(_emailId: string): Promise<ActionResult> {
+  throw new EmailActionNotImplementedError('archive');
 }
 
 /**
  * Add a label to an email
+ * @throws EmailActionNotImplementedError - MCP Gmail integration not yet implemented
  */
 export async function labelEmail(
-  emailId: string,
-  labelId: string
+  _emailId: string,
+  _labelId: string
 ): Promise<ActionResult> {
-  // TODO: Implement via MCP Gmail integration
-  // await mcp__google__gmail_modify({ messageId: emailId, addLabelIds: [labelId] });
-
-  console.log(`[Placeholder] Would label email ${emailId} with ${labelId}`);
-
-  return {
-    emailId,
-    action: 'label',
-    success: true,
-    details: { labelId },
-  };
+  throw new EmailActionNotImplementedError('label');
 }
 
 /**
  * Star an email
+ * @throws EmailActionNotImplementedError - MCP Gmail integration not yet implemented
  */
-export async function starEmail(emailId: string): Promise<ActionResult> {
-  // TODO: Implement via MCP Gmail integration
-  // await mcp__google__gmail_modify({ messageId: emailId, addLabelIds: ['STARRED'] });
-
-  console.log(`[Placeholder] Would star email: ${emailId}`);
-
-  return {
-    emailId,
-    action: 'star',
-    success: true,
-  };
+export async function starEmail(_emailId: string): Promise<ActionResult> {
+  throw new EmailActionNotImplementedError('star');
 }
 
 /**
  * Mark email as read
+ * @throws EmailActionNotImplementedError - MCP Gmail integration not yet implemented
  */
-export async function markAsRead(emailId: string): Promise<ActionResult> {
-  // TODO: Implement via MCP Gmail integration
-  // await mcp__google__gmail_modify({ messageId: emailId, removeLabelIds: ['UNREAD'] });
-
-  console.log(`[Placeholder] Would mark email as read: ${emailId}`);
-
-  return {
-    emailId,
-    action: 'mark_read',
-    success: true,
-  };
+export async function markAsRead(_emailId: string): Promise<ActionResult> {
+  throw new EmailActionNotImplementedError('mark_read');
 }
 
 /**
  * Mark email as unread
+ * @throws EmailActionNotImplementedError - MCP Gmail integration not yet implemented
  */
-export async function markAsUnread(emailId: string): Promise<ActionResult> {
-  // TODO: Implement via MCP Gmail integration
-  // await mcp__google__gmail_modify({ messageId: emailId, addLabelIds: ['UNREAD'] });
-
-  console.log(`[Placeholder] Would mark email as unread: ${emailId}`);
-
-  return {
-    emailId,
-    action: 'mark_unread',
-    success: true,
-  };
+export async function markAsUnread(_emailId: string): Promise<ActionResult> {
+  throw new EmailActionNotImplementedError('mark_unread');
 }
 
 /**
  * Create a TODO from an email
+ * @throws EmailActionNotImplementedError - TODO integration not yet implemented
  */
 export async function createTodoFromEmail(
-  email: TriagedEmail
+  _email: TriagedEmail
 ): Promise<ActionResult> {
-  const config = loadEmailTriageConfig();
-  const priority = config.categorySettings.respond.defaultPriority;
-
-  // TODO: Implement via TODOs module integration
-  // const todo = await todos.create({
-  //   title: email.subject,
-  //   description: `Reply to email from ${email.from}`,
-  //   source: 'email',
-  //   sourceUrl: `https://mail.google.com/mail/u/0/#inbox/${email.id}`,
-  //   priority,
-  // });
-
-  console.log(`[Placeholder] Would create TODO from email: ${email.subject}`);
-  console.log(`  Priority: ${priority}`);
-  console.log(`  From: ${email.from}`);
-
-  return {
-    emailId: email.id,
-    action: 'create_todo',
-    success: true,
-    details: {
-      subject: email.subject,
-      priority,
-    },
-  };
+  throw new EmailActionNotImplementedError('create_todo');
 }
 
 /**
  * Delegate an email (forward and archive)
+ * @throws EmailActionNotImplementedError - MCP Gmail integration not yet implemented
  */
 export async function delegateEmail(
-  email: TriagedEmail,
-  delegateTo: string,
-  note?: string
+  _email: TriagedEmail,
+  _delegateTo: string,
+  _note?: string
 ): Promise<ActionResult> {
-  // TODO: Implement via MCP Gmail integration
-  // 1. Forward the email
-  // 2. Add note if provided
-  // 3. Archive the original
-
-  console.log(`[Placeholder] Would delegate email to ${delegateTo}`);
-  console.log(`  Subject: ${email.subject}`);
-  if (note) {
-    console.log(`  Note: ${note}`);
-  }
-
-  return {
-    emailId: email.id,
-    action: 'delegate',
-    success: true,
-    details: {
-      delegateTo,
-      note,
-    },
-  };
+  throw new EmailActionNotImplementedError('delegate');
 }
 
 /**
  * Execute a batch action on multiple emails
+ *
+ * Note: Currently returns empty results since individual actions are not implemented.
+ * Will be functional once MCP Gmail integration is complete.
  */
 export async function executeBatchAction(
   request: BatchActionRequest
 ): Promise<ActionResult[]> {
-  const results: ActionResult[] = [];
-
-  for (const emailId of request.emailIds) {
-    let result: ActionResult;
-
-    switch (request.action) {
-      case 'delete':
-        result = await deleteEmail(emailId);
-        break;
-      case 'archive':
-        result = await archiveEmail(emailId);
-        break;
-      case 'label':
-        if (!request.labelId) {
-          result = {
-            emailId,
-            action: 'label',
-            success: false,
-            error: 'Label ID required for label action',
-          };
-        } else {
-          result = await labelEmail(emailId, request.labelId);
-        }
-        break;
-      case 'star':
-        result = await starEmail(emailId);
-        break;
-      case 'mark_read':
-        result = await markAsRead(emailId);
-        break;
-      default:
-        result = {
-          emailId,
-          action: request.action,
-          success: false,
-          error: `Unknown action: ${request.action}`,
-        };
-    }
-
-    results.push(result);
-  }
-
-  return results;
+  // Return skipped results for all emails since actions aren't implemented
+  return request.emailIds.map(emailId => ({
+    emailId,
+    action: request.action,
+    success: false,
+    error: `Action "${request.action}" not implemented (MCP Gmail integration required)`,
+  }));
 }
 
 /**
  * Delete all high-confidence delete emails
+ *
+ * Note: Currently returns empty results since delete action is not implemented.
  */
 export async function deleteHighConfidenceEmails(
   emails: TriagedEmail[]
 ): Promise<ActionResult[]> {
-  const highConfidence = emails.filter(
-    e => e.classification.confidence === 'high'
-  );
-
-  return executeBatchAction({
-    emailIds: highConfidence.map(e => e.id),
-    action: 'delete',
-  });
+  return emails
+    .filter(e => e.classification.confidence === 'high')
+    .map(e => ({
+      emailId: e.id,
+      action: 'delete' as const,
+      success: false,
+      error: 'Delete action not implemented (MCP Gmail integration required)',
+    }));
 }
 
 /**
  * Archive all high-confidence archive emails
+ *
+ * Note: Currently returns empty results since archive action is not implemented.
  */
 export async function archiveHighConfidenceEmails(
   emails: TriagedEmail[]
 ): Promise<ActionResult[]> {
-  const highConfidence = emails.filter(
-    e => e.classification.confidence === 'high'
-  );
-
-  return executeBatchAction({
-    emailIds: highConfidence.map(e => e.id),
-    action: 'archive',
-  });
+  return emails
+    .filter(e => e.classification.confidence === 'high')
+    .map(e => ({
+      emailId: e.id,
+      action: 'archive' as const,
+      success: false,
+      error: 'Archive action not implemented (MCP Gmail integration required)',
+    }));
 }
 
 /**
  * Create TODOs for all respond emails
+ *
+ * Note: Currently returns empty results since TODO creation is not implemented.
  */
 export async function createTodosForRespondEmails(
   emails: TriagedEmail[]
 ): Promise<ActionResult[]> {
-  const results: ActionResult[] = [];
-
-  for (const email of emails) {
-    const result = await createTodoFromEmail(email);
-    results.push(result);
-  }
-
-  return results;
+  return emails.map(e => ({
+    emailId: e.id,
+    action: 'create_todo' as const,
+    success: false,
+    error: 'Create TODO action not implemented',
+  }));
 }
 
 /**

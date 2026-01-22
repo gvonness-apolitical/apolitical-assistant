@@ -4,6 +4,7 @@
  * Coordinates action execution (MCP writes, clipboard, file output).
  */
 
+import { toErrorMessage } from '@apolitical-assistant/shared';
 import type { TaskContext, OutputType, ActionResult } from '../types.js';
 import { writeToClipboard, isClipboardAvailable } from './clipboard.js';
 import { writeToFile, getDefaultOutputPath } from './file-output.js';
@@ -106,7 +107,7 @@ async function executeClipboard(content: string): Promise<ActionResult> {
       type: 'clipboard',
       description: 'Copy to clipboard',
       status: 'failed',
-      error: error instanceof Error ? error.message : String(error),
+      error: toErrorMessage(error),
     };
   }
 }
@@ -134,7 +135,7 @@ async function executeFileOutput(
       type: 'file',
       description: 'Write to file',
       status: 'failed',
-      error: error instanceof Error ? error.message : String(error),
+      error: toErrorMessage(error),
     };
   }
 }

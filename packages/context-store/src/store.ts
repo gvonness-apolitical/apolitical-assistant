@@ -4,6 +4,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { Todo, Meeting, CommunicationLog, BriefingData, TodoSource, TodoStatus } from '@apolitical-assistant/shared';
+import { toErrorMessage, TODO_DEFAULTS } from '@apolitical-assistant/shared';
 import {
   type TodoRow,
   type MeetingRow,
@@ -70,7 +71,7 @@ export class ContextStore {
         this.db.exec(migration);
       } catch (error) {
         // Ignore errors for already-applied migrations (e.g., duplicate column)
-        const message = error instanceof Error ? error.message : String(error);
+        const message = toErrorMessage(error);
         if (!message.includes('duplicate column')) {
           throw error;
         }
@@ -132,7 +133,7 @@ export class ContextStore {
       excludeSnoozed = false,
       onlySnoozed = false,
       onlyStale = false,
-      staleDays = 14,
+      staleDays = TODO_DEFAULTS.STALE_DAYS,
       updatedBefore,
       completedAfter,
       limit = 100,
@@ -370,7 +371,7 @@ export class ContextStore {
     return rows.map(todoRowToTodo);
   }
 
-  getStaleTodos(staleDays: number = 14): Todo[] {
+  getStaleTodos(staleDays: number = TODO_DEFAULTS.STALE_DAYS): Todo[] {
     return this.listTodos({
       onlyStale: true,
       staleDays,

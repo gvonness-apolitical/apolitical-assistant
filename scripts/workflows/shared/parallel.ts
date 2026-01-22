@@ -4,6 +4,7 @@
  * Utilities for running collectors in parallel while respecting rate limits.
  */
 
+import { toError } from '@apolitical-assistant/shared';
 import type { CollectorSource } from '../config/schemas.js';
 
 /**
@@ -149,7 +150,7 @@ export async function collectParallel<T>(
       return {
         source: task.source,
         status: 'failed' as const,
-        error: error instanceof Error ? error : new Error(String(error)),
+        error: toError(error),
         durationMs: Date.now() - startTime,
       };
     }
@@ -175,7 +176,7 @@ export async function collectParallel<T>(
       return {
         source: task.source,
         status: 'failed' as const,
-        error: error instanceof Error ? error : new Error(String(error)),
+        error: toError(error),
         durationMs: Date.now() - startTime,
       };
     }
@@ -204,7 +205,7 @@ export async function collectParallel<T>(
       results.push({
         source: task.source,
         status: 'failed',
-        error: error instanceof Error ? error : new Error(String(error)),
+        error: toError(error),
         durationMs: Date.now() - startTime,
       });
     }
@@ -240,7 +241,7 @@ export async function withRetry<T>(
     try {
       return await fn();
     } catch (error) {
-      lastError = error instanceof Error ? error : new Error(String(error));
+      lastError = toError(error);
 
       if (attempt < maxRetries) {
         options?.onRetry?.(attempt + 1, lastError);

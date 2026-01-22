@@ -10,7 +10,8 @@ dist/
 .env.local
 .env.*.local
 
-# Claude - keeping .claude in git for this project
+# Claude - keeping .claude in git for this project, but exclude local settings
+.claude/settings.local.json
 
 # IDE
 .idea/
@@ -27,11 +28,19 @@ npm-debug.log*
 # Output files (generated briefings, etc.)
 output/
 
+# Runtime data
+context/store.db
+*.db-journal
+
+# Planning artifacts
+IMPLEMENTATION_PLAN.md
+
 # Turbo
 .turbo/
 
 # Testing
 coverage/
+.coverage
 
 # OS files
 Thumbs.db
