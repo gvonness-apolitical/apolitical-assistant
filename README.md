@@ -701,6 +701,7 @@ npm run backfill -- --from=2024-10-01 --dry-run
 | `--to` | End date (YYYY-MM-DD format, defaults to today) |
 | `--source` | Specific source to backfill (e.g., `slack`, `github`, `linear`) |
 | `--dry-run` | Show what would be collected without making changes |
+| `--force` | Force re-collection even if cache exists |
 | `--verbose` | Show detailed progress output |
 | `--resume` | Continue from where a previous backfill stopped |
 | `--status` | Display current backfill status |

@@ -78,6 +78,7 @@ export interface BackfillOptions {
   sources?: string[];
   delayMs?: number;
   dryRun?: boolean;
+  force?: boolean;
   verbose?: boolean;
   resume?: boolean;
 }

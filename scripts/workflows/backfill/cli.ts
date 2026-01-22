@@ -42,6 +42,7 @@ Options:
   --source=SOURCE   Only backfill specific source(s), comma-separated
   --delay=MS        Delay between collectors in milliseconds (default: 1000)
   --dry-run         Show what would be collected without actually doing it
+  --force           Force re-collection even if cache exists
   --resume          Resume from last progress
   --verbose         Show detailed progress
   --status          Show current backfill progress
@@ -115,6 +116,7 @@ async function main(): Promise<void> {
   const sources = typeof args.source === 'string' ? args.source.split(',') : undefined;
   const delayMs = typeof args.delay === 'string' ? parseInt(args.delay, 10) : undefined;
   const dryRun = args['dry-run'] === true;
+  const force = args.force === true;
   const resume = args.resume === true;
   const verbose = args.verbose === true;
 
@@ -125,6 +127,7 @@ async function main(): Promise<void> {
       sources,
       delayMs,
       dryRun,
+      force,
       resume,
       verbose,
     });

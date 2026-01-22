@@ -168,7 +168,7 @@ function cacheExists(source: CollectorSource, date: string): boolean {
 export async function backfillSourceChunk(
   source: CollectorSource,
   chunk: DateChunk,
-  options?: { verbose?: boolean; dryRun?: boolean }
+  options?: { verbose?: boolean; dryRun?: boolean; force?: boolean }
 ): Promise<BackfillChunkResult> {
   const startTime = Date.now();
   const errors: string[] = [];
@@ -179,7 +179,7 @@ export async function backfillSourceChunk(
   }
 
   // Skip if we already have this data (unless forcing)
-  if (cacheExists(source, chunk.start)) {
+  if (!options?.force && cacheExists(source, chunk.start)) {
     if (options?.verbose) {
       console.log(`  [${source}] Cache exists for ${chunk.start}, skipping`);
     }
@@ -300,6 +300,7 @@ export async function backfillSource(
     delayMs?: number;
     verbose?: boolean;
     dryRun?: boolean;
+    force?: boolean;
   }
 ): Promise<BackfillChunkResult[]> {
   const chunks = chunkDateRange(fromDate, toDate, options?.chunkSize ?? 'week');

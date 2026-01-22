@@ -94,6 +94,7 @@ export async function runBackfill(options: BackfillOptions): Promise<BackfillRes
       delayMs: getDelayBetweenChunks(),
       verbose: options.verbose,
       dryRun: options.dryRun,
+      force: options.force,
     });
 
     allResults.push(...results);
