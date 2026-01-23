@@ -53,6 +53,11 @@ Use `/[skill-name]` in Claude Code to invoke workflows:
 | `/whats-blocking [person/project]` | Check blockers |
 | `/weekly-review` | End-of-week summary and retrospective |
 
+### Work Management
+| Skill | Purpose |
+|-------|---------|
+| `/create-ticket [description]` | Create Linear ticket (task, spike, or bug) with team norms |
+
 ### Technical Review
 | Skill | Purpose |
 |-------|---------|
