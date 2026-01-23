@@ -103,124 +103,189 @@ This document serves as the technical context for RFC reviews. It captures archi
 
 ## Tech Stack
 
-> **TODO**: Fill in with actual Apolitical systems
-
 ### Languages & Frameworks
 
-| Layer | Technology | Notes |
-|-------|------------|-------|
-| Backend | | |
-| Frontend | | |
-| Mobile | | |
-| Infrastructure | | |
+| Layer | Technology | Status | Notes |
+|-------|------------|--------|-------|
+| **Backend** | TypeScript, NestJS 10 | Adopt | Sequelize 6 ORM for PostgreSQL |
+| **Frontend** | TypeScript, Next.js 14, React 18 | Adopt | App Router, Server Components |
+| **UI Components** | Radix UI | Adopt | Mantine on Hold |
+| **Data Platform** | Python 3.12+, dbt Core 1.9 | Adopt | BigQuery transformations |
+| **Validation** | Zod, class-validator | Adopt | Zod for frontend, class-validator for NestJS |
+| **API Contracts** | ts-rest | Trial | Contract-first API design |
+| **Events** | NestJS EventEmitter | Trial | In-process event-driven patterns |
+| **Monorepo** | Nx (platform), uv (data) | Adopt | Shared code and tooling |
 
 ### Data Stores
 
-| Store | Technology | Use Case |
-|-------|------------|----------|
-| Primary DB | | |
-| Cache | | |
-| Search | | |
-| Queue/Events | | |
+| Store | Technology | Status | Use Case |
+|-------|------------|--------|----------|
+| **Primary DB** | PostgreSQL (Cloud SQL) | Adopt | Application data via Sequelize |
+| **Analytics** | BigQuery | Adopt | Data warehouse, dbt transformations |
+| **Cache** | Redis 7 | Adopt | Session, caching |
+| **Search** | Apache SolrCloud | Adopt | Full-text search |
+| **Graph** | Neo4j | Assess | Relationship data |
+| **Vector** | Pinecone | Assess | AI/ML embeddings |
+
+### Data Platform Architecture
+
+```
+Raw Sources → Base Layer → Intermediate Layer → Marts/OBT/Metrics
+```
+
+- **Sources**: GA4, CloudSQL, Contentful, HubSpot, Google Sheets
+- **Base Layer**: Close-to-raw with basic transformations (`dbt_base`)
+- **Intermediate**: Staged transformations, often ephemeral (`dbt_intm`)
+- **Marts**: Business-ready fact/dimension tables (`dbt_marts`)
+- **OBT**: "One Big Table" for complex analysis (`dbt_obt`)
+- **Metrics**: Derived metrics from marts/obt (`dbt_metrics`)
 
 ### Infrastructure
 
-| Component | Technology |
-|-----------|------------|
-| Cloud Provider | |
-| Orchestration | |
-| CI/CD | |
-| Monitoring | |
-| Logging | |
+| Component | Technology | Notes |
+|-----------|------------|-------|
+| **Cloud Provider** | Google Cloud Platform (GCP) | |
+| **Orchestration** | GKE (Google Kubernetes Engine) | |
+| **IaC** | Terraform, Helm/Helmfile | |
+| **CI/CD** | GitHub Actions | |
+| **Ingress** | Traefik | |
+| **Logging** | Winston + Google Cloud Logging | |
+| **Tracing** | OpenTelemetry | Assess |
+| **Secrets** | 1Password, GCP Secret Manager | |
+| **Data Pipelines** | Cloud Composer (Airflow) | |
 
 ### External Services
 
-| Service | Purpose |
-|---------|---------|
-| | |
+| Service | Status | Purpose |
+|---------|--------|---------|
+| **Auth0** | Adopt | Authentication |
+| **OpenFGA** | Adopt | Fine-grained authorization (Zanzibar-style) |
+| **Contentful** | Adopt | Headless CMS |
+| **HubSpot** | Adopt | CRM and marketing |
+| **Stripe** | Trial | Payments |
+| **GetStream** | Hold | Activity feeds |
 
 ---
 
 ## Established Patterns
 
-> **TODO**: Document patterns already in use at Apolitical
-
 ### API Design
-- REST conventions used
-- Versioning strategy
-- Authentication/authorization patterns
-- Error response format
+- **REST APIs** with NestJS controllers
+- **Contract-first** approach with ts-rest (Trial) - shared types between frontend/backend
+- **Authentication**: Auth0 JWT tokens
+- **Authorization**: OpenFGA for fine-grained permissions (Zanzibar model)
+- **Validation**: class-validator decorators on DTOs (backend), Zod schemas (frontend)
 
 ### Event Patterns
-- Event schema conventions
-- Topic/queue naming
-- Retry/DLQ handling
+- **In-process events**: NestJS EventEmitter for decoupled service communication
+- **Data events**: Changes flow through to BigQuery via scheduled syncs
+- **Idempotency**: Design for safe retries, especially in data pipelines
 
 ### Testing Patterns
-- Unit test conventions
-- Integration test approach
-- E2E test strategy
+- **Unit tests**: Jest for TypeScript, pytest for Python
+- **E2E tests**: Playwright (Adopt)
+- **SQL linting**: SQLFluff for dbt models
+- **Data tests**: dbt_utils, dbt_expectations for data quality
 
 ### Deployment Patterns
-- Blue-green / canary / rolling
-- Feature flag usage
-- Rollback procedures
+- **Containerized**: All services run in GKE
+- **GitOps**: Helm/Helmfile for Kubernetes manifests
+- **CI/CD**: GitHub Actions for build, test, deploy
+- **Environments**: dev (suffix `_dev` for dbt datasets), staging, production
+
+### Code Style Patterns
+
+**TypeScript/JavaScript**
+- ESLint + Prettier for formatting
+- Strict TypeScript configuration
+- Prefer functional patterns, avoid mutation
+
+**SQL (dbt)**
+- Vertical, readable formatting
+- Right-justified keywords (SELECT, FROM, WHERE)
+- Snake_case column names
+- Explicit column selection (no `SELECT *`)
+- Trailing commas
+- Explicit `AS` aliases
+- Table aliases required for joins
 
 ---
 
 ## Architecture Decision Records
 
-> **TODO**: Link to existing ADRs or document key decisions
+Key architectural decisions are tracked in Notion. Notable decisions include:
 
-| Decision | Date | Context | Outcome |
-|----------|------|---------|---------|
-| | | | |
+| Decision | Context | Outcome |
+|----------|---------|---------|
+| Nx Monorepo | Manage platform-v2 complexity | Shared code, consistent tooling |
+| ts-rest | Type-safe API contracts | Trial - evaluating for broader adoption |
+| OpenFGA | Fine-grained authorization | Zanzibar-style permissions model |
+| dbt for transformations | SQL-based data transformations | Layered architecture (base → marts) |
+| BigQuery as warehouse | Analytics and reporting | All data flows to BQ for analysis |
 
 ---
 
 ## Service Inventory
 
-> **TODO**: List of services with their responsibilities
+### Platform (platform-v2)
 
-| Service | Bounded Context | Team | Key APIs |
-|---------|-----------------|------|----------|
-| | | | |
+| App | Purpose | Technology |
+|-----|---------|------------|
+| **web** | Main web application | Next.js 14, React 18 |
+| **people-api** | User management, courses, communities | NestJS, Sequelize |
+| **content** | Content delivery | Contentful integration |
+| **search** | Search functionality | SolrCloud |
+
+### Data Platform (data-v2)
+
+| Component | Purpose | Technology |
+|-----------|---------|------------|
+| **dbt** | Data transformations | dbt-core, dbt-bigquery |
+| **airflow** | Pipeline orchestration | Cloud Composer |
+| **containers** | Custom ETL jobs | Python |
 
 ---
 
 ## Cross-Cutting Concerns
 
 ### Observability
-- Logging standards
-- Metrics to capture
-- Tracing approach
-- Alerting philosophy
+- **Logging**: Winston logger → Google Cloud Logging
+- **Tracing**: OpenTelemetry (Assess) for distributed tracing
+- **Metrics**: GCP Monitoring
+- **Alerting**: GCP alerting policies
 
 ### Security
-- AuthN/AuthZ patterns
-- Data classification
-- Secrets management
-- API security standards
+- **Authentication**: Auth0 (JWT tokens)
+- **Authorization**: OpenFGA for fine-grained access control
+- **Secrets**: 1Password for team, GCP Secret Manager for runtime
+- **API Security**: HTTPS, rate limiting via Traefik
 
 ### Performance
-- SLOs/SLAs by service
-- Known bottlenecks
-- Scaling strategies
+- **Caching**: Redis for session and application cache
+- **Search**: SolrCloud for full-text search
+- **CDN**: Content delivery for static assets
+- **Database**: Cloud SQL with read replicas where needed
 
 ---
 
 ## Resources
 
-### Internal
-- Architecture diagrams: [link]
-- API documentation: [link]
-- Runbooks: [link]
+### Internal (Notion)
+- [Technology Radar](https://www.notion.so/apolitical/Technology-Radar-1e468a6e3b9280e08b01c1c1826ec562) - Adopt/Trial/Assess/Hold ratings
+- [DevOps Handover](https://www.notion.so/apolitical/DevOps-Handover-2cc68a6e3b92804ea6d4cdc3352a3bef) - Infrastructure overview
+- [Software Architecture](https://www.notion.so/apolitical/Software-Architecture-0afa8a6e3b9280fa83bffcd0a14ab5b8)
+
+### GitHub Repositories
+- [platform-v2](https://github.com/apolitical/platform-v2) - Main application monorepo (Nx)
+- [data-v2](https://github.com/apolitical/data-v2) - Data platform (dbt, Airflow)
 
 ### External References
 - [Clean Architecture - Robert Martin](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 - [Domain-Driven Design Reference](https://www.domainlanguage.com/ddd/reference/)
 - [Microservices Patterns - Chris Richardson](https://microservices.io/patterns/)
 - [Designing Data-Intensive Applications - Martin Kleppmann](https://dataintensive.net/)
+- [dbt Best Practices](https://docs.getdbt.com/docs/guides/best-practices)
+- [OpenFGA Documentation](https://openfga.dev/docs)
 
 ---
 
