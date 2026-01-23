@@ -41,6 +41,20 @@ import {
   handleSendDm,
 } from './dms.js';
 
+import {
+  canvasTools,
+  GetCanvasSchema,
+  UpdateCanvasSchema,
+  CreateCanvasSchema,
+  ListCanvasesSchema,
+  handleGetCanvas,
+  handleUpdateCanvas,
+  handleCreateCanvas,
+  handleListCanvases,
+} from './canvases.js';
+
+import { bookmarkTools, GetBookmarksSchema, handleGetBookmarks } from './bookmarks.js';
+
 // Re-export all schemas for testing
 export {
   // Search schemas
@@ -60,6 +74,13 @@ export {
   ListDmsSchema,
   ReadDmSchema,
   SendDmSchema,
+  // Canvas schemas
+  GetCanvasSchema,
+  UpdateCanvasSchema,
+  CreateCanvasSchema,
+  ListCanvasesSchema,
+  // Bookmark schemas
+  GetBookmarksSchema,
 };
 
 // Re-export handlers for testing
@@ -76,6 +97,11 @@ export {
   handleListDms,
   handleReadDm,
   handleSendDm,
+  handleGetCanvas,
+  handleUpdateCanvas,
+  handleCreateCanvas,
+  handleListCanvases,
+  handleGetBookmarks,
 };
 
 // Combine all tools into a single array
@@ -85,6 +111,8 @@ export const allTools: Tool[] = [
   ...messageTools,
   ...userTools,
   ...dmTools,
+  ...canvasTools,
+  ...bookmarkTools,
 ];
 
 // Handler type definition
@@ -114,4 +142,13 @@ export const handlerRegistry: Record<string, Handler> = {
   slack_list_dms: (args, token) => handleListDms(ListDmsSchema.parse(args), token),
   slack_read_dm: (args, token) => handleReadDm(ReadDmSchema.parse(args), token),
   slack_send_dm: (args, token) => handleSendDm(SendDmSchema.parse(args), token),
+
+  // Canvas handlers
+  slack_get_canvas: (args, token) => handleGetCanvas(GetCanvasSchema.parse(args), token),
+  slack_update_canvas: (args, token) => handleUpdateCanvas(UpdateCanvasSchema.parse(args), token),
+  slack_create_canvas: (args, token) => handleCreateCanvas(CreateCanvasSchema.parse(args), token),
+  slack_list_canvases: (args, token) => handleListCanvases(ListCanvasesSchema.parse(args), token),
+
+  // Bookmark handlers
+  slack_get_bookmarks: (args, token) => handleGetBookmarks(GetBookmarksSchema.parse(args), token),
 };

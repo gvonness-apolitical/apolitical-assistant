@@ -30,6 +30,8 @@ You have access to the following integrations through MCP servers:
 - Check channel activity
 - Send messages and DMs
 - Add reactions
+- Read and update canvases (1:1 agenda/notes)
+- Read channel bookmarks
 
 ### Notion
 - Search and read pages
@@ -58,9 +60,11 @@ Use `/[skill-name]` to invoke these workflows:
 - `/triage-inbox` - Review and categorize emails
 
 ### Meetings
-- `/prep-meeting [meeting]` - Prepare for an upcoming meeting
+- `/prep-meeting [meeting]` - Prepare for an upcoming meeting (integrates with mapped Slack channels/canvases)
 - `/meeting-notes [doc-id]` - Process Gemini auto-notes into structured format
 - `/schedule-meeting [attendees] [topic]` - Smart scheduling with availability checking
+- `/setup-meeting-channels` - Configure Slack channel/canvas mappings for recurring meetings
+- `/tidy-canvas [person]` - Clean up and organize a 1:1 canvas (archive completed items, align to template)
 
 ### Communication
 - `/draft-email [message-id]` - Draft an email response
@@ -105,6 +109,30 @@ When preparing for meetings, gather:
 - Relevant documents and previous meeting notes
 - Open action items with those attendees
 - Any incidents or issues involving attendees' teams
+- For mapped meetings: Slack channel activity since last prep (with filtering)
+- For 1:1s with canvas: Agenda items and outstanding tasks from shared canvas
+
+**Channel Context** (named meetings with mapping):
+- Read messages since last prep date (or last 30 days)
+- Apply filters: include/exclude users, highlight keywords, exclude threads
+- Extract action items using checkbox and keyword patterns
+- Include bookmarked resources
+- Summarize high-volume channels (>50 messages)
+
+**Canvas Context** (1:1s with canvas):
+- Parse sections: Agenda, Action Items (Open/Completed), Notes, Decisions
+- Show current agenda and open tasks
+- Prompt to add new agenda items or mark tasks complete
+- Offer to create Linear tickets for significant action items
+- Automatically link Linear tickets back to canvas
+
+**Linear Integration**:
+- Detect ticket-worthy action items (multi-step work, specific assignee, deadline)
+- Use configured `linearProject` (per-1:1 or default from settings)
+- When creating ticket, automatically update canvas with ticket link
+
+Meeting configuration is stored in `.claude/meeting-config.json`. Run `/setup-meeting-channels` to configure mappings.
+Use `--refresh` to detect new recurring meetings, or `--template` to customize the canvas template.
 
 ### Email Triage
 When reviewing emails, categorize as:

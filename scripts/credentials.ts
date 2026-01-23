@@ -135,8 +135,10 @@ const SLACK_REQUIRED_SCOPES = {
     'im:history',
     'users:read',
     'search:read',
+    'canvases:read',
+    'bookmarks:read',
   ],
-  write: ['chat:write', 'reactions:write'],
+  write: ['chat:write', 'reactions:write', 'canvases:write'],
 };
 
 // Required GitHub scopes
@@ -387,6 +389,46 @@ async function validateSlackToken(token: string): Promise<ValidationResult> {
             body: JSON.stringify({ channel: 'test', timestamp: '1234.5678', name: 'thumbsup' }),
           });
           const d = (await r.json()) as { ok: boolean; error?: string };
+          return d.ok || (d.error !== 'missing_scope' && d.error !== 'not_allowed_token_type');
+        },
+      },
+      {
+        scope: 'canvases:read',
+        test: async () => {
+          // Test by trying to read a non-existent canvas
+          const r = await fetch('https://slack.com/api/canvases.read', {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const d = (await r.json()) as { ok: boolean; error?: string };
+          // If error is 'canvas_not_found' or similar, we have the scope
+          return d.ok || (d.error !== 'missing_scope' && d.error !== 'not_allowed_token_type');
+        },
+      },
+      {
+        scope: 'canvases:write',
+        test: async () => {
+          // Test by trying to edit a non-existent canvas
+          const r = await fetch('https://slack.com/api/canvases.edit', {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ canvas_id: 'F000000000', changes: [] }),
+          });
+          const d = (await r.json()) as { ok: boolean; error?: string };
+          return d.ok || (d.error !== 'missing_scope' && d.error !== 'not_allowed_token_type');
+        },
+      },
+      {
+        scope: 'bookmarks:read',
+        test: async () => {
+          // Test by trying to list bookmarks for a non-existent channel
+          const r = await fetch('https://slack.com/api/bookmarks.list?channel_id=C000000000', {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const d = (await r.json()) as { ok: boolean; error?: string };
+          // If error is 'channel_not_found', we have the scope
           return d.ok || (d.error !== 'missing_scope' && d.error !== 'not_allowed_token_type');
         },
       },

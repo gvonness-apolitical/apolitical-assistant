@@ -21,6 +21,11 @@ export {
   ListDmsSchema,
   ReadDmSchema,
   SendDmSchema,
+  GetCanvasSchema,
+  UpdateCanvasSchema,
+  CreateCanvasSchema,
+  ListCanvasesSchema,
+  GetBookmarksSchema,
 } from './handlers/index.js';
 
 // ==================== TOOL DEFINITIONS ====================

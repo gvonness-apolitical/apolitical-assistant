@@ -1,0 +1,30 @@
+{
+  "settings": {
+    "canvasTemplate": "# Agenda\n_Items to discuss this meeting_\n\n# Action Items\n\n## Open\n- [ ]\n\n## Completed\n- [x]\n\n# Notes\n_Meeting notes and context_\n\n# Decisions\n_Decisions made and rationale_",
+    "autoRefreshDays": 30,
+    "linearProject": null
+  },
+  "channels": {
+    "Meeting Title": {
+      "channelId": "C0123456789",
+      "channelName": "#channel-name",
+      "lastPrepDate": null,
+      "filters": {
+        "includeUsers": [],
+        "excludeUsers": [],
+        "highlightKeywords": ["decision", "blocker", "urgent", "TODO"],
+        "excludeThreads": false
+      }
+    }
+  },
+  "oneOnOnes": {
+    "colleague@company.com": {
+      "displayName": "Colleague Name",
+      "dmChannelId": "D0123456789",
+      "canvasId": "F0123456789",
+      "lastPrepDate": null,
+      "linearProject": null,
+      "customTemplate": null
+    }
+  }
+}

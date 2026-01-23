@@ -13,6 +13,11 @@ import {
   SendMessageSchema,
   SendDmSchema,
   AddReactionSchema,
+  GetCanvasSchema,
+  UpdateCanvasSchema,
+  CreateCanvasSchema,
+  ListCanvasesSchema,
+  GetBookmarksSchema,
 } from '../tools.js';
 
 describe('Slack Schemas', () => {
@@ -260,6 +265,120 @@ describe('Slack Schemas', () => {
       expect(() => AddReactionSchema.parse({ channel: 'C123', timestamp: '123.456' })).toThrow(
         ZodError
       );
+    });
+  });
+
+  describe('GetCanvasSchema', () => {
+    it('should validate with required canvas_id', () => {
+      const result = GetCanvasSchema.parse({ canvas_id: 'F0123456789' });
+      expect(result.canvas_id).toBe('F0123456789');
+    });
+
+    it('should reject missing canvas_id', () => {
+      expect(() => GetCanvasSchema.parse({})).toThrow(ZodError);
+    });
+  });
+
+  describe('UpdateCanvasSchema', () => {
+    it('should validate with required fields', () => {
+      const result = UpdateCanvasSchema.parse({
+        canvas_id: 'F0123456789',
+        changes: [
+          {
+            operation: 'insert_at_end',
+            document_content: { type: 'markdown', markdown: '- New item' },
+          },
+        ],
+      });
+      expect(result.canvas_id).toBe('F0123456789');
+      expect(result.changes).toHaveLength(1);
+      expect(result.changes[0]?.operation).toBe('insert_at_end');
+    });
+
+    it('should accept replace operation with section_id', () => {
+      const result = UpdateCanvasSchema.parse({
+        canvas_id: 'F123',
+        changes: [
+          {
+            operation: 'replace',
+            section_id: 'S123',
+            document_content: { type: 'markdown', markdown: 'Updated content' },
+          },
+        ],
+      });
+      expect(result.changes[0]?.section_id).toBe('S123');
+    });
+
+    it('should reject invalid operation', () => {
+      expect(() =>
+        UpdateCanvasSchema.parse({
+          canvas_id: 'F123',
+          changes: [{ operation: 'invalid' }],
+        })
+      ).toThrow(ZodError);
+    });
+
+    it('should reject missing canvas_id', () => {
+      expect(() =>
+        UpdateCanvasSchema.parse({
+          changes: [{ operation: 'insert_at_end' }],
+        })
+      ).toThrow(ZodError);
+    });
+  });
+
+  describe('CreateCanvasSchema', () => {
+    it('should validate with required title', () => {
+      const result = CreateCanvasSchema.parse({ title: '1:1 with Joel' });
+      expect(result.title).toBe('1:1 with Joel');
+    });
+
+    it('should accept document_content', () => {
+      const result = CreateCanvasSchema.parse({
+        title: '1:1 Notes',
+        document_content: { type: 'markdown', markdown: '# Agenda\n\n# Notes' },
+      });
+      expect(result.document_content?.markdown).toBe('# Agenda\n\n# Notes');
+    });
+
+    it('should accept channel_id', () => {
+      const result = CreateCanvasSchema.parse({
+        title: 'Canvas',
+        channel_id: 'D0123456789',
+      });
+      expect(result.channel_id).toBe('D0123456789');
+    });
+
+    it('should reject missing title', () => {
+      expect(() => CreateCanvasSchema.parse({})).toThrow(ZodError);
+    });
+  });
+
+  describe('ListCanvasesSchema', () => {
+    it('should validate with required channel_id', () => {
+      const result = ListCanvasesSchema.parse({ channel_id: 'D0123456789' });
+      expect(result.channel_id).toBe('D0123456789');
+      expect(result.limit).toBe(20);
+    });
+
+    it('should accept custom limit', () => {
+      const result = ListCanvasesSchema.parse({ channel_id: 'D123', limit: 50 });
+      expect(result.limit).toBe(50);
+    });
+
+    it('should reject missing channel_id', () => {
+      expect(() => ListCanvasesSchema.parse({})).toThrow(ZodError);
+    });
+  });
+
+  describe('GetBookmarksSchema', () => {
+    it('should validate with required channel_id', () => {
+      const result = GetBookmarksSchema.parse({ channel_id: 'C0123456789' });
+      expect(result.channel_id).toBe('C0123456789');
+    });
+
+    it('should reject missing channel_id', () => {
+      expect(() => GetBookmarksSchema.parse({})).toThrow(ZodError);
     });
   });
 });
