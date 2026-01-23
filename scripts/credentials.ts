@@ -130,15 +130,18 @@ const SLACK_REQUIRED_SCOPES = {
     'channels:read',
     'groups:read',
     'im:read',
+    'mpim:read',
     'channels:history',
     'groups:history',
     'im:history',
+    'mpim:history',
     'users:read',
+    'users:read.email',
     'search:read',
     'canvases:read',
     'bookmarks:read',
   ],
-  write: ['chat:write', 'reactions:write', 'canvases:write'],
+  write: ['chat:write', 'reactions:write', 'canvases:write', 'im:write'],
 };
 
 // Required GitHub scopes
@@ -429,6 +432,58 @@ async function validateSlackToken(token: string): Promise<ValidationResult> {
           });
           const d = (await r.json()) as { ok: boolean; error?: string };
           // If error is 'channel_not_found', we have the scope
+          return d.ok || (d.error !== 'missing_scope' && d.error !== 'not_allowed_token_type');
+        },
+      },
+      {
+        scope: 'groups:read',
+        test: async () => {
+          // Test by listing private channels
+          const r = await fetch(
+            'https://slack.com/api/conversations.list?limit=1&types=private_channel',
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          const d = (await r.json()) as { ok: boolean; error?: string };
+          return d.ok || d.error !== 'missing_scope';
+        },
+      },
+      {
+        scope: 'im:read',
+        test: async () => {
+          // Test by listing DM conversations
+          const r = await fetch('https://slack.com/api/conversations.list?limit=1&types=im', {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const d = (await r.json()) as { ok: boolean; error?: string };
+          return d.ok || d.error !== 'missing_scope';
+        },
+      },
+      {
+        scope: 'mpim:read',
+        test: async () => {
+          // Test by listing group DM conversations
+          const r = await fetch('https://slack.com/api/conversations.list?limit=1&types=mpim', {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const d = (await r.json()) as { ok: boolean; error?: string };
+          return d.ok || d.error !== 'missing_scope';
+        },
+      },
+      {
+        scope: 'im:write',
+        test: async () => {
+          // Test by trying to open a DM (will fail with user_not_found, not missing_scope)
+          const r = await fetch('https://slack.com/api/conversations.open', {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ users: 'U000000000' }),
+          });
+          const d = (await r.json()) as { ok: boolean; error?: string };
           return d.ok || (d.error !== 'missing_scope' && d.error !== 'not_allowed_token_type');
         },
       },

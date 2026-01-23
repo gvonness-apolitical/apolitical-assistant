@@ -150,6 +150,7 @@ Configure these in your Slack App's OAuth & Permissions settings.
 |-------|---------|
 | `chat:write` | Send messages to channels and DMs |
 | `reactions:write` | Add emoji reactions |
+| `im:write` | Open DM conversations (required for reading/sending DMs) |
 
 **Required for canvas and bookmark operations:**
 | Scope | Purpose |
