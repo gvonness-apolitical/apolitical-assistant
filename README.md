@@ -78,6 +78,7 @@ apolitical-assistant/
 │   ├── humaans/               # HR, org chart, time off
 │   └── incident-io/           # Incidents and follow-ups
 ├── scripts/
+│   ├── claude.sh              # Wrapper script (loads credentials, launches claude)
 │   └── credentials.ts         # Credential manager CLI
 ├── morning-briefing/          # Daily briefings
 ├── meetings/output/           # Meeting prep and notes (by type)
@@ -226,7 +227,9 @@ cd ../incident-io && npm run build
 
 ### Credential Setup
 
-Credentials are stored in the macOS Keychain. Claude Code resolves `${VAR_NAME}` references in `.mcp.json` from the Keychain automatically.
+Credentials are stored securely in the macOS Keychain. The `.mcp.json` file references them via `${VAR_NAME}` syntax, which resolves from environment variables at runtime.
+
+A wrapper script (`scripts/claude.sh`) loads credentials from the Keychain into environment variables before launching Claude Code.
 
 #### Using the Credentials Manager (Recommended)
 
@@ -467,13 +470,35 @@ Note: `meeting-config.json` is gitignored as it contains channel IDs and email a
 
 ## Usage
 
-Start Claude Code in this directory:
+### Starting Claude Code
+
+Use the wrapper script to load credentials from the Keychain and launch Claude Code:
 
 ```bash
-claude
+./scripts/claude.sh
 ```
 
-Then use natural conversation or invoke skills:
+The wrapper script:
+1. Loads all credentials from macOS Keychain into environment variables
+2. Warns if any credentials are missing
+3. Launches Claude Code with all arguments passed through
+
+**Optional:** Create a shell alias for convenience. Add to `~/.zshrc`:
+
+```bash
+alias apc="~/Dev/Apolitical/apolitical-assistant/scripts/claude.sh"
+```
+
+Then start with just:
+
+```bash
+cd ~/Dev/Apolitical/apolitical-assistant
+apc
+```
+
+### Using Skills
+
+Once running, use natural conversation or invoke skills:
 
 ```
 /morning-briefing
