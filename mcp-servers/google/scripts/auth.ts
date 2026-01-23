@@ -68,11 +68,7 @@ async function exchangeCodeForTokens(code: string): Promise<{
 
 function openBrowser(url: string): void {
   const command =
-    process.platform === 'darwin'
-      ? 'open'
-      : process.platform === 'win32'
-        ? 'start'
-        : 'xdg-open';
+    process.platform === 'darwin' ? 'open' : process.platform === 'win32' ? 'start' : 'xdg-open';
 
   exec(`${command} "${url}"`);
 }

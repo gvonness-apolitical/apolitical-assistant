@@ -58,7 +58,8 @@ export const GmailGetAttachmentsSchema = z.object({
 export const gmailTools: Tool[] = [
   {
     name: 'gmail_search',
-    description: 'Search Gmail messages. Use Gmail search syntax (from:, to:, subject:, is:unread, etc.)',
+    description:
+      'Search Gmail messages. Use Gmail search syntax (from:, to:, subject:, is:unread, etc.)',
     inputSchema: {
       type: 'object',
       properties: {
@@ -114,7 +115,8 @@ export const gmailTools: Tool[] = [
   },
   {
     name: 'gmail_delete',
-    description: 'Permanently delete Gmail messages (cannot be undone). Requires gmail.modify scope.',
+    description:
+      'Permanently delete Gmail messages (cannot be undone). Requires gmail.modify scope.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -129,7 +131,8 @@ export const gmailTools: Tool[] = [
   },
   {
     name: 'gmail_archive',
-    description: 'Archive Gmail messages (remove from inbox but keep in All Mail). Requires gmail.modify scope.',
+    description:
+      'Archive Gmail messages (remove from inbox but keep in All Mail). Requires gmail.modify scope.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -185,7 +188,8 @@ export const gmailTools: Tool[] = [
   },
   {
     name: 'gmail_create_draft',
-    description: 'Create a draft email (not sent). Useful for composing emails that need review before sending.',
+    description:
+      'Create a draft email (not sent). Useful for composing emails that need review before sending.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -556,7 +560,12 @@ export async function handleGmailGetAttachments(
     };
   };
 
-  const attachments: Array<{ filename: string; mimeType: string; size: number; attachmentId: string }> = [];
+  const attachments: Array<{
+    filename: string;
+    mimeType: string;
+    size: number;
+    attachmentId: string;
+  }> = [];
 
   const extractAttachments = (parts: typeof data.payload.parts) => {
     if (!parts) return;

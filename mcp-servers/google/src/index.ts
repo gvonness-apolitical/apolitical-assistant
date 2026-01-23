@@ -33,6 +33,10 @@ runMcpServer<GoogleContext>({
   createTools,
   handleToolCall,
   createContext: (env) => ({
-    auth: new GoogleAuth(env.GOOGLE_CLIENT_ID!, env.GOOGLE_CLIENT_SECRET!, env.GOOGLE_REFRESH_TOKEN!),
+    auth: new GoogleAuth(
+      env.GOOGLE_CLIENT_ID!,
+      env.GOOGLE_CLIENT_SECRET!,
+      env.GOOGLE_REFRESH_TOKEN!
+    ),
   }),
 });

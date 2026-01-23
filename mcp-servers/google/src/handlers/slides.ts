@@ -55,14 +55,14 @@ export async function handleSlidesGetPresentation(
 
   // Extract text from slides
   const slides = presentation.slides.map((slide, index) => {
-    const textContent = slide.pageElements
-      ?.filter((el) => el.shape?.text)
-      .map((el) =>
-        el.shape!.text!.textElements
-          ?.map((te) => te.textRun?.content || '')
-          .join('') || ''
-      )
-      .join('\n') || '';
+    const textContent =
+      slide.pageElements
+        ?.filter((el) => el.shape?.text)
+        .map(
+          (el) =>
+            el.shape!.text!.textElements?.map((te) => te.textRun?.content || '').join('') || ''
+        )
+        .join('\n') || '';
 
     return {
       slideNumber: index + 1,

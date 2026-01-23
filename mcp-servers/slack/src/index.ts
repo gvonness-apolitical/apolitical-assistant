@@ -1,6 +1,10 @@
 #!/usr/bin/env node
 
-import { runMcpServer, createBearerClient, type HttpClient } from '@apolitical-assistant/mcp-shared';
+import {
+  runMcpServer,
+  createBearerClient,
+  type HttpClient,
+} from '@apolitical-assistant/mcp-shared';
 import { createTools, handleToolCall } from './tools.js';
 
 export interface SlackContext {

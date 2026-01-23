@@ -77,11 +77,7 @@ export async function handleDocsGetContent(
   // Extract text content
   const textContent = doc.body.content
     .filter((block) => block.paragraph)
-    .map((block) =>
-      block.paragraph!.elements
-        .map((el) => el.textRun?.content || '')
-        .join('')
-    )
+    .map((block) => block.paragraph!.elements.map((el) => el.textRun?.content || '').join(''))
     .join('');
 
   return {

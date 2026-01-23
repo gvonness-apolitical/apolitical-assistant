@@ -31,10 +31,7 @@ export class HttpClient {
    * @returns Parsed JSON response
    * @throws Error if response is not ok
    */
-  async request<T = unknown>(
-    endpoint: string,
-    options: HttpClientOptions = {}
-  ): Promise<T> {
+  async request<T = unknown>(endpoint: string, options: HttpClientOptions = {}): Promise<T> {
     const { method = 'GET', headers = {}, body, params = {} } = options;
 
     const url = new URL(`${this.baseUrl}${endpoint}`);

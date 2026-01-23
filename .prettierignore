@@ -1,0 +1,11 @@
+dist/
+node_modules/
+coverage/
+*.md
+
+# git-crypt encrypted directories
+context/
+meetings/
+121/
+morning-briefing/
+tech-notes/

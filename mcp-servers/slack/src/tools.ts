@@ -29,9 +29,7 @@ export const ListChannelsSchema = z.object({
 });
 
 export const ReadChannelSchema = z.object({
-  channel: z
-    .string()
-    .describe('Channel ID (e.g., C1234567890) or channel name (e.g., #general)'),
+  channel: z.string().describe('Channel ID (e.g., C1234567890) or channel name (e.g., #general)'),
   limit: z.number().optional().default(20).describe('Number of messages to retrieve (max 100)'),
 });
 
@@ -42,11 +40,7 @@ export const ReadThreadSchema = z.object({
 });
 
 export const ListDmsSchema = z.object({
-  limit: z
-    .number()
-    .optional()
-    .default(50)
-    .describe('Maximum number of DM conversations to return'),
+  limit: z.number().optional().default(50).describe('Maximum number of DM conversations to return'),
 });
 
 export const ReadDmSchema = z.object({
@@ -67,9 +61,7 @@ export const GetChannelInfoSchema = z.object({
 });
 
 export const SendMessageSchema = z.object({
-  channel: z
-    .string()
-    .describe('Channel ID (e.g., C1234567890) or channel name (e.g., #general)'),
+  channel: z.string().describe('Channel ID (e.g., C1234567890) or channel name (e.g., #general)'),
   text: z.string().describe('Message text (supports Slack markdown)'),
   threadTs: z
     .string()
@@ -492,10 +484,7 @@ interface SlackUser {
 
 // ==================== HANDLERS ====================
 
-async function handleSearch(
-  args: z.infer<typeof SearchSchema>,
-  token: string
-): Promise<unknown> {
+async function handleSearch(args: z.infer<typeof SearchSchema>, token: string): Promise<unknown> {
   interface SearchResponse extends SlackResponse {
     messages: {
       total: number;
@@ -624,10 +613,7 @@ async function handleReadThread(
   return { messages };
 }
 
-async function handleListDms(
-  args: z.infer<typeof ListDmsSchema>,
-  token: string
-): Promise<unknown> {
+async function handleListDms(args: z.infer<typeof ListDmsSchema>, token: string): Promise<unknown> {
   interface DmListResponse extends SlackResponse {
     channels: Array<{ id: string; user: string }>;
   }
@@ -652,10 +638,7 @@ async function handleListDms(
   return dms;
 }
 
-async function handleReadDm(
-  args: z.infer<typeof ReadDmSchema>,
-  token: string
-): Promise<unknown> {
+async function handleReadDm(args: z.infer<typeof ReadDmSchema>, token: string): Promise<unknown> {
   // Open/get the DM channel with this user
   interface OpenResponse extends SlackResponse {
     channel: { id: string };
@@ -720,10 +703,7 @@ async function handleListUsers(
     }));
 }
 
-async function handleGetUser(
-  args: z.infer<typeof GetUserSchema>,
-  token: string
-): Promise<unknown> {
+async function handleGetUser(args: z.infer<typeof GetUserSchema>, token: string): Promise<unknown> {
   interface UserInfoResponse extends SlackResponse {
     user: SlackUser;
   }
@@ -802,10 +782,7 @@ async function handleSendMessage(
   };
 }
 
-async function handleSendDm(
-  args: z.infer<typeof SendDmSchema>,
-  token: string
-): Promise<unknown> {
+async function handleSendDm(args: z.infer<typeof SendDmSchema>, token: string): Promise<unknown> {
   // First open/get the DM channel
   interface OpenResponse extends SlackResponse {
     channel: { id: string };

@@ -93,8 +93,7 @@ describe('response utilities', () => {
     });
 
     it('should pass through arguments', async () => {
-      const handler = async (a: number, b: number) =>
-        createJsonResponse({ sum: a + b });
+      const handler = async (a: number, b: number) => createJsonResponse({ sum: a + b });
       const wrapped = withErrorHandling(handler);
 
       const result = await wrapped(2, 3);
