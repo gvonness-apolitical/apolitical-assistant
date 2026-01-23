@@ -596,4 +596,21 @@ describe('Slack Handlers', () => {
       expect(data.canvases[0].title).toBe('121 Agenda Items');
     });
   });
+
+  describe('handleToolCall - slack_delete_canvas', () => {
+    it('should delete a canvas and return success', async () => {
+      mockFetch.mockResolvedValueOnce(mockSlackResponse({}));
+
+      const result = await handleToolCall(
+        'slack_delete_canvas',
+        { canvas_id: 'F0123456789' },
+        context
+      );
+
+      const data = JSON.parse((result.content[0] as { text: string }).text);
+      expect(data.success).toBe(true);
+      expect(data.deleted).toBe(true);
+      expect(data.canvasId).toBe('F0123456789');
+    });
+  });
 });

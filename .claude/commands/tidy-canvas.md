@@ -23,7 +23,68 @@ Clean up and organize a Slack canvas to align with the standard schema, archive 
    - Find next 1:1 on calendar
    - Look up canvas from config
 
-### 2. Read Current Canvas
+### 2. Check for Standalone Canvases
+
+Use `slack_list_canvases` to find all canvases in the channel/DM. Each canvas will be marked as either `channel_canvas` or `standalone`.
+
+**If standalone canvases found:**
+
+1. **List what was found**:
+   ```
+   Found canvases in DM with Joel Patrick:
+   ─────────────────────────────────────────
+
+   Channel Canvas: (none)
+
+   Standalone Canvases:
+     1. "121 Agenda Items" (F0ABC123) - last updated 2026-01-20
+     2. "Meeting Notes" (F0DEF456) - last updated 2026-01-15
+
+   Standalone canvases should be migrated to a channel canvas for consistency.
+   ```
+
+2. **Read each standalone canvas** using `slack_get_canvas`
+
+3. **Merge content by section**:
+   - Parse sections from each standalone canvas
+   - Combine same-named sections (Agenda + Agenda, Notes + Notes, etc.)
+   - Archive old/completed items as per normal rules
+   - If sections conflict, show diff and ask user which to keep
+
+4. **Create or update channel canvas**:
+   - If no channel canvas exists: use `slack_create_canvas` with `channel_id` to create one
+   - If channel canvas exists: merge standalone content into it
+
+5. **Preview migration**:
+   ```
+   Migration Preview for 1:1 with Joel Patrick
+   ─────────────────────────────────────────────
+
+   Will create channel canvas with merged content from:
+     - "121 Agenda Items" (standalone)
+     - "Meeting Notes" (standalone)
+
+   Merged sections:
+     # Agenda: 4 items (2 from each canvas)
+     # Action Items: 6 open, 3 completed → archive
+     # Notes: Combined, older notes archived
+     # Decisions: 2 decisions preserved
+
+   After migration, delete standalone canvases? (Y/n)
+   ```
+
+6. **Delete standalone canvases** (only after user confirmation):
+   - Use Slack API to delete each migrated standalone canvas
+   - Report which were deleted
+
+**If only channel canvas exists:**
+- Skip migration, proceed to step 3
+
+**If no canvases exist:**
+- Create new channel canvas with template (see step 6)
+- Proceed to step 9 (done)
+
+### 3. Read Current Canvas
 
 1. Use `slack_get_canvas` to fetch content
 2. Parse existing sections using headers (`#`, `##`)
@@ -35,7 +96,7 @@ Clean up and organize a Slack canvas to align with the standard schema, archive 
    - Decisions made
    - Any unrecognized sections
 
-### 3. Categorize Content
+### 4. Categorize Content
 
 **Agenda Items**:
 - Items under `# Agenda` section
@@ -58,7 +119,7 @@ Clean up and organize a Slack canvas to align with the standard schema, archive 
 - Content under `# Decisions` section
 - Extract date if present
 
-### 4. Archive Old Content
+### 5. Archive Old Content
 
 Move to `# History` section (create if doesn't exist):
 
@@ -80,7 +141,7 @@ Move to `# History` section (create if doesn't exist):
    - Keep in Decisions section (decisions are permanent)
    - Add date prefix if not present
 
-### 5. Reorganize Structure
+### 6. Reorganize Structure
 
 Ensure canvas follows standard template structure:
 
@@ -121,7 +182,7 @@ _Archived items from previous meetings_
 [Collapsed older notes]
 ```
 
-### 6. Apply Formatting Fixes
+### 7. Apply Formatting Fixes
 
 - **Normalize checkboxes**: Convert `☐`/`☑` to `- [ ]`/`- [x]`
 - **Add missing dates**: Add today's date to undated items being archived
@@ -131,7 +192,7 @@ _Archived items from previous meetings_
 - **Trim whitespace**: Remove excessive blank lines
 - **Fix heading levels**: Ensure consistent `#`/`##` usage
 
-### 7. Preview Changes
+### 8. Preview Changes
 
 Before updating, show diff:
 
@@ -163,7 +224,7 @@ Formatting fixes:
 Apply changes? (Y/n)
 ```
 
-### 8. Update Canvas
+### 9. Update Canvas
 
 1. Get user confirmation
 2. Use `slack_update_canvas` to apply changes

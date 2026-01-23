@@ -46,6 +46,10 @@ export const ListCanvasesSchema = z.object({
   limit: z.number().optional().default(20).describe('Maximum number of canvases to return'),
 });
 
+export const DeleteCanvasSchema = z.object({
+  canvas_id: z.string().describe('The canvas ID to delete (e.g., F0123456789)'),
+});
+
 // ==================== RESPONSE TYPES ====================
 
 interface CanvasContent {
@@ -210,6 +214,21 @@ export const canvasTools: Tool[] = [
       required: ['channel_id'],
     },
   },
+  {
+    name: 'slack_delete_canvas',
+    description:
+      'Delete a canvas. Use with caution - this permanently removes the canvas and its content.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        canvas_id: {
+          type: 'string',
+          description: 'The canvas ID to delete (e.g., F0123456789)',
+        },
+      },
+      required: ['canvas_id'],
+    },
+  },
 ];
 
 // ==================== HANDLERS ====================
@@ -369,5 +388,20 @@ export async function handleListCanvases(
   return {
     canvases,
     channelId: args.channel_id,
+  };
+}
+
+export async function handleDeleteCanvas(
+  args: z.infer<typeof DeleteCanvasSchema>,
+  token: string
+): Promise<unknown> {
+  await slackApi<SlackResponse>('canvases.delete', token, {
+    canvas_id: args.canvas_id,
+  });
+
+  return {
+    canvasId: args.canvas_id,
+    success: true,
+    deleted: true,
   };
 }
