@@ -70,6 +70,8 @@ apolitical-assistant/
 │   ├── slack/                 # Slack channels, DMs, search, messaging
 │   ├── humaans/               # HR, org chart, time off
 │   └── incident-io/           # Incidents and follow-ups
+├── scripts/
+│   └── credentials.ts         # Credential manager CLI
 ├── morning-briefing/          # Daily briefings
 ├── meetings/output/           # Meeting prep and notes (by type)
 ├── tech-notes/                # Technical documentation
@@ -209,39 +211,62 @@ cd ../incident-io && npm run build
 
 ### Credential Setup
 
-Each MCP server requires credentials. Claude Code resolves `${VAR_NAME}` references in `.mcp.json` from the macOS Keychain.
+Credentials are stored in the macOS Keychain. Claude Code resolves `${VAR_NAME}` references in `.mcp.json` from the Keychain automatically.
 
-#### Storing Credentials in Keychain
+#### Using the Credentials Manager (Recommended)
 
-Use the `security` command to store each credential:
+The credentials manager script provides an interactive way to set up and validate credentials:
 
 ```bash
-security add-generic-password -a "claude" -s "CREDENTIAL_NAME" -w "your-secret-value"
+# Check which credentials are configured
+npm run credentials
+
+# Validate credentials against APIs
+npm run credentials -- --validate
+
+# Interactive setup for missing credentials
+npm run credentials -- --setup
+
+# Update a specific credential
+npm run credentials -- --update SLACK_TOKEN
 ```
 
-To update an existing credential, delete it first:
+The credentials manager validates each credential against its API and checks that required permissions/scopes are granted.
+
+#### Supported Credentials
+
+| Service | Credential Name | Notes |
+|---------|-----------------|-------|
+| Google | `GOOGLE_CLIENT_ID` | OAuth 2.0 Client ID |
+| Google | `GOOGLE_CLIENT_SECRET` | OAuth 2.0 Client Secret |
+| Google | `GOOGLE_REFRESH_TOKEN` | Generated via OAuth flow |
+| Slack | `SLACK_TOKEN` | User OAuth Token (xoxp-...) |
+| Incident.io | `INCIDENTIO_API_KEY` | API Key |
+| Humaans | `HUMAANS_API_TOKEN` | API Token |
+| GitHub | `GITHUB_PERSONAL_ACCESS_TOKEN` | PAT with repo, read:org, read:user |
+| Linear | `LINEAR_API_KEY` | Personal API Key |
+
+#### Manual Keychain Commands
+
+You can also manage credentials directly with the `security` command:
 
 ```bash
+# Add a credential
+security add-generic-password -a "claude" -s "CREDENTIAL_NAME" -w "your-secret-value"
+
+# Update a credential (delete then add)
 security delete-generic-password -a "claude" -s "CREDENTIAL_NAME"
 security add-generic-password -a "claude" -s "CREDENTIAL_NAME" -w "new-secret-value"
+
+# Read a credential
+security find-generic-password -a "claude" -s "CREDENTIAL_NAME" -w
 ```
 
-The following credentials are required (names must match exactly):
+#### Credential Generation Guides
 
-| Credential Name | Service |
-|-----------------|---------|
-| `GOOGLE_CLIENT_ID` | Google |
-| `GOOGLE_CLIENT_SECRET` | Google |
-| `GOOGLE_REFRESH_TOKEN` | Google |
-| `SLACK_TOKEN` | Slack |
-| `INCIDENTIO_API_KEY` | Incident.io |
-| `HUMAANS_API_TOKEN` | Humaans |
-| `GITHUB_PERSONAL_ACCESS_TOKEN` | GitHub |
-| `LINEAR_API_KEY` | Linear |
+Follow these guides to generate credentials for each service.
 
-Follow the guides below to generate each credential.
-
-#### Google OAuth Credentials
+##### Google OAuth Credentials
 
 1. **Create a Google Cloud Project**
    - Go to [Google Cloud Console](https://console.cloud.google.com/)
@@ -262,23 +287,13 @@ Follow the guides below to generate each credential.
    - Select "Desktop app" as application type
    - Download the credentials JSON
 
-5. **Generate Refresh Token**
+5. **Store Credentials**
    ```bash
-   cd mcp-servers/google
-   GOOGLE_CLIENT_ID="your-client-id" \
-   GOOGLE_CLIENT_SECRET="your-client-secret" \
-   npx tsx scripts/auth.ts
+   npm run credentials -- --setup
    ```
-   This opens a browser for OAuth consent and outputs your refresh token.
+   Enter your Client ID and Client Secret when prompted. When prompted for the refresh token, select "Y" to run the OAuth flow automatically.
 
-6. **Store in Keychain**
-   ```bash
-   security add-generic-password -a "claude" -s "GOOGLE_CLIENT_ID" -w "your-client-id"
-   security add-generic-password -a "claude" -s "GOOGLE_CLIENT_SECRET" -w "your-client-secret"
-   security add-generic-password -a "claude" -s "GOOGLE_REFRESH_TOKEN" -w "your-refresh-token"
-   ```
-
-#### Slack App Credentials
+##### Slack App Credentials
 
 1. **Create a Slack App**
    - Go to [Slack API Apps](https://api.slack.com/apps)
@@ -294,12 +309,12 @@ Follow the guides below to generate each credential.
    - Click "Install to Workspace" and authorize
    - Copy the "User OAuth Token" (starts with `xoxp-`)
 
-4. **Store in Keychain**
+4. **Store Credential**
    ```bash
-   security add-generic-password -a "claude" -s "SLACK_TOKEN" -w "xoxp-your-token"
+   npm run credentials -- --update SLACK_TOKEN
    ```
 
-#### Incident.io API Key
+##### Incident.io API Key
 
 1. **Access API Settings**
    - Go to [incident.io](https://app.incident.io) > Settings > API Keys
@@ -312,12 +327,12 @@ Follow the guides below to generate each credential.
      - Follow-ups: Read + Write
      - Severities: Read
 
-3. **Store in Keychain**
+3. **Store Credential**
    ```bash
-   security add-generic-password -a "claude" -s "INCIDENTIO_API_KEY" -w "your-api-key"
+   npm run credentials -- --update INCIDENTIO_API_KEY
    ```
 
-#### Humaans API Key
+##### Humaans API Key
 
 1. **Access API Settings**
    - Go to [Humaans](https://app.humaans.io) > Settings > API Keys
@@ -326,12 +341,12 @@ Follow the guides below to generate each credential.
    - Click "Generate new token"
    - The token has read access to all data by default
 
-3. **Store in Keychain**
+3. **Store Credential**
    ```bash
-   security add-generic-password -a "claude" -s "HUMAANS_API_TOKEN" -w "your-api-key"
+   npm run credentials -- --update HUMAANS_API_TOKEN
    ```
 
-#### GitHub Personal Access Token
+##### GitHub Personal Access Token
 
 1. **Create Token**
    - Go to GitHub > Settings > Developer settings > Personal access tokens > Tokens (classic)
@@ -339,42 +354,36 @@ Follow the guides below to generate each credential.
    - Select scopes: `repo`, `read:org`, `read:user`
    - Set an expiration (or no expiration for convenience)
 
-2. **Store in Keychain**
+2. **Store Credential**
    ```bash
-   security add-generic-password -a "claude" -s "GITHUB_PERSONAL_ACCESS_TOKEN" -w "ghp_your-token"
+   npm run credentials -- --update GITHUB_PERSONAL_ACCESS_TOKEN
    ```
 
-#### Linear API Key
+##### Linear API Key
 
 1. **Create API Key**
    - Go to Linear > Settings > API > Personal API keys
    - Click "Create key"
    - The key has access based on your Linear permissions
 
-2. **Store in Keychain**
+2. **Store Credential**
    ```bash
-   security add-generic-password -a "claude" -s "LINEAR_API_KEY" -w "lin_api_your-key"
+   npm run credentials -- --update LINEAR_API_KEY
    ```
 
-#### Notion Integration Token
+##### Notion (Browser OAuth)
 
-1. **Create Integration**
-   - Go to [Notion Integrations](https://www.notion.so/my-integrations)
-   - Click "New integration"
-   - Name it and select capabilities (read content, read comments)
+Notion uses browser-based OAuth via `mcp-remote` and does not require manual credential setup.
 
-2. **Share Pages with Integration**
-   - Open each Notion page/database you want accessible
-   - Click "..." > "Connections" > Add your integration
-
-3. **Authenticate**
-   - Notion uses `mcp-remote` which handles OAuth in the browser
-   - On first use, you'll be prompted to authorize in your browser
+1. **First Use**
+   - When you first use a Notion tool, a browser window will open
+   - Authorize the Notion MCP server to access your workspace
+   - The token is managed automatically by `mcp-remote`
 
 ### Configuration
 
 1. **MCP Configuration**: The `.mcp.json` file configures which MCP servers are available
-2. **Credentials**: Store in macOS Keychain as described above
+2. **Credentials**: Managed via `npm run credentials` and stored in macOS Keychain
 3. **Local Settings**: `.claude/settings.local.json` controls tool permissions
 
 ## Usage
