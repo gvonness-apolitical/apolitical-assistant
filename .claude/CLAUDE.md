@@ -75,6 +75,7 @@ Use `/[skill-name]` to invoke these workflows:
 
 ### Technical Review
 - `/review-rfc [notion-url]` - Comprehensive RFC review with comments (supports quick/standard/deep)
+- `/review-doc [doc-url]` - Review Google Docs/Slides from non-technical stakeholders
 
 ## Guidelines
 

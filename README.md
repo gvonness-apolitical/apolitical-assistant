@@ -55,6 +55,7 @@ Use `/[skill-name]` in Claude Code to invoke workflows:
 | Skill | Purpose |
 |-------|---------|
 | `/review-rfc [notion-url]` | RFC review with Notion comments (quick/standard/deep) |
+| `/review-doc [doc-url]` | Review Google Docs/Slides from non-technical stakeholders |
 
 ## Project Structure
 
@@ -62,7 +63,7 @@ Use `/[skill-name]` in Claude Code to invoke workflows:
 apolitical-assistant/
 ├── .claude/
 │   ├── CLAUDE.md              # Assistant instructions and guidelines
-│   ├── commands/              # Skill definitions (14 skills)
+│   ├── commands/              # Skill definitions (15 skills)
 │   └── settings.local.json    # Local MCP permissions
 ├── mcp-servers/
 │   ├── google/                # Gmail, Calendar, Drive, Docs, Sheets, Slides
