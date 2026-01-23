@@ -167,6 +167,73 @@ export function createTools(): Tool[] {
         required: ['channel'],
       },
     },
+    {
+      name: 'slack_send_message',
+      description: 'Send a message to a Slack channel. Requires chat:write scope.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          channel: {
+            type: 'string',
+            description: 'Channel ID (e.g., C1234567890) or channel name (e.g., #general)',
+          },
+          text: {
+            type: 'string',
+            description: 'Message text (supports Slack markdown)',
+          },
+          threadTs: {
+            type: 'string',
+            description: 'Thread timestamp to reply to (makes this a threaded reply)',
+          },
+          unfurlLinks: {
+            type: 'boolean',
+            default: true,
+            description: 'Unfurl links in the message',
+          },
+        },
+        required: ['channel', 'text'],
+      },
+    },
+    {
+      name: 'slack_send_dm',
+      description: 'Send a direct message to a user. Requires chat:write scope.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          userId: {
+            type: 'string',
+            description: 'User ID to send DM to (e.g., U1234567890)',
+          },
+          text: {
+            type: 'string',
+            description: 'Message text (supports Slack markdown)',
+          },
+        },
+        required: ['userId', 'text'],
+      },
+    },
+    {
+      name: 'slack_add_reaction',
+      description: 'Add an emoji reaction to a message. Requires reactions:write scope.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          channel: {
+            type: 'string',
+            description: 'Channel ID where the message is',
+          },
+          timestamp: {
+            type: 'string',
+            description: 'Timestamp of the message to react to',
+          },
+          emoji: {
+            type: 'string',
+            description: 'Emoji name without colons (e.g., "thumbsup", "eyes", "white_check_mark")',
+          },
+        },
+        required: ['channel', 'timestamp', 'emoji'],
+      },
+    },
   ];
 }
 
@@ -611,6 +678,89 @@ export async function handleToolCall(
           topic: ch.topic.value,
           purpose: ch.purpose.value,
           created: new Date(ch.created * 1000).toISOString(),
+        };
+        break;
+      }
+
+      case 'slack_send_message': {
+        const { channel, text, threadTs, unfurlLinks = true } = args as {
+          channel: string;
+          text: string;
+          threadTs?: string;
+          unfurlLinks?: boolean;
+        };
+
+        const channelId = await resolveChannelId(channel, token);
+
+        const params: Record<string, string | number | boolean> = {
+          channel: channelId,
+          text,
+          unfurl_links: unfurlLinks,
+        };
+        if (threadTs) params.thread_ts = threadTs;
+
+        const data = (await slackApi('chat.postMessage', token, params)) as {
+          ts: string;
+          channel: string;
+          message: { text: string };
+        };
+
+        result = {
+          success: true,
+          timestamp: data.ts,
+          channel: data.channel,
+          text: data.message.text,
+        };
+        break;
+      }
+
+      case 'slack_send_dm': {
+        const { userId, text } = args as { userId: string; text: string };
+
+        // First open/get the DM channel
+        const openData = (await slackApi('conversations.open', token, {
+          users: userId,
+        })) as { channel: { id: string } };
+
+        const channelId = openData.channel.id;
+
+        const data = (await slackApi('chat.postMessage', token, {
+          channel: channelId,
+          text,
+        })) as {
+          ts: string;
+          channel: string;
+          message: { text: string };
+        };
+
+        result = {
+          success: true,
+          timestamp: data.ts,
+          channel: data.channel,
+          userId,
+          text: data.message.text,
+        };
+        break;
+      }
+
+      case 'slack_add_reaction': {
+        const { channel, timestamp, emoji } = args as {
+          channel: string;
+          timestamp: string;
+          emoji: string;
+        };
+
+        await slackApi('reactions.add', token, {
+          channel,
+          timestamp,
+          name: emoji,
+        });
+
+        result = {
+          success: true,
+          channel,
+          timestamp,
+          emoji,
         };
         break;
       }

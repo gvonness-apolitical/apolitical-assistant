@@ -24,6 +24,28 @@ const GetPostmortemSchema = z.object({
   incidentId: z.string().describe('The incident ID to get postmortem for'),
 });
 
+const CreateIncidentSchema = z.object({
+  name: z.string().describe('Incident title/name'),
+  summary: z.string().optional().describe('Brief summary of the incident'),
+  severity: z.string().optional().describe('Severity ID (get from severities API)'),
+  incidentTypeId: z.string().optional().describe('Incident type ID'),
+  mode: z.enum(['standard', 'retrospective', 'test']).optional().default('standard').describe('Incident mode'),
+});
+
+const UpdateIncidentSchema = z.object({
+  incidentId: z.string().describe('The incident ID to update'),
+  name: z.string().optional().describe('New incident name'),
+  summary: z.string().optional().describe('Updated summary'),
+  severity: z.string().optional().describe('New severity ID'),
+});
+
+const CreateFollowupSchema = z.object({
+  incidentId: z.string().describe('The incident ID to create follow-up for'),
+  title: z.string().describe('Follow-up title'),
+  description: z.string().optional().describe('Follow-up description'),
+  assigneeId: z.string().optional().describe('User ID to assign the follow-up to'),
+});
+
 export function createTools(): Tool[] {
   return [
     {
@@ -101,28 +123,136 @@ export function createTools(): Tool[] {
         required: ['incidentId'],
       },
     },
+    {
+      name: 'incidentio_create_incident',
+      description: 'Create a new incident in Incident.io. Returns the created incident with its ID and status.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          name: {
+            type: 'string',
+            description: 'Incident title/name',
+          },
+          summary: {
+            type: 'string',
+            description: 'Brief summary of the incident',
+          },
+          severity: {
+            type: 'string',
+            description: 'Severity ID (use incidentio_list_severities to get available options)',
+          },
+          incidentTypeId: {
+            type: 'string',
+            description: 'Incident type ID',
+          },
+          mode: {
+            type: 'string',
+            enum: ['standard', 'retrospective', 'test'],
+            default: 'standard',
+            description: 'Incident mode: standard (real incident), retrospective (past incident), test (for testing)',
+          },
+        },
+        required: ['name'],
+      },
+    },
+    {
+      name: 'incidentio_update_incident',
+      description: 'Update an existing incident (name, summary, severity).',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          incidentId: {
+            type: 'string',
+            description: 'The incident ID to update',
+          },
+          name: {
+            type: 'string',
+            description: 'New incident name',
+          },
+          summary: {
+            type: 'string',
+            description: 'Updated summary',
+          },
+          severity: {
+            type: 'string',
+            description: 'New severity ID',
+          },
+        },
+        required: ['incidentId'],
+      },
+    },
+    {
+      name: 'incidentio_create_followup',
+      description: 'Create a follow-up action item for an incident.',
+      inputSchema: {
+        type: 'object',
+        properties: {
+          incidentId: {
+            type: 'string',
+            description: 'The incident ID to create follow-up for',
+          },
+          title: {
+            type: 'string',
+            description: 'Follow-up title',
+          },
+          description: {
+            type: 'string',
+            description: 'Follow-up description',
+          },
+          assigneeId: {
+            type: 'string',
+            description: 'User ID to assign the follow-up to',
+          },
+        },
+        required: ['incidentId', 'title'],
+      },
+    },
+    {
+      name: 'incidentio_list_severities',
+      description: 'List available severity levels. Use this to get severity IDs for creating/updating incidents.',
+      inputSchema: {
+        type: 'object',
+        properties: {},
+      },
+    },
   ];
 }
 
 async function apiRequest(
   endpoint: string,
   token: string,
-  params: Record<string, string> = {}
+  options: {
+    method?: 'GET' | 'POST' | 'PATCH' | 'PUT';
+    params?: Record<string, string>;
+    body?: Record<string, unknown>;
+  } = {}
 ): Promise<unknown> {
+  const { method = 'GET', params = {}, body } = options;
   const url = new URL(`${INCIDENTIO_API_BASE}${endpoint}`);
-  Object.entries(params).forEach(([key, value]) => {
-    if (value) url.searchParams.append(key, value);
-  });
 
-  const response = await fetch(url.toString(), {
+  if (method === 'GET') {
+    Object.entries(params).forEach(([key, value]) => {
+      if (value) url.searchParams.append(key, value);
+    });
+  }
+
+  const fetchOptions: RequestInit = {
+    method,
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
-  });
+  };
+
+  if (body && method !== 'GET') {
+    fetchOptions.body = JSON.stringify(body);
+  }
+
+  const response = await fetch(url.toString(), fetchOptions);
 
   if (!response.ok) {
-    throw new Error(`Incident.io API error: ${response.status} ${response.statusText}`);
+    const errorText = await response.text();
+    throw new Error(`Incident.io API error: ${response.status} ${response.statusText} - ${errorText}`);
   }
 
   return response.json();
@@ -143,7 +273,7 @@ export async function handleToolCall(
 
         if (parsed.limit) params['page_size'] = parsed.limit.toString();
 
-        const data = (await apiRequest('/incidents', token, params)) as {
+        const data = (await apiRequest('/incidents', token, { params })) as {
           incidents: Array<{
             id: string;
             name: string;
@@ -193,7 +323,7 @@ export async function handleToolCall(
 
       case 'incidentio_get_incident': {
         const parsed = GetIncidentSchema.parse(args);
-        const data = (await apiRequest(`/incidents/${parsed.incidentId}`, token)) as {
+        const data = (await apiRequest(`/incidents/${parsed.incidentId}`, token, {})) as {
           incident: unknown;
         };
         result = data.incident;
@@ -206,7 +336,7 @@ export async function handleToolCall(
 
         if (parsed.incidentId) params['incident_id'] = parsed.incidentId;
 
-        const data = (await apiRequest('/follow_ups', token, params)) as {
+        const data = (await apiRequest('/follow_ups', token, { params })) as {
           follow_ups: Array<{
             id: string;
             title: string;
@@ -254,7 +384,8 @@ export async function handleToolCall(
         // First get the incident to find the postmortem
         const incidentData = (await apiRequest(
           `/incidents/${parsed.incidentId}`,
-          token
+          token,
+          {}
         )) as {
           incident: {
             id: string;
@@ -287,6 +418,126 @@ export async function handleToolCall(
             {} as Record<string, string>
           ),
         };
+        break;
+      }
+
+      case 'incidentio_create_incident': {
+        const parsed = CreateIncidentSchema.parse(args);
+
+        const body: Record<string, unknown> = {
+          idempotency_key: `create-${Date.now()}`,
+          visibility: 'public',
+          name: parsed.name,
+          mode: parsed.mode,
+        };
+
+        if (parsed.summary) body.summary = parsed.summary;
+        if (parsed.severity) body.severity_id = parsed.severity;
+        if (parsed.incidentTypeId) body.incident_type_id = parsed.incidentTypeId;
+
+        const data = (await apiRequest('/incidents', token, {
+          method: 'POST',
+          body,
+        })) as {
+          incident: {
+            id: string;
+            name: string;
+            status: { name: string };
+            severity?: { name: string };
+            permalink: string;
+          };
+        };
+
+        result = {
+          success: true,
+          incidentId: data.incident.id,
+          name: data.incident.name,
+          status: data.incident.status.name,
+          severity: data.incident.severity?.name,
+          permalink: data.incident.permalink,
+        };
+        break;
+      }
+
+      case 'incidentio_update_incident': {
+        const parsed = UpdateIncidentSchema.parse(args);
+
+        const body: Record<string, unknown> = {};
+        if (parsed.name) body.name = parsed.name;
+        if (parsed.summary) body.summary = parsed.summary;
+        if (parsed.severity) body.severity_id = parsed.severity;
+
+        const data = (await apiRequest(`/incidents/${parsed.incidentId}`, token, {
+          method: 'PATCH',
+          body: { incident: body },
+        })) as {
+          incident: {
+            id: string;
+            name: string;
+            status: { name: string };
+            severity?: { name: string };
+          };
+        };
+
+        result = {
+          success: true,
+          incidentId: data.incident.id,
+          name: data.incident.name,
+          status: data.incident.status.name,
+          severity: data.incident.severity?.name,
+        };
+        break;
+      }
+
+      case 'incidentio_create_followup': {
+        const parsed = CreateFollowupSchema.parse(args);
+
+        const body: Record<string, unknown> = {
+          incident_id: parsed.incidentId,
+          title: parsed.title,
+        };
+
+        if (parsed.description) body.description = parsed.description;
+        if (parsed.assigneeId) body.assignee_id = parsed.assigneeId;
+
+        const data = (await apiRequest('/follow_ups', token, {
+          method: 'POST',
+          body,
+        })) as {
+          follow_up: {
+            id: string;
+            title: string;
+            status: { name: string };
+            assignee?: { name: string };
+          };
+        };
+
+        result = {
+          success: true,
+          followUpId: data.follow_up.id,
+          title: data.follow_up.title,
+          status: data.follow_up.status.name,
+          assignee: data.follow_up.assignee?.name,
+        };
+        break;
+      }
+
+      case 'incidentio_list_severities': {
+        const data = (await apiRequest('/severities', token, {})) as {
+          severities: Array<{
+            id: string;
+            name: string;
+            description?: string;
+            rank: number;
+          }>;
+        };
+
+        result = data.severities.map((s) => ({
+          id: s.id,
+          name: s.name,
+          description: s.description,
+          rank: s.rank,
+        }));
         break;
       }
 
