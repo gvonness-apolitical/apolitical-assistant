@@ -30,6 +30,8 @@ You have access to the following integrations through MCP servers:
 - Check channel activity
 - Send messages and DMs
 - Add reactions
+- Read and update canvases (1:1 agenda/notes)
+- Read channel bookmarks
 
 ### Notion
 - Search and read pages
@@ -58,9 +60,10 @@ Use `/[skill-name]` to invoke these workflows:
 - `/triage-inbox` - Review and categorize emails
 
 ### Meetings
-- `/prep-meeting [meeting]` - Prepare for an upcoming meeting
+- `/prep-meeting [meeting]` - Prepare for an upcoming meeting (integrates with mapped Slack channels/canvases)
 - `/meeting-notes [doc-id]` - Process Gemini auto-notes into structured format
 - `/schedule-meeting [attendees] [topic]` - Smart scheduling with availability checking
+- `/setup-meeting-channels` - Configure Slack channel/canvas mappings for recurring meetings
 
 ### Communication
 - `/draft-email [message-id]` - Draft an email response
@@ -105,6 +108,10 @@ When preparing for meetings, gather:
 - Relevant documents and previous meeting notes
 - Open action items with those attendees
 - Any incidents or issues involving attendees' teams
+- For mapped meetings: Slack channel activity since last prep
+- For 1:1s with canvas: Agenda items and outstanding tasks from shared canvas
+
+Meeting configuration is stored in `.claude/meeting-config.json`. Run `/setup-meeting-channels` to configure mappings.
 
 ### Email Triage
 When reviewing emails, categorize as:

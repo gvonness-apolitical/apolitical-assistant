@@ -1,0 +1,17 @@
+{
+  "channels": {
+    "Meeting Title": {
+      "channelId": "C0123456789",
+      "channelName": "#channel-name",
+      "lastPrepDate": null
+    }
+  },
+  "oneOnOnes": {
+    "colleague@company.com": {
+      "displayName": "Colleague Name",
+      "dmChannelId": "D0123456789",
+      "canvasId": "F0123456789",
+      "lastPrepDate": null
+    }
+  }
+}

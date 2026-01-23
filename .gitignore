@@ -10,8 +10,9 @@ dist/
 .env.local
 .env.*.local
 
-# Claude - keeping .claude in git for this project, but exclude local settings
+# Claude - keeping .claude in git for this project, but exclude local/sensitive files
 .claude/settings.local.json
+.claude/meeting-config.json
 
 # IDE
 .idea/

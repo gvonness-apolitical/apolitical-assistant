@@ -7,9 +7,12 @@ const GET_METHODS = [
   'conversations.history',
   'conversations.replies',
   'conversations.info',
+  'conversations.canvases.list',
   'users.list',
   'users.info',
   'conversations.open',
+  'bookmarks.list',
+  'canvases.read',
 ];
 
 export interface SlackResponse {

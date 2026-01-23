@@ -10,7 +10,7 @@ This assistant uses Claude Code with MCP (Model Context Protocol) servers to pro
 
 - **Morning Briefings**: Daily summary of calendar, emails, incidents, and priorities
 - **Email Triage**: Intelligent email categorisation with user confirmation
-- **Meeting Prep & Scheduling**: Context gathering and smart scheduling with availability checking
+- **Meeting Prep & Scheduling**: Context gathering with Slack channel/canvas integration and smart scheduling
 - **Meeting Notes**: Process Gemini auto-transcripts into structured notes
 - **EOD & Weekly Reviews**: End-of-day summaries and weekly retrospectives
 - **Blocker & Status Analysis**: Check what's blocking a person, project, or team
@@ -32,9 +32,10 @@ Use `/[skill-name]` in Claude Code to invoke workflows:
 ### Meetings
 | Skill | Purpose |
 |-------|---------|
-| `/prep-meeting [meeting]` | Prepare for an upcoming meeting |
+| `/prep-meeting [meeting]` | Prepare for an upcoming meeting (with channel/canvas integration) |
 | `/meeting-notes [doc-id]` | Process Gemini notes into structured format |
 | `/schedule-meeting [attendees] [topic]` | Smart scheduling with availability checking |
+| `/setup-meeting-channels` | Configure Slack channel mappings for recurring meetings |
 
 ### Communication
 | Skill | Purpose |
@@ -85,7 +86,7 @@ apolitical-assistant/
 | Service | Capabilities |
 |---------|--------------|
 | Google | Gmail (read/send/draft), Calendar (read/create/freebusy), Drive, Docs, Sheets, Slides |
-| Slack | Search, read channels/DMs, send messages, add reactions |
+| Slack | Search, read channels/DMs, send messages, add reactions, read/write canvases, read bookmarks |
 | Humaans | HR, org chart, time off |
 | Incident.io | Incidents (read/create/update), follow-ups (read/create) |
 
@@ -148,6 +149,13 @@ Configure these in your Slack App's OAuth & Permissions settings.
 |-------|---------|
 | `chat:write` | Send messages to channels and DMs |
 | `reactions:write` | Add emoji reactions |
+
+**Required for canvas and bookmark operations:**
+| Scope | Purpose |
+|-------|---------|
+| `canvases:read` | Read canvas content |
+| `canvases:write` | Create and update canvases |
+| `bookmarks:read` | Read channel bookmarks |
 
 ### Incident.io API Key
 
@@ -385,6 +393,39 @@ Notion uses browser-based OAuth via `mcp-remote` and does not require manual cre
 1. **MCP Configuration**: The `.mcp.json` file configures which MCP servers are available
 2. **Credentials**: Managed via `npm run credentials` and stored in macOS Keychain
 3. **Local Settings**: `.claude/settings.local.json` controls tool permissions
+4. **Meeting Config**: `.claude/meeting-config.json` maps meetings to Slack channels/canvases
+
+#### Meeting Configuration
+
+The `/prep-meeting` skill uses `.claude/meeting-config.json` to integrate with Slack channels and canvases:
+
+```json
+{
+  "channels": {
+    "Platform Retro": {
+      "channelId": "C0123456789",
+      "channelName": "#platform-retro",
+      "lastPrepDate": "2026-01-15T10:00:00Z"
+    }
+  },
+  "oneOnOnes": {
+    "colleague@company.com": {
+      "displayName": "Colleague Name",
+      "dmChannelId": "D0123456789",
+      "canvasId": "F0123456789",
+      "lastPrepDate": "2026-01-22T15:30:00Z"
+    }
+  }
+}
+```
+
+Run `/setup-meeting-channels` to configure mappings interactively, or copy the example:
+
+```bash
+cp .claude/meeting-config.example.json .claude/meeting-config.json
+```
+
+Note: `meeting-config.json` is gitignored as it contains channel IDs and email addresses.
 
 ## Usage
 
