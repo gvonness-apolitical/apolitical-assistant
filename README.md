@@ -209,7 +209,37 @@ cd ../incident-io && npm run build
 
 ### Credential Setup
 
-Each MCP server requires credentials. Follow the guides below to generate them.
+Each MCP server requires credentials. Claude Code resolves `${VAR_NAME}` references in `.mcp.json` from the macOS Keychain.
+
+#### Storing Credentials in Keychain
+
+Use the `security` command to store each credential:
+
+```bash
+security add-generic-password -a "claude" -s "CREDENTIAL_NAME" -w "your-secret-value"
+```
+
+To update an existing credential, delete it first:
+
+```bash
+security delete-generic-password -a "claude" -s "CREDENTIAL_NAME"
+security add-generic-password -a "claude" -s "CREDENTIAL_NAME" -w "new-secret-value"
+```
+
+The following credentials are required (names must match exactly):
+
+| Credential Name | Service |
+|-----------------|---------|
+| `GOOGLE_CLIENT_ID` | Google |
+| `GOOGLE_CLIENT_SECRET` | Google |
+| `GOOGLE_REFRESH_TOKEN` | Google |
+| `SLACK_TOKEN` | Slack |
+| `INCIDENTIO_API_KEY` | Incident.io |
+| `HUMAANS_API_TOKEN` | Humaans |
+| `GITHUB_PERSONAL_ACCESS_TOKEN` | GitHub |
+| `LINEAR_API_KEY` | Linear |
+
+Follow the guides below to generate each credential.
 
 #### Google OAuth Credentials
 
@@ -241,11 +271,11 @@ Each MCP server requires credentials. Follow the guides below to generate them.
    ```
    This opens a browser for OAuth consent and outputs your refresh token.
 
-6. **Set Environment Variables**
+6. **Store in Keychain**
    ```bash
-   export GOOGLE_CLIENT_ID="your-client-id"
-   export GOOGLE_CLIENT_SECRET="your-client-secret"
-   export GOOGLE_REFRESH_TOKEN="your-refresh-token"
+   security add-generic-password -a "claude" -s "GOOGLE_CLIENT_ID" -w "your-client-id"
+   security add-generic-password -a "claude" -s "GOOGLE_CLIENT_SECRET" -w "your-client-secret"
+   security add-generic-password -a "claude" -s "GOOGLE_REFRESH_TOKEN" -w "your-refresh-token"
    ```
 
 #### Slack App Credentials
@@ -264,9 +294,9 @@ Each MCP server requires credentials. Follow the guides below to generate them.
    - Click "Install to Workspace" and authorize
    - Copy the "User OAuth Token" (starts with `xoxp-`)
 
-4. **Set Environment Variable**
+4. **Store in Keychain**
    ```bash
-   export SLACK_TOKEN="xoxp-your-token"
+   security add-generic-password -a "claude" -s "SLACK_TOKEN" -w "xoxp-your-token"
    ```
 
 #### Incident.io API Key
@@ -282,9 +312,9 @@ Each MCP server requires credentials. Follow the guides below to generate them.
      - Follow-ups: Read + Write
      - Severities: Read
 
-3. **Set Environment Variable**
+3. **Store in Keychain**
    ```bash
-   export INCIDENT_IO_API_KEY="your-api-key"
+   security add-generic-password -a "claude" -s "INCIDENTIO_API_KEY" -w "your-api-key"
    ```
 
 #### Humaans API Key
@@ -296,9 +326,9 @@ Each MCP server requires credentials. Follow the guides below to generate them.
    - Click "Generate new token"
    - The token has read access to all data by default
 
-3. **Set Environment Variable**
+3. **Store in Keychain**
    ```bash
-   export HUMAANS_API_KEY="your-api-key"
+   security add-generic-password -a "claude" -s "HUMAANS_API_TOKEN" -w "your-api-key"
    ```
 
 #### GitHub Personal Access Token
@@ -309,9 +339,10 @@ Each MCP server requires credentials. Follow the guides below to generate them.
    - Select scopes: `repo`, `read:org`, `read:user`
    - Set an expiration (or no expiration for convenience)
 
-2. **Configure for MCP**
-   - Follow the [GitHub MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/github) setup instructions
-   - Set `GITHUB_PERSONAL_ACCESS_TOKEN` in your environment
+2. **Store in Keychain**
+   ```bash
+   security add-generic-password -a "claude" -s "GITHUB_PERSONAL_ACCESS_TOKEN" -w "ghp_your-token"
+   ```
 
 #### Linear API Key
 
@@ -320,9 +351,10 @@ Each MCP server requires credentials. Follow the guides below to generate them.
    - Click "Create key"
    - The key has access based on your Linear permissions
 
-2. **Configure for MCP**
-   - Follow the [Linear MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/linear) setup instructions
-   - Set `LINEAR_API_KEY` in your environment
+2. **Store in Keychain**
+   ```bash
+   security add-generic-password -a "claude" -s "LINEAR_API_KEY" -w "lin_api_your-key"
+   ```
 
 #### Notion Integration Token
 
@@ -335,14 +367,14 @@ Each MCP server requires credentials. Follow the guides below to generate them.
    - Open each Notion page/database you want accessible
    - Click "..." > "Connections" > Add your integration
 
-3. **Configure for MCP**
-   - Follow the [Notion MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/notion) setup instructions
-   - Set `NOTION_API_KEY` in your environment
+3. **Authenticate**
+   - Notion uses `mcp-remote` which handles OAuth in the browser
+   - On first use, you'll be prompted to authorize in your browser
 
 ### Configuration
 
 1. **MCP Configuration**: The `.mcp.json` file configures which MCP servers are available
-2. **Credentials**: Set environment variables as described above
+2. **Credentials**: Store in macOS Keychain as described above
 3. **Local Settings**: `.claude/settings.local.json` controls tool permissions
 
 ## Usage
