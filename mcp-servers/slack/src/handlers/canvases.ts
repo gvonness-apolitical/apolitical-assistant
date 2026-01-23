@@ -46,6 +46,10 @@ export const ListCanvasesSchema = z.object({
   limit: z.number().optional().default(20).describe('Maximum number of canvases to return'),
 });
 
+export const DeleteCanvasSchema = z.object({
+  canvas_id: z.string().describe('The canvas ID to delete (e.g., F0123456789)'),
+});
+
 // ==================== RESPONSE TYPES ====================
 
 interface CanvasContent {
@@ -59,22 +63,6 @@ interface CanvasContent {
       style?: Record<string, boolean>;
     }>;
   }>;
-}
-
-interface CanvasSection {
-  id: string;
-  type: string;
-  content?: CanvasContent;
-}
-
-interface Canvas {
-  id: string;
-  title?: string;
-  document_content?: CanvasContent;
-  sections?: CanvasSection[];
-  channel_id?: string;
-  created?: number;
-  updated?: number;
 }
 
 interface CanvasReadResponse extends SlackResponse {
@@ -91,11 +79,17 @@ interface CanvasCreateResponse extends SlackResponse {
   canvas_id: string;
 }
 
-interface CanvasListResponse extends SlackResponse {
-  canvases: Canvas[];
-  response_metadata?: {
-    next_cursor?: string;
-  };
+// Response type for files.list API
+interface FilesListResponse extends SlackResponse {
+  files: Array<{
+    id: string;
+    name: string;
+    title: string;
+    filetype: string;
+    created: number;
+    updated: number;
+    user: string;
+  }>;
 }
 
 // ==================== TOOL DEFINITIONS ====================
@@ -186,7 +180,8 @@ export const canvasTools: Tool[] = [
   },
   {
     name: 'slack_list_canvases',
-    description: 'List canvases in a channel or DM conversation.',
+    description:
+      'List all canvases in a channel or DM. Returns both the built-in channel canvas (if any) and standalone canvases shared in the channel.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -201,6 +196,21 @@ export const canvasTools: Tool[] = [
         },
       },
       required: ['channel_id'],
+    },
+  },
+  {
+    name: 'slack_delete_canvas',
+    description:
+      'Delete a canvas. Use with caution - this permanently removes the canvas and its content.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        canvas_id: {
+          type: 'string',
+          description: 'The canvas ID to delete (e.g., F0123456789)',
+        },
+      },
+      required: ['canvas_id'],
     },
   },
 ];
@@ -287,21 +297,95 @@ export async function handleCreateCanvas(
   };
 }
 
+interface ConversationInfoResponse extends SlackResponse {
+  channel: {
+    id: string;
+    name?: string;
+    properties?: {
+      canvas?: {
+        file_id: string;
+        is_empty?: boolean;
+        quip_thread_id?: string;
+      };
+    };
+  };
+}
+
 export async function handleListCanvases(
   args: z.infer<typeof ListCanvasesSchema>,
   token: string
 ): Promise<unknown> {
-  const data = await slackApi<CanvasListResponse>('conversations.canvases.list', token, {
-    channel: args.channel_id,
-    limit: args.limit,
+  const canvases: Array<{
+    id: string;
+    title?: string;
+    type: 'channel_canvas' | 'standalone';
+    isEmpty?: boolean;
+    created?: number;
+    updated?: number;
+  }> = [];
+  const seenIds = new Set<string>();
+
+  // 1. Check for built-in channel canvas via conversations.info
+  try {
+    const convData = await slackApi<ConversationInfoResponse>('conversations.info', token, {
+      channel: args.channel_id,
+    });
+
+    if (convData.channel?.properties?.canvas?.file_id) {
+      const canvasId = convData.channel.properties.canvas.file_id;
+      seenIds.add(canvasId);
+      canvases.push({
+        id: canvasId,
+        type: 'channel_canvas',
+        isEmpty: convData.channel.properties.canvas.is_empty,
+      });
+    }
+  } catch {
+    // conversations.info may fail for some channel types, continue to files.list
+  }
+
+  // 2. Find standalone canvases shared in the channel via files.list
+  try {
+    const filesData = await slackApi<FilesListResponse>('files.list', token, {
+      channel: args.channel_id,
+      types: 'canvas',
+      count: args.limit || 20,
+    });
+
+    for (const file of filesData.files || []) {
+      // Skip if we already have this canvas from channel properties
+      if (seenIds.has(file.id)) continue;
+
+      seenIds.add(file.id);
+      canvases.push({
+        id: file.id,
+        title: file.title || file.name,
+        type: 'standalone',
+        created: file.created,
+        updated: file.updated,
+      });
+    }
+  } catch {
+    // files.list may fail if scope not available, return what we have
+  }
+
+  return {
+    canvases,
+    channelId: args.channel_id,
+  };
+}
+
+export async function handleDeleteCanvas(
+  args: z.infer<typeof DeleteCanvasSchema>,
+  token: string
+): Promise<unknown> {
+  await slackApi<SlackResponse>('canvases.delete', token, {
+    canvas_id: args.canvas_id,
   });
 
   return {
-    canvases: data.canvases.map((canvas) => ({
-      id: canvas.id,
-      title: canvas.title,
-      created: canvas.created ? new Date(canvas.created * 1000).toISOString() : undefined,
-      updated: canvas.updated ? new Date(canvas.updated * 1000).toISOString() : undefined,
-    })),
+    canvasId: args.canvas_id,
+    success: true,
+    deleted: true,
   };
 }

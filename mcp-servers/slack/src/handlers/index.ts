@@ -47,10 +47,12 @@ import {
   UpdateCanvasSchema,
   CreateCanvasSchema,
   ListCanvasesSchema,
+  DeleteCanvasSchema,
   handleGetCanvas,
   handleUpdateCanvas,
   handleCreateCanvas,
   handleListCanvases,
+  handleDeleteCanvas,
 } from './canvases.js';
 
 import { bookmarkTools, GetBookmarksSchema, handleGetBookmarks } from './bookmarks.js';
@@ -79,6 +81,7 @@ export {
   UpdateCanvasSchema,
   CreateCanvasSchema,
   ListCanvasesSchema,
+  DeleteCanvasSchema,
   // Bookmark schemas
   GetBookmarksSchema,
 };
@@ -101,6 +104,7 @@ export {
   handleUpdateCanvas,
   handleCreateCanvas,
   handleListCanvases,
+  handleDeleteCanvas,
   handleGetBookmarks,
 };
 
@@ -148,6 +152,7 @@ export const handlerRegistry: Record<string, Handler> = {
   slack_update_canvas: (args, token) => handleUpdateCanvas(UpdateCanvasSchema.parse(args), token),
   slack_create_canvas: (args, token) => handleCreateCanvas(CreateCanvasSchema.parse(args), token),
   slack_list_canvases: (args, token) => handleListCanvases(ListCanvasesSchema.parse(args), token),
+  slack_delete_canvas: (args, token) => handleDeleteCanvas(DeleteCanvasSchema.parse(args), token),
 
   // Bookmark handlers
   slack_get_bookmarks: (args, token) => handleGetBookmarks(GetBookmarksSchema.parse(args), token),

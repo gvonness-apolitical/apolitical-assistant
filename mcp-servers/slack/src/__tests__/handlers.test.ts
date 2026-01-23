@@ -448,4 +448,169 @@ describe('Slack Handlers', () => {
       expect(data.error).toBe('Unknown tool: unknown_tool');
     });
   });
+
+  describe('handleToolCall - slack_list_canvases', () => {
+    it('should return both channel canvas and standalone canvases', async () => {
+      // conversations.info returns channel canvas
+      mockFetch.mockResolvedValueOnce(
+        mockSlackResponse({
+          channel: {
+            id: 'D123',
+            name: 'dm-channel',
+            properties: {
+              canvas: {
+                file_id: 'F_CHANNEL_CANVAS',
+                is_empty: false,
+              },
+            },
+          },
+        })
+      );
+
+      // files.list returns standalone canvases
+      mockFetch.mockResolvedValueOnce(
+        mockSlackResponse({
+          files: [
+            {
+              id: 'F_STANDALONE_1',
+              name: '121 Agenda Items',
+              title: '121 Agenda Items',
+              filetype: 'canvas',
+              created: 1700000000,
+              updated: 1700001000,
+              user: 'U123',
+            },
+            {
+              id: 'F_STANDALONE_2',
+              name: 'Meeting Notes',
+              title: 'Meeting Notes',
+              filetype: 'canvas',
+              created: 1700002000,
+              updated: 1700003000,
+              user: 'U456',
+            },
+          ],
+        })
+      );
+
+      const result = await handleToolCall(
+        'slack_list_canvases',
+        { channel_id: 'D123', limit: 20 },
+        context
+      );
+
+      const data = JSON.parse((result.content[0] as { text: string }).text);
+      expect(data.canvases).toHaveLength(3);
+      expect(data.canvases[0].id).toBe('F_CHANNEL_CANVAS');
+      expect(data.canvases[0].type).toBe('channel_canvas');
+      expect(data.canvases[1].id).toBe('F_STANDALONE_1');
+      expect(data.canvases[1].type).toBe('standalone');
+      expect(data.canvases[1].title).toBe('121 Agenda Items');
+      expect(data.canvases[2].id).toBe('F_STANDALONE_2');
+    });
+
+    it('should dedupe canvases that appear in both sources', async () => {
+      const sharedCanvasId = 'F_SHARED_CANVAS';
+
+      // conversations.info returns channel canvas
+      mockFetch.mockResolvedValueOnce(
+        mockSlackResponse({
+          channel: {
+            id: 'D123',
+            properties: {
+              canvas: {
+                file_id: sharedCanvasId,
+                is_empty: false,
+              },
+            },
+          },
+        })
+      );
+
+      // files.list returns same canvas (should be deduped)
+      mockFetch.mockResolvedValueOnce(
+        mockSlackResponse({
+          files: [
+            {
+              id: sharedCanvasId,
+              name: 'Shared Canvas',
+              title: 'Shared Canvas',
+              filetype: 'canvas',
+              created: 1700000000,
+              updated: 1700001000,
+              user: 'U123',
+            },
+          ],
+        })
+      );
+
+      const result = await handleToolCall(
+        'slack_list_canvases',
+        { channel_id: 'D123', limit: 20 },
+        context
+      );
+
+      const data = JSON.parse((result.content[0] as { text: string }).text);
+      expect(data.canvases).toHaveLength(1);
+      expect(data.canvases[0].id).toBe(sharedCanvasId);
+    });
+
+    it('should return standalone canvases when no channel canvas exists', async () => {
+      // conversations.info returns no canvas
+      mockFetch.mockResolvedValueOnce(
+        mockSlackResponse({
+          channel: {
+            id: 'D123',
+            properties: {},
+          },
+        })
+      );
+
+      // files.list returns standalone canvases
+      mockFetch.mockResolvedValueOnce(
+        mockSlackResponse({
+          files: [
+            {
+              id: 'F_STANDALONE',
+              name: '121 Agenda Items',
+              title: '121 Agenda Items',
+              filetype: 'canvas',
+              created: 1700000000,
+              updated: 1700001000,
+              user: 'U123',
+            },
+          ],
+        })
+      );
+
+      const result = await handleToolCall(
+        'slack_list_canvases',
+        { channel_id: 'D123', limit: 20 },
+        context
+      );
+
+      const data = JSON.parse((result.content[0] as { text: string }).text);
+      expect(data.canvases).toHaveLength(1);
+      expect(data.canvases[0].id).toBe('F_STANDALONE');
+      expect(data.canvases[0].type).toBe('standalone');
+      expect(data.canvases[0].title).toBe('121 Agenda Items');
+    });
+  });
+
+  describe('handleToolCall - slack_delete_canvas', () => {
+    it('should delete a canvas and return success', async () => {
+      mockFetch.mockResolvedValueOnce(mockSlackResponse({}));
+
+      const result = await handleToolCall(
+        'slack_delete_canvas',
+        { canvas_id: 'F0123456789' },
+        context
+      );
+
+      const data = JSON.parse((result.content[0] as { text: string }).text);
+      expect(data.success).toBe(true);
+      expect(data.deleted).toBe(true);
+      expect(data.canvasId).toBe('F0123456789');
+    });
+  });
 });
