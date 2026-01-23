@@ -4,10 +4,7 @@
 
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-} from '@modelcontextprotocol/sdk/types.js';
+import { CallToolRequestSchema, ListToolsRequestSchema } from '@modelcontextprotocol/sdk/types.js';
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import type { EnvRequirement, McpServerConfig, ToolResponse } from './types.js';
 
@@ -37,9 +34,7 @@ export interface CreateMcpServerOptions<TContext> {
  * @returns Record of validated environment variables
  * @throws Error if required variables are missing
  */
-export function validateEnv(
-  requirements: EnvRequirement[]
-): Record<string, string | undefined> {
+export function validateEnv(requirements: EnvRequirement[]): Record<string, string | undefined> {
   const missing: string[] = [];
   const env: Record<string, string | undefined> = {};
 
@@ -69,9 +64,11 @@ export function validateEnv(
  * @param options - Server options
  * @returns Configured server instance
  */
-export function createMcpServer<TContext>(
-  options: CreateMcpServerOptions<TContext>
-): { server: Server; context: TContext; start: () => Promise<void> } {
+export function createMcpServer<TContext>(options: CreateMcpServerOptions<TContext>): {
+  server: Server;
+  context: TContext;
+  start: () => Promise<void>;
+} {
   const { config, envRequirements = [], createTools, handleToolCall, createContext } = options;
 
   // Validate environment

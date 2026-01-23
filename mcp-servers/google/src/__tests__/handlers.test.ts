@@ -286,7 +286,10 @@ describe('Drive Handlers', () => {
         })
       );
 
-      const result = (await handleDriveSearch({ query: 'project', maxResults: 10 }, auth)) as Array<{
+      const result = (await handleDriveSearch(
+        { query: 'project', maxResults: 10 },
+        auth
+      )) as Array<{
         id: string;
         name: string;
       }>;

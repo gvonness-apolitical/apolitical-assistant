@@ -6,7 +6,10 @@ import type { GoogleAuth } from '../auth.js';
 
 export const DriveSearchSchema = z.object({
   query: z.string().describe('Search query (file name or content keywords)'),
-  mimeType: z.string().optional().describe('Filter by MIME type (e.g., "application/vnd.google-apps.document")'),
+  mimeType: z
+    .string()
+    .optional()
+    .describe('Filter by MIME type (e.g., "application/vnd.google-apps.document")'),
   maxResults: z.number().optional().default(10).describe('Maximum number of files to return'),
 });
 

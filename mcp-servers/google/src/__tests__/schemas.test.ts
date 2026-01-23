@@ -192,7 +192,9 @@ describe('Calendar Schemas', () => {
     });
 
     it('should accept custom calendar', () => {
-      const result = CalendarListEventsSchema.parse({ calendarId: 'team@group.calendar.google.com' });
+      const result = CalendarListEventsSchema.parse({
+        calendarId: 'team@group.calendar.google.com',
+      });
       expect(result.calendarId).toBe('team@group.calendar.google.com');
     });
   });

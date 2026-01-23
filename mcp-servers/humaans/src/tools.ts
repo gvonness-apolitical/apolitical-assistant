@@ -35,10 +35,7 @@ export const ListTimeOffSchema = z.object({
     .string()
     .optional()
     .describe('Filter time off starting after this date (ISO format)'),
-  endDate: z
-    .string()
-    .optional()
-    .describe('Filter time off ending before this date (ISO format)'),
+  endDate: z.string().optional().describe('Filter time off ending before this date (ISO format)'),
 });
 
 export const GetOrgChartSchema = z.object({
@@ -122,8 +119,7 @@ export function createTools(): Tool[] {
     },
     {
       name: 'humaans_get_org_chart',
-      description:
-        'Get the organization hierarchy/reporting structure. Shows who reports to whom.',
+      description: 'Get the organization hierarchy/reporting structure. Shows who reports to whom.',
       inputSchema: {
         type: 'object',
         properties: {

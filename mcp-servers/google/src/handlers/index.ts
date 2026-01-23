@@ -64,11 +64,7 @@ import {
   handleSheetsGetMetadata,
 } from './sheets.js';
 
-import {
-  slidesTools,
-  SlidesGetPresentationSchema,
-  handleSlidesGetPresentation,
-} from './slides.js';
+import { slidesTools, SlidesGetPresentationSchema, handleSlidesGetPresentation } from './slides.js';
 
 // Re-export all schemas and handlers for testing
 export {
@@ -152,17 +148,26 @@ export const handlerRegistry: Record<string, Handler> = {
   gmail_trash: (args, auth) => handleGmailTrash(GmailTrashSchema.parse(args), auth),
   gmail_delete: (args, auth) => handleGmailDelete(GmailDeleteSchema.parse(args), auth),
   gmail_archive: (args, auth) => handleGmailArchive(GmailArchiveSchema.parse(args), auth),
-  gmail_send_message: (args, auth) => handleGmailSendMessage(GmailSendMessageSchema.parse(args), auth),
-  gmail_create_draft: (args, auth) => handleGmailCreateDraft(GmailCreateDraftSchema.parse(args), auth),
-  gmail_get_attachments: (args, auth) => handleGmailGetAttachments(GmailGetAttachmentsSchema.parse(args), auth),
+  gmail_send_message: (args, auth) =>
+    handleGmailSendMessage(GmailSendMessageSchema.parse(args), auth),
+  gmail_create_draft: (args, auth) =>
+    handleGmailCreateDraft(GmailCreateDraftSchema.parse(args), auth),
+  gmail_get_attachments: (args, auth) =>
+    handleGmailGetAttachments(GmailGetAttachmentsSchema.parse(args), auth),
 
   // Calendar handlers
-  calendar_list_events: (args, auth) => handleCalendarListEvents(CalendarListEventsSchema.parse(args), auth),
-  calendar_get_event: (args, auth) => handleCalendarGetEvent(CalendarGetEventSchema.parse(args), auth),
-  calendar_list_calendars: (args, auth) => handleCalendarListCalendars(CalendarListCalendarsSchema.parse(args), auth),
-  calendar_get_freebusy: (args, auth) => handleCalendarGetFreeBusy(CalendarGetFreeBusySchema.parse(args), auth),
-  calendar_create_event: (args, auth) => handleCalendarCreateEvent(CalendarCreateEventSchema.parse(args), auth),
-  calendar_update_event: (args, auth) => handleCalendarUpdateEvent(CalendarUpdateEventSchema.parse(args), auth),
+  calendar_list_events: (args, auth) =>
+    handleCalendarListEvents(CalendarListEventsSchema.parse(args), auth),
+  calendar_get_event: (args, auth) =>
+    handleCalendarGetEvent(CalendarGetEventSchema.parse(args), auth),
+  calendar_list_calendars: (args, auth) =>
+    handleCalendarListCalendars(CalendarListCalendarsSchema.parse(args), auth),
+  calendar_get_freebusy: (args, auth) =>
+    handleCalendarGetFreeBusy(CalendarGetFreeBusySchema.parse(args), auth),
+  calendar_create_event: (args, auth) =>
+    handleCalendarCreateEvent(CalendarCreateEventSchema.parse(args), auth),
+  calendar_update_event: (args, auth) =>
+    handleCalendarUpdateEvent(CalendarUpdateEventSchema.parse(args), auth),
 
   // Drive handlers
   drive_search: (args, auth) => handleDriveSearch(DriveSearchSchema.parse(args), auth),
@@ -174,8 +179,10 @@ export const handlerRegistry: Record<string, Handler> = {
 
   // Sheets handlers
   sheets_get_values: (args, auth) => handleSheetsGetValues(SheetsGetValuesSchema.parse(args), auth),
-  sheets_get_metadata: (args, auth) => handleSheetsGetMetadata(SheetsGetMetadataSchema.parse(args), auth),
+  sheets_get_metadata: (args, auth) =>
+    handleSheetsGetMetadata(SheetsGetMetadataSchema.parse(args), auth),
 
   // Slides handlers
-  slides_get_presentation: (args, auth) => handleSlidesGetPresentation(SlidesGetPresentationSchema.parse(args), auth),
+  slides_get_presentation: (args, auth) =>
+    handleSlidesGetPresentation(SlidesGetPresentationSchema.parse(args), auth),
 };

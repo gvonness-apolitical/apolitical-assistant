@@ -8,12 +8,20 @@ export const CalendarListEventsSchema = z.object({
   timeMin: z.string().optional().describe('Start time (ISO format, defaults to now)'),
   timeMax: z.string().optional().describe('End time (ISO format, defaults to 7 days from now)'),
   maxResults: z.number().optional().default(20).describe('Maximum number of events to return'),
-  calendarId: z.string().optional().default('primary').describe('Calendar ID (defaults to primary)'),
+  calendarId: z
+    .string()
+    .optional()
+    .default('primary')
+    .describe('Calendar ID (defaults to primary)'),
 });
 
 export const CalendarGetEventSchema = z.object({
   eventId: z.string().describe('The calendar event ID'),
-  calendarId: z.string().optional().default('primary').describe('Calendar ID (defaults to primary)'),
+  calendarId: z
+    .string()
+    .optional()
+    .default('primary')
+    .describe('Calendar ID (defaults to primary)'),
 });
 
 export const CalendarListCalendarsSchema = z.object({
@@ -25,7 +33,9 @@ export const CalendarGetFreeBusySchema = z.object({
   timeMax: z.string().describe('End of time range (ISO format)'),
   calendarIds: z
     .array(z.string())
-    .describe('Array of calendar IDs to check (use email addresses for people, resource IDs for rooms)'),
+    .describe(
+      'Array of calendar IDs to check (use email addresses for people, resource IDs for rooms)'
+    ),
 });
 
 export const CalendarCreateEventSchema = z.object({
@@ -37,7 +47,11 @@ export const CalendarCreateEventSchema = z.object({
   location: z.string().optional().describe('Event location or meeting room'),
   conferenceData: z.boolean().optional().default(false).describe('Generate a Google Meet link'),
   calendarId: z.string().optional().default('primary').describe('Calendar to create event on'),
-  sendNotifications: z.boolean().optional().default(true).describe('Send email invitations to attendees'),
+  sendNotifications: z
+    .boolean()
+    .optional()
+    .default(true)
+    .describe('Send email invitations to attendees'),
 });
 
 export const CalendarUpdateEventSchema = z.object({
@@ -46,10 +60,17 @@ export const CalendarUpdateEventSchema = z.object({
   description: z.string().optional().describe('New event description'),
   start: z.string().optional().describe('New start time (ISO format)'),
   end: z.string().optional().describe('New end time (ISO format)'),
-  attendees: z.array(z.string()).optional().describe('Array of attendee email addresses (replaces existing)'),
+  attendees: z
+    .array(z.string())
+    .optional()
+    .describe('Array of attendee email addresses (replaces existing)'),
   location: z.string().optional().describe('New location'),
   calendarId: z.string().optional().default('primary').describe('Calendar the event is on'),
-  sendNotifications: z.boolean().optional().default(true).describe('Send update notifications to attendees'),
+  sendNotifications: z
+    .boolean()
+    .optional()
+    .default(true)
+    .describe('Send update notifications to attendees'),
 });
 
 // ==================== TOOL DEFINITIONS ====================
@@ -103,7 +124,8 @@ export const calendarTools: Tool[] = [
   },
   {
     name: 'calendar_list_calendars',
-    description: 'List all calendars the user has access to, including meeting rooms and shared calendars',
+    description:
+      'List all calendars the user has access to, including meeting rooms and shared calendars',
     inputSchema: {
       type: 'object',
       properties: {
@@ -117,7 +139,8 @@ export const calendarTools: Tool[] = [
   },
   {
     name: 'calendar_get_freebusy',
-    description: 'Check availability (free/busy) for multiple calendars within a time range. Useful for finding meeting slots.',
+    description:
+      'Check availability (free/busy) for multiple calendars within a time range. Useful for finding meeting slots.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -132,7 +155,8 @@ export const calendarTools: Tool[] = [
         calendarIds: {
           type: 'array',
           items: { type: 'string' },
-          description: 'Array of calendar IDs to check (use email addresses for people, resource IDs for rooms)',
+          description:
+            'Array of calendar IDs to check (use email addresses for people, resource IDs for rooms)',
         },
       },
       required: ['timeMin', 'timeMax', 'calendarIds'],
@@ -353,7 +377,10 @@ export async function handleCalendarGetFreeBusy(
   };
 
   // Transform to more usable format
-  const availability: Record<string, { busy: Array<{ start: string; end: string }>; busyCount: number }> = {};
+  const availability: Record<
+    string,
+    { busy: Array<{ start: string; end: string }>; busyCount: number }
+  > = {};
   for (const [calId, info] of Object.entries(data.calendars)) {
     availability[calId] = {
       busy: info.busy,

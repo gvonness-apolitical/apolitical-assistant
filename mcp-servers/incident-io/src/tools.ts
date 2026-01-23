@@ -305,9 +305,7 @@ async function handleListIncidents(
       resolved: ['resolved', 'closed'],
     };
     const allowedStatuses = statusMap[args.status] || [];
-    incidents = incidents.filter((i) =>
-      allowedStatuses.includes(i.status.category.toLowerCase())
-    );
+    incidents = incidents.filter((i) => allowedStatuses.includes(i.status.category.toLowerCase()));
   }
 
   if (args.severity) {
