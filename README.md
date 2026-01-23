@@ -207,10 +207,142 @@ cd ../humaans && npm run build
 cd ../incident-io && npm run build
 ```
 
+### Credential Setup
+
+Each MCP server requires credentials. Follow the guides below to generate them.
+
+#### Google OAuth Credentials
+
+1. **Create a Google Cloud Project**
+   - Go to [Google Cloud Console](https://console.cloud.google.com/)
+   - Create a new project or select an existing one
+
+2. **Enable APIs**
+   - Navigate to "APIs & Services" > "Library"
+   - Enable: Gmail API, Google Calendar API, Google Drive API, Google Docs API, Google Sheets API, Google Slides API
+
+3. **Configure OAuth Consent Screen**
+   - Go to "APIs & Services" > "OAuth consent screen"
+   - Select "Internal" (for workspace) or "External" (for personal)
+   - Add the scopes listed in [Google OAuth Scopes](#google-oauth-scopes)
+
+4. **Create OAuth Credentials**
+   - Go to "APIs & Services" > "Credentials"
+   - Click "Create Credentials" > "OAuth client ID"
+   - Select "Desktop app" as application type
+   - Download the credentials JSON
+
+5. **Generate Refresh Token**
+   ```bash
+   cd mcp-servers/google
+   GOOGLE_CLIENT_ID="your-client-id" \
+   GOOGLE_CLIENT_SECRET="your-client-secret" \
+   npx tsx scripts/auth.ts
+   ```
+   This opens a browser for OAuth consent and outputs your refresh token.
+
+6. **Set Environment Variables**
+   ```bash
+   export GOOGLE_CLIENT_ID="your-client-id"
+   export GOOGLE_CLIENT_SECRET="your-client-secret"
+   export GOOGLE_REFRESH_TOKEN="your-refresh-token"
+   ```
+
+#### Slack App Credentials
+
+1. **Create a Slack App**
+   - Go to [Slack API Apps](https://api.slack.com/apps)
+   - Click "Create New App" > "From scratch"
+   - Name your app and select your workspace
+
+2. **Configure OAuth Scopes**
+   - Navigate to "OAuth & Permissions"
+   - Under "Scopes" > "User Token Scopes", add all scopes from [Slack App Scopes](#slack-app-scopes)
+   - Note: Use **User Token Scopes**, not Bot Token Scopes
+
+3. **Install to Workspace**
+   - Click "Install to Workspace" and authorize
+   - Copy the "User OAuth Token" (starts with `xoxp-`)
+
+4. **Set Environment Variable**
+   ```bash
+   export SLACK_TOKEN="xoxp-your-token"
+   ```
+
+#### Incident.io API Key
+
+1. **Access API Settings**
+   - Go to [incident.io](https://app.incident.io) > Settings > API Keys
+
+2. **Create API Key**
+   - Click "Create API Key"
+   - Name it (e.g., "Claude Assistant")
+   - Select permissions:
+     - Incidents: Read + Write
+     - Follow-ups: Read + Write
+     - Severities: Read
+
+3. **Set Environment Variable**
+   ```bash
+   export INCIDENT_IO_API_KEY="your-api-key"
+   ```
+
+#### Humaans API Key
+
+1. **Access API Settings**
+   - Go to [Humaans](https://app.humaans.io) > Settings > API Keys
+
+2. **Create API Key**
+   - Click "Generate new token"
+   - The token has read access to all data by default
+
+3. **Set Environment Variable**
+   ```bash
+   export HUMAANS_API_KEY="your-api-key"
+   ```
+
+#### GitHub Personal Access Token
+
+1. **Create Token**
+   - Go to GitHub > Settings > Developer settings > Personal access tokens > Tokens (classic)
+   - Click "Generate new token (classic)"
+   - Select scopes: `repo`, `read:org`, `read:user`
+   - Set an expiration (or no expiration for convenience)
+
+2. **Configure for MCP**
+   - Follow the [GitHub MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/github) setup instructions
+   - Set `GITHUB_PERSONAL_ACCESS_TOKEN` in your environment
+
+#### Linear API Key
+
+1. **Create API Key**
+   - Go to Linear > Settings > API > Personal API keys
+   - Click "Create key"
+   - The key has access based on your Linear permissions
+
+2. **Configure for MCP**
+   - Follow the [Linear MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/linear) setup instructions
+   - Set `LINEAR_API_KEY` in your environment
+
+#### Notion Integration Token
+
+1. **Create Integration**
+   - Go to [Notion Integrations](https://www.notion.so/my-integrations)
+   - Click "New integration"
+   - Name it and select capabilities (read content, read comments)
+
+2. **Share Pages with Integration**
+   - Open each Notion page/database you want accessible
+   - Click "..." > "Connections" > Add your integration
+
+3. **Configure for MCP**
+   - Follow the [Notion MCP server](https://github.com/modelcontextprotocol/servers/tree/main/src/notion) setup instructions
+   - Set `NOTION_API_KEY` in your environment
+
 ### Configuration
 
 1. **MCP Configuration**: The `.mcp.json` file configures which MCP servers are available
-2. **Credentials**: Each MCP server needs its own credentials (API keys, OAuth tokens)
+2. **Credentials**: Set environment variables as described above
 3. **Local Settings**: `.claude/settings.local.json` controls tool permissions
 
 ## Usage
