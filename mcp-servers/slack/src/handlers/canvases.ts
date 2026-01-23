@@ -65,22 +65,6 @@ interface CanvasContent {
   }>;
 }
 
-interface CanvasSection {
-  id: string;
-  type: string;
-  content?: CanvasContent;
-}
-
-interface Canvas {
-  id: string;
-  title?: string;
-  document_content?: CanvasContent;
-  sections?: CanvasSection[];
-  channel_id?: string;
-  created?: number;
-  updated?: number;
-}
-
 interface CanvasReadResponse extends SlackResponse {
   canvas_id: string;
   markdown?: string;
