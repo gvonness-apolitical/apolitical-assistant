@@ -1,6 +1,95 @@
+import { z } from 'zod';
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
+import {
+  createJsonResponse,
+  createErrorResponse,
+  type ToolResponse,
+} from '@apolitical-assistant/mcp-shared';
+import type { SlackContext } from './index.js';
 
-const SLACK_API_BASE = 'https://slack.com/api';
+// ==================== SCHEMAS ====================
+
+export const SearchSchema = z.object({
+  query: z.string().describe('Search query using Slack search syntax'),
+  count: z.number().optional().default(20).describe('Number of results to return (max 100)'),
+  sort: z
+    .enum(['score', 'timestamp'])
+    .optional()
+    .default('score')
+    .describe('Sort by relevance (score) or recency (timestamp)'),
+});
+
+export const ListChannelsSchema = z.object({
+  types: z
+    .string()
+    .optional()
+    .default('public_channel,private_channel')
+    .describe('Comma-separated channel types: public_channel, private_channel, mpim, im'),
+  limit: z.number().optional().default(100).describe('Maximum number of channels to return'),
+});
+
+export const ReadChannelSchema = z.object({
+  channel: z
+    .string()
+    .describe('Channel ID (e.g., C1234567890) or channel name (e.g., #general)'),
+  limit: z.number().optional().default(20).describe('Number of messages to retrieve (max 100)'),
+});
+
+export const ReadThreadSchema = z.object({
+  channel: z.string().describe('Channel ID where the thread is'),
+  threadTs: z.string().describe('Timestamp of the parent message (thread_ts)'),
+  limit: z.number().optional().default(50).describe('Number of replies to retrieve'),
+});
+
+export const ListDmsSchema = z.object({
+  limit: z
+    .number()
+    .optional()
+    .default(50)
+    .describe('Maximum number of DM conversations to return'),
+});
+
+export const ReadDmSchema = z.object({
+  userId: z.string().describe('User ID to read DMs with (e.g., U1234567890)'),
+  limit: z.number().optional().default(20).describe('Number of messages to retrieve'),
+});
+
+export const ListUsersSchema = z.object({
+  limit: z.number().optional().default(100).describe('Maximum number of users to return'),
+});
+
+export const GetUserSchema = z.object({
+  userId: z.string().describe('User ID (e.g., U1234567890)'),
+});
+
+export const GetChannelInfoSchema = z.object({
+  channel: z.string().describe('Channel ID (e.g., C1234567890)'),
+});
+
+export const SendMessageSchema = z.object({
+  channel: z
+    .string()
+    .describe('Channel ID (e.g., C1234567890) or channel name (e.g., #general)'),
+  text: z.string().describe('Message text (supports Slack markdown)'),
+  threadTs: z
+    .string()
+    .optional()
+    .describe('Thread timestamp to reply to (makes this a threaded reply)'),
+  unfurlLinks: z.boolean().optional().default(true).describe('Unfurl links in the message'),
+});
+
+export const SendDmSchema = z.object({
+  userId: z.string().describe('User ID to send DM to (e.g., U1234567890)'),
+  text: z.string().describe('Message text (supports Slack markdown)'),
+});
+
+export const AddReactionSchema = z.object({
+  channel: z.string().describe('Channel ID where the message is'),
+  timestamp: z.string().describe('Timestamp of the message to react to'),
+  emoji: z
+    .string()
+    .describe('Emoji name without colons (e.g., "thumbsup", "eyes", "white_check_mark")'),
+});
 
 // ==================== TOOL DEFINITIONS ====================
 
@@ -8,7 +97,8 @@ export function createTools(): Tool[] {
   return [
     {
       name: 'slack_search',
-      description: 'Search for messages in Slack. Uses Slack search syntax (from:@user, in:#channel, has:link, before:date, after:date, etc.)',
+      description:
+        'Search for messages in Slack. Uses Slack search syntax (from:@user, in:#channel, has:link, before:date, after:date, etc.)',
       inputSchema: {
         type: 'object',
         properties: {
@@ -237,20 +327,32 @@ export function createTools(): Tool[] {
   ];
 }
 
-// ==================== HELPERS ====================
+// ==================== SLACK API HELPERS ====================
 
-async function slackApi(
+// Slack API requires different HTTP methods for different endpoints
+const GET_METHODS = [
+  'search.messages',
+  'conversations.list',
+  'conversations.history',
+  'conversations.replies',
+  'conversations.info',
+  'users.list',
+  'users.info',
+  'conversations.open',
+];
+
+interface SlackResponse {
+  ok: boolean;
+  error?: string;
+}
+
+async function slackApi<T extends SlackResponse>(
   method: string,
   token: string,
   params: Record<string, string | number | boolean> = {}
-): Promise<unknown> {
-  const url = new URL(`${SLACK_API_BASE}/${method}`);
-
-  // GET methods use query params, POST methods use form body
-  const getmethods = ['search.messages', 'conversations.list', 'conversations.history',
-    'conversations.replies', 'conversations.info', 'users.list', 'users.info', 'conversations.open'];
-
-  const isGet = getmethods.includes(method);
+): Promise<T> {
+  const url = new URL(`https://slack.com/api/${method}`);
+  const isGet = GET_METHODS.includes(method);
 
   let response: Response;
 
@@ -278,7 +380,7 @@ async function slackApi(
     throw new Error(`Slack API error: ${response.status} ${response.statusText}`);
   }
 
-  const data = (await response.json()) as { ok: boolean; error?: string };
+  const data = (await response.json()) as T;
 
   if (!data.ok) {
     throw new Error(`Slack API error: ${data.error}`);
@@ -305,10 +407,14 @@ async function resolveChannelId(channel: string, token: string): Promise<string>
   }
 
   // Fetch channels and find by name
-  const data = (await slackApi('conversations.list', token, {
+  interface ChannelListResponse extends SlackResponse {
+    channels: Array<{ id: string; name: string }>;
+  }
+
+  const data = await slackApi<ChannelListResponse>('conversations.list', token, {
     types: 'public_channel,private_channel',
     limit: 200,
-  })) as { channels: Array<{ id: string; name: string }> };
+  });
 
   for (const ch of data.channels) {
     channelCache.set(ch.name, ch.id);
@@ -332,9 +438,11 @@ async function enrichUserInfo(
   }
 
   try {
-    const data = (await slackApi('users.info', token, { user: userId })) as {
+    interface UserInfoResponse extends SlackResponse {
       user: { name: string; real_name: string };
-    };
+    }
+
+    const data = await slackApi<UserInfoResponse>('users.info', token, { user: userId });
     const info = { name: data.user.name, realName: data.user.real_name };
     userCache.set(userId, info);
     return info;
@@ -343,441 +451,499 @@ async function enrichUserInfo(
   }
 }
 
-// ==================== TOOL HANDLERS ====================
+// ==================== API RESPONSE TYPES ====================
+
+interface SlackMessage {
+  ts: string;
+  text: string;
+  user: string;
+  thread_ts?: string;
+  reply_count?: number;
+}
+
+interface SlackChannel {
+  id: string;
+  name: string;
+  is_private: boolean;
+  is_member: boolean;
+  num_members: number;
+  purpose: { value: string };
+  topic?: { value: string };
+  is_archived?: boolean;
+  created?: number;
+}
+
+interface SlackUser {
+  id: string;
+  name: string;
+  real_name: string;
+  is_bot: boolean;
+  deleted: boolean;
+  tz?: string;
+  profile: {
+    title?: string;
+    email?: string;
+    phone?: string;
+    status_text?: string;
+    status_emoji?: string;
+    image_192?: string;
+  };
+}
+
+// ==================== HANDLERS ====================
+
+async function handleSearch(
+  args: z.infer<typeof SearchSchema>,
+  token: string
+): Promise<unknown> {
+  interface SearchResponse extends SlackResponse {
+    messages: {
+      total: number;
+      matches: Array<{
+        ts: string;
+        text: string;
+        user: string;
+        channel: { id: string; name: string };
+        permalink: string;
+      }>;
+    };
+  }
+
+  const data = await slackApi<SearchResponse>('search.messages', token, {
+    query: args.query,
+    count: Math.min(args.count, 100),
+    sort: args.sort,
+  });
+
+  const messages = await Promise.all(
+    data.messages.matches.map(async (msg) => {
+      const userInfo = await enrichUserInfo(msg.user, token);
+      return {
+        timestamp: msg.ts,
+        text: msg.text,
+        user: userInfo.realName || userInfo.name,
+        userId: msg.user,
+        channel: msg.channel.name,
+        channelId: msg.channel.id,
+        permalink: msg.permalink,
+      };
+    })
+  );
+
+  return {
+    total: data.messages.total,
+    messages,
+  };
+}
+
+async function handleListChannels(
+  args: z.infer<typeof ListChannelsSchema>,
+  token: string
+): Promise<unknown> {
+  interface ChannelListResponse extends SlackResponse {
+    channels: SlackChannel[];
+  }
+
+  const data = await slackApi<ChannelListResponse>('conversations.list', token, {
+    types: args.types,
+    limit: args.limit,
+    exclude_archived: true,
+  });
+
+  return data.channels.map((ch) => ({
+    id: ch.id,
+    name: ch.name,
+    isPrivate: ch.is_private,
+    isMember: ch.is_member,
+    memberCount: ch.num_members,
+    purpose: ch.purpose.value,
+  }));
+}
+
+async function handleReadChannel(
+  args: z.infer<typeof ReadChannelSchema>,
+  token: string
+): Promise<unknown> {
+  const channelId = await resolveChannelId(args.channel, token);
+
+  interface HistoryResponse extends SlackResponse {
+    messages: SlackMessage[];
+  }
+
+  const data = await slackApi<HistoryResponse>('conversations.history', token, {
+    channel: channelId,
+    limit: Math.min(args.limit, 100),
+  });
+
+  const messages = await Promise.all(
+    data.messages.map(async (msg) => {
+      const userInfo = await enrichUserInfo(msg.user, token);
+      return {
+        timestamp: msg.ts,
+        text: msg.text,
+        user: userInfo.realName || userInfo.name,
+        userId: msg.user,
+        threadTs: msg.thread_ts,
+        replyCount: msg.reply_count,
+      };
+    })
+  );
+
+  return {
+    channelId,
+    messages: messages.reverse(), // Chronological order
+  };
+}
+
+async function handleReadThread(
+  args: z.infer<typeof ReadThreadSchema>,
+  token: string
+): Promise<unknown> {
+  interface RepliesResponse extends SlackResponse {
+    messages: SlackMessage[];
+  }
+
+  const data = await slackApi<RepliesResponse>('conversations.replies', token, {
+    channel: args.channel,
+    ts: args.threadTs,
+    limit: args.limit,
+  });
+
+  const messages = await Promise.all(
+    data.messages.map(async (msg) => {
+      const userInfo = await enrichUserInfo(msg.user, token);
+      return {
+        timestamp: msg.ts,
+        text: msg.text,
+        user: userInfo.realName || userInfo.name,
+        userId: msg.user,
+      };
+    })
+  );
+
+  return { messages };
+}
+
+async function handleListDms(
+  args: z.infer<typeof ListDmsSchema>,
+  token: string
+): Promise<unknown> {
+  interface DmListResponse extends SlackResponse {
+    channels: Array<{ id: string; user: string }>;
+  }
+
+  const data = await slackApi<DmListResponse>('conversations.list', token, {
+    types: 'im',
+    limit: args.limit,
+  });
+
+  const dms = await Promise.all(
+    data.channels.map(async (dm) => {
+      const userInfo = await enrichUserInfo(dm.user, token);
+      return {
+        channelId: dm.id,
+        userId: dm.user,
+        userName: userInfo.name,
+        userRealName: userInfo.realName,
+      };
+    })
+  );
+
+  return dms;
+}
+
+async function handleReadDm(
+  args: z.infer<typeof ReadDmSchema>,
+  token: string
+): Promise<unknown> {
+  // Open/get the DM channel with this user
+  interface OpenResponse extends SlackResponse {
+    channel: { id: string };
+  }
+
+  const openData = await slackApi<OpenResponse>('conversations.open', token, {
+    users: args.userId,
+  });
+
+  const channelId = openData.channel.id;
+
+  interface HistoryResponse extends SlackResponse {
+    messages: SlackMessage[];
+  }
+
+  const data = await slackApi<HistoryResponse>('conversations.history', token, {
+    channel: channelId,
+    limit: Math.min(args.limit, 100),
+  });
+
+  const messages = await Promise.all(
+    data.messages.map(async (msg) => {
+      const userInfo = await enrichUserInfo(msg.user, token);
+      return {
+        timestamp: msg.ts,
+        text: msg.text,
+        user: userInfo.realName || userInfo.name,
+        userId: msg.user,
+      };
+    })
+  );
+
+  return {
+    channelId,
+    messages: messages.reverse(),
+  };
+}
+
+async function handleListUsers(
+  args: z.infer<typeof ListUsersSchema>,
+  token: string
+): Promise<unknown> {
+  interface UsersListResponse extends SlackResponse {
+    members: SlackUser[];
+  }
+
+  const data = await slackApi<UsersListResponse>('users.list', token, {
+    limit: args.limit,
+  });
+
+  return data.members
+    .filter((u) => !u.is_bot && !u.deleted)
+    .map((u) => ({
+      id: u.id,
+      username: u.name,
+      realName: u.real_name,
+      title: u.profile.title,
+      email: u.profile.email,
+      status: u.profile.status_text
+        ? `${u.profile.status_emoji || ''} ${u.profile.status_text}`.trim()
+        : undefined,
+    }));
+}
+
+async function handleGetUser(
+  args: z.infer<typeof GetUserSchema>,
+  token: string
+): Promise<unknown> {
+  interface UserInfoResponse extends SlackResponse {
+    user: SlackUser;
+  }
+
+  const data = await slackApi<UserInfoResponse>('users.info', token, {
+    user: args.userId,
+  });
+
+  const u = data.user;
+  return {
+    id: u.id,
+    username: u.name,
+    realName: u.real_name,
+    timezone: u.tz,
+    title: u.profile.title,
+    email: u.profile.email,
+    phone: u.profile.phone,
+    status: u.profile.status_text
+      ? `${u.profile.status_emoji || ''} ${u.profile.status_text}`.trim()
+      : undefined,
+    avatar: u.profile.image_192,
+  };
+}
+
+async function handleGetChannelInfo(
+  args: z.infer<typeof GetChannelInfoSchema>,
+  token: string
+): Promise<unknown> {
+  interface ChannelInfoResponse extends SlackResponse {
+    channel: SlackChannel;
+  }
+
+  const data = await slackApi<ChannelInfoResponse>('conversations.info', token, {
+    channel: args.channel,
+  });
+
+  const ch = data.channel;
+  return {
+    id: ch.id,
+    name: ch.name,
+    isPrivate: ch.is_private,
+    isArchived: ch.is_archived,
+    memberCount: ch.num_members,
+    topic: ch.topic?.value,
+    purpose: ch.purpose.value,
+    created: ch.created ? new Date(ch.created * 1000).toISOString() : undefined,
+  };
+}
+
+async function handleSendMessage(
+  args: z.infer<typeof SendMessageSchema>,
+  token: string
+): Promise<unknown> {
+  const channelId = await resolveChannelId(args.channel, token);
+
+  const params: Record<string, string | number | boolean> = {
+    channel: channelId,
+    text: args.text,
+    unfurl_links: args.unfurlLinks,
+  };
+  if (args.threadTs) params.thread_ts = args.threadTs;
+
+  interface PostMessageResponse extends SlackResponse {
+    ts: string;
+    channel: string;
+    message: { text: string };
+  }
+
+  const data = await slackApi<PostMessageResponse>('chat.postMessage', token, params);
+
+  return {
+    success: true,
+    timestamp: data.ts,
+    channel: data.channel,
+    text: data.message.text,
+  };
+}
+
+async function handleSendDm(
+  args: z.infer<typeof SendDmSchema>,
+  token: string
+): Promise<unknown> {
+  // First open/get the DM channel
+  interface OpenResponse extends SlackResponse {
+    channel: { id: string };
+  }
+
+  const openData = await slackApi<OpenResponse>('conversations.open', token, {
+    users: args.userId,
+  });
+
+  const channelId = openData.channel.id;
+
+  interface PostMessageResponse extends SlackResponse {
+    ts: string;
+    channel: string;
+    message: { text: string };
+  }
+
+  const data = await slackApi<PostMessageResponse>('chat.postMessage', token, {
+    channel: channelId,
+    text: args.text,
+  });
+
+  return {
+    success: true,
+    timestamp: data.ts,
+    channel: data.channel,
+    userId: args.userId,
+    text: data.message.text,
+  };
+}
+
+async function handleAddReaction(
+  args: z.infer<typeof AddReactionSchema>,
+  token: string
+): Promise<unknown> {
+  await slackApi<SlackResponse>('reactions.add', token, {
+    channel: args.channel,
+    timestamp: args.timestamp,
+    name: args.emoji,
+  });
+
+  return {
+    success: true,
+    channel: args.channel,
+    timestamp: args.timestamp,
+    emoji: args.emoji,
+  };
+}
+
+// ==================== MAIN HANDLER ====================
 
 export async function handleToolCall(
   name: string,
   args: Record<string, unknown>,
-  token: string
-): Promise<{ content: Array<{ type: 'text'; text: string }> }> {
+  context: SlackContext
+): Promise<ToolResponse> {
   try {
     let result: unknown;
 
     switch (name) {
       case 'slack_search': {
-        const { query, count = 20, sort = 'score' } = args as {
-          query: string;
-          count?: number;
-          sort?: string;
-        };
-
-        const data = (await slackApi('search.messages', token, {
-          query,
-          count: Math.min(count, 100),
-          sort,
-        })) as {
-          messages: {
-            total: number;
-            matches: Array<{
-              ts: string;
-              text: string;
-              user: string;
-              channel: { id: string; name: string };
-              permalink: string;
-            }>;
-          };
-        };
-
-        const messages = await Promise.all(
-          data.messages.matches.map(async (msg) => {
-            const userInfo = await enrichUserInfo(msg.user, token);
-            return {
-              timestamp: msg.ts,
-              text: msg.text,
-              user: userInfo.realName || userInfo.name,
-              userId: msg.user,
-              channel: msg.channel.name,
-              channelId: msg.channel.id,
-              permalink: msg.permalink,
-            };
-          })
-        );
-
-        result = {
-          total: data.messages.total,
-          messages,
-        };
+        const parsed = SearchSchema.parse(args);
+        result = await handleSearch(parsed, context.token);
         break;
       }
 
       case 'slack_list_channels': {
-        const { types = 'public_channel,private_channel', limit = 100 } = args as {
-          types?: string;
-          limit?: number;
-        };
-
-        const data = (await slackApi('conversations.list', token, {
-          types,
-          limit,
-          exclude_archived: true,
-        })) as {
-          channels: Array<{
-            id: string;
-            name: string;
-            is_private: boolean;
-            is_member: boolean;
-            num_members: number;
-            purpose: { value: string };
-          }>;
-        };
-
-        result = data.channels.map((ch) => ({
-          id: ch.id,
-          name: ch.name,
-          isPrivate: ch.is_private,
-          isMember: ch.is_member,
-          memberCount: ch.num_members,
-          purpose: ch.purpose.value,
-        }));
+        const parsed = ListChannelsSchema.parse(args);
+        result = await handleListChannels(parsed, context.token);
         break;
       }
 
       case 'slack_read_channel': {
-        const { channel, limit = 20 } = args as { channel: string; limit?: number };
-
-        const channelId = await resolveChannelId(channel, token);
-
-        const data = (await slackApi('conversations.history', token, {
-          channel: channelId,
-          limit: Math.min(limit, 100),
-        })) as {
-          messages: Array<{
-            ts: string;
-            text: string;
-            user: string;
-            thread_ts?: string;
-            reply_count?: number;
-          }>;
-        };
-
-        const messages = await Promise.all(
-          data.messages.map(async (msg) => {
-            const userInfo = await enrichUserInfo(msg.user, token);
-            return {
-              timestamp: msg.ts,
-              text: msg.text,
-              user: userInfo.realName || userInfo.name,
-              userId: msg.user,
-              threadTs: msg.thread_ts,
-              replyCount: msg.reply_count,
-            };
-          })
-        );
-
-        result = {
-          channelId,
-          messages: messages.reverse(), // Chronological order
-        };
+        const parsed = ReadChannelSchema.parse(args);
+        result = await handleReadChannel(parsed, context.token);
         break;
       }
 
       case 'slack_read_thread': {
-        const { channel, threadTs, limit = 50 } = args as {
-          channel: string;
-          threadTs: string;
-          limit?: number;
-        };
-
-        const data = (await slackApi('conversations.replies', token, {
-          channel,
-          ts: threadTs,
-          limit,
-        })) as {
-          messages: Array<{
-            ts: string;
-            text: string;
-            user: string;
-          }>;
-        };
-
-        const messages = await Promise.all(
-          data.messages.map(async (msg) => {
-            const userInfo = await enrichUserInfo(msg.user, token);
-            return {
-              timestamp: msg.ts,
-              text: msg.text,
-              user: userInfo.realName || userInfo.name,
-              userId: msg.user,
-            };
-          })
-        );
-
-        result = { messages };
+        const parsed = ReadThreadSchema.parse(args);
+        result = await handleReadThread(parsed, context.token);
         break;
       }
 
       case 'slack_list_dms': {
-        const { limit = 50 } = args as { limit?: number };
-
-        const data = (await slackApi('conversations.list', token, {
-          types: 'im',
-          limit,
-        })) as {
-          channels: Array<{
-            id: string;
-            user: string;
-          }>;
-        };
-
-        const dms = await Promise.all(
-          data.channels.map(async (dm) => {
-            const userInfo = await enrichUserInfo(dm.user, token);
-            return {
-              channelId: dm.id,
-              userId: dm.user,
-              userName: userInfo.name,
-              userRealName: userInfo.realName,
-            };
-          })
-        );
-
-        result = dms;
+        const parsed = ListDmsSchema.parse(args);
+        result = await handleListDms(parsed, context.token);
         break;
       }
 
       case 'slack_read_dm': {
-        const { userId, limit = 20 } = args as { userId: string; limit?: number };
-
-        // Open/get the DM channel with this user
-        const openData = (await slackApi('conversations.open', token, {
-          users: userId,
-        })) as { channel: { id: string } };
-
-        const channelId = openData.channel.id;
-
-        const data = (await slackApi('conversations.history', token, {
-          channel: channelId,
-          limit: Math.min(limit, 100),
-        })) as {
-          messages: Array<{
-            ts: string;
-            text: string;
-            user: string;
-          }>;
-        };
-
-        const messages = await Promise.all(
-          data.messages.map(async (msg) => {
-            const userInfo = await enrichUserInfo(msg.user, token);
-            return {
-              timestamp: msg.ts,
-              text: msg.text,
-              user: userInfo.realName || userInfo.name,
-              userId: msg.user,
-            };
-          })
-        );
-
-        result = {
-          channelId,
-          messages: messages.reverse(),
-        };
+        const parsed = ReadDmSchema.parse(args);
+        result = await handleReadDm(parsed, context.token);
         break;
       }
 
       case 'slack_list_users': {
-        const { limit = 100 } = args as { limit?: number };
-
-        const data = (await slackApi('users.list', token, {
-          limit,
-        })) as {
-          members: Array<{
-            id: string;
-            name: string;
-            real_name: string;
-            is_bot: boolean;
-            deleted: boolean;
-            profile: {
-              title?: string;
-              email?: string;
-              status_text?: string;
-              status_emoji?: string;
-            };
-          }>;
-        };
-
-        result = data.members
-          .filter((u) => !u.is_bot && !u.deleted)
-          .map((u) => ({
-            id: u.id,
-            username: u.name,
-            realName: u.real_name,
-            title: u.profile.title,
-            email: u.profile.email,
-            status: u.profile.status_text
-              ? `${u.profile.status_emoji || ''} ${u.profile.status_text}`.trim()
-              : undefined,
-          }));
+        const parsed = ListUsersSchema.parse(args);
+        result = await handleListUsers(parsed, context.token);
         break;
       }
 
       case 'slack_get_user': {
-        const { userId } = args as { userId: string };
-
-        const data = (await slackApi('users.info', token, {
-          user: userId,
-        })) as {
-          user: {
-            id: string;
-            name: string;
-            real_name: string;
-            tz: string;
-            profile: {
-              title?: string;
-              email?: string;
-              phone?: string;
-              status_text?: string;
-              status_emoji?: string;
-              image_192?: string;
-            };
-          };
-        };
-
-        const u = data.user;
-        result = {
-          id: u.id,
-          username: u.name,
-          realName: u.real_name,
-          timezone: u.tz,
-          title: u.profile.title,
-          email: u.profile.email,
-          phone: u.profile.phone,
-          status: u.profile.status_text
-            ? `${u.profile.status_emoji || ''} ${u.profile.status_text}`.trim()
-            : undefined,
-          avatar: u.profile.image_192,
-        };
+        const parsed = GetUserSchema.parse(args);
+        result = await handleGetUser(parsed, context.token);
         break;
       }
 
       case 'slack_get_channel_info': {
-        const { channel } = args as { channel: string };
-
-        const data = (await slackApi('conversations.info', token, {
-          channel,
-        })) as {
-          channel: {
-            id: string;
-            name: string;
-            is_private: boolean;
-            is_archived: boolean;
-            num_members: number;
-            topic: { value: string };
-            purpose: { value: string };
-            created: number;
-          };
-        };
-
-        const ch = data.channel;
-        result = {
-          id: ch.id,
-          name: ch.name,
-          isPrivate: ch.is_private,
-          isArchived: ch.is_archived,
-          memberCount: ch.num_members,
-          topic: ch.topic.value,
-          purpose: ch.purpose.value,
-          created: new Date(ch.created * 1000).toISOString(),
-        };
+        const parsed = GetChannelInfoSchema.parse(args);
+        result = await handleGetChannelInfo(parsed, context.token);
         break;
       }
 
       case 'slack_send_message': {
-        const { channel, text, threadTs, unfurlLinks = true } = args as {
-          channel: string;
-          text: string;
-          threadTs?: string;
-          unfurlLinks?: boolean;
-        };
-
-        const channelId = await resolveChannelId(channel, token);
-
-        const params: Record<string, string | number | boolean> = {
-          channel: channelId,
-          text,
-          unfurl_links: unfurlLinks,
-        };
-        if (threadTs) params.thread_ts = threadTs;
-
-        const data = (await slackApi('chat.postMessage', token, params)) as {
-          ts: string;
-          channel: string;
-          message: { text: string };
-        };
-
-        result = {
-          success: true,
-          timestamp: data.ts,
-          channel: data.channel,
-          text: data.message.text,
-        };
+        const parsed = SendMessageSchema.parse(args);
+        result = await handleSendMessage(parsed, context.token);
         break;
       }
 
       case 'slack_send_dm': {
-        const { userId, text } = args as { userId: string; text: string };
-
-        // First open/get the DM channel
-        const openData = (await slackApi('conversations.open', token, {
-          users: userId,
-        })) as { channel: { id: string } };
-
-        const channelId = openData.channel.id;
-
-        const data = (await slackApi('chat.postMessage', token, {
-          channel: channelId,
-          text,
-        })) as {
-          ts: string;
-          channel: string;
-          message: { text: string };
-        };
-
-        result = {
-          success: true,
-          timestamp: data.ts,
-          channel: data.channel,
-          userId,
-          text: data.message.text,
-        };
+        const parsed = SendDmSchema.parse(args);
+        result = await handleSendDm(parsed, context.token);
         break;
       }
 
       case 'slack_add_reaction': {
-        const { channel, timestamp, emoji } = args as {
-          channel: string;
-          timestamp: string;
-          emoji: string;
-        };
-
-        await slackApi('reactions.add', token, {
-          channel,
-          timestamp,
-          name: emoji,
-        });
-
-        result = {
-          success: true,
-          channel,
-          timestamp,
-          emoji,
-        };
+        const parsed = AddReactionSchema.parse(args);
+        result = await handleAddReaction(parsed, context.token);
         break;
       }
 
       default:
-        return {
-          content: [{ type: 'text', text: `Unknown tool: ${name}` }],
-        };
+        return createJsonResponse({ error: `Unknown tool: ${name}` });
     }
 
-    return {
-      content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
-    };
+    return createJsonResponse(result);
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Unknown error';
-    return {
-      content: [{ type: 'text', text: `Error: ${message}` }],
-    };
+    return createErrorResponse(error);
   }
 }
