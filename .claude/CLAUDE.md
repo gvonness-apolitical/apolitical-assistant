@@ -76,6 +76,10 @@ Use `/[skill-name]` to invoke these workflows:
 - `/team-status [squad]` - Get comprehensive team status
 - `/whats-blocking [person/project]` - Check blockers for a person or project
 - `/weekly-review` - Generate end-of-week summary and retrospective
+- `/executive-report [period]` - Generate executive summary (supports: last week/month/quarter/year or custom dates)
+
+### Work Management
+- `/create-ticket [description]` - Create Linear ticket (task, spike, or bug) aligned to team norms
 
 ### Technical Review
 - `/review-rfc [notion-url]` - Comprehensive RFC review with comments (supports quick/standard/deep)
@@ -163,6 +167,7 @@ When drafting documents:
   - `YYYY-MM-DD-session.md` - Session notes
   - `eod-YYYY-MM-DD.md` - End of day summaries
   - `weekly-review-YYYY-MM-DD.md` - Weekly reviews
+  - `executive-report-[start]-to-[end].md` - Executive reports
 - `121/` - 1:1 meeting archives from Gemini (raw transcripts)
 
 ## Project Context

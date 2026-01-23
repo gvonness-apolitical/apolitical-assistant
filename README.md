@@ -53,6 +53,11 @@ Use `/[skill-name]` in Claude Code to invoke workflows:
 | `/whats-blocking [person/project]` | Check blockers |
 | `/weekly-review` | End-of-week summary and retrospective |
 
+### Work Management
+| Skill | Purpose |
+|-------|---------|
+| `/create-ticket [description]` | Create Linear ticket (task, spike, or bug) with team norms |
+
 ### Technical Review
 | Skill | Purpose |
 |-------|---------|
@@ -150,6 +155,7 @@ Configure these in your Slack App's OAuth & Permissions settings.
 |-------|---------|
 | `chat:write` | Send messages to channels and DMs |
 | `reactions:write` | Add emoji reactions |
+| `im:write` | Open DM conversations (required for reading/sending DMs) |
 
 **Required for canvas and bookmark operations:**
 | Scope | Purpose |
