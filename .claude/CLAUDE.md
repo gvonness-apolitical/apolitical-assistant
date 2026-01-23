@@ -64,6 +64,7 @@ Use `/[skill-name]` to invoke these workflows:
 - `/meeting-notes [doc-id]` - Process Gemini auto-notes into structured format
 - `/schedule-meeting [attendees] [topic]` - Smart scheduling with availability checking
 - `/setup-meeting-channels` - Configure Slack channel/canvas mappings for recurring meetings
+- `/tidy-canvas [person]` - Clean up and organize a 1:1 canvas (archive completed items, align to template)
 
 ### Communication
 - `/draft-email [message-id]` - Draft an email response

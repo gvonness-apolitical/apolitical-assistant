@@ -36,6 +36,7 @@ Use `/[skill-name]` in Claude Code to invoke workflows:
 | `/meeting-notes [doc-id]` | Process Gemini notes into structured format |
 | `/schedule-meeting [attendees] [topic]` | Smart scheduling with availability checking |
 | `/setup-meeting-channels` | Configure Slack channel mappings for recurring meetings |
+| `/tidy-canvas [person]` | Clean up and organize a 1:1 canvas (archive old items, align to template) |
 
 ### Communication
 | Skill | Purpose |
