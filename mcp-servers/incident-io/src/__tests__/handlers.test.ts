@@ -37,16 +37,18 @@ describe('Incident.io Handlers', () => {
           {
             id: 'inc-1',
             name: 'API Outage',
-            status: { category: 'active', name: 'Investigating' },
+            incident_status: { category: 'active', name: 'Investigating' },
             severity: { name: 'sev1' },
             created_at: '2024-01-15T10:00:00Z',
             updated_at: '2024-01-15T10:30:00Z',
-            incident_role_assignments: [{ role: { name: 'Lead' }, assignee: { name: 'John Doe' } }],
+            incident_role_assignments: [
+              { role: { name: 'Incident Lead' }, assignee: { name: 'John Doe' } },
+            ],
           },
           {
             id: 'inc-2',
             name: 'Database Slow',
-            status: { category: 'resolved', name: 'Resolved' },
+            incident_status: { category: 'resolved', name: 'Resolved' },
             severity: { name: 'sev2' },
             created_at: '2024-01-14T08:00:00Z',
             updated_at: '2024-01-14T12:00:00Z',
@@ -70,14 +72,14 @@ describe('Incident.io Handlers', () => {
           {
             id: 'inc-1',
             name: 'Active Incident',
-            status: { category: 'investigating', name: 'Investigating' },
+            incident_status: { category: 'investigating', name: 'Investigating' },
             created_at: '2024-01-15T10:00:00Z',
             updated_at: '2024-01-15T10:30:00Z',
           },
           {
             id: 'inc-2',
             name: 'Resolved Incident',
-            status: { category: 'resolved', name: 'Resolved' },
+            incident_status: { category: 'resolved', name: 'Resolved' },
             created_at: '2024-01-14T08:00:00Z',
             updated_at: '2024-01-14T12:00:00Z',
           },
@@ -101,7 +103,7 @@ describe('Incident.io Handlers', () => {
           {
             id: 'inc-1',
             name: 'Critical',
-            status: { category: 'active', name: 'Active' },
+            incident_status: { category: 'active', name: 'Active' },
             severity: { name: 'sev1' },
             created_at: '2024-01-15T10:00:00Z',
             updated_at: '2024-01-15T10:30:00Z',
@@ -109,7 +111,7 @@ describe('Incident.io Handlers', () => {
           {
             id: 'inc-2',
             name: 'Minor',
-            status: { category: 'active', name: 'Active' },
+            incident_status: { category: 'active', name: 'Active' },
             severity: { name: 'sev3' },
             created_at: '2024-01-14T08:00:00Z',
             updated_at: '2024-01-14T12:00:00Z',
@@ -135,7 +137,7 @@ describe('Incident.io Handlers', () => {
         incident: {
           id: 'inc-123',
           name: 'Major Outage',
-          status: { category: 'active', name: 'Investigating' },
+          incident_status: { category: 'active', name: 'Investigating' },
           severity: { name: 'sev1' },
           summary: 'Services are down',
           created_at: '2024-01-15T10:00:00Z',
@@ -254,7 +256,7 @@ describe('Incident.io Handlers', () => {
         incident: {
           id: 'inc-new',
           name: 'New Incident',
-          status: { name: 'Triage' },
+          incident_status: { name: 'Triage' },
           severity: { name: 'sev2' },
           permalink: 'https://incident.io/incidents/inc-new',
         },
@@ -286,7 +288,7 @@ describe('Incident.io Handlers', () => {
         incident: {
           id: 'inc-123',
           name: 'Updated Name',
-          status: { name: 'Investigating' },
+          incident_status: { name: 'Investigating' },
           severity: { name: 'sev1' },
         },
       });
