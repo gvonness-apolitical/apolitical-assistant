@@ -1,53 +1,27 @@
 #!/usr/bin/env node
 
-import { Server } from '@modelcontextprotocol/sdk/server/index.js';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-} from '@modelcontextprotocol/sdk/types.js';
+import { runMcpServer, createBearerClient, type HttpClient } from '@apolitical-assistant/mcp-shared';
 import { createTools, handleToolCall } from './tools.js';
 
-const API_KEY = process.env.INCIDENTIO_API_KEY;
-
-if (!API_KEY) {
-  console.error('Error: INCIDENTIO_API_KEY environment variable is required');
-  process.exit(1);
+export interface IncidentIoContext {
+  client: HttpClient;
 }
 
-const server = new Server(
-  {
+runMcpServer<IncidentIoContext>({
+  config: {
     name: 'incident-io-mcp',
     version: '1.0.0',
   },
-  {
-    capabilities: {
-      tools: {},
+  envRequirements: [
+    {
+      name: 'INCIDENTIO_API_KEY',
+      description: 'Incident.io API key',
+      required: true,
     },
-  }
-);
-
-// List available tools
-server.setRequestHandler(ListToolsRequestSchema, async () => {
-  return {
-    tools: createTools(),
-  };
-});
-
-// Handle tool calls
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  const { name, arguments: args } = request.params;
-  return handleToolCall(name, args ?? {}, API_KEY);
-});
-
-// Start the server
-async function main() {
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
-  console.error('Incident.io MCP server running on stdio');
-}
-
-main().catch((error) => {
-  console.error('Fatal error:', error);
-  process.exit(1);
+  ],
+  createTools,
+  handleToolCall,
+  createContext: (env) => ({
+    client: createBearerClient('https://api.incident.io/v2', env.INCIDENTIO_API_KEY!),
+  }),
 });
