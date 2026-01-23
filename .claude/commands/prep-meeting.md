@@ -31,20 +31,27 @@ If the meeting has a configured channel in `.claude/meeting-config.json`:
 3. **Gather channel content**:
    - Use `slack_read_channel` for recent messages (up to 100)
    - Use `slack_get_bookmarks` for pinned resources
-4. **Extract action items** using patterns:
+4. **Apply filters** (if configured):
+   - Filter by `includeUsers` (if non-empty, only show these users)
+   - Exclude messages from `excludeUsers` (e.g., bots)
+   - If `excludeThreads` is true, skip thread replies
+   - Highlight messages containing `highlightKeywords`
+5. **Extract action items** using patterns:
    - `- [ ]` / `- [x]` - Markdown checkboxes
    - `☐` / `☑` - Unicode checkboxes
    - `TODO:` / `ACTION:` keywords
    - `@person will...` patterns
-5. **Summarize if needed**:
+6. **Summarize if needed**:
    - If >50 messages, group by theme and summarize key points
    - Highlight decisions, questions, and blockers
-6. **Include in output**:
+   - **Bold messages containing highlight keywords**
+7. **Include in output**:
    - Recent discussion summary (full if <20 messages)
    - Outstanding action items (unchecked)
    - Recently completed items (for reference)
    - Bookmarked resources
-7. **Update config**: Set `lastPrepDate` to current time
+   - **Highlighted messages** (containing keywords)
+8. **Update config**: Set `lastPrepDate` to current time
 
 ### Canvas Context (1:1 Meetings with Canvas)
 
@@ -70,9 +77,44 @@ If this is a 1:1 with a configured canvas in `oneOnOnes`:
    - Add new agenda items to Agenda section
    - Mark completed tasks (move to Completed section or strikethrough)
 7. **If no canvas configured**:
-   - Offer to create one using the 1:1 template
+   - Offer to create one using the template
+   - Use `settings.canvasTemplate` or `customTemplate` if set
    - If accepted, use `slack_create_canvas` and update config
 8. **Update config**: Set `lastPrepDate` to current time
+
+## Message Filtering
+
+When a channel has filters configured:
+
+### Include Users Filter
+```json
+"includeUsers": ["alice@company.com", "bob@company.com"]
+```
+- Only messages from these users are shown
+- Empty array = show all users
+
+### Exclude Users Filter
+```json
+"excludeUsers": ["slackbot@company.com", "github-bot@company.com"]
+```
+- Messages from these users are hidden
+- Useful for filtering out noisy bots
+
+### Highlight Keywords
+```json
+"highlightKeywords": ["decision", "blocker", "urgent", "TODO", "IMPORTANT"]
+```
+- Messages containing these keywords are highlighted in output
+- Shown in a separate "Highlighted Messages" section
+- Case-insensitive matching
+
+### Exclude Threads
+```json
+"excludeThreads": true
+```
+- Only show top-level messages
+- Skip all thread replies
+- Useful for high-volume channels
 
 ## Action Item Patterns
 
@@ -102,17 +144,47 @@ For significant action items discovered:
    - Has deadline or urgency
    - Relates to existing project
 
-2. **Offer creation**:
+2. **Determine project**:
+   - Use `linearProject` from 1:1 config if set
+   - Fall back to `settings.linearProject` if set
+   - Otherwise, prompt for project selection
+
+3. **Offer creation**:
    ```
    Found action item that might warrant a Linear ticket:
    "Build out the new onboarding flow for contractors"
    Create Linear ticket? (y/N)
+   Project: [eng-team]
    ```
 
-3. **If creating**:
-   - Create with title, description, and assignee
+4. **If creating**:
+   - Create ticket with title, description, and assignee
    - Link source (Slack message or canvas)
-   - Add ticket link back to canvas if applicable
+   - **Automatically update canvas** with ticket link:
+     ```
+     - [ ] Build out onboarding flow → [ENG-123](https://linear.app/...)
+     ```
+
+5. **Track created tickets**:
+   - Include in meeting prep output
+   - Show in "Linear Tickets Created" section
+
+### Automatic Canvas Linking
+
+When a Linear ticket is created from a canvas action item:
+
+1. **Find the action item** in the canvas content
+2. **Append the ticket link** to the action item line:
+   ```markdown
+   Before: - [ ] Build onboarding flow for contractors
+   After:  - [ ] Build onboarding flow for contractors → [ENG-123](https://linear.app/team/issue/ENG-123)
+   ```
+3. **Use `slack_update_canvas`** to apply the change
+4. **Confirm update** in output:
+   ```
+   ✓ Created ENG-123: Build onboarding flow for contractors
+   ✓ Updated canvas with ticket link
+   ```
 
 ## Output
 
@@ -128,12 +200,14 @@ Create a meeting prep note with:
 - Key decisions made
 - Questions raised
 - Bookmarked resources
+- **Highlighted messages** (if keywords configured)
 
 ### Canvas Status (if 1:1 with canvas)
 - Current agenda items
 - Open action items (mine highlighted)
 - Recently completed items
 - Blocked items to discuss
+- **Linked Linear tickets**
 
 ### Recent Activity
 - What we've been discussing/working on together
@@ -147,7 +221,7 @@ Create a meeting prep note with:
 ### Action Items
 - Outstanding items to follow up on
 - Decisions needed
-- New Linear tickets created (if any)
+- **Linear tickets created this session** (with links)
 
 Save to `meetings/output/[meeting-type]/YYYY-MM-DD-[attendee-or-title]-prep.md`
 
@@ -161,6 +235,7 @@ Meeting types: `one-on-ones/`, `squad/`, `planning/`, `external/`, `general/`
 - If meeting has no channel mapping, suggest running `/setup-meeting-channels`
 - Always update `lastPrepDate` after successful prep
 - Canvas updates require confirmation before writing
+- Linear ticket links are automatically added to canvas action items
 
 ## Configuration File
 
@@ -168,11 +243,22 @@ Expects `.claude/meeting-config.json`:
 
 ```json
 {
+  "settings": {
+    "canvasTemplate": "# Agenda\\n...",
+    "autoRefreshDays": 30,
+    "linearProject": "default-project"
+  },
   "channels": {
     "Platform Retro": {
       "channelId": "C0123456789",
       "channelName": "#platform-retro",
-      "lastPrepDate": "2026-01-15T10:00:00Z"
+      "lastPrepDate": "2026-01-15T10:00:00Z",
+      "filters": {
+        "includeUsers": [],
+        "excludeUsers": ["bot@company.com"],
+        "highlightKeywords": ["decision", "blocker"],
+        "excludeThreads": false
+      }
     }
   },
   "oneOnOnes": {
@@ -180,10 +266,14 @@ Expects `.claude/meeting-config.json`:
       "displayName": "Joel Patrick",
       "dmChannelId": "D0123456789",
       "canvasId": "F0123456789",
-      "lastPrepDate": "2026-01-22T15:30:00Z"
+      "lastPrepDate": "2026-01-22T15:30:00Z",
+      "linearProject": "eng-team",
+      "customTemplate": null
     }
   }
 }
 ```
 
 Run `/setup-meeting-channels` to configure mappings.
+Run `/setup-meeting-channels --refresh` to detect new recurring meetings.
+Run `/setup-meeting-channels --template` to customize the canvas template.

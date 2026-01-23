@@ -401,11 +401,22 @@ The `/prep-meeting` skill uses `.claude/meeting-config.json` to integrate with S
 
 ```json
 {
+  "settings": {
+    "canvasTemplate": "# Agenda\n...",
+    "autoRefreshDays": 30,
+    "linearProject": "default-project"
+  },
   "channels": {
     "Platform Retro": {
       "channelId": "C0123456789",
       "channelName": "#platform-retro",
-      "lastPrepDate": "2026-01-15T10:00:00Z"
+      "lastPrepDate": "2026-01-15T10:00:00Z",
+      "filters": {
+        "includeUsers": [],
+        "excludeUsers": ["bot@company.com"],
+        "highlightKeywords": ["decision", "blocker"],
+        "excludeThreads": false
+      }
     }
   },
   "oneOnOnes": {
@@ -413,17 +424,37 @@ The `/prep-meeting` skill uses `.claude/meeting-config.json` to integrate with S
       "displayName": "Colleague Name",
       "dmChannelId": "D0123456789",
       "canvasId": "F0123456789",
-      "lastPrepDate": "2026-01-22T15:30:00Z"
+      "lastPrepDate": "2026-01-22T15:30:00Z",
+      "linearProject": "eng-team",
+      "customTemplate": null
     }
   }
 }
 ```
+
+**Configuration options:**
+
+| Section | Field | Description |
+|---------|-------|-------------|
+| `settings` | `canvasTemplate` | Default markdown template for new 1:1 canvases |
+| `settings` | `autoRefreshDays` | Days of calendar history to scan (default: 30) |
+| `settings` | `linearProject` | Default Linear project for ticket creation |
+| `channels.filters` | `includeUsers` | Only show messages from these users (empty = all) |
+| `channels.filters` | `excludeUsers` | Hide messages from these users (e.g., bots) |
+| `channels.filters` | `highlightKeywords` | Keywords to highlight in prep output |
+| `channels.filters` | `excludeThreads` | Exclude thread replies (default: false) |
+| `oneOnOnes` | `linearProject` | Linear project for tickets from this 1:1 |
+| `oneOnOnes` | `customTemplate` | Override default template for this person |
 
 Run `/setup-meeting-channels` to configure mappings interactively, or copy the example:
 
 ```bash
 cp .claude/meeting-config.example.json .claude/meeting-config.json
 ```
+
+Additional setup commands:
+- `/setup-meeting-channels --refresh` - Detect and add new recurring meetings
+- `/setup-meeting-channels --template` - Customize the default canvas template
 
 Note: `meeting-config.json` is gitignored as it contains channel IDs and email addresses.
 
