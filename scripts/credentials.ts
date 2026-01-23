@@ -139,6 +139,7 @@ const SLACK_REQUIRED_SCOPES = {
     'users:read.email',
     'search:read',
     'canvases:read',
+    'files:read',
     'bookmarks:read',
   ],
   write: ['chat:write', 'reactions:write', 'canvases:write', 'im:write'],
@@ -418,6 +419,17 @@ async function validateSlackToken(token: string): Promise<ValidationResult> {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({ canvas_id: 'F000000000', changes: [] }),
+          });
+          const d = (await r.json()) as { ok: boolean; error?: string };
+          return d.ok || (d.error !== 'missing_scope' && d.error !== 'not_allowed_token_type');
+        },
+      },
+      {
+        scope: 'files:read',
+        test: async () => {
+          // Test by trying to list files
+          const r = await fetch('https://slack.com/api/files.list?count=1', {
+            headers: { Authorization: `Bearer ${token}` },
           });
           const d = (await r.json()) as { ok: boolean; error?: string };
           return d.ok || (d.error !== 'missing_scope' && d.error !== 'not_allowed_token_type');
