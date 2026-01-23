@@ -70,9 +70,9 @@ import {
   handleSlidesGetPresentation,
 } from './slides.js';
 
-// Re-export all schemas for testing
+// Re-export all schemas and handlers for testing
 export {
-  // Gmail
+  // Gmail schemas
   GmailSearchSchema,
   GmailGetMessageSchema,
   GmailListLabelsSchema,
@@ -82,24 +82,52 @@ export {
   GmailSendMessageSchema,
   GmailCreateDraftSchema,
   GmailGetAttachmentsSchema,
-  // Calendar
+  // Gmail handlers
+  handleGmailSearch,
+  handleGmailGetMessage,
+  handleGmailListLabels,
+  handleGmailTrash,
+  handleGmailDelete,
+  handleGmailArchive,
+  handleGmailSendMessage,
+  handleGmailCreateDraft,
+  handleGmailGetAttachments,
+  // Calendar schemas
   CalendarListEventsSchema,
   CalendarGetEventSchema,
   CalendarListCalendarsSchema,
   CalendarGetFreeBusySchema,
   CalendarCreateEventSchema,
   CalendarUpdateEventSchema,
-  // Drive
+  // Calendar handlers
+  handleCalendarListEvents,
+  handleCalendarGetEvent,
+  handleCalendarListCalendars,
+  handleCalendarGetFreeBusy,
+  handleCalendarCreateEvent,
+  handleCalendarUpdateEvent,
+  // Drive schemas
   DriveSearchSchema,
   DriveGetFileSchema,
-  // Docs
+  // Drive handlers
+  handleDriveSearch,
+  handleDriveGetFile,
+  // Docs schemas
   DocsGetContentSchema,
   DocsGetCommentsSchema,
-  // Sheets
+  // Docs handlers
+  handleDocsGetContent,
+  handleDocsGetComments,
+  // Sheets schemas
   SheetsGetValuesSchema,
   SheetsGetMetadataSchema,
-  // Slides
+  // Sheets handlers
+  handleSheetsGetValues,
+  handleSheetsGetMetadata,
+  // Slides schemas
   SlidesGetPresentationSchema,
+  // Slides handlers
+  handleSlidesGetPresentation,
 };
 
 // Combine all tools into a single array

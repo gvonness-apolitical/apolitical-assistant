@@ -39,3 +39,7 @@ jobs:
           cd ../slack && npm run build
           cd ../humaans && npm run build
           cd ../incident-io && npm run build
+
+      - name: Test MCP servers
+        run: |
+          cd mcp-servers/google && npm test
