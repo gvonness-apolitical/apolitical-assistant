@@ -16,6 +16,7 @@ This assistant uses Claude Code with MCP (Model Context Protocol) servers to pro
 - **Blocker & Status Analysis**: Check what's blocking a person, project, or team
 - **Context Finder**: Search across all systems for information on any topic
 - **Response Drafting**: Draft replies to emails, Slack, PRs, and Linear tickets
+- **RFC Reviews**: Technical reviews of RFCs in Notion with structured feedback
 
 ## Available Skills
 
@@ -50,13 +51,18 @@ Use `/[skill-name]` in Claude Code to invoke workflows:
 | `/whats-blocking [person/project]` | Check blockers |
 | `/weekly-review` | End-of-week summary and retrospective |
 
+### Technical Review
+| Skill | Purpose |
+|-------|---------|
+| `/review-rfc [notion-url]` | RFC review with Notion comments (quick/standard/deep) |
+
 ## Project Structure
 
 ```
 apolitical-assistant/
 ├── .claude/
 │   ├── CLAUDE.md              # Assistant instructions and guidelines
-│   ├── commands/              # Skill definitions (13 skills)
+│   ├── commands/              # Skill definitions (14 skills)
 │   └── settings.local.json    # Local MCP permissions
 ├── mcp-servers/
 │   ├── google/                # Gmail, Calendar, Drive, Docs, Sheets, Slides

@@ -35,6 +35,7 @@ You have access to the following integrations through MCP servers:
 - Search and read pages
 - Access team wikis
 - View databases
+- Create pages and add comments
 
 ### Humaans (HR)
 - View team roster and org chart
@@ -71,6 +72,9 @@ Use `/[skill-name]` to invoke these workflows:
 - `/team-status [squad]` - Get comprehensive team status
 - `/whats-blocking [person/project]` - Check blockers for a person or project
 - `/weekly-review` - Generate end-of-week summary and retrospective
+
+### Technical Review
+- `/review-rfc [notion-url]` - Comprehensive RFC review with comments (supports quick/standard/deep)
 
 ## Guidelines
 
