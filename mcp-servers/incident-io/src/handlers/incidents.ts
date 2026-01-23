@@ -163,7 +163,9 @@ export async function handleListIncidents(
       resolved: ['resolved', 'closed'],
     };
     const allowedStatuses = statusMap[args.status] || [];
-    incidents = incidents.filter((i) => allowedStatuses.includes(i.status.category.toLowerCase()));
+    incidents = incidents.filter((i) =>
+      allowedStatuses.includes(i.incident_status.category.toLowerCase())
+    );
   }
 
   if (args.severity) {
@@ -175,11 +177,11 @@ export async function handleListIncidents(
   return incidents.map((i) => ({
     id: i.id,
     name: i.name,
-    status: i.status.name,
+    status: i.incident_status.name,
     severity: i.severity?.name,
     createdAt: i.created_at,
     updatedAt: i.updated_at,
-    lead: i.incident_role_assignments?.find((r) => r.role.name === 'Lead')?.assignee?.name,
+    lead: i.incident_role_assignments?.find((r) => r.role.name === 'Incident Lead')?.assignee?.name,
   }));
 }
 
@@ -212,7 +214,7 @@ export async function handleCreateIncident(
     success: true,
     incidentId: data.incident.id,
     name: data.incident.name,
-    status: data.incident.status.name,
+    status: data.incident.incident_status.name,
     severity: data.incident.severity?.name,
     permalink: data.incident.permalink,
   };
@@ -235,7 +237,7 @@ export async function handleUpdateIncident(
     success: true,
     incidentId: data.incident.id,
     name: data.incident.name,
-    status: data.incident.status.name,
+    status: data.incident.incident_status.name,
     severity: data.incident.severity?.name,
   };
 }

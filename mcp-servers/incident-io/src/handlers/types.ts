@@ -3,7 +3,7 @@
 export interface Incident {
   id: string;
   name: string;
-  status: { category: string; name: string };
+  incident_status: { category: string; name: string };
   severity?: { name: string };
   created_at: string;
   updated_at: string;
