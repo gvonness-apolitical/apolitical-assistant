@@ -108,15 +108,36 @@ const CREDENTIALS: CredentialDef[] = [
   },
 ];
 
-// Required Google OAuth scopes
+// Required Google OAuth scopes (read + write)
 const GOOGLE_SCOPES = [
+  // Gmail - need modify for full read/write/labels
   'https://www.googleapis.com/auth/gmail.modify',
-  'https://www.googleapis.com/auth/calendar.readonly',
+  // Calendar - need events scope for creating meetings
+  'https://www.googleapis.com/auth/calendar.events',
+  // Drive - readonly is sufficient
   'https://www.googleapis.com/auth/drive.readonly',
+  // Docs, Sheets, Slides - readonly
   'https://www.googleapis.com/auth/documents.readonly',
   'https://www.googleapis.com/auth/spreadsheets.readonly',
   'https://www.googleapis.com/auth/presentations.readonly',
 ];
+
+// Required Slack scopes (read + write) - for reference
+// Actual scope testing is done via API calls in validateSlackToken
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- Documentation reference
+const SLACK_REQUIRED_SCOPES = {
+  read: [
+    'channels:read',
+    'groups:read',
+    'im:read',
+    'channels:history',
+    'groups:history',
+    'im:history',
+    'users:read',
+    'search:read',
+  ],
+  write: ['chat:write', 'reactions:write'],
+};
 
 // Required GitHub scopes
 const GITHUB_REQUIRED_SCOPES = ['repo', 'read:org', 'read:user'];
@@ -222,17 +243,49 @@ async function validateGoogleToken(
     const grantedScopes = tokenInfo.scope?.split(' ') || [];
     const missingScopes = GOOGLE_SCOPES.filter((s) => !grantedScopes.includes(s));
 
+    // Check for key capabilities
+    const capabilities: string[] = [];
+    const hasGmailModify = grantedScopes.includes('https://www.googleapis.com/auth/gmail.modify');
+    const hasCalendarEvents = grantedScopes.includes(
+      'https://www.googleapis.com/auth/calendar.events'
+    );
+    const hasCalendarReadonly = grantedScopes.includes(
+      'https://www.googleapis.com/auth/calendar.readonly'
+    );
+    const hasDrive = grantedScopes.includes('https://www.googleapis.com/auth/drive.readonly');
+
+    if (hasGmailModify) capabilities.push('gmail:rw');
+    if (hasCalendarEvents) capabilities.push('calendar:rw');
+    else if (hasCalendarReadonly) capabilities.push('calendar:ro');
+    if (hasDrive) capabilities.push('drive:ro');
+
     if (missingScopes.length > 0) {
+      // Categorize missing scopes
+      const missingWrite = missingScopes.filter(
+        (s) => s.includes('calendar.events') || s.includes('gmail.modify')
+      );
+      const missingRead = missingScopes.filter(
+        (s) => !s.includes('calendar.events') && !s.includes('gmail.modify')
+      );
+
+      const details: string[] = [];
+      if (missingWrite.length > 0) {
+        details.push(`Write: ${missingWrite.map((s) => s.split('/').pop()).join(', ')}`);
+      }
+      if (missingRead.length > 0) {
+        details.push(`Read: ${missingRead.map((s) => s.split('/').pop()).join(', ')}`);
+      }
+
       return {
         valid: false,
-        message: `Missing scopes: ${missingScopes.length}`,
-        details: missingScopes.join(', '),
+        message: `Missing ${missingScopes.length} scope(s)`,
+        details: details.join('; '),
       };
     }
 
     return {
       valid: true,
-      message: `Valid (${grantedScopes.length} scopes)`,
+      message: `Valid (${capabilities.join(', ')})`,
     };
   } catch (err) {
     return {
@@ -245,7 +298,8 @@ async function validateGoogleToken(
 
 async function validateSlackToken(token: string): Promise<ValidationResult> {
   try {
-    const response = await fetch('https://slack.com/api/auth.test', {
+    // First check if token is valid
+    const authResponse = await fetch('https://slack.com/api/auth.test', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -253,23 +307,110 @@ async function validateSlackToken(token: string): Promise<ValidationResult> {
       },
     });
 
-    const data = (await response.json()) as {
+    const authData = (await authResponse.json()) as {
       ok: boolean;
       error?: string;
       user?: string;
       team?: string;
     };
 
-    if (!data.ok) {
+    if (!authData.ok) {
       return {
         valid: false,
-        message: data.error || 'Invalid token',
+        message: authData.error || 'Invalid token',
+      };
+    }
+
+    // Check scopes by trying to list conversations (requires channels:read)
+    // The response headers don't include scopes, so we test by attempting operations
+    const scopeTests: { scope: string; test: () => Promise<boolean> }[] = [
+      {
+        scope: 'channels:read',
+        test: async () => {
+          const r = await fetch(
+            'https://slack.com/api/conversations.list?limit=1&types=public_channel',
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          const d = (await r.json()) as { ok: boolean; error?: string };
+          return d.ok || d.error !== 'missing_scope';
+        },
+      },
+      {
+        scope: 'users:read',
+        test: async () => {
+          const r = await fetch('https://slack.com/api/users.list?limit=1', {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const d = (await r.json()) as { ok: boolean; error?: string };
+          return d.ok || d.error !== 'missing_scope';
+        },
+      },
+      {
+        scope: 'search:read',
+        test: async () => {
+          const r = await fetch('https://slack.com/api/search.messages?query=test&count=1', {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const d = (await r.json()) as { ok: boolean; error?: string };
+          return d.ok || d.error !== 'missing_scope';
+        },
+      },
+      {
+        scope: 'chat:write',
+        test: async () => {
+          // We can't actually test write without sending a message
+          // Check if we can call chat.postMessage with missing channel (different error = has scope)
+          const r = await fetch('https://slack.com/api/chat.postMessage', {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ channel: 'test', text: 'test' }),
+          });
+          const d = (await r.json()) as { ok: boolean; error?: string };
+          // If error is 'channel_not_found' or 'not_in_channel', we have the scope
+          return d.ok || (d.error !== 'missing_scope' && d.error !== 'not_allowed_token_type');
+        },
+      },
+      {
+        scope: 'reactions:write',
+        test: async () => {
+          const r = await fetch('https://slack.com/api/reactions.add', {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ channel: 'test', timestamp: '1234.5678', name: 'thumbsup' }),
+          });
+          const d = (await r.json()) as { ok: boolean; error?: string };
+          return d.ok || (d.error !== 'missing_scope' && d.error !== 'not_allowed_token_type');
+        },
+      },
+    ];
+
+    const missingScopes: string[] = [];
+    for (const { scope, test } of scopeTests) {
+      const hasScope = await test();
+      if (!hasScope) {
+        missingScopes.push(scope);
+      }
+    }
+
+    if (missingScopes.length > 0) {
+      return {
+        valid: false,
+        message: `Missing scopes: ${missingScopes.length}`,
+        details: missingScopes.join(', '),
       };
     }
 
     return {
       valid: true,
-      message: `Valid (user: ${data.user}, team: ${data.team})`,
+      message: `Valid (user: ${authData.user}, team: ${authData.team})`,
     };
   } catch (err) {
     return {
@@ -282,27 +423,61 @@ async function validateSlackToken(token: string): Promise<ValidationResult> {
 
 async function validateIncidentioToken(token: string): Promise<ValidationResult> {
   try {
-    const response = await fetch('https://api.incident.io/v2/incidents?page_size=1', {
+    // Test read access
+    const readResponse = await fetch('https://api.incident.io/v2/incidents?page_size=1', {
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    if (response.status === 401 || response.status === 403) {
+    if (readResponse.status === 401 || readResponse.status === 403) {
       return {
         valid: false,
         message: 'Invalid or unauthorized token',
       };
     }
 
-    if (!response.ok) {
+    if (!readResponse.ok) {
       return {
         valid: false,
-        message: `API error: ${response.status}`,
+        message: `API error: ${readResponse.status}`,
       };
     }
 
+    const permissions: string[] = ['read:incidents'];
+
+    // Test write access by checking if we can access incident types (needed for creation)
+    const typesResponse = await fetch('https://api.incident.io/v1/incident_types', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (typesResponse.ok) {
+      permissions.push('read:incident_types');
+    }
+
+    // Test severities access
+    const severitiesResponse = await fetch('https://api.incident.io/v1/severities', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (severitiesResponse.ok) {
+      permissions.push('read:severities');
+    }
+
+    // Test follow-ups access
+    const followupsResponse = await fetch('https://api.incident.io/v2/follow_ups', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    if (followupsResponse.ok) {
+      permissions.push('read:follow_ups');
+    }
+
+    // Note: We can't easily test write without creating real data
+    // The API doesn't have a dry-run mode
+
     return {
       valid: true,
-      message: 'Valid',
+      message: `Valid (${permissions.length} permissions)`,
+      details: permissions.join(', '),
     };
   } catch (err) {
     return {
@@ -405,6 +580,7 @@ async function validateGithubToken(token: string): Promise<ValidationResult> {
 
 async function validateLinearToken(token: string): Promise<ValidationResult> {
   try {
+    // Query for viewer info and check access to various resources
     const response = await fetch('https://api.linear.app/graphql', {
       method: 'POST',
       headers: {
@@ -412,7 +588,12 @@ async function validateLinearToken(token: string): Promise<ValidationResult> {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        query: '{ viewer { id name } }',
+        query: `{
+          viewer { id name email admin }
+          teams(first: 1) { nodes { id name } }
+          issues(first: 1) { nodes { id title } }
+          projects(first: 1) { nodes { id name } }
+        }`,
       }),
     });
 
@@ -424,20 +605,51 @@ async function validateLinearToken(token: string): Promise<ValidationResult> {
     }
 
     const data = (await response.json()) as {
-      data?: { viewer?: { name: string } };
+      data?: {
+        viewer?: { name: string; email: string; admin: boolean };
+        teams?: { nodes: Array<{ id: string }> };
+        issues?: { nodes: Array<{ id: string }> };
+        projects?: { nodes: Array<{ id: string }> };
+      };
       errors?: Array<{ message: string }>;
     };
 
-    if (data.errors) {
-      return {
-        valid: false,
-        message: data.errors[0]?.message || 'API error',
-      };
+    if (data.errors && data.errors.length > 0) {
+      // Check if it's just a permission error for some fields
+      const criticalError = data.errors.find(
+        (e) => !e.message.includes('permission') && !e.message.includes('access')
+      );
+      if (criticalError) {
+        return {
+          valid: false,
+          message: criticalError.message || 'API error',
+        };
+      }
     }
+
+    const permissions: string[] = [];
+
+    if (data.data?.viewer) {
+      permissions.push('read:user');
+    }
+    if (data.data?.teams?.nodes) {
+      permissions.push('read:teams');
+    }
+    if (data.data?.issues?.nodes !== undefined) {
+      permissions.push('read:issues');
+    }
+    if (data.data?.projects?.nodes !== undefined) {
+      permissions.push('read:projects');
+    }
+
+    // Linear API keys inherit user permissions, so if we can read issues, we can likely write
+    // There's no separate write scope to check
+    const userName = data.data?.viewer?.name || data.data?.viewer?.email || 'unknown';
 
     return {
       valid: true,
-      message: `Valid (user: ${data.data?.viewer?.name || 'unknown'})`,
+      message: `Valid (${userName}, ${permissions.length} permissions)`,
+      details: permissions.join(', '),
     };
   } catch (err) {
     return {
@@ -508,6 +720,13 @@ async function runGoogleOAuthFlow(): Promise<string | null> {
     authUrl.searchParams.set('access_type', 'offline');
     authUrl.searchParams.set('prompt', 'consent');
 
+    // eslint-disable-next-line prefer-const -- assigned later in setTimeout
+    let timeoutId: NodeJS.Timeout;
+
+    const cleanup = () => {
+      clearTimeout(timeoutId);
+    };
+
     const server = createServer(async (req, res) => {
       const url = new URL(req.url!, `http://127.0.0.1:${REDIRECT_PORT}`);
 
@@ -519,6 +738,7 @@ async function runGoogleOAuthFlow(): Promise<string | null> {
           res.writeHead(400, { 'Content-Type': 'text/html' });
           res.end(`<h1>Error</h1><p>${error}</p>`);
           console.error(`${colors.red}Authorization failed: ${error}${colors.reset}`);
+          cleanup();
           server.close();
           resolve(null);
           return;
@@ -544,6 +764,7 @@ async function runGoogleOAuthFlow(): Promise<string | null> {
             if (!tokenResponse.ok) {
               const errorText = await tokenResponse.text();
               console.error(`${colors.red}Token exchange failed: ${errorText}${colors.reset}`);
+              cleanup();
               server.close();
               resolve(null);
               return;
@@ -551,10 +772,12 @@ async function runGoogleOAuthFlow(): Promise<string | null> {
 
             const tokens = (await tokenResponse.json()) as { refresh_token: string };
             console.log(`${colors.green}✓ OAuth flow completed successfully${colors.reset}`);
+            cleanup();
             server.close();
             resolve(tokens.refresh_token);
           } catch (err) {
             console.error(`${colors.red}Token exchange error: ${err}${colors.reset}`);
+            cleanup();
             server.close();
             resolve(null);
           }
@@ -578,7 +801,7 @@ async function runGoogleOAuthFlow(): Promise<string | null> {
     });
 
     // Timeout after 5 minutes
-    setTimeout(
+    timeoutId = setTimeout(
       () => {
         console.error(`${colors.red}OAuth flow timed out${colors.reset}`);
         server.close();
