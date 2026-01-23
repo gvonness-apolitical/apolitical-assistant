@@ -162,7 +162,8 @@ Configure these in your Slack App's OAuth & Permissions settings.
 | Scope | Purpose |
 |-------|---------|
 | `canvases:read` | Read canvas content |
-| `canvases:write` | Create and update canvases |
+| `canvases:write` | Create, update, and delete canvases |
+| `files:read` | List canvases shared in channels (for standalone canvas discovery) |
 | `bookmarks:read` | Read channel bookmarks |
 
 ### Incident.io API Key
