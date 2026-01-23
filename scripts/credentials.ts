@@ -74,7 +74,7 @@ const CREDENTIALS: CredentialDef[] = [
   {
     name: 'SLACK_TOKEN',
     service: 'Slack',
-    description: 'Bot User OAuth Token (xoxb-...)',
+    description: 'User OAuth Token (xoxp-...)',
     required: true,
     validator: validateSlackToken,
   },
