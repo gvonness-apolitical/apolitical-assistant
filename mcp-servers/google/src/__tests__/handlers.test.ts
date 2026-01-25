@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { mockJsonResponse } from '@apolitical-assistant/mcp-shared/testing';
 import type { GoogleAuth } from '../auth.js';
 import {
   handleGmailSearch,
@@ -22,16 +23,6 @@ function createMockAuth(fetchMock: typeof fetch): GoogleAuth {
   } as GoogleAuth;
 }
 
-// Helper to create mock response
-function mockResponse(data: unknown, ok = true, status = 200): Response {
-  return {
-    ok,
-    status,
-    json: async () => data,
-    text: async () => JSON.stringify(data),
-  } as Response;
-}
-
 describe('Gmail Handlers', () => {
   let fetchMock: ReturnType<typeof vi.fn>;
   let auth: GoogleAuth;
@@ -43,7 +34,7 @@ describe('Gmail Handlers', () => {
 
   describe('handleGmailSearch', () => {
     it('should return empty results when no messages found', async () => {
-      fetchMock.mockResolvedValueOnce(mockResponse({ messages: [] }));
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({ messages: [] }));
 
       const result = await handleGmailSearch({ query: 'is:unread', maxResults: 10 }, auth);
 
@@ -53,14 +44,14 @@ describe('Gmail Handlers', () => {
     it('should fetch message details for each result', async () => {
       // First call returns message list
       fetchMock.mockResolvedValueOnce(
-        mockResponse({
+        mockJsonResponse({
           messages: [{ id: 'msg1', threadId: 'thread1' }],
         })
       );
 
       // Second call fetches message details
       fetchMock.mockResolvedValueOnce(
-        mockResponse({
+        mockJsonResponse({
           id: 'msg1',
           snippet: 'Test snippet',
           labelIds: ['INBOX'],
@@ -85,7 +76,7 @@ describe('Gmail Handlers', () => {
     });
 
     it('should handle API errors', async () => {
-      fetchMock.mockResolvedValueOnce(mockResponse({}, false, 401));
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({}, false, 401));
 
       await expect(handleGmailSearch({ query: 'test', maxResults: 10 }, auth)).rejects.toThrow(
         'Gmail API error: 401'
@@ -97,7 +88,7 @@ describe('Gmail Handlers', () => {
     it('should parse message with body data', async () => {
       const base64Body = Buffer.from('Hello, World!').toString('base64');
       fetchMock.mockResolvedValueOnce(
-        mockResponse({
+        mockJsonResponse({
           id: 'msg123',
           snippet: 'Hello...',
           labelIds: ['INBOX', 'UNREAD'],
@@ -125,7 +116,7 @@ describe('Gmail Handlers', () => {
     it('should extract body from multipart message', async () => {
       const base64Body = Buffer.from('Plain text content').toString('base64');
       fetchMock.mockResolvedValueOnce(
-        mockResponse({
+        mockJsonResponse({
           id: 'msg456',
           snippet: 'Plain...',
           labelIds: ['INBOX'],
@@ -150,7 +141,7 @@ describe('Gmail Handlers', () => {
   describe('handleGmailListLabels', () => {
     it('should return formatted labels', async () => {
       fetchMock.mockResolvedValueOnce(
-        mockResponse({
+        mockJsonResponse({
           labels: [
             { id: 'INBOX', name: 'INBOX', type: 'system' },
             { id: 'Label_1', name: 'My Label', type: 'user' },
@@ -183,7 +174,7 @@ describe('Calendar Handlers', () => {
   describe('handleCalendarListEvents', () => {
     it('should return formatted events', async () => {
       fetchMock.mockResolvedValueOnce(
-        mockResponse({
+        mockJsonResponse({
           items: [
             {
               id: 'event1',
@@ -208,7 +199,7 @@ describe('Calendar Handlers', () => {
 
     it('should handle all-day events', async () => {
       fetchMock.mockResolvedValueOnce(
-        mockResponse({
+        mockJsonResponse({
           items: [
             {
               id: 'event2',
@@ -233,7 +224,7 @@ describe('Calendar Handlers', () => {
   describe('handleCalendarGetFreeBusy', () => {
     it('should return availability for calendars', async () => {
       fetchMock.mockResolvedValueOnce(
-        mockResponse({
+        mockJsonResponse({
           calendars: {
             'user@test.com': {
               busy: [
@@ -273,7 +264,7 @@ describe('Drive Handlers', () => {
   describe('handleDriveSearch', () => {
     it('should return search results', async () => {
       fetchMock.mockResolvedValueOnce(
-        mockResponse({
+        mockJsonResponse({
           files: [
             {
               id: 'file1',
@@ -312,7 +303,7 @@ describe('Docs Handlers', () => {
   describe('handleDocsGetContent', () => {
     it('should extract text content from document', async () => {
       fetchMock.mockResolvedValueOnce(
-        mockResponse({
+        mockJsonResponse({
           title: 'My Document',
           body: {
             content: [
@@ -355,7 +346,7 @@ describe('Sheets Handlers', () => {
   describe('handleSheetsGetValues', () => {
     it('should return sheet values', async () => {
       fetchMock.mockResolvedValueOnce(
-        mockResponse({
+        mockJsonResponse({
           range: 'Sheet1!A1:B3',
           values: [
             ['Name', 'Value'],
@@ -388,7 +379,7 @@ describe('Slides Handlers', () => {
   describe('handleSlidesGetPresentation', () => {
     it('should extract text from slides', async () => {
       fetchMock.mockResolvedValueOnce(
-        mockResponse({
+        mockJsonResponse({
           title: 'My Presentation',
           slides: [
             {

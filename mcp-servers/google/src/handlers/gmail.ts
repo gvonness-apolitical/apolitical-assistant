@@ -1,6 +1,8 @@
 import { z } from 'zod';
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import type { GoogleAuth } from '../auth.js';
+import { buildRfc2822Message, encodeForGmail } from '../utils/email-builder.js';
+import { executeBatchOperation } from '../utils/batch-operation.js';
 
 // ==================== ZOD SCHEMAS ====================
 
@@ -361,26 +363,19 @@ export async function handleGmailTrash(
   args: z.infer<typeof GmailTrashSchema>,
   auth: GoogleAuth
 ): Promise<unknown> {
-  const results: Array<{ id: string; success: boolean; error?: string }> = [];
-
-  for (const messageId of args.messageIds) {
-    try {
-      const url = `https://gmail.googleapis.com/gmail/v1/users/me/messages/${messageId}/trash`;
-      const response = await auth.fetch(url, { method: 'POST' });
-      if (!response.ok) {
-        results.push({ id: messageId, success: false, error: `HTTP ${response.status}` });
-      } else {
-        results.push({ id: messageId, success: true });
-      }
-    } catch (err) {
-      results.push({ id: messageId, success: false, error: String(err) });
-    }
-  }
+  const result = await executeBatchOperation(
+    args.messageIds,
+    {
+      buildUrl: (id) => `https://gmail.googleapis.com/gmail/v1/users/me/messages/${id}/trash`,
+      method: 'POST',
+    },
+    auth
+  );
 
   return {
-    trashed: results.filter((r) => r.success).length,
-    failed: results.filter((r) => !r.success).length,
-    details: results,
+    trashed: result.successCount,
+    failed: result.failedCount,
+    details: result.details,
   };
 }
 
@@ -388,26 +383,19 @@ export async function handleGmailDelete(
   args: z.infer<typeof GmailDeleteSchema>,
   auth: GoogleAuth
 ): Promise<unknown> {
-  const results: Array<{ id: string; success: boolean; error?: string }> = [];
-
-  for (const messageId of args.messageIds) {
-    try {
-      const url = `https://gmail.googleapis.com/gmail/v1/users/me/messages/${messageId}`;
-      const response = await auth.fetch(url, { method: 'DELETE' });
-      if (!response.ok) {
-        results.push({ id: messageId, success: false, error: `HTTP ${response.status}` });
-      } else {
-        results.push({ id: messageId, success: true });
-      }
-    } catch (err) {
-      results.push({ id: messageId, success: false, error: String(err) });
-    }
-  }
+  const result = await executeBatchOperation(
+    args.messageIds,
+    {
+      buildUrl: (id) => `https://gmail.googleapis.com/gmail/v1/users/me/messages/${id}`,
+      method: 'DELETE',
+    },
+    auth
+  );
 
   return {
-    deleted: results.filter((r) => r.success).length,
-    failed: results.filter((r) => !r.success).length,
-    details: results,
+    deleted: result.successCount,
+    failed: result.failedCount,
+    details: result.details,
   };
 }
 
@@ -415,30 +403,21 @@ export async function handleGmailArchive(
   args: z.infer<typeof GmailArchiveSchema>,
   auth: GoogleAuth
 ): Promise<unknown> {
-  const results: Array<{ id: string; success: boolean; error?: string }> = [];
-
-  for (const messageId of args.messageIds) {
-    try {
-      const url = `https://gmail.googleapis.com/gmail/v1/users/me/messages/${messageId}/modify`;
-      const response = await auth.fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ removeLabelIds: ['INBOX'] }),
-      });
-      if (!response.ok) {
-        results.push({ id: messageId, success: false, error: `HTTP ${response.status}` });
-      } else {
-        results.push({ id: messageId, success: true });
-      }
-    } catch (err) {
-      results.push({ id: messageId, success: false, error: String(err) });
-    }
-  }
+  const result = await executeBatchOperation(
+    args.messageIds,
+    {
+      buildUrl: (id) => `https://gmail.googleapis.com/gmail/v1/users/me/messages/${id}/modify`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      buildBody: () => ({ removeLabelIds: ['INBOX'] }),
+    },
+    auth
+  );
 
   return {
-    archived: results.filter((r) => r.success).length,
-    failed: results.filter((r) => !r.success).length,
-    details: results,
+    archived: result.successCount,
+    failed: result.failedCount,
+    details: result.details,
   };
 }
 
@@ -446,26 +425,15 @@ export async function handleGmailSendMessage(
   args: z.infer<typeof GmailSendMessageSchema>,
   auth: GoogleAuth
 ): Promise<unknown> {
-  // Build RFC 2822 message
-  const messageParts: string[] = [];
-  messageParts.push(`To: ${args.to.join(', ')}`);
-  if (args.cc && args.cc.length > 0) messageParts.push(`Cc: ${args.cc.join(', ')}`);
-  if (args.bcc && args.bcc.length > 0) messageParts.push(`Bcc: ${args.bcc.join(', ')}`);
-  messageParts.push(`Subject: ${args.subject}`);
-  if (args.replyToMessageId) {
-    messageParts.push(`In-Reply-To: ${args.replyToMessageId}`);
-    messageParts.push(`References: ${args.replyToMessageId}`);
-  }
-  messageParts.push('Content-Type: text/plain; charset=utf-8');
-  messageParts.push('');
-  messageParts.push(args.body);
-
-  const rawMessage = messageParts.join('\r\n');
-  const encodedMessage = Buffer.from(rawMessage)
-    .toString('base64')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/, '');
+  const rawMessage = buildRfc2822Message({
+    to: args.to,
+    subject: args.subject,
+    body: args.body,
+    cc: args.cc,
+    bcc: args.bcc,
+    replyToMessageId: args.replyToMessageId,
+  });
+  const encodedMessage = encodeForGmail(rawMessage);
 
   const requestBody: Record<string, unknown> = { raw: encodedMessage };
   if (args.threadId) requestBody.threadId = args.threadId;
@@ -494,26 +462,15 @@ export async function handleGmailCreateDraft(
   args: z.infer<typeof GmailCreateDraftSchema>,
   auth: GoogleAuth
 ): Promise<unknown> {
-  // Build RFC 2822 message
-  const messageParts: string[] = [];
-  messageParts.push(`To: ${args.to.join(', ')}`);
-  if (args.cc && args.cc.length > 0) messageParts.push(`Cc: ${args.cc.join(', ')}`);
-  if (args.bcc && args.bcc.length > 0) messageParts.push(`Bcc: ${args.bcc.join(', ')}`);
-  messageParts.push(`Subject: ${args.subject}`);
-  if (args.replyToMessageId) {
-    messageParts.push(`In-Reply-To: ${args.replyToMessageId}`);
-    messageParts.push(`References: ${args.replyToMessageId}`);
-  }
-  messageParts.push('Content-Type: text/plain; charset=utf-8');
-  messageParts.push('');
-  messageParts.push(args.body);
-
-  const rawMessage = messageParts.join('\r\n');
-  const encodedMessage = Buffer.from(rawMessage)
-    .toString('base64')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/, '');
+  const rawMessage = buildRfc2822Message({
+    to: args.to,
+    subject: args.subject,
+    body: args.body,
+    cc: args.cc,
+    bcc: args.bcc,
+    replyToMessageId: args.replyToMessageId,
+  });
+  const encodedMessage = encodeForGmail(rawMessage);
 
   const url = 'https://gmail.googleapis.com/gmail/v1/users/me/drafts';
   const response = await auth.fetch(url, {
