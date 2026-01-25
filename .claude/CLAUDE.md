@@ -55,6 +55,7 @@ You have access to the following integrations through MCP servers:
 Use `/[skill-name]` to invoke these workflows:
 
 ### Daily Operations
+- `/orient` - Gather context at session start (calendar, emails, Slack, Linear, incidents)
 - `/morning-briefing` - Generate daily briefing with calendar, emails, Slack, incidents
 - `/end-of-day` - Generate EOD summary and handoff notes
 - `/triage-inbox` - Review and categorize emails
@@ -167,6 +168,7 @@ When drafting documents:
   - `general/` - Everything else
 - `tech-notes/` - Technical documentation and deep dives
 - `context/` - Session context and summaries:
+  - `orient-YYYY-MM-DD-HHMM.md` - Session orientation context
   - `YYYY-MM-DD-session.md` - Session notes
   - `eod-YYYY-MM-DD.md` - End of day summaries
   - `weekly-review-YYYY-MM-DD.md` - Weekly reviews
