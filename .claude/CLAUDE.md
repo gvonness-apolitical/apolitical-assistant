@@ -85,6 +85,9 @@ Use `/[skill-name]` to invoke these workflows:
 - `/review-rfc [notion-url]` - Comprehensive RFC review with comments (supports quick/standard/deep)
 - `/review-doc [doc-url]` - Review Google Docs/Slides from non-technical stakeholders
 
+### Thinking & Documentation
+- `/rubberduck [topic]` - Capture a thinking session (strategy, design, problem-solving) as a documented artifact
+
 ## Guidelines
 
 ### Communication Style
@@ -169,6 +172,7 @@ When drafting documents:
   - `weekly-review-YYYY-MM-DD.md` - Weekly reviews
   - `executive-report-[start]-to-[end].md` - Executive reports
 - `121/` - 1:1 meeting archives from Gemini (raw transcripts)
+- `rubberduck/` - Documented thinking sessions (`YYYY-MM-DD-[slug].md`)
 
 ## Project Context
 
