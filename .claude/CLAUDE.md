@@ -59,6 +59,7 @@ Use `/[skill-name]` to invoke these workflows:
 - `/morning-briefing` - Generate daily briefing with calendar, emails, Slack, incidents
 - `/end-of-day` - Generate EOD summary and handoff notes
 - `/triage-inbox` - Review and categorize emails
+- `/update-todos` - Scan canvases, Slack, email, Notion, and Google Docs for action items assigned to you
 
 ### Meetings
 - `/prep-meeting [meeting]` - Prepare for an upcoming meeting (integrates with mapped Slack channels/canvases)
