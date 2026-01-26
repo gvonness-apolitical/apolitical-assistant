@@ -59,6 +59,7 @@ Use `/[skill-name]` to invoke these workflows:
 - `/morning-briefing` - Generate daily briefing with calendar, emails, Slack, incidents
 - `/end-of-day` - Generate EOD summary and handoff notes
 - `/triage-inbox` - Review and categorize emails
+- `/slack-read` - Process all unread Slack messages, summarize activity, create tasks for requests
 - `/update-todos` - Scan canvases, Slack, email, Notion, and Google Docs for action items assigned to you
 
 ### Meetings
@@ -170,6 +171,7 @@ When drafting documents:
 - `tech-notes/` - Technical documentation and deep dives
 - `context/` - Session context and summaries:
   - `orient-YYYY-MM-DD-HHMM.md` - Session orientation context
+  - `YYYY-MM-DD-HHMM-slack-read.md` - Slack read summaries
   - `YYYY-MM-DD-session.md` - Session notes
   - `eod-YYYY-MM-DD.md` - End of day summaries
   - `weekly-review-YYYY-MM-DD.md` - Weekly reviews
