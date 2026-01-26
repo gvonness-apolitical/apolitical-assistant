@@ -28,6 +28,7 @@ Use `/[skill-name]` in Claude Code to invoke workflows:
 | `/morning-briefing` | Generate daily briefing |
 | `/end-of-day` | Generate EOD summary |
 | `/triage-inbox` | Review and categorise emails |
+| `/update-todos` | Scan all systems for action items assigned to you |
 
 ### Meetings
 | Skill | Purpose |

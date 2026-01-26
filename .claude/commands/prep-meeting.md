@@ -31,27 +31,33 @@ If the meeting has a configured channel in `.claude/meeting-config.json`:
 3. **Gather channel content**:
    - Use `slack_read_channel` for recent messages (up to 100)
    - Use `slack_get_bookmarks` for pinned resources
-4. **Apply filters** (if configured):
+4. **Read canvas content** (if `canvasId` is configured):
+   - Use `slack_get_canvas` with the configured `canvasId`
+   - Parse sections: Agenda, Action Items, Notes, Decisions
+   - Extract action items assigned to you (@U08EWPC9AP9 or your name)
+   - Include current agenda and open action items in prep output
+5. **Apply filters** (if configured):
    - Filter by `includeUsers` (if non-empty, only show these users)
    - Exclude messages from `excludeUsers` (e.g., bots)
    - If `excludeThreads` is true, skip thread replies
    - Highlight messages containing `highlightKeywords`
-5. **Extract action items** using patterns:
+6. **Extract action items** using patterns:
    - `- [ ]` / `- [x]` - Markdown checkboxes
    - `☐` / `☑` - Unicode checkboxes
    - `TODO:` / `ACTION:` keywords
    - `@person will...` patterns
-6. **Summarize if needed**:
+7. **Summarize if needed**:
    - If >50 messages, group by theme and summarize key points
    - Highlight decisions, questions, and blockers
    - **Bold messages containing highlight keywords**
-7. **Include in output**:
+8. **Include in output**:
    - Recent discussion summary (full if <20 messages)
    - Outstanding action items (unchecked)
    - Recently completed items (for reference)
    - Bookmarked resources
    - **Highlighted messages** (containing keywords)
-8. **Update config**: Set `lastPrepDate` to current time
+   - **Canvas agenda and action items** (if canvas configured)
+9. **Update config**: Set `lastPrepDate` to current time
 
 ### Canvas Context (1:1 Meetings with Canvas)
 
@@ -61,8 +67,8 @@ If this is a 1:1 with a configured canvas in `oneOnOnes`:
 2. **Check attendance**:
    - Note calendar response status (accepted/declined/tentative)
    - Flag any recent reschedules
-3. **Read canvas content**:
-   - Use `slack_get_canvas` with the canvas ID
+3. **Read canvas content** (if `canvasId` is configured):
+   - Use `slack_get_canvas` with the configured `canvasId`
    - Parse sections: Agenda, Action Items (Open/Completed), Notes, Decisions
 4. **Extract my items**:
    - Find action items assigned to me or tagged with my name
@@ -202,12 +208,13 @@ Create a meeting prep note with:
 - Bookmarked resources
 - **Highlighted messages** (if keywords configured)
 
-### Canvas Status (if 1:1 with canvas)
-- Current agenda items
-- Open action items (mine highlighted)
+### Canvas Status (if canvas configured)
+- Current agenda items from canvas
+- Open action items (mine highlighted with @U08EWPC9AP9 or name)
 - Recently completed items
 - Blocked items to discuss
 - **Linked Linear tickets**
+- Works for both 1:1s (`oneOnOnes.canvasId`) and channel meetings (`channels.canvasId`)
 
 ### Recent Activity
 - What we've been discussing/working on together
@@ -252,6 +259,8 @@ Expects `.claude/meeting-config.json`:
     "Platform Retro": {
       "channelId": "C0123456789",
       "channelName": "#platform-retro",
+      "canvasId": "F0123456789",
+      "canvasName": "Agenda",
       "lastPrepDate": "2026-01-15T10:00:00Z",
       "filters": {
         "includeUsers": [],
@@ -266,6 +275,7 @@ Expects `.claude/meeting-config.json`:
       "displayName": "Joel Patrick",
       "dmChannelId": "D0123456789",
       "canvasId": "F0123456789",
+      "canvasName": "121 Agenda Items",
       "lastPrepDate": "2026-01-22T15:30:00Z",
       "linearProject": "eng-team",
       "customTemplate": null
