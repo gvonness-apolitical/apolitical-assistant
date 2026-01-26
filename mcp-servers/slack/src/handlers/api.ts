@@ -12,7 +12,8 @@ const GET_METHODS = [
   'users.info',
   'conversations.open',
   'bookmarks.list',
-  'canvases.read',
+  'files.info',
+  // Note: canvases.sections.lookup is a POST method, not GET
 ];
 
 export interface SlackResponse {
@@ -23,7 +24,7 @@ export interface SlackResponse {
 export async function slackApi<T extends SlackResponse>(
   method: string,
   token: string,
-  params: Record<string, string | number | boolean> = {}
+  params: Record<string, unknown> = {}
 ): Promise<T> {
   const url = new URL(`https://slack.com/api/${method}`);
   const isGet = GET_METHODS.includes(method);
