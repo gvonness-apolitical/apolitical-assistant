@@ -13,6 +13,7 @@ dist/
 # Claude - keeping .claude in git for this project, but exclude local/sensitive files
 .claude/settings.local.json
 .claude/meeting-config.json
+.claude/email-rules.json
 
 # IDE
 .idea/
