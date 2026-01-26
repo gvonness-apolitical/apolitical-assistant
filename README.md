@@ -161,10 +161,11 @@ Configure these in your Slack App's OAuth & Permissions settings.
 **Required for canvas and bookmark operations:**
 | Scope | Purpose |
 |-------|---------|
-| `canvases:read` | Read canvas content |
+| `files:read` | Read canvas content via files.info + url_private_download |
 | `canvases:write` | Create, update, and delete canvases |
-| `files:read` | List canvases shared in channels (for standalone canvas discovery) |
 | `bookmarks:read` | Read channel bookmarks |
+
+> **Note on canvases:read**: This scope is NOT needed. Despite existing, there is no public `canvases.read` API method - the scope only enables `canvases.sections.lookup` which returns section IDs, not content. We read canvas content using `files.info` to get `url_private_download`, then fetch with auth headers (requires `files:read`).
 
 ### Incident.io API Key
 

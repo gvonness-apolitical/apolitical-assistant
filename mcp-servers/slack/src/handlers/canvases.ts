@@ -1,3 +1,26 @@
+/**
+ * Slack Canvas Handlers
+ *
+ * IMPORTANT: Canvas Reading Strategy
+ * ----------------------------------
+ * Despite the `canvases:read` OAuth scope existing, there is NO public API method
+ * to read canvas content. The scope only enables `canvases.sections.lookup` which
+ * returns section IDs, not actual content.
+ *
+ * We read canvas content using a workaround:
+ *   1. Call `files.info` with the canvas ID (canvases are stored as files)
+ *   2. Get `url_private_download` from the response
+ *   3. Fetch the content with Authorization header
+ *
+ * This requires only the `files:read` scope, not `canvases:read`.
+ *
+ * For writing, we use the standard `canvases.edit` API (requires `canvases:write`).
+ *
+ * References:
+ * - https://github.com/slackapi/node-slack-sdk/blob/main/packages/web-api/src/methods.ts
+ * - https://www.joshuadanpeterson.me/posts/mastering-slack-canvas-automation-a-journey-through-api-quirks
+ */
+
 import { z } from 'zod';
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { slackApi, type SlackResponse } from './api.js';
