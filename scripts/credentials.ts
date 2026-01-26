@@ -124,6 +124,13 @@ const GOOGLE_SCOPES = [
 
 // Required Slack scopes (read + write) - for reference
 // Actual scope testing is done via API calls in validateSlackToken
+//
+// NOTE on canvases:read:
+// Despite the scope existing, there is NO public API method to read canvas content.
+// The canvases:read scope only enables canvases.sections.lookup which returns section IDs, not content.
+// We read canvas content using files.info + url_private_download (requires files:read).
+// See: https://github.com/slackapi/node-slack-sdk/blob/main/packages/web-api/src/methods.ts
+//
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- Documentation reference
 const SLACK_REQUIRED_SCOPES = {
   read: [
@@ -138,7 +145,7 @@ const SLACK_REQUIRED_SCOPES = {
     'users:read',
     'users:read.email',
     'search:read',
-    'canvases:read',
+    // canvases:read is NOT needed - we read via files.info + url_private_download
     'files:read',
     'bookmarks:read',
   ],
@@ -396,18 +403,9 @@ async function validateSlackToken(token: string): Promise<ValidationResult> {
           return d.ok || (d.error !== 'missing_scope' && d.error !== 'not_allowed_token_type');
         },
       },
-      {
-        scope: 'canvases:read',
-        test: async () => {
-          // Test by trying to read a non-existent canvas
-          const r = await fetch('https://slack.com/api/canvases.read', {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          const d = (await r.json()) as { ok: boolean; error?: string };
-          // If error is 'canvas_not_found' or similar, we have the scope
-          return d.ok || (d.error !== 'missing_scope' && d.error !== 'not_allowed_token_type');
-        },
-      },
+      // NOTE: canvases:read test removed - the scope is useless.
+      // There is no public canvases.read API method. We read canvas content
+      // via files.info + url_private_download (requires files:read scope).
       {
         scope: 'canvases:write',
         test: async () => {
