@@ -1,0 +1,63 @@
+{
+  "settings": {
+    "slaHoursInternal": 24,
+    "slaHoursExternal": 48,
+    "bulkActionThreshold": 5,
+    "defaultLimit": 50,
+    "defaultLinearProject": null,
+    "lastTriageDate": null
+  },
+  "senderTiers": {
+    "exec": ["joel@", "joe@", "robyn@", "lauren@"],
+    "directReports": [],
+    "team": ["@apolitical.co"],
+    "priority": []
+  },
+  "autoDelete": [
+    {
+      "name": "npm publish",
+      "from": "notifications@npmjs.org",
+      "subject": "Successfully published"
+    },
+    {
+      "name": "GitHub Actions success",
+      "from": "notifications@github.com",
+      "subject": ["completed successfully", "workflow run"]
+    },
+    {
+      "name": "Linear notifications",
+      "from": "linear.app"
+    },
+    {
+      "name": "Calendar RSVPs",
+      "from": "calendar-notification@google.com",
+      "subject": ["accepted", "declined", "tentative"]
+    },
+    {
+      "name": "Snyk (non-critical)",
+      "from": "snyk.io",
+      "unless": { "subject": ["critical", "high"] }
+    },
+    {
+      "name": "Resolved alerts",
+      "subject": "RESOLVED"
+    },
+    {
+      "name": "Contentful resolved",
+      "from": "contentful.com",
+      "subject": "resolved"
+    }
+  ],
+  "alwaysKeep": [
+    { "from": ["joel@", "joe@", "robyn@", "lauren@"] },
+    { "subject": "Gemini Meeting Notes" },
+    { "subject": "mentioned you" },
+    { "body": ["@greg", "greg.vonnessi"] }
+  ],
+  "labels": {
+    "needs-response": "Respond category",
+    "awaiting-reply": "Waiting on others",
+    "review-needed": "PR/doc reviews"
+  },
+  "snoozed": []
+}
