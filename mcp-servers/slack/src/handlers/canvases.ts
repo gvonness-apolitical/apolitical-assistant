@@ -65,10 +65,13 @@ interface CanvasContent {
   }>;
 }
 
-interface CanvasReadResponse extends SlackResponse {
-  canvas_id: string;
-  markdown?: string;
-  content?: CanvasContent;
+interface CanvasSectionsLookupResponse extends SlackResponse {
+  sections: Array<{
+    id: string;
+    type?: string;
+    text?: string;
+    markdown?: string;
+  }>;
 }
 
 interface CanvasEditResponse extends SlackResponse {
@@ -77,6 +80,23 @@ interface CanvasEditResponse extends SlackResponse {
 
 interface CanvasCreateResponse extends SlackResponse {
   canvas_id: string;
+}
+
+// Response type for files.info API
+interface FileInfoResponse extends SlackResponse {
+  file: {
+    id: string;
+    name: string;
+    title: string;
+    filetype: string;
+    mimetype: string;
+    created: number;
+    updated: number;
+    user: string;
+    url_private?: string;
+    url_private_download?: string;
+    permalink?: string;
+  };
 }
 
 // Response type for files.list API
@@ -98,7 +118,7 @@ export const canvasTools: Tool[] = [
   {
     name: 'slack_get_canvas',
     description:
-      'Read canvas content from a Slack channel or DM. Returns the canvas content in markdown format.',
+      'Read canvas content from Slack. Uses files.info API to get file metadata and downloads content via url_private_download.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -221,14 +241,47 @@ export async function handleGetCanvas(
   args: z.infer<typeof GetCanvasSchema>,
   token: string
 ): Promise<unknown> {
-  const data = await slackApi<CanvasReadResponse>('canvases.read', token, {
-    canvas_id: args.canvas_id,
+  // Strategy: Use files.info to get the download URL, then fetch the content.
+  // Canvases are stored as files with filetype 'quip' and mimetype 'application/vnd.slack-docs'.
+
+  // 1. Get file info including download URL
+  const fileInfo = await slackApi<FileInfoResponse>('files.info', token, {
+    file: args.canvas_id,
   });
 
+  const file = fileInfo.file;
+
+  // 2. If there's a download URL, fetch the content
+  let content: string | null = null;
+  let contentType: string | null = null;
+
+  if (file.url_private_download) {
+    try {
+      const response = await fetch(file.url_private_download, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        contentType = response.headers.get('content-type');
+        content = await response.text();
+      }
+    } catch {
+      // Download failed, continue without content
+    }
+  }
+
   return {
-    canvasId: data.canvas_id,
-    markdown: data.markdown,
-    content: data.content,
+    canvasId: args.canvas_id,
+    title: file.title,
+    filetype: file.filetype,
+    mimetype: file.mimetype,
+    created: file.created,
+    updated: file.updated,
+    permalink: file.permalink,
+    content,
+    contentType,
   };
 }
 
