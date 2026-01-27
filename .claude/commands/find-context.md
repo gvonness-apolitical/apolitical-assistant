@@ -7,6 +7,22 @@ Search across all systems to gather context on a person, project, or topic.
 - `/find-context [project/squad name]` - gather context about a project
 - `/find-context [topic/keyword]` - search for relevant information on a topic
 
+## Check Daily Context First
+
+Before making API calls, check local context files for relevant information:
+
+1. **Today's daily context**: `context/daily/YYYY-MM-DD.md`
+   - Recent Slack summaries mentioning the person/topic
+   - Email triage results
+   - Action items related to them
+2. **Recent session context**: `context/YYYY-MM-DD-session.md`
+   - Notes and decisions from today
+3. **Yesterday's EOD**: `context/eod-YYYY-MM-DD.md`
+   - Carry-forward items mentioning them
+4. **Recent orient files**: `context/orient-*.md` (last 3 days)
+
+If context is found locally, include it first, then supplement with fresh API calls as needed.
+
 ## For a Person
 
 Search across:

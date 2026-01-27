@@ -170,6 +170,7 @@ When drafting documents:
   - `general/` - Everything else
 - `tech-notes/` - Technical documentation and deep dives
 - `context/` - Session context and summaries:
+  - `daily/YYYY-MM-DD.md` - **Consolidated daily context** (accumulated by reporting skills)
   - `orient-YYYY-MM-DD-HHMM.md` - Session orientation context
   - `YYYY-MM-DD-HHMM-slack-read.md` - Slack read summaries
   - `YYYY-MM-DD-session.md` - Session notes
@@ -178,6 +179,32 @@ When drafting documents:
   - `executive-report-[start]-to-[end].md` - Executive reports
 - `121/` - 1:1 meeting archives from Gemini (raw transcripts)
 - `rubberduck/` - Documented thinking sessions (`YYYY-MM-DD-[slug].md`)
+
+## Daily Context System
+
+Skills are designed to accumulate and share context throughout the day:
+
+### Reporting Skills (Write to Daily Context)
+These skills append their summaries to `context/daily/YYYY-MM-DD.md`:
+- `/orient` - Session start context
+- `/morning-briefing` - Calendar, priorities, team status
+- `/slack-read` - Slack activity and action items
+- `/triage-inbox` - Email status and pending items
+- `/update-todos` - Action items from all sources
+- `/end-of-day` - Day summary and carry-forward
+
+### Context-Gathering Skills (Read from Daily Context)
+These skills check daily context files before making API calls:
+- `/find-context` - Checks for recent mentions/notes
+- `/prep-meeting` - Uses accumulated context about attendees
+- `/team-status` - Uses cached team/incident info
+- `/whats-blocking` - Checks for known blockers
+
+### Benefits
+- Reduces redundant API calls
+- Provides richer context (accumulates throughout day)
+- Creates audit trail of what was processed
+- Enables continuity across sessions
 
 ## Project Context
 

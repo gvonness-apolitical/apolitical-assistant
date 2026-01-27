@@ -5,6 +5,18 @@ Generate a daily briefing to start the day.
 ## Usage
 - `/morning-briefing` - generate briefing for today
 
+## Check Existing Context
+
+Before gathering fresh data, check for existing context:
+
+1. **Previous day's EOD**: Read `context/eod-YYYY-MM-DD.md` for yesterday
+   - Carry forward items
+   - Context to remember
+   - Follow-ups needed
+2. **Today's daily context**: Check `context/daily/YYYY-MM-DD.md` if exists
+   - May have been started by `/orient` or earlier session
+3. **Session context**: Check `context/YYYY-MM-DD-session.md` if exists
+
 ## Gather Context
 
 1. **Calendar**: Today's meetings with attendees and descriptions
@@ -39,7 +51,23 @@ Important but not urgent:
 
 Save to `morning-briefing/YYYY-MM-DD.md`
 
+## Update Daily Context
+
+After generating the briefing, update `context/daily/YYYY-MM-DD.md`:
+
+```markdown
+## Morning Briefing Summary
+- **Generated**: TIMESTAMP
+- **Meetings today**: X (list key ones)
+- **Team out**: [names]
+- **Active incidents**: X
+- **P1 items**: X items requiring action today
+- **P2 items**: X items this week
+```
+
+Create the file if it doesn't exist. Append/update the "Morning Briefing Summary" section if it does.
+
 ## Notes
 - Flag any meetings without prep notes in `meetings/output/`
 - Highlight if key people are out
-- Note any context from previous day's EOD if exists
+- Reference context from previous day's EOD in output

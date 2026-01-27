@@ -328,6 +328,22 @@ Never auto-delete, always surface:
 - Google Doc comments/mentions
 - Anything with your name or @mentions in body
 
+## Update Daily Context
+
+After triage, update `context/daily/YYYY-MM-DD.md`:
+
+```markdown
+## Email Triage (HH:MM)
+- **Processed**: X emails across Y threads
+- **Trashed**: X
+- **Archived**: X
+- **Respond**: X items pending
+- **SLA breaches**: X
+- **Key senders**: [list any exec/priority senders with pending items]
+```
+
+Create the daily context file if it doesn't exist. Append a new Email Triage section (timestamped) if running multiple times per day.
+
 ## Notes
 
 - Threading groups related emails; reply to thread not individual messages
@@ -336,3 +352,4 @@ Never auto-delete, always surface:
 - Snooze state persists in config file across sessions
 - Run with `--quick` if context gathering is slow
 - Large backlogs: use `--backlog` mode with pagination
+- Daily context file accumulates email triage summaries throughout the day

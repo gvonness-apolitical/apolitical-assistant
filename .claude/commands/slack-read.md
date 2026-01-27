@@ -337,6 +337,21 @@ Optional config in `.claude/slack-read-config.json`:
 ### Shared Channels (external orgs)
 - Process normally but flag as "external"
 
+## Update Daily Context
+
+After generating the summary, update `context/daily/YYYY-MM-DD.md`:
+
+```markdown
+## Slack Summary (HH:MM)
+- **DMs scanned**: X conversations
+- **Channels scanned**: X
+- **Bot notifications**: X (auto-processed)
+- **Action items found**: X
+- **Key requests**: [brief list]
+```
+
+Create the daily context file if it doesn't exist. Append a new Slack summary section (timestamped) if running multiple times per day.
+
 ## Notes
 
 - DMs are always highest priority - don't miss personal messages
@@ -345,3 +360,4 @@ Optional config in `.claude/slack-read-config.json`:
 - Tasks include Slack links for easy navigation
 - Summary file persists for reference
 - Run regularly to stay on top of Slack (e.g., start of day, after meetings)
+- Daily context file accumulates Slack summaries throughout the day

@@ -5,14 +5,30 @@ Wrap up the day with a summary and handoff notes.
 ## Usage
 - `/end-of-day` - generate EOD summary
 
-## Gather Context
+## Read Daily Context
+
+Before gathering fresh data, read accumulated context from today:
+
+1. **Daily context file**: Read `context/daily/YYYY-MM-DD.md` for:
+   - Morning briefing summary
+   - Slack read summaries
+   - Email triage results
+   - Action items found
+   - Session notes
+2. **Session context**: Check `context/YYYY-MM-DD-session.md` for notes
+3. **Morning briefing**: Check `morning-briefing/YYYY-MM-DD.md` for planned items
+
+This reduces API calls and captures context already gathered during the day.
+
+## Gather Additional Context
+
+Only fetch what's not already in daily context:
 
 1. **Calendar**: What meetings happened today
-2. **Email**: What was sent/received today
-3. **Slack**: Key conversations and decisions
+2. **Email**: What was sent/received today (if not already triaged)
+3. **Slack**: Key conversations and decisions (if not already read)
 4. **Linear**: Tickets completed, started, or updated
 5. **GitHub**: PRs merged, reviewed, or commented on
-6. **Session context**: Check `context/YYYY-MM-DD-session.md` for notes
 
 ## Output Structure
 
@@ -38,6 +54,21 @@ Wrap up the day with a summary and handoff notes.
 
 Save to `context/eod-YYYY-MM-DD.md`
 
+## Update Daily Context
+
+After generating EOD, update `context/daily/YYYY-MM-DD.md`:
+
+```markdown
+## End of Day Summary
+- **Generated**: TIMESTAMP
+- **Completed**: X items
+- **In progress**: X items
+- **Carry forward**: X items for tomorrow
+- **Key decisions**: [list]
+```
+
 ## Notes
-- Update session context file if useful context for next session
-- Flag anything that should be in morning briefing tomorrow
+- Daily context file should now have full day's accumulated context
+- EOD file is the canonical summary for the day
+- Carry-forward items will be picked up by tomorrow's morning briefing
+- Flag anything urgent that should be in morning briefing tomorrow

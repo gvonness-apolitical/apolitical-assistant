@@ -6,7 +6,28 @@ Generate a comprehensive end-of-week summary and retrospective.
 - `/weekly-review` - review the current week (Mon-Fri)
 - `/weekly-review [date]` - review week containing that date
 
-## Gather Data
+## Read Daily Context Files First
+
+Before making API calls, read accumulated context from the week:
+
+1. **Daily context files**: `context/daily/YYYY-MM-DD.md` for Mon-Fri
+   - Morning briefing summaries
+   - Slack read summaries
+   - Email triage results
+   - Action items found
+2. **EOD files**: `context/eod-YYYY-MM-DD.md` for Mon-Fri
+   - Completed items each day
+   - Decisions made
+   - Carry-forward items
+3. **Morning briefings**: `morning-briefing/YYYY-MM-DD.md` for Mon-Fri
+   - Meetings attended
+   - P1 items flagged
+4. **Session context files**: `context/YYYY-MM-DD-session.md` for Mon-Fri
+   - Detailed notes and decisions
+
+This provides a comprehensive view with minimal API calls.
+
+## Gather Additional Data
 
 1. **Calendar**: All meetings attended this week
 2. **GitHub**: PRs reviewed, merged, or commented on

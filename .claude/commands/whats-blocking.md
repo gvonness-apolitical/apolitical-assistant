@@ -6,6 +6,23 @@ Quick check on what's blocking a person or project.
 - `/whats-blocking [person]` - what's blocking this person
 - `/whats-blocking [project/squad]` - what's blocking this team/project
 
+## Check Daily Context First
+
+Before making API calls, check local context files:
+
+1. **Today's daily context**: `context/daily/YYYY-MM-DD.md`
+   - Action items mentioning blockers
+   - Slack summaries with blocker keywords
+2. **Recent session context**: `context/YYYY-MM-DD-session.md`
+   - Notes about blockers discussed today
+3. **Recent EODs**: `context/eod-*.md` (last 3 days)
+   - Blocked items from previous days
+   - Carry-forward blockers
+4. **Recent Slack reads**: `context/*-slack-read.md`
+   - Messages flagging blockers
+
+Use local context first, then supplement with fresh Linear/GitHub/Slack API calls.
+
 ## For a Person
 
 1. **Linear**: Tickets assigned to them in blocked/waiting states

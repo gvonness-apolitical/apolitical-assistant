@@ -207,6 +207,23 @@ Optionally track last run time in `.claude/todo-config.json`:
 }
 ```
 
+## Update Daily Context
+
+After scanning, update `context/daily/YYYY-MM-DD.md`:
+
+```markdown
+## Action Items (HH:MM)
+- **Found**: X new items
+- **From canvases**: X
+- **From Slack**: X
+- **From email**: X
+- **From Notion**: X
+- **From Google Docs**: X
+- **Key items**: [list top 3 priority items]
+```
+
+Create the daily context file if it doesn't exist.
+
 ## Notes
 
 - Run daily as part of morning routine, or before `/morning-briefing`
@@ -216,3 +233,4 @@ Optionally track last run time in `.claude/todo-config.json`:
 - Deduplication prevents duplicate tasks
 - Use `--quick` for fast canvas-only scan
 - Tasks created include source reference for context
+- Daily context file accumulates action item summaries
