@@ -7,6 +7,33 @@ Search across all systems to gather context on a person, project, or topic.
 - `/find-context [project/squad name]` - gather context about a project
 - `/find-context [topic/keyword]` - search for relevant information on a topic
 
+## Person Lookup
+
+When the query appears to be a person, use `.claude/people.json` for instant resolution:
+
+### Lookup Algorithm
+1. If query is email format → direct lookup in `people[email]`
+2. If query matches Slack ID (U...) → check `indices.bySlackUserId`
+3. Lowercase query → check `indices.byAlias`
+4. Fuzzy match against all `displayName` values
+5. Check `contacts` section for external people
+6. If not found → fall back to API search (Humaans, Slack)
+
+### Using Cached Identifiers
+Once a person is resolved, use their cached identifiers:
+- `slackUserId` → for Slack searches
+- `slackDmChannelId` → to read DM history directly
+- `humaansEmployeeId` → for Humaans lookups
+- `githubUsername` → for GitHub PR/issue searches (if populated)
+- `linearUserId` → for Linear ticket searches (if populated)
+
+### Cache Updates
+If you discover a new identifier during search (e.g., GitHub username from a PR):
+1. Update the person's record in people.json
+2. Set the new identifier value
+3. Rebuild indices if needed (bySlackUserId)
+4. Update `lastVerified` to today
+
 ## Check Daily Context First
 
 Before making API calls, check local context files for relevant information:
@@ -25,14 +52,18 @@ If context is found locally, include it first, then supplement with fresh API ca
 
 ## For a Person
 
-Search across:
-1. **Humaans**: Role, team, manager, start date, time off
-2. **Calendar**: Recent and upcoming meetings together
-3. **Slack**: Recent conversations and shared channels
-4. **Email**: Recent threads
-5. **Linear**: Shared tickets or projects
-6. **GitHub**: Shared PRs or reviews
-7. **Notion**: Docs they've authored or are mentioned in
+First resolve the person using people.json (see Lookup Algorithm above). Then search across:
+
+1. **People Cache**: Use cached metadata (team, role, manager, isDirectReport)
+2. **Humaans**: Role, team, manager, start date, time off (use `humaansEmployeeId` if cached)
+3. **Calendar**: Recent and upcoming meetings together
+4. **Slack**: Recent conversations and shared channels (use `slackUserId`/`slackDmChannelId` if cached)
+5. **Email**: Recent threads
+6. **Linear**: Shared tickets or projects (use `linearUserId` if cached)
+7. **GitHub**: Shared PRs or reviews (use `githubUsername` if cached)
+8. **Notion**: Docs they've authored or are mentioned in
+
+**If person not in cache**: Search Humaans/Slack by name, then add them to people.json.
 
 ### Output for Person
 - Profile summary (role, team, tenure)
@@ -78,3 +109,4 @@ Search across all systems for keyword/phrase:
 - Highlight the most recent and relevant items
 - Note if topic appears contentious or has conflicting information
 - Flag if context seems incomplete (e.g., references to things not found)
+- **Update people.json** when discovering new identifiers (GitHub username, Linear user ID)

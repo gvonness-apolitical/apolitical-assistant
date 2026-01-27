@@ -17,7 +17,18 @@ Intelligently schedule a meeting by finding optimal times and booking rooms.
 - Urgency (this week, next 2 weeks, flexible)
 - Time preferences if any (morning, afternoon, specific days)
 
-### 2. Gather Availability
+### 2. Resolve Attendees
+
+Use `.claude/people.json` to resolve attendee names to emails:
+
+1. **For each attendee name**:
+   - Check `indices.byAlias` with lowercase name
+   - Get email from resolved person
+2. **For external contacts**: Check `contacts` section
+3. **If not found**: Assume the input is already an email, or prompt for clarification
+4. **Get context**: Use cached `metadata.role` and `metadata.team` for scheduling notes
+
+### 3. Gather Availability
 
 **Get Calendar IDs**:
 - Use `calendar_list_calendars` to find attendee calendars
@@ -28,7 +39,7 @@ Intelligently schedule a meeting by finding optimal times and booking rooms.
 - Check room availability if needed
 - Look at next 2 weeks of availability
 
-### 3. Find Optimal Slots
+### 4. Find Optimal Slots
 
 Score potential slots based on:
 - All attendees available (required)
@@ -38,7 +49,7 @@ Score potential slots based on:
 - Avoids back-to-back with other meetings when possible
 - Considers travel time if in-office
 
-### 4. Present Options
+### 5. Present Options
 
 Show top 3-5 options with:
 - Date and time
@@ -46,7 +57,7 @@ Show top 3-5 options with:
 - Room availability (if in-office)
 - Any considerations (e.g., "Day before Alice's holiday")
 
-### 5. Create Event
+### 6. Create Event
 
 Once time is selected, use `calendar_create_event` with:
 - Title: Clear meeting name

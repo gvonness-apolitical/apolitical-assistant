@@ -15,16 +15,28 @@ Silently gathers context from all systems to understand:
 
 After gathering, outputs a brief confirmation: "Ready to go."
 
+## People Cache Check
+
+Before gathering context, check `.claude/people.json`:
+
+1. **Check cache freshness**: Compare `lastUpdated` timestamp to today
+2. **If > 7 days old**: Suggest running `/sync-people --refresh`
+3. **Load "me" section**: Use `me.slackUserId` for @mention detection in Slack
+
+```
+People cache is 12 days old. Consider running `/sync-people --refresh` to update.
+```
+
 ## Context Gathering
 
 ### Calendar
 - Today's meetings and events
 - Upcoming meetings in next 24 hours
-- Who you're meeting with
+- Who you're meeting with (resolve names using people.json)
 
 ### Communications
 - Unread/flagged emails requiring response
-- Active Slack threads with recent activity
+- Active Slack threads with recent activity (use `me.slackUserId` for @mention detection)
 - DMs needing attention
 
 ### Work in Progress

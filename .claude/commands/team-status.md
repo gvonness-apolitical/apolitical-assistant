@@ -6,6 +6,15 @@ Get a comprehensive status update on a team or squad.
 - `/team-status [squad/team name]` - status for a specific team
 - `/team-status` - status for engineering (default)
 
+## Person Resolution
+
+Use `.claude/people.json` to resolve team members:
+
+1. **Filter by team**: Get people where `metadata.team` matches the squad name
+2. **Get identifiers**: Use cached `slackUserId`, `githubUsername`, `linearUserId`
+3. **Direct reports**: Filter on `metadata.isDirectReport` for your team
+4. **Progressive discovery**: If you discover a GitHub username or Linear user ID during status lookup, update people.json
+
 ## Check Daily Context First
 
 Before making API calls, check local context files:

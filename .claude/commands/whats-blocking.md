@@ -6,6 +6,17 @@ Quick check on what's blocking a person or project.
 - `/whats-blocking [person]` - what's blocking this person
 - `/whats-blocking [project/squad]` - what's blocking this team/project
 
+## Person Resolution
+
+When checking blockers for a person, use `.claude/people.json`:
+
+1. **Resolve person**: Check `indices.byAlias` (lowercase query)
+2. **Use cached identifiers**:
+   - `linearUserId` → search Linear for their blocked tickets
+   - `githubUsername` → search GitHub for their PRs awaiting review
+   - `slackUserId` → search Slack for blocker mentions
+3. **Progressive discovery**: If you discover a GitHub/Linear ID during lookup, update people.json
+
 ## Check Daily Context First
 
 Before making API calls, check local context files:
