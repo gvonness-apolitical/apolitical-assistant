@@ -13,6 +13,14 @@ export const DocsGetCommentsSchema = z.object({
   includeResolved: z.boolean().optional().default(false).describe('Include resolved comments'),
 });
 
+export const DocsCreateSchema = z.object({
+  title: z.string().describe('The title for the new document'),
+  content: z
+    .string()
+    .optional()
+    .describe('Initial content for the document (plain text or markdown-like)'),
+});
+
 // ==================== TOOL DEFINITIONS ====================
 
 export const docsTools: Tool[] = [
@@ -47,6 +55,24 @@ export const docsTools: Tool[] = [
         },
       },
       required: ['documentId'],
+    },
+  },
+  {
+    name: 'docs_create',
+    description: 'Create a new Google Doc with optional initial content',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        title: {
+          type: 'string',
+          description: 'The title for the new document',
+        },
+        content: {
+          type: 'string',
+          description: 'Initial content for the document (plain text)',
+        },
+      },
+      required: ['title'],
     },
   },
 ];
@@ -133,5 +159,66 @@ export async function handleDocsGetComments(
         createdTime: r.createdTime,
       })),
     })),
+  };
+}
+
+export async function handleDocsCreate(
+  args: z.infer<typeof DocsCreateSchema>,
+  auth: GoogleAuth
+): Promise<unknown> {
+  // Step 1: Create the document with the title
+  const createUrl = 'https://docs.googleapis.com/v1/documents';
+  const createResponse = await auth.fetch(createUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      title: args.title,
+    }),
+  });
+
+  if (!createResponse.ok) {
+    const error = await createResponse.text();
+    throw new Error(`Docs API error creating document: ${createResponse.status} - ${error}`);
+  }
+
+  const doc = (await createResponse.json()) as {
+    documentId: string;
+    title: string;
+  };
+
+  // Step 2: If content provided, insert it into the document
+  if (args.content && args.content.trim()) {
+    const updateUrl = `https://docs.googleapis.com/v1/documents/${doc.documentId}:batchUpdate`;
+    const updateResponse = await auth.fetch(updateUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        requests: [
+          {
+            insertText: {
+              location: {
+                index: 1, // Insert at the beginning of the document body
+              },
+              text: args.content,
+            },
+          },
+        ],
+      }),
+    });
+
+    if (!updateResponse.ok) {
+      const error = await updateResponse.text();
+      throw new Error(`Docs API error adding content: ${updateResponse.status} - ${error}`);
+    }
+  }
+
+  return {
+    documentId: doc.documentId,
+    title: doc.title,
+    url: `https://docs.google.com/document/d/${doc.documentId}/edit`,
   };
 }

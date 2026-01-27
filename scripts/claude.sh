@@ -38,5 +38,21 @@ if [ ${#missing[@]} -gt 0 ]; then
     echo ""
 fi
 
+# Get the directory where this script lives, then find repo root
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+# Unlock git-crypt files if locked (prevents corruption when writing to encrypted files)
+if command -v git-crypt &> /dev/null; then
+    (
+        cd "$REPO_ROOT"
+        # Check if any files are still encrypted (locked)
+        if git-crypt status -e 2>/dev/null | grep -q "encrypted:"; then
+            echo "Unlocking git-crypt files..."
+            git-crypt unlock 2>/dev/null || echo "Warning: git-crypt unlock failed (may need GPG key)"
+        fi
+    )
+fi
+
 # Launch Claude Code with all arguments passed through
 exec claude "$@"

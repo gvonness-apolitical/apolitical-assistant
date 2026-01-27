@@ -67,8 +67,23 @@ After generating EOD, update `context/daily/YYYY-MM-DD.md`:
 - **Key decisions**: [list]
 ```
 
+## Commit Context Files
+
+After all context files are written, commit them to preserve under git-crypt:
+
+```bash
+git add context/ briefings/ meetings/output/ reviews/ investigations/ work/ rubberduck/
+git commit -m "EOD context: YYYY-MM-DD"
+```
+
+**Important**:
+- These directories are encrypted with git-crypt - committing ensures they're safely stored
+- Don't push automatically - user may want to review or batch with other changes
+- If no changes to commit, skip silently
+
 ## Notes
 - Daily context file should now have full day's accumulated context
 - EOD file is the canonical summary for the day
 - Carry-forward items will be picked up by tomorrow's morning briefing
 - Flag anything urgent that should be in morning briefing tomorrow
+- Context files are git-crypt encrypted - commit preserves them securely

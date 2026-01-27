@@ -58,6 +58,7 @@ Use `/[skill-name]` to invoke these workflows:
 - `/orient` - Gather context at session start (calendar, emails, Slack, Linear, incidents)
 - `/morning-briefing` - Generate daily briefing with calendar, emails, Slack, incidents
 - `/end-of-day` - Generate EOD summary and handoff notes
+- `/session-handoff` - Create temporary context document for session continuity (mid-task restarts)
 - `/triage-inbox` - Review and categorize emails
 - `/slack-read` - Process all unread Slack messages, summarize activity, create tasks for requests
 - `/update-todos` - Scan canvases, Slack, email, Notion, and Google Docs for action items assigned to you
@@ -96,6 +97,20 @@ Use `/[skill-name]` to invoke these workflows:
 ### Artifact Management
 - `/migrate-artifacts` - One-time migration of existing artifacts to new structure
 - `/archive-old` - Monthly maintenance to archive old artifacts
+
+## Session Startup
+
+**At the start of any new session**, before doing anything else:
+
+1. **Check for session handoff**: Look for `context/YYYY-MM-DD/session-handoff.md` (today's date)
+2. **If handoff exists**:
+   - Read the file for context and instructions
+   - Note the immediate task and any specific actions needed
+   - **Delete the file** after reading (it's ephemeral)
+   - Proceed with the handoff instructions
+3. **If no handoff**: Proceed normally (user may run `/orient` or make a request)
+
+The handoff document bridges sessions when work is interrupted mid-task (e.g., MCP server restarts, machine switches). It contains just enough context to resume seamlessly.
 
 ## Guidelines
 
