@@ -8,6 +8,20 @@ Prepare for an upcoming meeting by gathering relevant context from all systems i
 - `/prep-meeting [name]` - prep for meeting with specific person
 - `/prep-meeting [meeting title]` - prep for specific meeting
 
+## Attendee Resolution
+
+When preparing for a meeting, resolve attendees using `.claude/people.json`:
+
+1. **Load people.json** and get your identity from `me.slackUserId` for @mention detection
+2. **For each attendee**:
+   - If email provided → direct lookup in `people[email]`
+   - If name only → check `indices.byAlias` (lowercase)
+   - Use cached `slackDmChannelId` for DM history
+   - Use cached `slackUserId` for Slack searches
+   - Use cached metadata (team, role, isDirectReport) for context
+
+3. **Fallback**: If attendee not in cache, search by email in meeting-config.json `oneOnOnes`
+
 ## Check Daily Context First
 
 Before making API calls, check local context files:
@@ -51,7 +65,7 @@ If the meeting has a configured channel in `.claude/meeting-config.json`:
 4. **Read canvas content** (if `canvasId` is configured):
    - Use `slack_get_canvas` with the configured `canvasId`
    - Parse sections: Agenda, Action Items, Notes, Decisions
-   - Extract action items assigned to you (@U08EWPC9AP9 or your name)
+   - Extract action items assigned to you (use `me.slackUserId` from people.json, or your name)
    - Include current agenda and open action items in prep output
 5. **Apply filters** (if configured):
    - Filter by `includeUsers` (if non-empty, only show these users)
@@ -227,7 +241,7 @@ Create a meeting prep note with:
 
 ### Canvas Status (if canvas configured)
 - Current agenda items from canvas
-- Open action items (mine highlighted with @U08EWPC9AP9 or name)
+- Open action items (mine highlighted using `me.slackUserId` from people.json)
 - Recently completed items
 - Blocked items to discuss
 - **Linked Linear tickets**

@@ -165,7 +165,16 @@ Use Fibonacci story points:
 
 **Note:** Spikes don't get story points - they have a timebox instead.
 
-### 6. Create the Ticket
+### 6. Resolve Assignee
+
+If assigning to a specific person, use `.claude/people.json`:
+
+1. **Resolve person**: Check `indices.byAlias` with lowercase name
+2. **Get Linear ID**: Use `identifiers.linearUserId` if cached
+3. **If not cached**: Look up in Linear by email, then update people.json with discovered ID
+4. **Store discovery**: Update `people[email].identifiers.linearUserId` for future lookups
+
+### 7. Create the Ticket
 
 Use `mcp__linear__create_issue` with:
 - `title` - Clear, concise title (prefix with [SPIKE] or [BUG] if applicable)
@@ -174,9 +183,9 @@ Use `mcp__linear__create_issue` with:
 - `labels` - Array of applicable label names
 - `estimate` - Story points (tasks only, omit for spikes/bugs)
 - `project` - If known, link to relevant project
-- `assignee` - If known, assign to specific person
+- `assignee` - Use resolved Linear user ID from people.json or discovery
 
-### 7. Confirm with User
+### 8. Confirm with User
 
 Before creating, show:
 - Title

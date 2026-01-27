@@ -16,6 +16,19 @@ Kill the Slack notification count while ensuring nothing important is missed:
 - Create tasks for action items
 - Mark everything as read (with confirmation)
 
+## Your Identity
+
+Load your Slack user ID from `.claude/people.json`:
+
+```
+me.slackUserId → "U08EWPC9AP9"
+```
+
+Use this ID for:
+- Detecting @mentions in messages (`<@U08EWPC9AP9>`)
+- Identifying replies to your messages
+- Checking thread participation
+
 ## Process
 
 ### 1. Gather Unread Messages
@@ -68,7 +81,7 @@ Output: "47 bot notifications (GitHub: 23, Linear: 15, Calendar: 9) - will be ma
 
 ### 3. Extract Action Items
 
-For messages where you're @mentioned (`<@U08EWPC9AP9>`), analyze for:
+For messages where you're @mentioned (use `me.slackUserId` from people.json), analyze for:
 
 **Questions (create task):**
 - Direct questions ending with `?`

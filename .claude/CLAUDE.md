@@ -61,6 +61,7 @@ Use `/[skill-name]` to invoke these workflows:
 - `/triage-inbox` - Review and categorize emails
 - `/slack-read` - Process all unread Slack messages, summarize activity, create tasks for requests
 - `/update-todos` - Scan canvases, Slack, email, Notion, and Google Docs for action items assigned to you
+- `/sync-people` - Refresh person identifier cache from Humaans and Slack
 
 ### Meetings
 - `/prep-meeting [meeting]` - Prepare for an upcoming meeting (integrates with mapped Slack channels/canvases)
@@ -205,6 +206,52 @@ These skills check daily context files before making API calls:
 - Provides richer context (accumulates throughout day)
 - Creates audit trail of what was processed
 - Enables continuity across sessions
+
+## Person Lookup System
+
+The person lookup system (`.claude/people.json`) provides instant resolution of names to system identifiers.
+
+### Data File
+`.claude/people.json` contains:
+- **me**: Your identity (Slack user ID for @mention detection)
+- **people**: Team members with all known identifiers
+- **contacts**: External people (vendors, clients)
+- **indices**: Pre-computed lookups (byAlias, bySlackUserId)
+
+### Lookup Algorithm
+When resolving a person:
+1. If email format → direct lookup in `people[email]`
+2. If Slack ID (U...) → check `indices.bySlackUserId`
+3. Lowercase query → check `indices.byAlias`
+4. Fuzzy match against `displayName` values
+5. Check `contacts` section
+6. If not found → fall back to API search
+
+### Using Cached Identifiers
+Once resolved, use the person's cached identifiers:
+- `slackUserId` → Slack searches, @mention detection
+- `slackDmChannelId` → Read DM history directly
+- `githubUsername` → GitHub PR/issue searches
+- `linearUserId` → Linear ticket operations
+- `humaansEmployeeId` → Humaans lookups
+
+### Progressive Discovery
+Some identifiers are discovered during skill execution:
+- `githubUsername`: Found during `/team-status`, `/whats-blocking` (PR lookups)
+- `linearUserId`: Found during `/create-ticket`, `/team-status` (assignee resolution)
+
+**When you discover a new identifier, update people.json** to cache it for future use.
+
+### Cache Maintenance
+- `/sync-people` - Full refresh from Humaans + Slack
+- `/sync-people --refresh` - Re-verify existing, mark missing as inactive
+- `/orient` - Prompts if cache is >7 days old
+
+### Fallback Behavior
+If a person is not in the cache:
+1. Search Humaans/Slack by name
+2. Add them to people.json with discovered info
+3. Continue with the original operation
 
 ## Project Context
 
