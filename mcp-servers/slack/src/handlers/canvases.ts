@@ -75,28 +75,6 @@ export const DeleteCanvasSchema = z.object({
 
 // ==================== RESPONSE TYPES ====================
 
-interface CanvasContent {
-  type: string;
-  markdown?: string;
-  elements?: Array<{
-    type: string;
-    elements?: Array<{
-      type: string;
-      text?: string;
-      style?: Record<string, boolean>;
-    }>;
-  }>;
-}
-
-interface CanvasSectionsLookupResponse extends SlackResponse {
-  sections: Array<{
-    id: string;
-    type?: string;
-    text?: string;
-    markdown?: string;
-  }>;
-}
-
 interface CanvasEditResponse extends SlackResponse {
   canvas_id: string;
 }
