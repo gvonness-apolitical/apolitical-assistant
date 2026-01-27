@@ -91,6 +91,11 @@ Use `/[skill-name]` to invoke these workflows:
 
 ### Thinking & Documentation
 - `/rubberduck [topic]` - Capture a thinking session (strategy, design, problem-solving) as a documented artifact
+- `/save-artifact` - Save conversation output to appropriate location with templates
+
+### Artifact Management
+- `/migrate-artifacts` - One-time migration of existing artifacts to new structure
+- `/archive-old` - Monthly maintenance to archive old artifacts
 
 ## Guidelines
 
@@ -162,50 +167,195 @@ When drafting documents:
 
 ## Output Directories
 
-- `morning-briefing/` - Daily briefings (`YYYY-MM-DD.md`)
+### Primary Directories
+- `briefings/` - Daily briefings (`YYYY-MM-DD.md`)
+- `context/` - Day-level context accumulation:
+  - `YYYY-MM-DD/` - Day directory containing:
+    - `index.md` - Daily context accumulator
+    - `orient-HHMM.md` - Session snapshots
+    - `slack-HHMM.md` - Slack triage outputs
+    - `email-HHMM.md` - Email triage outputs
+    - `todos-HHMM.md` - Action item scans
+    - `session.md` - Session notes
+  - `eod-YYYY-MM-DD.md` - EOD summaries (flat, for easy lookup)
+  - `preferences.json`, `store.db` - Config files
 - `meetings/output/` - Meeting prep and notes by type:
   - `one-on-ones/` - 1:1 meeting notes
   - `squad/` - Squad/team meetings
   - `planning/` - Planning sessions
   - `external/` - External calls
   - `general/` - Everything else
-- `tech-notes/` - Technical documentation and deep dives
-- `context/` - Session context and summaries:
-  - `daily/YYYY-MM-DD.md` - **Consolidated daily context** (accumulated by reporting skills)
-  - `orient-YYYY-MM-DD-HHMM.md` - Session orientation context
-  - `YYYY-MM-DD-HHMM-slack-read.md` - Slack read summaries
-  - `YYYY-MM-DD-session.md` - Session notes
-  - `eod-YYYY-MM-DD.md` - End of day summaries
-  - `weekly-review-YYYY-MM-DD.md` - Weekly reviews
-  - `executive-report-[start]-to-[end].md` - Executive reports
+- `reviews/` - Periodic summaries:
+  - `weekly/YYYY-MM-DD.md` - Weekly reviews
+  - `executive/YYYY-MM-DD-to-YYYY-MM-DD.md` - Executive reports
+- `investigations/` - Research & analysis (`YYYY-MM-DD-[slug].md`)
+- `work/` - Ad-hoc work products (`YYYY-MM-DD-[slug].md`)
+- `rubberduck/` - Thinking sessions (`YYYY-MM-DD-[slug].md`)
+- `reference/` - Evergreen documentation (`[topic].md`)
 - `121/` - 1:1 meeting archives from Gemini (raw transcripts)
-- `rubberduck/` - Documented thinking sessions (`YYYY-MM-DD-[slug].md`)
+
+### Archive Directory
+- `archive/` - Archived artifacts:
+  - `context/` - Compressed day directories (`YYYY-MM.tar.gz`)
+  - `briefings/` - Old briefings
+  - `work/` - Old work products
+  - `reviews/` - Old reviews
+  - `index.md` - Searchable index of archived content
+
+### Artifact Types
+
+| Category | Directory | Pattern | Examples |
+|----------|-----------|---------|----------|
+| Daily briefings | `briefings/` | `YYYY-MM-DD.md` | Morning briefing |
+| Daily context | `context/YYYY-MM-DD/` | `[type]-HHMM.md` | Orient, slack, email |
+| EOD summaries | `context/` | `eod-YYYY-MM-DD.md` | Day closure summary |
+| Meeting prep/notes | `meetings/output/[type]/` | `YYYY-MM-DD-[slug].md` | 1:1 prep, squad notes |
+| Periodic reviews | `reviews/[period]/` | varies | Weekly, executive |
+| Investigations | `investigations/` | `YYYY-MM-DD-[slug].md` | Research, analysis |
+| Work products | `work/` | `YYYY-MM-DD-[slug].md` | CV reviews, drafts |
+| Thinking sessions | `rubberduck/` | `YYYY-MM-DD-[slug].md` | Strategy, design |
+| Reference docs | `reference/` | `[topic].md` | Architecture, APIs |
 
 ## Daily Context System
 
-Skills are designed to accumulate and share context throughout the day:
+Skills are designed to accumulate and share context throughout the day using day directories.
+
+### Day Directory Structure
+Each day has its own directory at `context/YYYY-MM-DD/` containing:
+- `index.md` - Main accumulator with session log and active items
+- `orient-HHMM.md` - Orient snapshots (one per session)
+- `slack-HHMM.md` - Slack read summaries
+- `email-HHMM.md` - Email triage outputs
+- `todos-HHMM.md` - Action item scans
+- `session.md` - Session notes
 
 ### Reporting Skills (Write to Daily Context)
-These skills append their summaries to `context/daily/YYYY-MM-DD.md`:
-- `/orient` - Session start context
-- `/morning-briefing` - Calendar, priorities, team status
-- `/slack-read` - Slack activity and action items
-- `/triage-inbox` - Email status and pending items
-- `/update-todos` - Action items from all sources
-- `/end-of-day` - Day summary and carry-forward
+These skills create timestamped files in day directories AND append to `index.md`:
+- `/orient` - Creates `orient-HHMM.md`, appends summary to index
+- `/morning-briefing` - Creates `briefings/YYYY-MM-DD.md`, appends summary to index
+- `/slack-read` - Creates `slack-HHMM.md`, appends summary to index
+- `/triage-inbox` - Creates `email-HHMM.md`, appends summary to index
+- `/update-todos` - Creates `todos-HHMM.md`, appends summary to index
+- `/end-of-day` - Creates `eod-YYYY-MM-DD.md` (flat), appends summary to index
 
 ### Context-Gathering Skills (Read from Daily Context)
-These skills check daily context files before making API calls:
+These skills check `context/YYYY-MM-DD/index.md` before making API calls:
 - `/find-context` - Checks for recent mentions/notes
 - `/prep-meeting` - Uses accumulated context about attendees
 - `/team-status` - Uses cached team/incident info
 - `/whats-blocking` - Checks for known blockers
 
+### Daily Context Index Template
+The index file is created from `.claude/templates/context-index.md` when first needed:
+```markdown
+---
+type: context
+date: YYYY-MM-DD
+---
+
+# Daily Context - YYYY-MM-DD
+
+## Session Log
+| Time | Activity | Summary |
+|------|----------|---------|
+
+## Active Items
+- [ ] Action items...
+
+## Key Context
+Information accumulated throughout the day.
+
+## Links
+- [Morning Briefing](../briefings/YYYY-MM-DD.md)
+```
+
 ### Benefits
+- Day-level organization keeps related content together
+- Index provides quick overview without reading all files
 - Reduces redundant API calls
-- Provides richer context (accumulates throughout day)
 - Creates audit trail of what was processed
 - Enables continuity across sessions
+
+## Artifact Templates
+
+Templates in `.claude/templates/` ensure consistent structure:
+
+| Template | Purpose |
+|----------|---------|
+| `investigation.md` | Research and analysis |
+| `work-product.md` | Deliverables for external use |
+| `rubberduck.md` | Thinking sessions |
+| `briefing.md` | Daily briefings |
+| `weekly-review.md` | Weekly reviews |
+| `meeting-prep.md` | Meeting preparation |
+| `context-index.md` | Daily context index |
+
+When creating new artifacts, use the appropriate template and populate placeholders (`{{DATE}}`, `{{TITLE}}`, etc.).
+
+## YAML Frontmatter
+
+All artifacts include YAML frontmatter for searchability:
+
+```yaml
+---
+type: investigation | work | briefing | context | review | rubberduck | reference
+date: 2026-01-27
+tags: [api, integration, humaans]
+related:
+  - investigations/2026-01-25-humaans-api.md
+status: draft | final | archived
+stakeholders: [Joel, Byron]
+---
+```
+
+**Required fields:**
+- `type` - Artifact category
+- `date` - Creation date (YYYY-MM-DD)
+
+**Optional fields:**
+- `tags` - Searchable keywords
+- `related` - Links to related artifacts
+- `status` - For work products: draft | final | archived
+- `stakeholders` - People involved or interested
+
+## Proactive Artifact Saving
+
+Proactively offer to save conversation outputs when:
+
+1. **Substantial analysis produced** (>500 words of structured analysis)
+2. **Decision documented** (pros/cons, recommendation made)
+3. **Research completed** (multiple sources consulted, findings synthesized)
+4. **Work product created** (draft email, review summary, etc.)
+
+**Suggestion format:**
+```
+I've completed [description]. Would you like me to save this?
+
+Suggested: work/2026-01-27-data-lead-cv-review.md
+
+[Save] [Save elsewhere] [Don't save]
+```
+
+**When NOT to offer:**
+- Simple Q&A responses
+- Status checks or lookups
+- Content already being saved by a skill
+- User explicitly declined saving earlier in session
+
+## Retention Policy
+
+| Artifact Type | Active Retention | Archive Action |
+|--------------|------------------|----------------|
+| Daily context | 30 days | Compress to `archive/context/YYYY-MM.tar.gz` |
+| Briefings | 90 days | Move to `archive/briefings/` |
+| EOD summaries | 30 days | Include in context archive |
+| Reviews | 1 year | Move to `archive/reviews/` |
+| Work products | 90 days | Move to `archive/work/` |
+| Investigations | Indefinite | Manual archive decision |
+| Rubberduck | Indefinite | Manual archive decision |
+| Reference | Indefinite | Never archive |
+
+Run `/archive-old` monthly to maintain clean working directories.
 
 ## Person Lookup System
 

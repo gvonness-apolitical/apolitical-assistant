@@ -1,25 +1,37 @@
 # git-crypt encrypted files
 # Directories containing sensitive data
 
-# Session context - contains notes and session state
+# Daily context - session notes, orient summaries, slack reads
 context/** filter=git-crypt diff=git-crypt
 context/**/* filter=git-crypt diff=git-crypt
 
-# Meetings - contain 1:1 scripts and attendee context
+# Meetings - 1:1 scripts, prep notes, attendee context
 meetings/** filter=git-crypt diff=git-crypt
 meetings/**/* filter=git-crypt diff=git-crypt
 
-# 1:1 archives - Gemini meeting transcripts and notes
+# 1:1 archives - Gemini meeting transcripts
 121/** filter=git-crypt diff=git-crypt
 121/**/* filter=git-crypt diff=git-crypt
 
-# Morning briefings - contain email summaries, calendar, incidents
-morning-briefing/** filter=git-crypt diff=git-crypt
-morning-briefing/**/* filter=git-crypt diff=git-crypt
+# Daily briefings - email/calendar/incident summaries
+briefings/** filter=git-crypt diff=git-crypt
+briefings/**/* filter=git-crypt diff=git-crypt
 
-# Tech notes - internal architecture documentation
-tech-notes/** filter=git-crypt diff=git-crypt
-tech-notes/**/* filter=git-crypt diff=git-crypt
+# Work products - CV reviews, drafts, internal deliverables
+work/** filter=git-crypt diff=git-crypt
+work/**/* filter=git-crypt diff=git-crypt
+
+# Periodic reviews - weekly/executive summaries
+reviews/** filter=git-crypt diff=git-crypt
+reviews/**/* filter=git-crypt diff=git-crypt
+
+# Investigations - internal research and analysis
+investigations/** filter=git-crypt diff=git-crypt
+investigations/**/* filter=git-crypt diff=git-crypt
+
+# Rubberduck - strategy and thinking sessions
+rubberduck/** filter=git-crypt diff=git-crypt
+rubberduck/**/* filter=git-crypt diff=git-crypt
 
 # Ensure consistent line endings
 * text=auto

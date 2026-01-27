@@ -45,10 +45,14 @@ Thumbs.db
 __pycache__/
 *.pyc
 
-# Generated outputs
-context/
-morning-briefing/
-meetings/output/
-tech-notes/
-121/
-rubberduck/
+# Generated outputs (tracked with git-crypt encryption)
+# These are NOT ignored - they're tracked but encrypted:
+# - context/
+# - briefings/
+# - meetings/output/
+# - reviews/
+# - investigations/
+# - work/
+# - rubberduck/
+# - reference/
+# - 121/

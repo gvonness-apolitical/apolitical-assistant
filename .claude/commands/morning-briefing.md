@@ -13,9 +13,9 @@ Before gathering fresh data, check for existing context:
    - Carry forward items
    - Context to remember
    - Follow-ups needed
-2. **Today's daily context**: Check `context/daily/YYYY-MM-DD.md` if exists
+2. **Today's daily context**: Check `context/YYYY-MM-DD/index.md` if exists
    - May have been started by `/orient` or earlier session
-3. **Session context**: Check `context/YYYY-MM-DD-session.md` if exists
+3. **Session context**: Check `context/YYYY-MM-DD/session.md` if exists
 
 ## Gather Context
 
@@ -49,11 +49,20 @@ Important but not urgent:
 - Ongoing threads to watch
 - Team availability notes
 
-Save to `morning-briefing/YYYY-MM-DD.md`
+Save to `briefings/YYYY-MM-DD.md`
 
-## Update Daily Context
+Add YAML frontmatter:
+```yaml
+---
+type: briefing
+date: YYYY-MM-DD
+tags: []
+---
+```
 
-After generating the briefing, update `context/daily/YYYY-MM-DD.md`:
+## Update Daily Context Index
+
+After generating the briefing, update `context/YYYY-MM-DD/index.md`:
 
 ```markdown
 ## Morning Briefing Summary
@@ -65,7 +74,7 @@ After generating the briefing, update `context/daily/YYYY-MM-DD.md`:
 - **P2 items**: X items this week
 ```
 
-Create the file if it doesn't exist. Append/update the "Morning Briefing Summary" section if it does.
+Create the index file from template (`.claude/templates/context-index.md`) if it doesn't exist. Append/update the "Morning Briefing Summary" section if it does.
 
 ## Notes
 - Flag any meetings without prep notes in `meetings/output/`
