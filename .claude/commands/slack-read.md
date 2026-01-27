@@ -104,7 +104,17 @@ For messages where you're @mentioned (use `me.slackUserId` from people.json), an
 
 ### 4. Generate Summary
 
-Write to: `context/YYYY-MM-DD-HHMM-slack-read.md`
+Write to: `context/YYYY-MM-DD/slack-HHMM.md`
+
+Create the day directory if it doesn't exist. Add YAML frontmatter:
+```yaml
+---
+type: context
+subtype: slack
+date: YYYY-MM-DD
+time: HH:MM
+---
+```
 
 ```markdown
 # Slack Read Summary - YYYY-MM-DD HH:MM
@@ -350,9 +360,9 @@ Optional config in `.claude/slack-read-config.json`:
 ### Shared Channels (external orgs)
 - Process normally but flag as "external"
 
-## Update Daily Context
+## Update Daily Context Index
 
-After generating the summary, update `context/daily/YYYY-MM-DD.md`:
+After generating the summary, update `context/YYYY-MM-DD/index.md`:
 
 ```markdown
 ## Slack Summary (HH:MM)
@@ -363,7 +373,7 @@ After generating the summary, update `context/daily/YYYY-MM-DD.md`:
 - **Key requests**: [brief list]
 ```
 
-Create the daily context file if it doesn't exist. Append a new Slack summary section (timestamped) if running multiple times per day.
+Create the index file from template (`.claude/templates/context-index.md`) if it doesn't exist. Append a new Slack summary section (timestamped) if running multiple times per day.
 
 ## Notes
 
@@ -371,6 +381,6 @@ Create the daily context file if it doesn't exist. Append a new Slack summary se
 - Bot notifications are auto-marked read (with confirmation)
 - Thread context helps determine if action still needed
 - Tasks include Slack links for easy navigation
-- Summary file persists for reference
+- Summary file persists for reference at `context/YYYY-MM-DD/slack-HHMM.md`
 - Run regularly to stay on top of Slack (e.g., start of day, after meetings)
-- Daily context file accumulates Slack summaries throughout the day
+- Daily context index accumulates Slack summaries throughout the day

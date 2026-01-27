@@ -32,52 +32,66 @@ The document will be tagged with domain and scope for future searchability.
 
 ## Output Structure
 
-```markdown
-# Rubberduck: [Title]
+Use the template from `.claude/templates/rubberduck.md`:
 
-**Date**: YYYY-MM-DD
-**Domain**: Technical | Business
-**Scope**: Strategic | Tactical | Operational
-**Tags**: [relevant keywords]
+```markdown
+---
+type: rubberduck
+date: YYYY-MM-DD
+domain: technical | business
+scope: strategic | tactical | operational
+tags: [relevant, keywords]
+related: []
+---
+
+# [Title]
+
+## Thinking About
+What question or problem we're exploring.
 
 ## Context
-What prompted this discussion? What's the background?
+Background information, constraints, what prompted this discussion.
 
-## Problem Statement
-Clear articulation of the problem or question being explored.
+## Exploration
 
-## Discussion Summary
-Key points from the exchange:
-- Point 1
-- Point 2
-- ...
+### Thread 1: [Topic]
+Discussion and reasoning...
 
-## Key Insights
-What did we learn or realize?
-- Insight 1
-- Insight 2
+### Thread 2: [Topic]
+Discussion and reasoning...
 
-## Decisions
-What was decided (if anything)?
-- Decision 1: [rationale]
-- Decision 2: [rationale]
-
-## Action Items
-- [ ] Action 1 - [owner if identified]
-- [ ] Action 2
+## Conclusions
+What we landed on and why.
 
 ## Open Questions
-What remains unresolved?
-- Question 1
-- Question 2
+Things still unresolved or to explore later.
 
-## References
-Links to related docs, tickets, or resources mentioned.
+## Actions
+- [ ] Action 1 - [owner if identified]
+- [ ] Action 2
 ```
 
 ## Output Location
 
 Documents are saved to: `rubberduck/YYYY-MM-DD-[slug].md`
+
+The slug is derived from the title (lowercase, hyphens, no special characters).
+
+## Daily Context Integration
+
+When saving a rubberduck session:
+
+1. Save the full document to `rubberduck/YYYY-MM-DD-[slug].md`
+2. Append a summary to the daily context index at `context/YYYY-MM-DD/index.md`:
+
+```markdown
+| HH:MM | Rubberduck | [Title] - [1-line summary] |
+```
+
+3. Add link to Links section:
+```markdown
+- [Rubberduck: Title](../rubberduck/YYYY-MM-DD-[slug].md)
+```
 
 ## Examples
 
@@ -97,3 +111,5 @@ Documents are saved to: `rubberduck/YYYY-MM-DD-[slug].md`
 - Tag action items with owners where possible
 - Link to Linear tickets created from action items
 - Sessions can be referenced in future `/find-context` searches
+- All rubberduck files include YAML frontmatter for searchability
+- Files are encrypted via git-crypt (may contain sensitive strategy)

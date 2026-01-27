@@ -60,15 +60,25 @@ People cache is 12 days old. Consider running `/sync-people --refresh` to update
 ## Output
 
 ### Session Context File
-Writes gathered context to: `context/orient-YYYY-MM-DD-HHMM.md`
+Writes gathered context to: `context/YYYY-MM-DD/orient-HHMM.md`
+
+Create the day directory if it doesn't exist. Add YAML frontmatter:
+```yaml
+---
+type: context
+subtype: orient
+date: YYYY-MM-DD
+time: HH:MM
+---
+```
 
 This file can be referenced by other skills and persists for the session.
 
-### Daily Context File
-Also updates `context/daily/YYYY-MM-DD.md` with:
+### Daily Context Index
+Also updates `context/YYYY-MM-DD/index.md` with:
 
 ```markdown
-## Orient Summary
+## Orient Summary (HH:MM)
 - **Session started**: TIMESTAMP
 - **Calendar**: X meetings today
 - **Unread emails**: X
@@ -78,7 +88,7 @@ Also updates `context/daily/YYYY-MM-DD.md` with:
 - **Team out**: [names]
 ```
 
-Create the daily context file if it doesn't exist.
+Create the index file from template (`.claude/templates/context-index.md`) if it doesn't exist.
 
 ### User Output
 Brief confirmation only:
@@ -95,12 +105,12 @@ Ready to go. (1 active incident, 3 emails flagged)
 
 Before gathering fresh data:
 1. **Previous day's EOD**: Read `context/eod-YYYY-MM-DD.md` for yesterday's carry-forward items
-2. **Today's daily context**: Check if already started by earlier session
-3. **Recent session context**: Check `context/YYYY-MM-DD-session.md`
+2. **Today's daily context**: Check if `context/YYYY-MM-DD/index.md` already exists from earlier session
+3. **Recent session context**: Check `context/YYYY-MM-DD/session.md`
 
 ## Notes
 - Run at the start of any new session for best results
 - Context file is gitignored - contains potentially sensitive info
 - Subsequent `/orient` calls in same session will refresh context
 - Other skills can read the context file if needed
-- Daily context file accumulates throughout the day
+- Daily context index accumulates throughout the day in `context/YYYY-MM-DD/index.md`

@@ -153,7 +153,19 @@ Before presenting:
 
 ### 6. Output
 
-Save the report to: `context/executive-report-[start-date]-to-[end-date].md`
+Save the report to: `reviews/executive/[start-date]-to-[end-date].md`
+
+Add YAML frontmatter:
+```yaml
+---
+type: review
+date: YYYY-MM-DD
+period: custom
+range_start: [start-date]
+range_end: [end-date]
+tags: []
+---
+```
 
 Present a summary to the user and offer:
 - "Copy to clipboard?"

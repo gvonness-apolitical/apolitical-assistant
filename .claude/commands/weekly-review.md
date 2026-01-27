@@ -10,7 +10,7 @@ Generate a comprehensive end-of-week summary and retrospective.
 
 Before making API calls, read accumulated context from the week:
 
-1. **Daily context files**: `context/daily/YYYY-MM-DD.md` for Mon-Fri
+1. **Daily context directories**: `context/YYYY-MM-DD/index.md` for Mon-Fri
    - Morning briefing summaries
    - Slack read summaries
    - Email triage results
@@ -19,10 +19,10 @@ Before making API calls, read accumulated context from the week:
    - Completed items each day
    - Decisions made
    - Carry-forward items
-3. **Morning briefings**: `morning-briefing/YYYY-MM-DD.md` for Mon-Fri
+3. **Morning briefings**: `briefings/YYYY-MM-DD.md` for Mon-Fri
    - Meetings attended
    - P1 items flagged
-4. **Session context files**: `context/YYYY-MM-DD-session.md` for Mon-Fri
+4. **Session context files**: `context/YYYY-MM-DD/session.md` for Mon-Fri
    - Detailed notes and decisions
 
 This provides a comprehensive view with minimal API calls.
@@ -82,7 +82,17 @@ By category: 1:1s, planning, reviews, external, other
 
 ## Save Location
 
-Save to `context/weekly-review-YYYY-MM-DD.md`
+Save to `reviews/weekly/YYYY-MM-DD.md`
+
+Add YAML frontmatter:
+```yaml
+---
+type: review
+date: YYYY-MM-DD
+period: week
+tags: []
+---
+```
 
 ## Notes
 - Include links to relevant tickets, PRs, docs where helpful
