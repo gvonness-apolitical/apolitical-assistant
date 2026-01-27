@@ -15,7 +15,10 @@ export const DocsGetCommentsSchema = z.object({
 
 export const DocsCreateSchema = z.object({
   title: z.string().describe('The title for the new document'),
-  content: z.string().optional().describe('Initial content for the document (plain text or markdown-like)'),
+  content: z
+    .string()
+    .optional()
+    .describe('Initial content for the document (plain text or markdown-like)'),
 });
 
 // ==================== TOOL DEFINITIONS ====================
