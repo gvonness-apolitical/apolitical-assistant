@@ -8,6 +8,23 @@ Prepare for an upcoming meeting by gathering relevant context from all systems i
 - `/prep-meeting [name]` - prep for meeting with specific person
 - `/prep-meeting [meeting title]` - prep for specific meeting
 
+## Check Daily Context First
+
+Before making API calls, check local context files:
+
+1. **Today's daily context**: `context/daily/YYYY-MM-DD.md`
+   - Slack summaries with attendee mentions
+   - Email threads with attendees
+   - Action items involving attendees
+2. **Session context**: `context/YYYY-MM-DD-session.md`
+   - Notes about this person/meeting from earlier today
+   - Salary/HR information (for 1:1s)
+3. **Yesterday's EOD**: `context/eod-YYYY-MM-DD.md`
+   - Follow-ups related to attendees
+4. **Previous meeting prep**: `meetings/output/*/YYYY-MM-DD-*-prep.md`
+
+Use local context to reduce API calls and provide richer context.
+
 ## Gather Context
 
 ### Standard Context (All Meetings)

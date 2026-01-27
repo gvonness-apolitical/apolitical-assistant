@@ -6,6 +6,23 @@ Get a comprehensive status update on a team or squad.
 - `/team-status [squad/team name]` - status for a specific team
 - `/team-status` - status for engineering (default)
 
+## Check Daily Context First
+
+Before making API calls, check local context files:
+
+1. **Today's daily context**: `context/daily/YYYY-MM-DD.md`
+   - Who's out (from orient/morning-briefing)
+   - Active incidents
+   - Recent Slack activity summaries
+2. **Today's morning briefing**: `morning-briefing/YYYY-MM-DD.md`
+   - Team availability
+   - P1 items affecting team
+3. **Recent EODs**: `context/eod-*.md` (last 3 days)
+   - Blocked items mentioned
+   - Team accomplishments
+
+Use local context to supplement API calls and provide historical context.
+
 ## Gather Data
 
 1. **Linear**:

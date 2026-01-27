@@ -52,6 +52,22 @@ Writes gathered context to: `context/orient-YYYY-MM-DD-HHMM.md`
 
 This file can be referenced by other skills and persists for the session.
 
+### Daily Context File
+Also updates `context/daily/YYYY-MM-DD.md` with:
+
+```markdown
+## Orient Summary
+- **Session started**: TIMESTAMP
+- **Calendar**: X meetings today
+- **Unread emails**: X
+- **Slack mentions**: X
+- **Linear tickets**: X assigned
+- **Active incidents**: X
+- **Team out**: [names]
+```
+
+Create the daily context file if it doesn't exist.
+
 ### User Output
 Brief confirmation only:
 ```
@@ -63,8 +79,16 @@ If critical items found, may add a one-liner:
 Ready to go. (1 active incident, 3 emails flagged)
 ```
 
+## Check Existing Context
+
+Before gathering fresh data:
+1. **Previous day's EOD**: Read `context/eod-YYYY-MM-DD.md` for yesterday's carry-forward items
+2. **Today's daily context**: Check if already started by earlier session
+3. **Recent session context**: Check `context/YYYY-MM-DD-session.md`
+
 ## Notes
 - Run at the start of any new session for best results
 - Context file is gitignored - contains potentially sensitive info
 - Subsequent `/orient` calls in same session will refresh context
 - Other skills can read the context file if needed
+- Daily context file accumulates throughout the day
