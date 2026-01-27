@@ -22,14 +22,22 @@ const CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 const REDIRECT_PORT = 8089;
 const REDIRECT_URI = `http://127.0.0.1:${REDIRECT_PORT}`;
 
-// Scopes for the MCP server
+// Scopes for the MCP server (must match Google Cloud Console OAuth consent screen)
 const SCOPES = [
-  'https://www.googleapis.com/auth/gmail.modify', // Read, send, delete, manage labels
-  'https://www.googleapis.com/auth/calendar.readonly',
-  'https://www.googleapis.com/auth/drive.readonly',
-  'https://www.googleapis.com/auth/documents.readonly',
-  'https://www.googleapis.com/auth/spreadsheets.readonly',
-  'https://www.googleapis.com/auth/presentations.readonly',
+  // Gmail
+  'https://www.googleapis.com/auth/gmail.modify', // Read, compose, send emails
+  'https://www.googleapis.com/auth/gmail.compose', // Manage drafts and send emails
+  'https://www.googleapis.com/auth/gmail.send', // Send email on your behalf
+  // Calendar
+  'https://www.googleapis.com/auth/calendar', // Full calendar access
+  'https://www.googleapis.com/auth/calendar.events', // View and edit events
+  // Drive
+  'https://www.googleapis.com/auth/drive.readonly', // See and download files
+  'https://www.googleapis.com/auth/drive.metadata', // View and manage metadata
+  // Docs, Sheets, Slides (full access for create/edit)
+  'https://www.googleapis.com/auth/documents', // Create, edit, delete docs
+  'https://www.googleapis.com/auth/spreadsheets', // Create, edit, delete sheets
+  'https://www.googleapis.com/auth/presentations', // Create, edit, delete slides
 ];
 
 if (!CLIENT_ID || !CLIENT_SECRET) {
@@ -73,6 +81,27 @@ function openBrowser(url: string): void {
   exec(`${command} "${url}"`);
 }
 
+function saveToKeychain(token: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (process.platform !== 'darwin') {
+      console.log('\n⚠️  Keychain storage is only supported on macOS');
+      resolve();
+      return;
+    }
+
+    // Use -U to update existing entry, -a for account, -s for service, -w for password
+    const cmd = `security add-generic-password -a "claude" -s "GOOGLE_REFRESH_TOKEN" -w "${token}" -U`;
+
+    exec(cmd, (error) => {
+      if (error) {
+        reject(new Error(`Failed to save to Keychain: ${error.message}`));
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
 async function main(): Promise<void> {
   console.log('🔐 Google OAuth Helper\n');
 
@@ -109,14 +138,20 @@ async function main(): Promise<void> {
           console.log('\n⏳ Exchanging code for tokens...');
           const tokens = await exchangeCodeForTokens(code);
 
-          console.log('\n✅ Success! Here is your refresh token:\n');
-          console.log('─'.repeat(60));
-          console.log(tokens.refresh_token);
-          console.log('─'.repeat(60));
-          console.log('\nAdd this to your environment:');
-          console.log(`\nexport GOOGLE_REFRESH_TOKEN="${tokens.refresh_token}"`);
-          console.log('\nOr add to your .env file:');
-          console.log(`\nGOOGLE_REFRESH_TOKEN=${tokens.refresh_token}`);
+          console.log('\n✅ Token exchange successful!');
+
+          // Save to macOS Keychain
+          try {
+            await saveToKeychain(tokens.refresh_token);
+            console.log('🔑 Saved refresh token to macOS Keychain');
+            console.log('\n✅ All done! Restart Claude Code to use the new token.');
+          } catch (keychainErr) {
+            console.error(`\n⚠️  Could not save to Keychain: ${keychainErr}`);
+            console.log('\nManually add this to your Keychain or environment:\n');
+            console.log('─'.repeat(60));
+            console.log(tokens.refresh_token);
+            console.log('─'.repeat(60));
+          }
         } catch (err) {
           console.error(`\n❌ Token exchange failed: ${err}`);
         }
