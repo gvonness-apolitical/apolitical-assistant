@@ -371,17 +371,6 @@ function parseMarkdownContent(content: string, startIndex: number = 1): ParsedMa
   };
 }
 
-/**
- * Legacy wrapper for backward compatibility
- */
-function markdownToDocsRequests(
-  content: string,
-  startIndex: number = 1
-): Array<Record<string, unknown>> {
-  const parsed = parseMarkdownContent(content, startIndex);
-  return parsed.requests;
-}
-
 // ==================== HANDLER FUNCTIONS ====================
 
 export async function handleDocsGetContent(
