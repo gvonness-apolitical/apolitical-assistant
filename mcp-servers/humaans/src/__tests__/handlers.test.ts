@@ -1,28 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import type { HttpClient } from '@apolitical-assistant/mcp-shared';
+import { createMockHttpClient } from '@apolitical-assistant/mcp-shared/testing';
 import { handleToolCall } from '../tools.js';
 import type { HumaansContext } from '../index.js';
 
-// Create a mock HttpClient for testing
-function createMockClient(): HttpClient & { get: ReturnType<typeof vi.fn> } {
-  return {
-    get: vi.fn(),
-    post: vi.fn(),
-    put: vi.fn(),
-    patch: vi.fn(),
-    delete: vi.fn(),
-    request: vi.fn(),
-    withHeaders: vi.fn(),
-  } as unknown as HttpClient & { get: ReturnType<typeof vi.fn> };
-}
-
 describe('Humaans Handlers', () => {
-  let mockClient: ReturnType<typeof createMockClient>;
+  let mockClient: ReturnType<typeof createMockHttpClient>;
   let context: HumaansContext;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockClient = createMockClient();
+    mockClient = createMockHttpClient();
     context = { client: mockClient };
   });
 
