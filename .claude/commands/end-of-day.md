@@ -9,14 +9,14 @@ Wrap up the day with a summary and handoff notes.
 
 Before gathering fresh data, read accumulated context from today:
 
-1. **Daily context file**: Read `context/daily/YYYY-MM-DD.md` for:
+1. **Daily context index**: Read `context/YYYY-MM-DD/index.md` for:
    - Morning briefing summary
    - Slack read summaries
    - Email triage results
    - Action items found
    - Session notes
-2. **Session context**: Check `context/YYYY-MM-DD-session.md` for notes
-3. **Morning briefing**: Check `morning-briefing/YYYY-MM-DD.md` for planned items
+2. **Session context**: Check `context/YYYY-MM-DD/session.md` for notes
+3. **Morning briefing**: Check `briefings/YYYY-MM-DD.md` for planned items
 
 This reduces API calls and captures context already gathered during the day.
 
@@ -56,7 +56,7 @@ Save to `context/eod-YYYY-MM-DD.md`
 
 ## Update Daily Context
 
-After generating EOD, update `context/daily/YYYY-MM-DD.md`:
+After generating EOD, update `context/YYYY-MM-DD/index.md`:
 
 ```markdown
 ## End of Day Summary

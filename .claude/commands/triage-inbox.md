@@ -330,7 +330,7 @@ Never auto-delete, always surface:
 
 ## Update Daily Context
 
-After triage, update `context/daily/YYYY-MM-DD.md`:
+After triage, update `context/YYYY-MM-DD/index.md`:
 
 ```markdown
 ## Email Triage (HH:MM)

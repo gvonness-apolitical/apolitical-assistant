@@ -38,11 +38,11 @@ If you discover a new identifier during search (e.g., GitHub username from a PR)
 
 Before making API calls, check local context files for relevant information:
 
-1. **Today's daily context**: `context/daily/YYYY-MM-DD.md`
+1. **Today's daily context**: `context/YYYY-MM-DD/index.md`
    - Recent Slack summaries mentioning the person/topic
    - Email triage results
    - Action items related to them
-2. **Recent session context**: `context/YYYY-MM-DD-session.md`
+2. **Recent session context**: `context/YYYY-MM-DD/session.md`
    - Notes and decisions from today
 3. **Yesterday's EOD**: `context/eod-YYYY-MM-DD.md`
    - Carry-forward items mentioning them

@@ -25,10 +25,14 @@ Use `/[skill-name]` in Claude Code to invoke workflows:
 ### Daily Operations
 | Skill | Purpose |
 |-------|---------|
+| `/orient` | Gather context at session start (calendar, emails, Slack, Linear, incidents) |
 | `/morning-briefing` | Generate daily briefing |
 | `/end-of-day` | Generate EOD summary |
+| `/session-handoff` | Create context document for session continuity |
 | `/triage-inbox` | Review and categorise emails |
+| `/slack-read` | Process unread Slack messages, summarize activity |
 | `/update-todos` | Scan all systems for action items assigned to you |
+| `/sync-people` | Refresh person identifier cache from Humaans and Slack |
 
 ### Meetings
 | Skill | Purpose |
@@ -53,6 +57,7 @@ Use `/[skill-name]` in Claude Code to invoke workflows:
 | `/team-status [squad]` | Comprehensive team status |
 | `/whats-blocking [person/project]` | Check blockers |
 | `/weekly-review` | End-of-week summary and retrospective |
+| `/executive-report [period]` | Generate executive summary (last week/month/quarter/year or custom) |
 
 ### Work Management
 | Skill | Purpose |
@@ -64,6 +69,18 @@ Use `/[skill-name]` in Claude Code to invoke workflows:
 |-------|---------|
 | `/review-rfc [notion-url]` | RFC review with Notion comments (quick/standard/deep) |
 | `/review-doc [doc-url]` | Review Google Docs/Slides from non-technical stakeholders |
+
+### Thinking & Documentation
+| Skill | Purpose |
+|-------|---------|
+| `/rubberduck [topic]` | Capture thinking session (strategy, design, problem-solving) |
+| `/save-artifact` | Save conversation output to appropriate location |
+
+### Artifact Management
+| Skill | Purpose |
+|-------|---------|
+| `/migrate-artifacts` | One-time migration of existing artifacts to new structure |
+| `/archive-old` | Monthly maintenance to archive old artifacts |
 
 ## Project Structure
 
@@ -81,10 +98,9 @@ apolitical-assistant/
 ├── scripts/
 │   ├── claude.sh              # Wrapper script (loads credentials, launches claude)
 │   └── credentials.ts         # Credential manager CLI
-├── morning-briefing/          # Daily briefings
+├── briefings/                 # Daily briefings
 ├── meetings/output/           # Meeting prep and notes (by type)
-├── tech-notes/                # Technical documentation
-├── context/                   # Session notes, EOD, weekly reviews
+├── context/                   # Day-level context (YYYY-MM-DD/), EOD, weekly reviews
 └── 121/                       # Raw 1:1 transcripts from Gemini
 ```
 
@@ -513,10 +529,9 @@ Once running, use natural conversation or invoke skills:
 
 | Directory | Contents |
 |-----------|----------|
-| `morning-briefing/` | Daily briefings (`YYYY-MM-DD.md`) |
+| `briefings/` | Daily briefings (`YYYY-MM-DD.md`) |
 | `meetings/output/` | Meeting prep and notes by type (`one-on-ones/`, `squad/`, `planning/`, `external/`, `general/`) |
-| `tech-notes/` | Technical documentation and deep dives |
-| `context/` | Session notes, EOD summaries, weekly reviews |
+| `context/` | Day-level context (`YYYY-MM-DD/`), EOD summaries, config files |
 | `121/` | Raw 1:1 meeting transcripts from Gemini |
 
 ## License
