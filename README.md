@@ -58,6 +58,7 @@ Use `/[skill-name]` in Claude Code to invoke workflows:
 | `/whats-blocking [person/project]` | Check blockers |
 | `/weekly-review` | End-of-week summary and retrospective |
 | `/executive-report [period]` | Generate executive summary (last week/month/quarter/year or custom) |
+| `/mbr [month]` | Engineering Monthly Business Review (header, prose commentary, exception register) |
 
 ### Work Management
 | Skill | Purpose |
@@ -237,11 +238,8 @@ Uses the official Notion MCP server. Requires a Notion integration token with:
 # Install dependencies
 npm install
 
-# Build MCP servers
-cd mcp-servers/google && npm run build
-cd ../slack && npm run build
-cd ../humaans && npm run build
-cd ../incident-io && npm run build
+# Build all MCP servers
+npm run build
 ```
 
 ### Credential Setup

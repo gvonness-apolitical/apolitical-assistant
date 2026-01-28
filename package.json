@@ -11,6 +11,9 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "build": "npm run build -w mcp-servers/shared && npm run build -w mcp-servers/google -w mcp-servers/slack -w mcp-servers/humaans -w mcp-servers/incident-io",
+    "test": "npm test --workspaces",
+    "typecheck": "npm run typecheck --workspaces",
     "credentials": "npx tsx scripts/credentials.ts"
   },
   "engines": {
