@@ -12,7 +12,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "build": "npm run build -w mcp-servers/shared && npm run build -w mcp-servers/google -w mcp-servers/slack -w mcp-servers/humaans -w mcp-servers/incident-io",
-    "test": "npm test --workspaces",
+    "test": "npm test --workspaces && vitest run --config vitest.config.scripts.ts",
     "typecheck": "npm run typecheck --workspaces",
     "credentials": "npx tsx scripts/credentials/index.ts"
   },
@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",
+    "@vitest/coverage-v8": "^3.2.4",
     "eslint": "^9.18.0",
     "prettier": "^3.4.2",
     "typescript-eslint": "^8.20.0"

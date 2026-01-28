@@ -32,5 +32,8 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Test
-        run: npm test
+      - name: Test MCP servers with coverage
+        run: npm test --workspaces -- --coverage
+
+      - name: Test scripts with coverage
+        run: npx vitest run --config vitest.config.scripts.ts --coverage
