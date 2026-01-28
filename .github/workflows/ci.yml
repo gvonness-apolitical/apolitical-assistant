@@ -29,26 +29,8 @@ jobs:
       - name: Format check
         run: npm run format:check
 
-      - name: Build shared package
-        run: |
-          cd mcp-servers/shared
-          npm run build
+      - name: Build
+        run: npm run build
 
-      - name: Test shared package
-        run: |
-          cd mcp-servers/shared
-          npm test
-
-      - name: Build MCP servers
-        run: |
-          cd mcp-servers/google && npm run build
-          cd ../slack && npm run build
-          cd ../humaans && npm run build
-          cd ../incident-io && npm run build
-
-      - name: Test MCP servers
-        run: |
-          cd mcp-servers/google && npm test
-          cd ../slack && npm test
-          cd ../humaans && npm test
-          cd ../incident-io && npm test
+      - name: Test
+        run: npm test
