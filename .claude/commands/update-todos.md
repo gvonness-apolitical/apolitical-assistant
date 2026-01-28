@@ -36,7 +36,8 @@ Scan all configured canvases for action items assigned to you.
 Search for messages where you've been mentioned or tagged with requests.
 
 1. **Search mentions**: Use `slack_search` for `<@U08EWPC9AP9>`
-2. **Time window**: Last 7 days (or since last `/update-todos` run)
+2. **Check priority private channels**: Load `.claude/channels-config.json` and explicitly read recent messages from high-priority channels (especially `priv-management-team`, `priv-managers`) for action items
+3. **Time window**: Last 7 days (or since last `/update-todos` run)
 3. **Filter for actionable**:
    - Contains question directed at you
    - Contains request patterns: "can you", "could you", "please", "need you to"
@@ -55,12 +56,14 @@ Search for messages where you've been mentioned or tagged with requests.
 
 Scan inbox for emails requiring action.
 
-1. **Search queries**:
+1. **Load email rules**: Read `.claude/email-rules.json` for auto-delete/archive patterns
+2. **Search queries**:
    - `is:unread in:inbox` - Unread inbox items
    - `is:starred` - Starred for follow-up
    - `label:action-required` - If label exists
-2. **Time window**: Last 7 days for unread, last 30 days for starred
-3. **Categorize emails**:
+3. **Time window**: Last 7 days for unread, last 30 days for starred
+4. **Skip auto-delete patterns**: Exclude emails matching `autoDelete` rules (e.g., Snyk alerts, GCP resolved alerts, recruiter spam)
+5. **Categorize emails**:
    - **Respond**: Needs reply (question asked, response requested)
    - **Review**: Needs attention (shared doc, FYI with action)
    - **Approve**: Waiting for approval/sign-off

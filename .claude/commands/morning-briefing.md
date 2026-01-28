@@ -21,7 +21,11 @@ Before gathering fresh data, check for existing context:
 
 1. **Calendar**: Today's meetings with attendees and descriptions
 2. **Email**: Unread emails, flagging urgent items
+   - Load `.claude/email-rules.json` to filter out auto-delete patterns (Snyk alerts, GCP resolved, recruiter spam)
+   - Focus on emails from `senderTiers.priority` and `alwaysKeep` patterns
+   - Reference `lastTriageDate` to note if triage is needed
 3. **Slack**: Recent DMs and mentions (last 12 hours)
+   - Load `.claude/channels-config.json` for priority private channels
 4. **Linear**: Tickets assigned to me, blocked items, upcoming due dates
 5. **Incidents**: Any active incidents from incident.io
 6. **Team**: Who's out today (check Humaans time off)

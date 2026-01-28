@@ -16,6 +16,8 @@
   "dependencies": {
     "@apolitical-assistant/mcp-shared": "*",
     "@modelcontextprotocol/sdk": "^1.0.0",
+    "marked": "^17.0.1",
+    "node-emoji": "^2.2.0",
     "zod": "^3.25.0"
   },
   "devDependencies": {

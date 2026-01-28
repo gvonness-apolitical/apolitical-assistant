@@ -53,9 +53,11 @@ import {
   DocsGetContentSchema,
   DocsGetCommentsSchema,
   DocsCreateSchema,
+  DocsUpdateSchema,
   handleDocsGetContent,
   handleDocsGetComments,
   handleDocsCreate,
+  handleDocsUpdate,
 } from './docs.js';
 
 import {
@@ -114,10 +116,12 @@ export {
   DocsGetContentSchema,
   DocsGetCommentsSchema,
   DocsCreateSchema,
+  DocsUpdateSchema,
   // Docs handlers
   handleDocsGetContent,
   handleDocsGetComments,
   handleDocsCreate,
+  handleDocsUpdate,
   // Sheets schemas
   SheetsGetValuesSchema,
   SheetsGetMetadataSchema,
@@ -181,6 +185,7 @@ export const handlerRegistry: Record<string, Handler> = {
   docs_get_content: (args, auth) => handleDocsGetContent(DocsGetContentSchema.parse(args), auth),
   docs_get_comments: (args, auth) => handleDocsGetComments(DocsGetCommentsSchema.parse(args), auth),
   docs_create: (args, auth) => handleDocsCreate(DocsCreateSchema.parse(args), auth),
+  docs_update: (args, auth) => handleDocsUpdate(DocsUpdateSchema.parse(args), auth),
 
   // Sheets handlers
   sheets_get_values: (args, auth) => handleSheetsGetValues(SheetsGetValuesSchema.parse(args), auth),

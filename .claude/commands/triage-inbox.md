@@ -310,15 +310,18 @@ Even if matching auto-delete rules:
 
 ## Automated Deletes (Default Rules)
 
-No confirmation needed:
+Rules are defined in `.claude/email-rules.json`. Current auto-delete rules:
+
+- **Snyk vulnerability alerts** - CC'd only, platform team handles directly
+- **GCP alerts showing RESOLVED** - Transient issues that auto-recovered
+- **Recruiter cold outreach** (roc-search.com, etc.)
+- **Vendor cold outreach** (artiework.com, hekahappy.com, etc.)
+
+Additional common patterns (add to config as needed):
 - npm publish notifications (`Successfully published @apolitical/*`)
 - GitHub Actions success notifications
 - Linear notification emails (if using Slack for Linear)
 - Calendar RSVP confirmations (accepted/declined/tentative)
-- Snyk alerts (unless critical/high severity)
-- Contentful incident updates (unless ongoing)
-- Google Cloud alerts showing RESOLVED
-- Marketing emails from vendors
 
 ## Always Keep (Default Rules)
 

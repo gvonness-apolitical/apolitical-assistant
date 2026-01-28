@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "lastUpdated": "2026-01-27T10:00:00Z",
+  "lastUpdated": "2026-01-28T11:15:00Z",
   "me": {
     "email": "greg.vonness@apolitical.co",
     "displayName": "Greg von Ness",
@@ -33,17 +33,18 @@
       "identifiers": {
         "slackUserId": null,
         "slackDmChannelId": "D09G7378JPR",
-        "githubUsername": null,
+        "githubUsername": "pshatwell-apolitical",
         "linearUserId": null,
         "humaansEmployeeId": null
       },
       "metadata": {
-        "team": "Engineering",
-        "role": null,
+        "team": "Data",
+        "role": "Data Engineer",
+        "squad": "Data",
         "managerId": null,
         "isDirectReport": true
       },
-      "lastVerified": "2026-01-27"
+      "lastVerified": "2026-01-28"
     },
     "romilly.eveleigh@apolitical.co": {
       "displayName": "Romilly Eveleigh",
@@ -51,17 +52,18 @@
       "identifiers": {
         "slackUserId": null,
         "slackDmChannelId": "D08GZVDMG81",
-        "githubUsername": null,
+        "githubUsername": "reveleigh-apolitical",
         "linearUserId": null,
         "humaansEmployeeId": null
       },
       "metadata": {
         "team": "Engineering",
-        "role": null,
+        "role": "Software Engineer",
+        "squad": "Learning",
         "managerId": null,
         "isDirectReport": true
       },
-      "lastVerified": "2026-01-27"
+      "lastVerified": "2026-01-28"
     },
     "khalifa.idris@apolitical.co": {
       "displayName": "Khalifa Idris",
@@ -69,17 +71,18 @@
       "identifiers": {
         "slackUserId": null,
         "slackDmChannelId": "D08HZGW1DFX",
-        "githubUsername": null,
+        "githubUsername": "kidris-apolitical",
         "linearUserId": null,
         "humaansEmployeeId": null
       },
       "metadata": {
         "team": "Engineering",
-        "role": null,
+        "role": "Associate Tech Lead",
+        "squad": "Platform",
         "managerId": null,
         "isDirectReport": true
       },
-      "lastVerified": "2026-01-27"
+      "lastVerified": "2026-01-28"
     },
     "yang.chih-yuan@apolitical.co": {
       "displayName": "Yang",
@@ -87,17 +90,18 @@
       "identifiers": {
         "slackUserId": null,
         "slackDmChannelId": "D09KYGBU5FW",
-        "githubUsername": null,
+        "githubUsername": "cyang-apolitical",
         "linearUserId": null,
         "humaansEmployeeId": null
       },
       "metadata": {
         "team": "Engineering",
-        "role": null,
+        "role": "Associate Tech Lead",
+        "squad": "Data",
         "managerId": null,
         "isDirectReport": true
       },
-      "lastVerified": "2026-01-27"
+      "lastVerified": "2026-01-28"
     },
     "dominic.harries@apolitical.co": {
       "displayName": "Dom Harries",
@@ -105,17 +109,18 @@
       "identifiers": {
         "slackUserId": null,
         "slackDmChannelId": "D08G544NWGL",
-        "githubUsername": null,
+        "githubUsername": "dharries-apolitical",
         "linearUserId": null,
         "humaansEmployeeId": null
       },
       "metadata": {
         "team": "Engineering",
-        "role": null,
+        "role": "Associate Tech Lead",
+        "squad": "Learning",
         "managerId": null,
         "isDirectReport": true
       },
-      "lastVerified": "2026-01-27"
+      "lastVerified": "2026-01-28"
     },
     "charles.killer@apolitical.co": {
       "displayName": "Charles Killer",
@@ -123,17 +128,18 @@
       "identifiers": {
         "slackUserId": null,
         "slackDmChannelId": "D08FU78CKT9",
-        "githubUsername": null,
+        "githubUsername": "ckiller-apolitical",
         "linearUserId": null,
         "humaansEmployeeId": null
       },
       "metadata": {
         "team": "Engineering",
-        "role": null,
+        "role": "Associate Tech Lead",
+        "squad": "AI",
         "managerId": null,
         "isDirectReport": true
       },
-      "lastVerified": "2026-01-27"
+      "lastVerified": "2026-01-28"
     },
     "che.thomson@apolitical.co": {
       "displayName": "Che Thomson",
@@ -177,17 +183,18 @@
       "identifiers": {
         "slackUserId": null,
         "slackDmChannelId": "D0A7WTSR1ME",
-        "githubUsername": null,
+        "githubUsername": "bsorgdrager-apolitical",
         "linearUserId": null,
         "humaansEmployeeId": null
       },
       "metadata": {
         "team": "Engineering",
-        "role": null,
+        "role": "Software Engineer",
+        "squad": "Platform",
         "managerId": null,
         "isDirectReport": true
       },
-      "lastVerified": "2026-01-27"
+      "lastVerified": "2026-01-28"
     },
     "tanya.riordan@apolitical.co": {
       "displayName": "Tanya Riordan",
@@ -213,17 +220,18 @@
       "identifiers": {
         "slackUserId": null,
         "slackDmChannelId": "D08H4SS7WH3",
-        "githubUsername": null,
+        "githubUsername": "rjukna-apolitical",
         "linearUserId": null,
         "humaansEmployeeId": null
       },
       "metadata": {
-        "team": null,
-        "role": null,
+        "team": "Engineering",
+        "role": "Software Engineer",
+        "squad": "Platform",
         "managerId": null,
         "isDirectReport": false
       },
-      "lastVerified": "2026-01-27"
+      "lastVerified": "2026-01-28"
     },
     "lowell.weisbord@apolitical.co": {
       "displayName": "Lowell Weisbord",
@@ -247,19 +255,20 @@
       "displayName": "Annika Chauhan",
       "aliases": ["Annika"],
       "identifiers": {
-        "slackUserId": null,
+        "slackUserId": "U05BBP2MW5B",
         "slackDmChannelId": "D08HH9BEJSZ",
-        "githubUsername": null,
+        "githubUsername": "achauhan-apolitical",
         "linearUserId": null,
         "humaansEmployeeId": null
       },
       "metadata": {
-        "team": null,
-        "role": null,
+        "team": "Engineering",
+        "role": "Software Engineer",
+        "squad": "AI",
         "managerId": null,
         "isDirectReport": false
       },
-      "lastVerified": "2026-01-27"
+      "lastVerified": "2026-01-28"
     },
     "kabir.seth@apolitical.co": {
       "displayName": "Kabir Seth",
@@ -267,35 +276,37 @@
       "identifiers": {
         "slackUserId": null,
         "slackDmChannelId": "D09DDLT0Z8C",
-        "githubUsername": null,
-        "linearUserId": null,
-        "humaansEmployeeId": null
-      },
-      "metadata": {
-        "team": null,
-        "role": null,
-        "managerId": null,
-        "isDirectReport": false
-      },
-      "lastVerified": "2026-01-27"
-    },
-    "samuel.balogun@apolitical.co": {
-      "displayName": "Samuel Balogun",
-      "aliases": ["Samuel", "Sam"],
-      "identifiers": {
-        "slackUserId": null,
-        "slackDmChannelId": "D09S9BYD9JQ",
-        "githubUsername": null,
+        "githubUsername": "kseth-apolitical",
         "linearUserId": null,
         "humaansEmployeeId": null
       },
       "metadata": {
         "team": "Engineering",
-        "role": null,
+        "role": "Software Engineer",
+        "squad": "AI",
+        "managerId": null,
+        "isDirectReport": false
+      },
+      "lastVerified": "2026-01-28"
+    },
+    "samuel.balogun@apolitical.co": {
+      "displayName": "Samuel Balogun",
+      "aliases": ["Samuel", "Sam"],
+      "identifiers": {
+        "slackUserId": "U09RR0S5X5L",
+        "slackDmChannelId": "D09S9BYD9JQ",
+        "githubUsername": "sbalogun-apolitical",
+        "linearUserId": null,
+        "humaansEmployeeId": null
+      },
+      "metadata": {
+        "team": "Engineering",
+        "role": "Software Engineer",
+        "squad": "Platform",
         "managerId": null,
         "isDirectReport": true
       },
-      "lastVerified": "2026-01-27"
+      "lastVerified": "2026-01-28"
     },
     "fatimat.gbajabiamila@apolitical.co": {
       "displayName": "Fatimat Gbajabiamila",
@@ -303,17 +314,18 @@
       "identifiers": {
         "slackUserId": null,
         "slackDmChannelId": null,
-        "githubUsername": null,
+        "githubUsername": "fgbajabiamila-apolitical",
         "linearUserId": null,
         "humaansEmployeeId": null
       },
       "metadata": {
-        "team": null,
-        "role": null,
+        "team": "Engineering",
+        "role": "Software Engineer",
+        "squad": "Platform",
         "managerId": null,
         "isDirectReport": false
       },
-      "lastVerified": "2026-01-27"
+      "lastVerified": "2026-01-28"
     },
     "riccardo.altieri@apolitical.co": {
       "displayName": "Riccardo Altieri",
@@ -321,17 +333,18 @@
       "identifiers": {
         "slackUserId": null,
         "slackDmChannelId": "D0A266QBPU2",
-        "githubUsername": null,
+        "githubUsername": "raltieri-apolitical",
         "linearUserId": null,
         "humaansEmployeeId": null
       },
       "metadata": {
-        "team": null,
-        "role": null,
+        "team": "Engineering",
+        "role": "Software Engineer",
+        "squad": "AI",
         "managerId": null,
         "isDirectReport": false
       },
-      "lastVerified": "2026-01-27"
+      "lastVerified": "2026-01-28"
     },
     "borja.hidalgo@apolitical.co": {
       "displayName": "Borja Hidalgo",
@@ -339,17 +352,18 @@
       "identifiers": {
         "slackUserId": null,
         "slackDmChannelId": "D08S06UBYC9",
-        "githubUsername": null,
+        "githubUsername": "bhidalgo-apolitical",
         "linearUserId": null,
         "humaansEmployeeId": null
       },
       "metadata": {
-        "team": null,
-        "role": null,
+        "team": "Engineering",
+        "role": "Software Engineer",
+        "squad": "Platform",
         "managerId": null,
         "isDirectReport": false
       },
-      "lastVerified": "2026-01-27"
+      "lastVerified": "2026-01-28"
     },
     "penny.lam@apolitical.co": {
       "displayName": "Penny Lam",
@@ -357,17 +371,18 @@
       "identifiers": {
         "slackUserId": null,
         "slackDmChannelId": "D099RU5HW81",
-        "githubUsername": null,
+        "githubUsername": "plam-apolitical",
         "linearUserId": null,
         "humaansEmployeeId": null
       },
       "metadata": {
-        "team": null,
-        "role": null,
+        "team": "Engineering",
+        "role": "Software Engineer",
+        "squad": "Learning",
         "managerId": null,
         "isDirectReport": false
       },
-      "lastVerified": "2026-01-27"
+      "lastVerified": "2026-01-28"
     },
     "robbie.ho@apolitical.co": {
       "displayName": "Robbie Ho",
@@ -375,35 +390,37 @@
       "identifiers": {
         "slackUserId": null,
         "slackDmChannelId": "D09FE0EAE7M",
-        "githubUsername": null,
-        "linearUserId": null,
-        "humaansEmployeeId": null
-      },
-      "metadata": {
-        "team": null,
-        "role": null,
-        "managerId": null,
-        "isDirectReport": false
-      },
-      "lastVerified": "2026-01-27"
-    },
-    "renzo.rozza@apolitical.co": {
-      "displayName": "Renzo Rozza",
-      "aliases": ["Renzo"],
-      "identifiers": {
-        "slackUserId": null,
-        "slackDmChannelId": "D08GH9FGXT2",
-        "githubUsername": null,
+        "githubUsername": "rho-apolitical",
         "linearUserId": null,
         "humaansEmployeeId": null
       },
       "metadata": {
         "team": "Engineering",
-        "role": null,
+        "role": "Software Engineer",
+        "squad": "Enterprise",
+        "managerId": null,
+        "isDirectReport": false
+      },
+      "lastVerified": "2026-01-28"
+    },
+    "renzo.rozza@apolitical.co": {
+      "displayName": "Renzo Rozza",
+      "aliases": ["Renzo"],
+      "identifiers": {
+        "slackUserId": "U0143B3HQTB",
+        "slackDmChannelId": "D08GH9FGXT2",
+        "githubUsername": "rrozza-apolitical",
+        "linearUserId": null,
+        "humaansEmployeeId": null
+      },
+      "metadata": {
+        "team": "Engineering",
+        "role": "Staff Engineer / Associate Tech Lead",
+        "squad": "Enterprise",
         "managerId": null,
         "isDirectReport": true
       },
-      "lastVerified": "2026-01-27"
+      "lastVerified": "2026-01-28"
     },
     "noah.edmunds@apolitical.co": {
       "displayName": "Noah Edmunds",
@@ -427,19 +444,113 @@
       "displayName": "Leonardo Maglio",
       "aliases": ["Leonardo", "Leo"],
       "identifiers": {
-        "slackUserId": null,
+        "slackUserId": "U07UJU7CBLL",
         "slackDmChannelId": "D08GD5934R3",
-        "githubUsername": null,
+        "githubUsername": "lmaglio-apolitical",
         "linearUserId": null,
         "humaansEmployeeId": null
       },
       "metadata": {
         "team": "Engineering",
-        "role": null,
+        "role": "Senior Software Engineer",
+        "squad": "Enterprise",
         "managerId": null,
         "isDirectReport": true
       },
-      "lastVerified": "2026-01-27"
+      "lastVerified": "2026-01-28"
+    },
+    "lauren.benson-armer@apolitical.co": {
+      "displayName": "Lauren Benson-Armer",
+      "aliases": ["Lauren"],
+      "identifiers": {
+        "slackUserId": "U023PQ65QSU",
+        "slackDmChannelId": "D08FNBWS83Y",
+        "githubUsername": null,
+        "linearUserId": null,
+        "humaansEmployeeId": null
+      },
+      "metadata": {
+        "team": "People",
+        "role": "People Lead",
+        "managerId": null,
+        "isDirectReport": false
+      },
+      "lastVerified": "2026-01-28"
+    },
+    "amber.keates@apolitical.co": {
+      "displayName": "Amber Keates",
+      "aliases": ["Amber"],
+      "identifiers": {
+        "slackUserId": "U03RQ9S67T7",
+        "slackDmChannelId": "D08G2SG5010",
+        "githubUsername": null,
+        "linearUserId": null,
+        "humaansEmployeeId": null
+      },
+      "metadata": {
+        "team": "Commercial",
+        "role": null,
+        "managerId": null,
+        "isDirectReport": false
+      },
+      "lastVerified": "2026-01-28"
+    },
+    "dec.burns@apolitical.co": {
+      "displayName": "Dec Burns",
+      "aliases": ["Dec"],
+      "identifiers": {
+        "slackUserId": null,
+        "slackDmChannelId": null,
+        "githubUsername": "dburns-apolitical",
+        "linearUserId": null,
+        "humaansEmployeeId": null
+      },
+      "metadata": {
+        "team": "Engineering",
+        "role": "Software Engineer",
+        "squad": "AI",
+        "managerId": null,
+        "isDirectReport": false
+      },
+      "lastVerified": "2026-01-28"
+    },
+    "dom.gaulton@apolitical.co": {
+      "displayName": "Dom Gaulton",
+      "aliases": ["Dom G"],
+      "identifiers": {
+        "slackUserId": null,
+        "slackDmChannelId": null,
+        "githubUsername": "dgaulton-apolitical",
+        "linearUserId": null,
+        "humaansEmployeeId": null
+      },
+      "metadata": {
+        "team": "Engineering",
+        "role": "Software Engineer",
+        "squad": "Enterprise",
+        "managerId": null,
+        "isDirectReport": false
+      },
+      "lastVerified": "2026-01-28"
+    },
+    "onuchukwu.adebayo@apolitical.co": {
+      "displayName": "Onuchukwu Adebayo",
+      "aliases": ["Onu"],
+      "identifiers": {
+        "slackUserId": null,
+        "slackDmChannelId": null,
+        "githubUsername": "oadebayo-apolitical",
+        "linearUserId": null,
+        "humaansEmployeeId": null
+      },
+      "metadata": {
+        "team": "Engineering",
+        "role": "Software Engineer",
+        "squad": "Learning",
+        "managerId": null,
+        "isDirectReport": false
+      },
+      "lastVerified": "2026-01-28"
     }
   },
   "contacts": {},
@@ -477,8 +588,42 @@
       "renzo": "renzo.rozza@apolitical.co",
       "noah": "noah.edmunds@apolitical.co",
       "leonardo": "leonardo.maglio@apolitical.co",
-      "leo": "leonardo.maglio@apolitical.co"
+      "leo": "leonardo.maglio@apolitical.co",
+      "lauren": "lauren.benson-armer@apolitical.co",
+      "amber": "amber.keates@apolitical.co",
+      "dec": "dec.burns@apolitical.co",
+      "dom g": "dom.gaulton@apolitical.co",
+      "onu": "onuchukwu.adebayo@apolitical.co"
     },
-    "bySlackUserId": {}
+    "bySlackUserId": {
+      "U07UJU7CBLL": "leonardo.maglio@apolitical.co",
+      "U023PQ65QSU": "lauren.benson-armer@apolitical.co",
+      "U03RQ9S67T7": "amber.keates@apolitical.co",
+      "U0143B3HQTB": "renzo.rozza@apolitical.co",
+      "U05BBP2MW5B": "annika.chauhan@apolitical.co"
+    },
+    "byGithubUsername": {
+      "pshatwell-apolitical": "peter.shatwell@apolitical.co",
+      "reveleigh-apolitical": "romilly.eveleigh@apolitical.co",
+      "kidris-apolitical": "khalifa.idris@apolitical.co",
+      "cyang-apolitical": "yang.chih-yuan@apolitical.co",
+      "dharries-apolitical": "dominic.harries@apolitical.co",
+      "ckiller-apolitical": "charles.killer@apolitical.co",
+      "bsorgdrager-apolitical": "byron.sorgdrager@apolitical.co",
+      "rjukna-apolitical": "rihards.jukna@apolitical.co",
+      "achauhan-apolitical": "annika.chauhan@apolitical.co",
+      "kseth-apolitical": "kabir.seth@apolitical.co",
+      "sbalogun-apolitical": "samuel.balogun@apolitical.co",
+      "fgbajabiamila-apolitical": "fatimat.gbajabiamila@apolitical.co",
+      "raltieri-apolitical": "riccardo.altieri@apolitical.co",
+      "bhidalgo-apolitical": "borja.hidalgo@apolitical.co",
+      "plam-apolitical": "penny.lam@apolitical.co",
+      "rho-apolitical": "robbie.ho@apolitical.co",
+      "rrozza-apolitical": "renzo.rozza@apolitical.co",
+      "lmaglio-apolitical": "leonardo.maglio@apolitical.co",
+      "dburns-apolitical": "dec.burns@apolitical.co",
+      "dgaulton-apolitical": "dom.gaulton@apolitical.co",
+      "oadebayo-apolitical": "onuchukwu.adebayo@apolitical.co"
+    }
   }
 }

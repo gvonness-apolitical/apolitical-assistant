@@ -36,8 +36,12 @@ People cache is 12 days old. Consider running `/sync-people --refresh` to update
 
 ### Communications
 - Unread/flagged emails requiring response
+  - Load `.claude/email-rules.json` to filter out noise (auto-delete patterns)
+  - Focus on priority senders and `alwaysKeep` patterns
 - Active Slack threads with recent activity (use `me.slackUserId` for @mention detection)
 - DMs needing attention
+- **Priority private channels** from `.claude/channels-config.json` (especially leadership channels like `priv-management-team`, `priv-managers`)
+  - Note: Use `slack_list_channels` with `types='private_channel'` to ensure private channels are listed
 
 ### Work in Progress
 - Linear tickets assigned or in progress

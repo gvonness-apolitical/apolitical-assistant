@@ -36,6 +36,11 @@ Before making API calls, check local context files:
 3. **Yesterday's EOD**: `context/eod-YYYY-MM-DD.md`
    - Follow-ups related to attendees
 4. **Previous meeting prep**: `meetings/output/*/YYYY-MM-DD-*-prep.md`
+5. **MBR (for MBR/MT meetings)**: If the meeting title contains "MBR", "Monthly Business Review", or "Management Team", check `reviews/mbr/` for a generated MBR matching the meeting's month:
+   - If found, include summary: "MBR already generated — RAG: [status], key themes: [...]"
+   - Link to the Google Doc URL from the MBR frontmatter (`google_doc_url`)
+   - Include exception register items as talking points
+   - If not found, suggest running `/mbr [month]` before the meeting
 
 Use local context to reduce API calls and provide richer context.
 
