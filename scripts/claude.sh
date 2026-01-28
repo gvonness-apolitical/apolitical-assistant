@@ -49,7 +49,22 @@ if command -v git-crypt &> /dev/null; then
         # Check if any files are still encrypted (locked)
         if git-crypt status -e 2>/dev/null | grep -q "encrypted:"; then
             echo "Unlocking git-crypt files..."
-            git-crypt unlock 2>/dev/null || echo "Warning: git-crypt unlock failed (may need GPG key)"
+            unlock_output=$(git-crypt unlock 2>&1) && exit 0
+
+            # If unlock failed due to dirty working directory, stash and retry
+            if echo "$unlock_output" | grep -q "Working directory not clean"; then
+                echo "Working directory not clean, stashing changes..."
+                git stash
+                if git-crypt unlock 2>/dev/null; then
+                    echo "Restoring stashed changes..."
+                    git stash pop
+                else
+                    echo "Warning: git-crypt unlock failed (may need GPG key)"
+                    git stash pop
+                fi
+            else
+                echo "Warning: git-crypt unlock failed: $unlock_output"
+            fi
         fi
     )
 fi
