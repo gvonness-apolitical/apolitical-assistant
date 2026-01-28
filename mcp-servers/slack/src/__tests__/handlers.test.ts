@@ -449,6 +449,245 @@ describe('Slack Handlers', () => {
     });
   });
 
+  describe('handleToolCall - slack_get_canvas', () => {
+    it('should return canvas content via files.info', async () => {
+      // files.info API call
+      mockFetch.mockResolvedValueOnce(
+        mockSlackResponse({
+          file: {
+            id: 'F0123456789',
+            name: '121 Agenda',
+            title: '121 Agenda Items',
+            filetype: 'quip',
+            mimetype: 'application/vnd.slack-docs',
+            created: 1700000000,
+            updated: 1700001000,
+            user: 'U123',
+            url_private_download: 'https://files.slack.com/canvas/F0123456789',
+            permalink: 'https://slack.com/files/F0123456789',
+          },
+        })
+      );
+
+      // Content download (fetch call to url_private_download)
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        headers: new Headers({ 'content-type': 'text/markdown' }),
+        text: async () => '# Agenda\n\n- Item 1\n- Item 2',
+      } as Response);
+
+      const result = await handleToolCall(
+        'slack_get_canvas',
+        { canvas_id: 'F0123456789' },
+        context
+      );
+
+      const data = JSON.parse((result.content[0] as { text: string }).text);
+      expect(data.canvasId).toBe('F0123456789');
+      expect(data.title).toBe('121 Agenda Items');
+      expect(data.content).toBe('# Agenda\n\n- Item 1\n- Item 2');
+      expect(data.contentType).toBe('text/markdown');
+    });
+
+    it('should handle canvas without download URL', async () => {
+      mockFetch.mockResolvedValueOnce(
+        mockSlackResponse({
+          file: {
+            id: 'F0123456789',
+            name: '121 Agenda',
+            title: '121 Agenda Items',
+            filetype: 'quip',
+            mimetype: 'application/vnd.slack-docs',
+            created: 1700000000,
+            updated: 1700001000,
+            user: 'U123',
+            permalink: 'https://slack.com/files/F0123456789',
+            // No url_private_download
+          },
+        })
+      );
+
+      const result = await handleToolCall(
+        'slack_get_canvas',
+        { canvas_id: 'F0123456789' },
+        context
+      );
+
+      const data = JSON.parse((result.content[0] as { text: string }).text);
+      expect(data.canvasId).toBe('F0123456789');
+      expect(data.title).toBe('121 Agenda Items');
+      expect(data.content).toBeNull();
+    });
+  });
+
+  describe('handleToolCall - slack_update_canvas', () => {
+    it('should update canvas with insert_at_end operation', async () => {
+      mockFetch.mockResolvedValueOnce(
+        mockSlackResponse({
+          canvas_id: 'F0123456789',
+        })
+      );
+
+      const result = await handleToolCall(
+        'slack_update_canvas',
+        {
+          canvas_id: 'F0123456789',
+          changes: [
+            {
+              operation: 'insert_at_end',
+              document_content: {
+                type: 'markdown',
+                markdown: '## New Section\n\nNew content here',
+              },
+            },
+          ],
+        },
+        context
+      );
+
+      const data = JSON.parse((result.content[0] as { text: string }).text);
+      expect(data.success).toBe(true);
+      expect(data.canvasId).toBe('F0123456789');
+    });
+
+    it('should update canvas with replace operation', async () => {
+      mockFetch.mockResolvedValueOnce(
+        mockSlackResponse({
+          canvas_id: 'F0123456789',
+        })
+      );
+
+      const result = await handleToolCall(
+        'slack_update_canvas',
+        {
+          canvas_id: 'F0123456789',
+          changes: [
+            {
+              operation: 'replace',
+              section_id: 'section_abc123',
+              document_content: {
+                type: 'markdown',
+                markdown: 'Replaced content',
+              },
+            },
+          ],
+        },
+        context
+      );
+
+      const data = JSON.parse((result.content[0] as { text: string }).text);
+      expect(data.success).toBe(true);
+      expect(data.canvasId).toBe('F0123456789');
+    });
+  });
+
+  describe('handleToolCall - slack_create_canvas', () => {
+    it('should create a new canvas with content', async () => {
+      mockFetch.mockResolvedValueOnce(
+        mockSlackResponse({
+          canvas_id: 'F_NEW_CANVAS',
+        })
+      );
+
+      const result = await handleToolCall(
+        'slack_create_canvas',
+        {
+          title: 'New 121 Canvas',
+          document_content: {
+            type: 'markdown',
+            markdown: '# 121 Notes\n\n## Agenda\n- Topic 1',
+          },
+        },
+        context
+      );
+
+      const data = JSON.parse((result.content[0] as { text: string }).text);
+      expect(data.success).toBe(true);
+      expect(data.canvasId).toBe('F_NEW_CANVAS');
+    });
+
+    it('should create canvas and set channel access', async () => {
+      // canvases.create
+      mockFetch.mockResolvedValueOnce(
+        mockSlackResponse({
+          canvas_id: 'F_NEW_CANVAS',
+        })
+      );
+
+      // canvases.access.set
+      mockFetch.mockResolvedValueOnce(mockSlackResponse({}));
+
+      const result = await handleToolCall(
+        'slack_create_canvas',
+        {
+          title: 'Shared Canvas',
+          channel_id: 'C0123456789',
+        },
+        context
+      );
+
+      const data = JSON.parse((result.content[0] as { text: string }).text);
+      expect(data.success).toBe(true);
+      expect(data.canvasId).toBe('F_NEW_CANVAS');
+      // Verify access.set was called (second fetch)
+      expect(mockFetch).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('handleToolCall - slack_get_bookmarks', () => {
+    it('should return bookmarks from a channel', async () => {
+      mockFetch.mockResolvedValueOnce(
+        mockSlackResponse({
+          bookmarks: [
+            {
+              id: 'Bk123',
+              channel_id: 'C123',
+              title: 'Important Doc',
+              link: 'https://docs.google.com/doc/123',
+              emoji: ':bookmark:',
+              type: 'link',
+              date_created: 1700000000,
+              date_updated: 1700001000,
+            },
+            {
+              id: 'Bk456',
+              channel_id: 'C123',
+              title: 'Weekly Standup Thread',
+              link: 'https://slack.com/archives/C123/p1234567890',
+              type: 'message',
+              date_created: 1700002000,
+              date_updated: 1700003000,
+            },
+          ],
+        })
+      );
+
+      const result = await handleToolCall('slack_get_bookmarks', { channel_id: 'C123' }, context);
+
+      const data = JSON.parse((result.content[0] as { text: string }).text);
+      expect(data.channelId).toBe('C123');
+      expect(data.bookmarks).toHaveLength(2);
+      expect(data.bookmarks[0].title).toBe('Important Doc');
+      expect(data.bookmarks[0].link).toBe('https://docs.google.com/doc/123');
+      expect(data.bookmarks[0].emoji).toBe(':bookmark:');
+      expect(data.bookmarks[1].type).toBe('message');
+    });
+
+    it('should return empty array when no bookmarks', async () => {
+      mockFetch.mockResolvedValueOnce(
+        mockSlackResponse({
+          bookmarks: [],
+        })
+      );
+
+      const result = await handleToolCall('slack_get_bookmarks', { channel_id: 'C123' }, context);
+
+      const data = JSON.parse((result.content[0] as { text: string }).text);
+      expect(data.channelId).toBe('C123');
+      expect(data.bookmarks).toHaveLength(0);
+    });
+  });
+
   describe('handleToolCall - slack_list_canvases', () => {
     it('should return both channel canvas and standalone canvases', async () => {
       // conversations.info returns channel canvas
