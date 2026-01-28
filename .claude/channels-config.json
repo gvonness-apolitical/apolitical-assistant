@@ -1,0 +1,120 @@
+{
+  "version": 1,
+  "lastUpdated": "2026-01-28",
+  "description": "Key Slack channels to monitor for /orient, /slack-read, and other skills",
+  "privateChannels": {
+    "leadership": [
+      {
+        "id": "C0AAWSFT206",
+        "name": "priv-management-team",
+        "purpose": "Management Team - execution & unblocks (new, replaces Goalkeepers)",
+        "priority": "high",
+        "checkFrequency": "daily"
+      },
+      {
+        "id": "G01BDLZL8LE",
+        "name": "priv-managers",
+        "purpose": "Manager announcements and updates",
+        "priority": "high",
+        "checkFrequency": "daily"
+      },
+      {
+        "id": "C08G0URGV9T",
+        "name": "joels-management-team",
+        "purpose": "Joel's direct reports sync",
+        "priority": "high",
+        "checkFrequency": "daily"
+      }
+    ],
+    "engineering": [
+      {
+        "id": "C08GGSK52CS",
+        "name": "team-eng-think-tank",
+        "purpose": "Engineering leadership discussions",
+        "priority": "high",
+        "checkFrequency": "daily"
+      },
+      {
+        "id": "C09ETL01M0T",
+        "name": "team-eng-platform-squad",
+        "purpose": "Platform squad coordination",
+        "priority": "medium",
+        "checkFrequency": "daily"
+      },
+      {
+        "id": "C025E4BCLQK",
+        "name": "team-eng-learning-days",
+        "purpose": "Learning day updates and resources",
+        "priority": "low",
+        "checkFrequency": "weekly"
+      },
+      {
+        "id": "C0A1TLMKVV0",
+        "name": "temp-eng-search",
+        "purpose": "Engineering search/hiring",
+        "priority": "medium",
+        "checkFrequency": "daily"
+      }
+    ],
+    "data": [
+      {
+        "id": "C09GQNAFZ4Y",
+        "name": "team-data-core",
+        "purpose": "Data team channel",
+        "priority": "high",
+        "checkFrequency": "daily"
+      },
+      {
+        "id": "C09KW7V9HUJ",
+        "name": "data-analytics-insights-committee",
+        "purpose": "Data committee discussions",
+        "priority": "medium",
+        "checkFrequency": "weekly"
+      }
+    ],
+    "crossFunctional": [
+      {
+        "id": "C08G0N3N1AA",
+        "name": "risk-compliance-committee",
+        "purpose": "Risk and compliance discussions",
+        "priority": "medium",
+        "checkFrequency": "weekly"
+      },
+      {
+        "id": "C0592RF3QGG",
+        "name": "campus-gov-ai",
+        "purpose": "Government AI Campus coordination",
+        "priority": "medium",
+        "checkFrequency": "daily"
+      },
+      {
+        "id": "C08GPDSNHUJ",
+        "name": "team-prod-eng-sync-up",
+        "purpose": "Product-Engineering sync",
+        "priority": "medium",
+        "checkFrequency": "daily"
+      }
+    ]
+  },
+  "publicChannels": {
+    "priority": [
+      {
+        "id": "C7T2WN5NX",
+        "name": "team-engineering",
+        "purpose": "Main engineering channel",
+        "priority": "high",
+        "checkFrequency": "daily"
+      },
+      {
+        "id": "CEF4W1U2K",
+        "name": "data-requests",
+        "purpose": "Data requests and discussions",
+        "priority": "medium",
+        "checkFrequency": "daily"
+      }
+    ]
+  },
+  "notes": {
+    "slackListChannelsLimit": "When listing channels, filter by types='private_channel' separately to ensure private channels are included (default limit of 100 may exclude them when mixed with public)"
+  }
+}

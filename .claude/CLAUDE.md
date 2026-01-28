@@ -82,6 +82,7 @@ Use `/[skill-name]` to invoke these workflows:
 - `/whats-blocking [person/project]` - Check blockers for a person or project
 - `/weekly-review` - Generate end-of-week summary and retrospective
 - `/executive-report [period]` - Generate executive summary (supports: last week/month/quarter/year or custom dates)
+- `/mbr [month]` - Engineering Monthly Business Review (header, prose commentary, exception register)
 
 ### Work Management
 - `/create-ticket [description]` - Create Linear ticket (task, spike, or bug) aligned to team norms
@@ -203,6 +204,7 @@ When drafting documents:
 - `reviews/` - Periodic summaries:
   - `weekly/YYYY-MM-DD.md` - Weekly reviews
   - `executive/YYYY-MM-DD-to-YYYY-MM-DD.md` - Executive reports
+  - `mbr/YYYY-MM.md` - Monthly Business Reviews
 - `investigations/` - Research & analysis (`YYYY-MM-DD-[slug].md`)
 - `work/` - Ad-hoc work products (`YYYY-MM-DD-[slug].md`)
 - `rubberduck/` - Thinking sessions (`YYYY-MM-DD-[slug].md`)
@@ -225,7 +227,7 @@ When drafting documents:
 | Daily context | `context/YYYY-MM-DD/` | `[type]-HHMM.md` | Orient, slack, email |
 | EOD summaries | `context/` | `eod-YYYY-MM-DD.md` | Day closure summary |
 | Meeting prep/notes | `meetings/output/[type]/` | `YYYY-MM-DD-[slug].md` | 1:1 prep, squad notes |
-| Periodic reviews | `reviews/[period]/` | varies | Weekly, executive |
+| Periodic reviews | `reviews/[period]/` | varies | Weekly, executive, MBR |
 | Investigations | `investigations/` | `YYYY-MM-DD-[slug].md` | Research, analysis |
 | Work products | `work/` | `YYYY-MM-DD-[slug].md` | CV reviews, drafts |
 | Thinking sessions | `rubberduck/` | `YYYY-MM-DD-[slug].md` | Strategy, design |
@@ -252,6 +254,7 @@ These skills create timestamped files in day directories AND append to `index.md
 - `/triage-inbox` - Creates `email-HHMM.md`, appends summary to index
 - `/update-todos` - Creates `todos-HHMM.md`, appends summary to index
 - `/end-of-day` - Creates `eod-YYYY-MM-DD.md` (flat), appends summary to index
+- `/mbr` - Creates `reviews/mbr/YYYY-MM.md`, appends summary to index
 
 ### Context-Gathering Skills (Read from Daily Context)
 These skills check `context/YYYY-MM-DD/index.md` before making API calls:

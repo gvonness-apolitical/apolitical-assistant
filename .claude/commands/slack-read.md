@@ -41,7 +41,8 @@ Collect unread messages from all sources (last 30 days max):
 - Track which have unread messages
 
 **Public & Private Channels:**
-- Use `slack_list_channels` to get all channels user is in
+- **Important:** List private channels separately using `slack_list_channels` with `types='private_channel'` to ensure they're included (default 100-channel limit can exclude them when mixed with public)
+- Load priority channels from `.claude/channels-config.json` for high-priority private channels
 - For each channel, check for unread messages
 - Collect messages since last read marker
 
@@ -78,6 +79,7 @@ Output: "47 bot notifications (GitHub: 23, Linear: 15, Calendar: 9) - will be ma
 - `*prod-*`, `*production*`
 - `*urgent*`, `*critical*`
 - Channels from `meeting-config.json`
+- **Private channels from `.claude/channels-config.json`** (leadership, engineering, data sections with `priority: high`)
 
 ### 3. Extract Action Items
 
