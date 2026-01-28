@@ -85,8 +85,7 @@ export const docsTools: Tool[] = [
         },
         content: {
           type: 'string',
-          description:
-            'Initial markdown content (# headings, **bold**, *italic*, lists, tables)',
+          description: 'Initial markdown content (# headings, **bold**, *italic*, lists, tables)',
         },
       },
       required: ['title'],
