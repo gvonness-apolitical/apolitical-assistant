@@ -55,7 +55,7 @@ You have access to the following integrations through MCP servers:
 Use `/[skill-name]` to invoke these workflows:
 
 ### Daily Operations
-- `/begin-day` - Full morning workflow: handoff, todos, email triage, morning briefing
+- `/begin-day` - Full morning workflow: handoff, orient, todos, email triage, slack read, briefing
 - `/orient` - Gather context at session start (calendar, emails, Slack, Linear, incidents)
 - `/morning-briefing` - Generate daily briefing with calendar, emails, Slack, incidents
 - `/end-of-day` - Generate EOD summary and handoff notes
