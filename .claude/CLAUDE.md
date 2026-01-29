@@ -55,6 +55,7 @@ You have access to the following integrations through MCP servers:
 Use `/[skill-name]` to invoke these workflows:
 
 ### Daily Operations
+- `/begin-day` - Full morning workflow: handoff, todos, email triage, morning briefing
 - `/orient` - Gather context at session start (calendar, emails, Slack, Linear, incidents)
 - `/morning-briefing` - Generate daily briefing with calendar, emails, Slack, incidents
 - `/end-of-day` - Generate EOD summary and handoff notes
@@ -248,6 +249,7 @@ Each day has its own directory at `context/YYYY-MM-DD/` containing:
 
 ### Reporting Skills (Write to Daily Context)
 These skills create timestamped files in day directories AND append to `index.md`:
+- `/begin-day` - Orchestrates handoff + todos + triage + briefing, appends combined summary to index
 - `/orient` - Creates `orient-HHMM.md`, appends summary to index
 - `/morning-briefing` - Creates `briefings/YYYY-MM-DD.md`, appends summary to index
 - `/slack-read` - Creates `slack-HHMM.md`, appends summary to index
