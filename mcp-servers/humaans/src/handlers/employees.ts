@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createToolDefinition, type HttpClient } from '@apolitical-assistant/mcp-shared';
+import { defineHandlers, type HttpClient } from '@apolitical-assistant/mcp-shared';
 
 // ==================== SCHEMAS ====================
 
@@ -60,31 +60,6 @@ interface TimeOff {
   type: string;
   requestedDays: number;
 }
-
-// ==================== TOOL DEFINITIONS ====================
-
-export const employeeTools = [
-  createToolDefinition(
-    'humaans_list_employees',
-    'List all employees in the organization with optional filters. Returns employee profiles including name, email, department, job title, and manager.',
-    ListEmployeesSchema
-  ),
-  createToolDefinition(
-    'humaans_get_employee',
-    'Get detailed information about a specific employee including their profile, job details, compensation, and time off balance.',
-    GetEmployeeSchema
-  ),
-  createToolDefinition(
-    'humaans_list_time_off',
-    'List time off requests and approvals. Can filter by employee, status, and date range. Useful for seeing who is out of office.',
-    ListTimeOffSchema
-  ),
-  createToolDefinition(
-    'humaans_get_org_chart',
-    'Get the organization hierarchy/reporting structure. Shows who reports to whom.',
-    GetOrgChartSchema
-  ),
-];
 
 // ==================== HANDLERS ====================
 
@@ -198,3 +173,31 @@ export async function handleGetOrgChart(
     return buildTree(null);
   }
 }
+
+// ==================== HANDLER BUNDLE ====================
+
+export const humaansDefs = defineHandlers<HttpClient>()({
+  humaans_list_employees: {
+    description:
+      'List all employees in the organization with optional filters. Returns employee profiles including name, email, department, job title, and manager.',
+    schema: ListEmployeesSchema,
+    handler: handleListEmployees,
+  },
+  humaans_get_employee: {
+    description:
+      'Get detailed information about a specific employee including their profile, job details, compensation, and time off balance.',
+    schema: GetEmployeeSchema,
+    handler: handleGetEmployee,
+  },
+  humaans_list_time_off: {
+    description:
+      'List time off requests and approvals. Can filter by employee, status, and date range. Useful for seeing who is out of office.',
+    schema: ListTimeOffSchema,
+    handler: handleListTimeOff,
+  },
+  humaans_get_org_chart: {
+    description: 'Get the organization hierarchy/reporting structure. Shows who reports to whom.',
+    schema: GetOrgChartSchema,
+    handler: handleGetOrgChart,
+  },
+});

@@ -22,7 +22,7 @@
  */
 
 import { z } from 'zod';
-import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
+import { defineHandlers } from '@apolitical-assistant/mcp-shared';
 import { slackApi, type SlackResponse } from './api.js';
 
 // ==================== SCHEMAS ====================
@@ -112,36 +112,6 @@ interface FilesListResponse extends SlackResponse {
     user: string;
   }>;
 }
-
-// ==================== TOOL DEFINITIONS ====================
-
-export const canvasTools = [
-  createToolDefinition(
-    'slack_get_canvas',
-    'Read canvas content from Slack. Uses files.info API to get file metadata and downloads content via url_private_download.',
-    GetCanvasSchema
-  ),
-  createToolDefinition(
-    'slack_update_canvas',
-    'Update canvas content. Supports inserting at start/end, replacing sections, or deleting sections.',
-    UpdateCanvasSchema
-  ),
-  createToolDefinition(
-    'slack_create_canvas',
-    'Create a new canvas, optionally attached to a channel or DM.',
-    CreateCanvasSchema
-  ),
-  createToolDefinition(
-    'slack_list_canvases',
-    'List all canvases in a channel or DM. Returns both the built-in channel canvas (if any) and standalone canvases shared in the channel.',
-    ListCanvasesSchema
-  ),
-  createToolDefinition(
-    'slack_delete_canvas',
-    'Delete a canvas. Use with caution - this permanently removes the canvas and its content.',
-    DeleteCanvasSchema
-  ),
-];
 
 // ==================== HANDLERS ====================
 
@@ -350,3 +320,37 @@ export async function handleDeleteCanvas(
     deleted: true,
   };
 }
+
+// ==================== HANDLER BUNDLE ====================
+
+export const canvasDefs = defineHandlers<string>()({
+  slack_get_canvas: {
+    description:
+      'Read canvas content from Slack. Uses files.info API to get file metadata and downloads content via url_private_download.',
+    schema: GetCanvasSchema,
+    handler: handleGetCanvas,
+  },
+  slack_update_canvas: {
+    description:
+      'Update canvas content. Supports inserting at start/end, replacing sections, or deleting sections.',
+    schema: UpdateCanvasSchema,
+    handler: handleUpdateCanvas,
+  },
+  slack_create_canvas: {
+    description: 'Create a new canvas, optionally attached to a channel or DM.',
+    schema: CreateCanvasSchema,
+    handler: handleCreateCanvas,
+  },
+  slack_list_canvases: {
+    description:
+      'List all canvases in a channel or DM. Returns both the built-in channel canvas (if any) and standalone canvases shared in the channel.',
+    schema: ListCanvasesSchema,
+    handler: handleListCanvases,
+  },
+  slack_delete_canvas: {
+    description:
+      'Delete a canvas. Use with caution - this permanently removes the canvas and its content.',
+    schema: DeleteCanvasSchema,
+    handler: handleDeleteCanvas,
+  },
+});

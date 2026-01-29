@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
+import { defineHandlers } from '@apolitical-assistant/mcp-shared';
 import { slackApi, type SlackResponse, type SlackUser } from './api.js';
 
 // ==================== SCHEMAS ====================
@@ -11,13 +11,6 @@ export const ListUsersSchema = z.object({
 export const GetUserSchema = z.object({
   userId: z.string().describe('User ID (e.g., U1234567890)'),
 });
-
-// ==================== TOOL DEFINITIONS ====================
-
-export const userTools = [
-  createToolDefinition('slack_list_users', 'List users in the workspace', ListUsersSchema),
-  createToolDefinition('slack_get_user', 'Get information about a specific user', GetUserSchema),
-];
 
 // ==================== HANDLERS ====================
 
@@ -74,3 +67,18 @@ export async function handleGetUser(
     avatar: u.profile.image_192,
   };
 }
+
+// ==================== HANDLER BUNDLE ====================
+
+export const userDefs = defineHandlers<string>()({
+  slack_list_users: {
+    description: 'List users in the workspace',
+    schema: ListUsersSchema,
+    handler: handleListUsers,
+  },
+  slack_get_user: {
+    description: 'Get information about a specific user',
+    schema: GetUserSchema,
+    handler: handleGetUser,
+  },
+});

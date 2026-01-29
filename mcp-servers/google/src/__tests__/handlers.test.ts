@@ -149,7 +149,7 @@ describe('Gmail Handlers', () => {
         })
       );
 
-      const result = (await handleGmailListLabels(auth)) as Array<{
+      const result = (await handleGmailListLabels({}, auth)) as Array<{
         id: string;
         name: string;
         type: string;

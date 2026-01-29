@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
+import { defineHandlers } from '@apolitical-assistant/mcp-shared';
 import {
   slackApi,
   resolveChannelId,
@@ -28,26 +28,6 @@ export const ReadChannelSchema = z.object({
 export const GetChannelInfoSchema = z.object({
   channel: z.string().describe('Channel ID (e.g., C1234567890)'),
 });
-
-// ==================== TOOL DEFINITIONS ====================
-
-export const channelTools = [
-  createToolDefinition(
-    'slack_list_channels',
-    'List Slack channels you have access to',
-    ListChannelsSchema
-  ),
-  createToolDefinition(
-    'slack_read_channel',
-    'Read recent messages from a Slack channel',
-    ReadChannelSchema
-  ),
-  createToolDefinition(
-    'slack_get_channel_info',
-    'Get information about a specific channel',
-    GetChannelInfoSchema
-  ),
-];
 
 // ==================== HANDLERS ====================
 
@@ -134,3 +114,23 @@ export async function handleGetChannelInfo(
     created: ch.created ? new Date(ch.created * 1000).toISOString() : undefined,
   };
 }
+
+// ==================== HANDLER BUNDLE ====================
+
+export const channelDefs = defineHandlers<string>()({
+  slack_list_channels: {
+    description: 'List Slack channels you have access to',
+    schema: ListChannelsSchema,
+    handler: handleListChannels,
+  },
+  slack_read_channel: {
+    description: 'Read recent messages from a Slack channel',
+    schema: ReadChannelSchema,
+    handler: handleReadChannel,
+  },
+  slack_get_channel_info: {
+    description: 'Get information about a specific channel',
+    schema: GetChannelInfoSchema,
+    handler: handleGetChannelInfo,
+  },
+});

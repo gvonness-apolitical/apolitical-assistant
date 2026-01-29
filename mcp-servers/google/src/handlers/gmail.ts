@@ -8,6 +8,7 @@
  */
 
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
+import type { GoogleAuth } from '../auth.js';
 
 // Re-export schemas from all Gmail modules
 export {
@@ -19,7 +20,7 @@ export {
   handleGmailGetMessage,
   handleGmailListLabels,
   handleGmailGetAttachments,
-  gmailReadTools,
+  gmailReadDefs,
 } from './gmail-read.js';
 
 export {
@@ -27,7 +28,7 @@ export {
   GmailCreateDraftSchema,
   handleGmailSendMessage,
   handleGmailCreateDraft,
-  gmailWriteTools,
+  gmailWriteDefs,
 } from './gmail-write.js';
 
 export {
@@ -37,13 +38,27 @@ export {
   handleGmailTrash,
   handleGmailDelete,
   handleGmailArchive,
-  gmailManageTools,
+  gmailManageDefs,
 } from './gmail-manage.js';
 
-// Import tool arrays to combine
-import { gmailReadTools } from './gmail-read.js';
-import { gmailWriteTools } from './gmail-write.js';
-import { gmailManageTools } from './gmail-manage.js';
+// Import defs to combine
+import { gmailReadDefs } from './gmail-read.js';
+import { gmailWriteDefs } from './gmail-write.js';
+import { gmailManageDefs } from './gmail-manage.js';
 
 // Combined tools array (maintains backwards compatibility)
-export const gmailTools: Tool[] = [...gmailReadTools, ...gmailWriteTools, ...gmailManageTools];
+export const gmailTools: Tool[] = [
+  ...gmailReadDefs.tools,
+  ...gmailWriteDefs.tools,
+  ...gmailManageDefs.tools,
+];
+
+// Combined handler registry
+export const gmailHandlers: Record<
+  string,
+  (args: Record<string, unknown>, auth: GoogleAuth) => Promise<unknown>
+> = {
+  ...gmailReadDefs.handlers,
+  ...gmailWriteDefs.handlers,
+  ...gmailManageDefs.handlers,
+};

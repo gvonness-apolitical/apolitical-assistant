@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
+import { defineHandlers } from '@apolitical-assistant/mcp-shared';
 import type { GoogleAuth } from '../auth.js';
 
 // ==================== ZOD SCHEMAS ====================
@@ -16,13 +16,6 @@ export const DriveSearchSchema = z.object({
 export const DriveGetFileSchema = z.object({
   fileId: z.string().describe('The Drive file ID'),
 });
-
-// ==================== TOOL DEFINITIONS ====================
-
-export const driveTools = [
-  createToolDefinition('drive_search', 'Search for files in Google Drive', DriveSearchSchema),
-  createToolDefinition('drive_get_file', 'Get metadata about a specific file', DriveGetFileSchema),
-];
 
 // ==================== HANDLER FUNCTIONS ====================
 
@@ -66,3 +59,18 @@ export async function handleDriveGetFile(
 
   return await response.json();
 }
+
+// ==================== HANDLER BUNDLE ====================
+
+export const driveDefs = defineHandlers<GoogleAuth>()({
+  drive_search: {
+    description: 'Search for files in Google Drive',
+    schema: DriveSearchSchema,
+    handler: handleDriveSearch,
+  },
+  drive_get_file: {
+    description: 'Get metadata about a specific file',
+    schema: DriveGetFileSchema,
+    handler: handleDriveGetFile,
+  },
+});

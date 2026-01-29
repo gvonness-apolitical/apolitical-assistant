@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createToolDefinition, type HttpClient } from '@apolitical-assistant/mcp-shared';
+import { defineHandlers, type HttpClient } from '@apolitical-assistant/mcp-shared';
 import type { FollowUp } from './types.js';
 
 // ==================== SCHEMAS ====================
@@ -20,21 +20,6 @@ export const CreateFollowupSchema = z.object({
   description: z.string().optional().describe('Follow-up description'),
   assigneeId: z.string().optional().describe('User ID to assign the follow-up to'),
 });
-
-// ==================== TOOL DEFINITIONS ====================
-
-export const followupTools = [
-  createToolDefinition(
-    'incidentio_list_followups',
-    'List follow-up actions from incidents. Useful for tracking outstanding action items that need completion.',
-    ListFollowupsSchema
-  ),
-  createToolDefinition(
-    'incidentio_create_followup',
-    'Create a follow-up action item for an incident.',
-    CreateFollowupSchema
-  ),
-];
 
 // ==================== HANDLERS ====================
 
@@ -97,3 +82,19 @@ export async function handleCreateFollowup(
     assignee: data.follow_up.assignee?.name,
   };
 }
+
+// ==================== HANDLER BUNDLE ====================
+
+export const followupDefs = defineHandlers<HttpClient>()({
+  incidentio_list_followups: {
+    description:
+      'List follow-up actions from incidents. Useful for tracking outstanding action items that need completion.',
+    schema: ListFollowupsSchema,
+    handler: handleListFollowups,
+  },
+  incidentio_create_followup: {
+    description: 'Create a follow-up action item for an incident.',
+    schema: CreateFollowupSchema,
+    handler: handleCreateFollowup,
+  },
+});
