@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
+import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
 import { slackApi, type SlackResponse, type SlackUser } from './api.js';
 
 // ==================== SCHEMAS ====================
@@ -14,35 +14,9 @@ export const GetUserSchema = z.object({
 
 // ==================== TOOL DEFINITIONS ====================
 
-export const userTools: Tool[] = [
-  {
-    name: 'slack_list_users',
-    description: 'List users in the workspace',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        limit: {
-          type: 'number',
-          default: 100,
-          description: 'Maximum number of users to return',
-        },
-      },
-    },
-  },
-  {
-    name: 'slack_get_user',
-    description: 'Get information about a specific user',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        userId: {
-          type: 'string',
-          description: 'User ID (e.g., U1234567890)',
-        },
-      },
-      required: ['userId'],
-    },
-  },
+export const userTools = [
+  createToolDefinition('slack_list_users', 'List users in the workspace', ListUsersSchema),
+  createToolDefinition('slack_get_user', 'Get information about a specific user', GetUserSchema),
 ];
 
 // ==================== HANDLERS ====================

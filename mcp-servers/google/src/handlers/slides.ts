@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
+import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
 import type { GoogleAuth } from '../auth.js';
 
 // ==================== ZOD SCHEMAS ====================
@@ -10,21 +10,12 @@ export const SlidesGetPresentationSchema = z.object({
 
 // ==================== TOOL DEFINITIONS ====================
 
-export const slidesTools: Tool[] = [
-  {
-    name: 'slides_get_presentation',
-    description: 'Get the content and structure of a Google Slides presentation',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        presentationId: {
-          type: 'string',
-          description: 'The Google Slides presentation ID',
-        },
-      },
-      required: ['presentationId'],
-    },
-  },
+export const slidesTools = [
+  createToolDefinition(
+    'slides_get_presentation',
+    'Get the content and structure of a Google Slides presentation',
+    SlidesGetPresentationSchema
+  ),
 ];
 
 // ==================== HANDLER FUNCTIONS ====================

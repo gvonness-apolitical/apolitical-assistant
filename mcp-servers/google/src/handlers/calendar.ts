@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
+import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
 import type { GoogleAuth } from '../auth.js';
 
 // ==================== ZOD SCHEMAS ====================
@@ -75,192 +75,37 @@ export const CalendarUpdateEventSchema = z.object({
 
 // ==================== TOOL DEFINITIONS ====================
 
-export const calendarTools: Tool[] = [
-  {
-    name: 'calendar_list_events',
-    description: 'List calendar events within a time range',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        timeMin: {
-          type: 'string',
-          description: 'Start time (ISO format, defaults to now)',
-        },
-        timeMax: {
-          type: 'string',
-          description: 'End time (ISO format, defaults to 7 days from now)',
-        },
-        maxResults: {
-          type: 'number',
-          default: 20,
-          description: 'Maximum number of events to return',
-        },
-        calendarId: {
-          type: 'string',
-          default: 'primary',
-          description: 'Calendar ID (defaults to primary)',
-        },
-      },
-    },
-  },
-  {
-    name: 'calendar_get_event',
-    description: 'Get details of a specific calendar event',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        eventId: {
-          type: 'string',
-          description: 'The calendar event ID',
-        },
-        calendarId: {
-          type: 'string',
-          default: 'primary',
-          description: 'Calendar ID (defaults to primary)',
-        },
-      },
-      required: ['eventId'],
-    },
-  },
-  {
-    name: 'calendar_list_calendars',
-    description:
-      'List all calendars the user has access to, including meeting rooms and shared calendars',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        showHidden: {
-          type: 'boolean',
-          default: false,
-          description: 'Include hidden calendars',
-        },
-      },
-    },
-  },
-  {
-    name: 'calendar_get_freebusy',
-    description:
-      'Check availability (free/busy) for multiple calendars within a time range. Useful for finding meeting slots.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        timeMin: {
-          type: 'string',
-          description: 'Start of time range (ISO format)',
-        },
-        timeMax: {
-          type: 'string',
-          description: 'End of time range (ISO format)',
-        },
-        calendarIds: {
-          type: 'array',
-          items: { type: 'string' },
-          description:
-            'Array of calendar IDs to check (use email addresses for people, resource IDs for rooms)',
-        },
-      },
-      required: ['timeMin', 'timeMax', 'calendarIds'],
-    },
-  },
-  {
-    name: 'calendar_create_event',
-    description: 'Create a new calendar event with attendees and optional meeting room',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        summary: {
-          type: 'string',
-          description: 'Event title',
-        },
-        description: {
-          type: 'string',
-          description: 'Event description',
-        },
-        start: {
-          type: 'string',
-          description: 'Start time (ISO format)',
-        },
-        end: {
-          type: 'string',
-          description: 'End time (ISO format)',
-        },
-        attendees: {
-          type: 'array',
-          items: { type: 'string' },
-          description: 'Array of attendee email addresses',
-        },
-        location: {
-          type: 'string',
-          description: 'Event location or meeting room',
-        },
-        conferenceData: {
-          type: 'boolean',
-          default: false,
-          description: 'Generate a Google Meet link',
-        },
-        calendarId: {
-          type: 'string',
-          default: 'primary',
-          description: 'Calendar to create event on',
-        },
-        sendNotifications: {
-          type: 'boolean',
-          default: true,
-          description: 'Send email invitations to attendees',
-        },
-      },
-      required: ['summary', 'start', 'end'],
-    },
-  },
-  {
-    name: 'calendar_update_event',
-    description: 'Update an existing calendar event',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        eventId: {
-          type: 'string',
-          description: 'The event ID to update',
-        },
-        summary: {
-          type: 'string',
-          description: 'New event title',
-        },
-        description: {
-          type: 'string',
-          description: 'New event description',
-        },
-        start: {
-          type: 'string',
-          description: 'New start time (ISO format)',
-        },
-        end: {
-          type: 'string',
-          description: 'New end time (ISO format)',
-        },
-        attendees: {
-          type: 'array',
-          items: { type: 'string' },
-          description: 'Array of attendee email addresses (replaces existing)',
-        },
-        location: {
-          type: 'string',
-          description: 'New location',
-        },
-        calendarId: {
-          type: 'string',
-          default: 'primary',
-          description: 'Calendar the event is on',
-        },
-        sendNotifications: {
-          type: 'boolean',
-          default: true,
-          description: 'Send update notifications to attendees',
-        },
-      },
-      required: ['eventId'],
-    },
-  },
+export const calendarTools = [
+  createToolDefinition(
+    'calendar_list_events',
+    'List calendar events within a time range',
+    CalendarListEventsSchema
+  ),
+  createToolDefinition(
+    'calendar_get_event',
+    'Get details of a specific calendar event',
+    CalendarGetEventSchema
+  ),
+  createToolDefinition(
+    'calendar_list_calendars',
+    'List all calendars the user has access to, including meeting rooms and shared calendars',
+    CalendarListCalendarsSchema
+  ),
+  createToolDefinition(
+    'calendar_get_freebusy',
+    'Check availability (free/busy) for multiple calendars within a time range. Useful for finding meeting slots.',
+    CalendarGetFreeBusySchema
+  ),
+  createToolDefinition(
+    'calendar_create_event',
+    'Create a new calendar event with attendees and optional meeting room',
+    CalendarCreateEventSchema
+  ),
+  createToolDefinition(
+    'calendar_update_event',
+    'Update an existing calendar event',
+    CalendarUpdateEventSchema
+  ),
 ];
 
 // ==================== HANDLER FUNCTIONS ====================

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
+import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
 import { slackApi, enrichUserInfo, type SlackResponse } from './api.js';
 
 // ==================== SCHEMAS ====================
@@ -16,33 +16,12 @@ export const SearchSchema = z.object({
 
 // ==================== TOOL DEFINITIONS ====================
 
-export const searchTools: Tool[] = [
-  {
-    name: 'slack_search',
-    description:
-      'Search for messages in Slack. Uses Slack search syntax (from:@user, in:#channel, has:link, before:date, after:date, etc.)',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        query: {
-          type: 'string',
-          description: 'Search query using Slack search syntax',
-        },
-        count: {
-          type: 'number',
-          default: 20,
-          description: 'Number of results to return (max 100)',
-        },
-        sort: {
-          type: 'string',
-          enum: ['score', 'timestamp'],
-          default: 'score',
-          description: 'Sort by relevance (score) or recency (timestamp)',
-        },
-      },
-      required: ['query'],
-    },
-  },
+export const searchTools = [
+  createToolDefinition(
+    'slack_search',
+    'Search for messages in Slack. Uses Slack search syntax (from:@user, in:#channel, has:link, before:date, after:date, etc.)',
+    SearchSchema
+  ),
 ];
 
 // ==================== HANDLERS ====================

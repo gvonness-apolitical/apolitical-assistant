@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
+import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
 import { slackApi, enrichUserInfo, type SlackResponse, type SlackMessage } from './api.js';
 
 // ==================== SCHEMAS ====================
@@ -20,58 +20,18 @@ export const SendDmSchema = z.object({
 
 // ==================== TOOL DEFINITIONS ====================
 
-export const dmTools: Tool[] = [
-  {
-    name: 'slack_list_dms',
-    description: 'List your direct message conversations',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        limit: {
-          type: 'number',
-          default: 50,
-          description: 'Maximum number of DM conversations to return',
-        },
-      },
-    },
-  },
-  {
-    name: 'slack_read_dm',
-    description: 'Read messages from a direct message conversation',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        userId: {
-          type: 'string',
-          description: 'User ID to read DMs with (e.g., U1234567890)',
-        },
-        limit: {
-          type: 'number',
-          default: 20,
-          description: 'Number of messages to retrieve',
-        },
-      },
-      required: ['userId'],
-    },
-  },
-  {
-    name: 'slack_send_dm',
-    description: 'Send a direct message to a user. Requires chat:write scope.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        userId: {
-          type: 'string',
-          description: 'User ID to send DM to (e.g., U1234567890)',
-        },
-        text: {
-          type: 'string',
-          description: 'Message text (supports Slack markdown)',
-        },
-      },
-      required: ['userId', 'text'],
-    },
-  },
+export const dmTools = [
+  createToolDefinition('slack_list_dms', 'List your direct message conversations', ListDmsSchema),
+  createToolDefinition(
+    'slack_read_dm',
+    'Read messages from a direct message conversation',
+    ReadDmSchema
+  ),
+  createToolDefinition(
+    'slack_send_dm',
+    'Send a direct message to a user. Requires chat:write scope.',
+    SendDmSchema
+  ),
 ];
 
 // ==================== HANDLERS ====================

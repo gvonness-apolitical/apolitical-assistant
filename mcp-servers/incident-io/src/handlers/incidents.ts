@@ -1,6 +1,5 @@
 import { z } from 'zod';
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
-import type { HttpClient } from '@apolitical-assistant/mcp-shared';
+import { createToolDefinition, type HttpClient } from '@apolitical-assistant/mcp-shared';
 import type { Incident } from './types.js';
 
 // ==================== SCHEMAS ====================
@@ -22,13 +21,18 @@ export const GetIncidentSchema = z.object({
 export const CreateIncidentSchema = z.object({
   name: z.string().describe('Incident title/name'),
   summary: z.string().optional().describe('Brief summary of the incident'),
-  severity: z.string().optional().describe('Severity ID (get from severities API)'),
+  severity: z
+    .string()
+    .optional()
+    .describe('Severity ID (use incidentio_list_severities to get available options)'),
   incidentTypeId: z.string().optional().describe('Incident type ID'),
   mode: z
     .enum(['standard', 'retrospective', 'test'])
     .optional()
     .default('standard')
-    .describe('Incident mode'),
+    .describe(
+      'Incident mode: standard (real incident), retrospective (past incident), test (for testing)'
+    ),
 });
 
 export const UpdateIncidentSchema = z.object({
@@ -40,107 +44,27 @@ export const UpdateIncidentSchema = z.object({
 
 // ==================== TOOL DEFINITIONS ====================
 
-export const incidentTools: Tool[] = [
-  {
-    name: 'incidentio_list_incidents',
-    description:
-      'List incidents from Incident.io. Can filter by status (active/resolved) and severity level. Returns incident details including title, status, severity, and timestamps.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        status: {
-          type: 'string',
-          enum: ['active', 'resolved', 'all'],
-          default: 'all',
-          description: 'Filter by incident status',
-        },
-        severity: {
-          type: 'string',
-          description: 'Filter by severity level (e.g., "sev1", "sev2")',
-        },
-        limit: {
-          type: 'number',
-          default: 25,
-          description: 'Maximum number of results',
-        },
-      },
-    },
-  },
-  {
-    name: 'incidentio_get_incident',
-    description:
-      'Get detailed information about a specific incident including full timeline, affected services, and team members involved.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        incidentId: {
-          type: 'string',
-          description: 'The incident ID',
-        },
-      },
-      required: ['incidentId'],
-    },
-  },
-  {
-    name: 'incidentio_create_incident',
-    description:
-      'Create a new incident in Incident.io. Returns the created incident with its ID and status.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        name: {
-          type: 'string',
-          description: 'Incident title/name',
-        },
-        summary: {
-          type: 'string',
-          description: 'Brief summary of the incident',
-        },
-        severity: {
-          type: 'string',
-          description: 'Severity ID (use incidentio_list_severities to get available options)',
-        },
-        incidentTypeId: {
-          type: 'string',
-          description: 'Incident type ID',
-        },
-        mode: {
-          type: 'string',
-          enum: ['standard', 'retrospective', 'test'],
-          default: 'standard',
-          description:
-            'Incident mode: standard (real incident), retrospective (past incident), test (for testing)',
-        },
-      },
-      required: ['name'],
-    },
-  },
-  {
-    name: 'incidentio_update_incident',
-    description: 'Update an existing incident (name, summary, severity).',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        incidentId: {
-          type: 'string',
-          description: 'The incident ID to update',
-        },
-        name: {
-          type: 'string',
-          description: 'New incident name',
-        },
-        summary: {
-          type: 'string',
-          description: 'Updated summary',
-        },
-        severity: {
-          type: 'string',
-          description: 'New severity ID',
-        },
-      },
-      required: ['incidentId'],
-    },
-  },
+export const incidentTools = [
+  createToolDefinition(
+    'incidentio_list_incidents',
+    'List incidents from Incident.io. Can filter by status (active/resolved) and severity level. Returns incident details including title, status, severity, and timestamps.',
+    ListIncidentsSchema
+  ),
+  createToolDefinition(
+    'incidentio_get_incident',
+    'Get detailed information about a specific incident including full timeline, affected services, and team members involved.',
+    GetIncidentSchema
+  ),
+  createToolDefinition(
+    'incidentio_create_incident',
+    'Create a new incident in Incident.io. Returns the created incident with its ID and status.',
+    CreateIncidentSchema
+  ),
+  createToolDefinition(
+    'incidentio_update_incident',
+    'Update an existing incident (name, summary, severity).',
+    UpdateIncidentSchema
+  ),
 ];
 
 // ==================== HANDLERS ====================

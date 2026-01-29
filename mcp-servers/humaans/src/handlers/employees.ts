@@ -1,6 +1,5 @@
 import { z } from 'zod';
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
-import type { HttpClient } from '@apolitical-assistant/mcp-shared';
+import { createToolDefinition, type HttpClient } from '@apolitical-assistant/mcp-shared';
 
 // ==================== SCHEMAS ====================
 
@@ -64,88 +63,27 @@ interface TimeOff {
 
 // ==================== TOOL DEFINITIONS ====================
 
-export const employeeTools: Tool[] = [
-  {
-    name: 'humaans_list_employees',
-    description:
-      'List all employees in the organization with optional filters. Returns employee profiles including name, email, department, job title, and manager.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        department: {
-          type: 'string',
-          description: 'Filter by department name',
-        },
-        status: {
-          type: 'string',
-          enum: ['active', 'inactive', 'all'],
-          default: 'active',
-          description: 'Employment status filter',
-        },
-        limit: {
-          type: 'number',
-          default: 50,
-          description: 'Maximum number of results',
-        },
-      },
-    },
-  },
-  {
-    name: 'humaans_get_employee',
-    description:
-      'Get detailed information about a specific employee including their profile, job details, compensation, and time off balance.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        employeeId: {
-          type: 'string',
-          description: 'The employee ID',
-        },
-      },
-      required: ['employeeId'],
-    },
-  },
-  {
-    name: 'humaans_list_time_off',
-    description:
-      'List time off requests and approvals. Can filter by employee, status, and date range. Useful for seeing who is out of office.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        employeeId: {
-          type: 'string',
-          description: 'Filter by specific employee',
-        },
-        status: {
-          type: 'string',
-          enum: ['pending', 'approved', 'rejected', 'all'],
-          default: 'all',
-          description: 'Request status filter',
-        },
-        startDate: {
-          type: 'string',
-          description: 'Filter time off starting after this date (ISO format)',
-        },
-        endDate: {
-          type: 'string',
-          description: 'Filter time off ending before this date (ISO format)',
-        },
-      },
-    },
-  },
-  {
-    name: 'humaans_get_org_chart',
-    description: 'Get the organization hierarchy/reporting structure. Shows who reports to whom.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        rootEmployeeId: {
-          type: 'string',
-          description: 'Start org chart from specific employee (defaults to CEO/top level)',
-        },
-      },
-    },
-  },
+export const employeeTools = [
+  createToolDefinition(
+    'humaans_list_employees',
+    'List all employees in the organization with optional filters. Returns employee profiles including name, email, department, job title, and manager.',
+    ListEmployeesSchema
+  ),
+  createToolDefinition(
+    'humaans_get_employee',
+    'Get detailed information about a specific employee including their profile, job details, compensation, and time off balance.',
+    GetEmployeeSchema
+  ),
+  createToolDefinition(
+    'humaans_list_time_off',
+    'List time off requests and approvals. Can filter by employee, status, and date range. Useful for seeing who is out of office.',
+    ListTimeOffSchema
+  ),
+  createToolDefinition(
+    'humaans_get_org_chart',
+    'Get the organization hierarchy/reporting structure. Shows who reports to whom.',
+    GetOrgChartSchema
+  ),
 ];
 
 // ==================== HANDLERS ====================

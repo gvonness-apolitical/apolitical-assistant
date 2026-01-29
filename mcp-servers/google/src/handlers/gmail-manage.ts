@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
+import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
 import type { GoogleAuth } from '../auth.js';
 import { executeBatchOperation } from '../utils/batch-operation.js';
 
@@ -19,54 +19,22 @@ export const GmailArchiveSchema = z.object({
 
 // ==================== TOOL DEFINITIONS ====================
 
-export const gmailManageTools: Tool[] = [
-  {
-    name: 'gmail_trash',
-    description: 'Move Gmail messages to trash. Requires gmail.modify scope.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        messageIds: {
-          type: 'array',
-          items: { type: 'string' },
-          description: 'Array of Gmail message IDs to trash',
-        },
-      },
-      required: ['messageIds'],
-    },
-  },
-  {
-    name: 'gmail_delete',
-    description:
-      'Permanently delete Gmail messages (cannot be undone). Requires gmail.modify scope.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        messageIds: {
-          type: 'array',
-          items: { type: 'string' },
-          description: 'Array of Gmail message IDs to permanently delete',
-        },
-      },
-      required: ['messageIds'],
-    },
-  },
-  {
-    name: 'gmail_archive',
-    description:
-      'Archive Gmail messages (remove from inbox but keep in All Mail). Requires gmail.modify scope.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        messageIds: {
-          type: 'array',
-          items: { type: 'string' },
-          description: 'Array of Gmail message IDs to archive',
-        },
-      },
-      required: ['messageIds'],
-    },
-  },
+export const gmailManageTools = [
+  createToolDefinition(
+    'gmail_trash',
+    'Move Gmail messages to trash. Requires gmail.modify scope.',
+    GmailTrashSchema
+  ),
+  createToolDefinition(
+    'gmail_delete',
+    'Permanently delete Gmail messages (cannot be undone). Requires gmail.modify scope.',
+    GmailDeleteSchema
+  ),
+  createToolDefinition(
+    'gmail_archive',
+    'Archive Gmail messages (remove from inbox but keep in All Mail). Requires gmail.modify scope.',
+    GmailArchiveSchema
+  ),
 ];
 
 // ==================== HANDLER FUNCTIONS ====================

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
+import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
 import { slackApi, type SlackResponse } from './api.js';
 
 // ==================== SCHEMAS ====================
@@ -30,22 +30,12 @@ interface BookmarkListResponse extends SlackResponse {
 
 // ==================== TOOL DEFINITIONS ====================
 
-export const bookmarkTools: Tool[] = [
-  {
-    name: 'slack_get_bookmarks',
-    description:
-      'Get bookmarked messages and links from a Slack channel. Returns bookmarks with title, link, and metadata.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        channel_id: {
-          type: 'string',
-          description: 'Channel ID to get bookmarks from (e.g., C0123456789)',
-        },
-      },
-      required: ['channel_id'],
-    },
-  },
+export const bookmarkTools = [
+  createToolDefinition(
+    'slack_get_bookmarks',
+    'Get bookmarked messages and links from a Slack channel. Returns bookmarks with title, link, and metadata.',
+    GetBookmarksSchema
+  ),
 ];
 
 // ==================== HANDLERS ====================
