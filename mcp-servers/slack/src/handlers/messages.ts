@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
+import { defineHandlers } from '@apolitical-assistant/mcp-shared';
 import {
   slackApi,
   resolveChannelId,
@@ -33,22 +33,6 @@ export const AddReactionSchema = z.object({
     .string()
     .describe('Emoji name without colons (e.g., "thumbsup", "eyes", "white_check_mark")'),
 });
-
-// ==================== TOOL DEFINITIONS ====================
-
-export const messageTools = [
-  createToolDefinition('slack_read_thread', 'Read replies in a Slack thread', ReadThreadSchema),
-  createToolDefinition(
-    'slack_send_message',
-    'Send a message to a Slack channel. Requires chat:write scope.',
-    SendMessageSchema
-  ),
-  createToolDefinition(
-    'slack_add_reaction',
-    'Add an emoji reaction to a message. Requires reactions:write scope.',
-    AddReactionSchema
-  ),
-];
 
 // ==================== HANDLERS ====================
 
@@ -127,3 +111,23 @@ export async function handleAddReaction(
     emoji: args.emoji,
   };
 }
+
+// ==================== HANDLER BUNDLE ====================
+
+export const messageDefs = defineHandlers<string>()({
+  slack_read_thread: {
+    description: 'Read replies in a Slack thread',
+    schema: ReadThreadSchema,
+    handler: handleReadThread,
+  },
+  slack_send_message: {
+    description: 'Send a message to a Slack channel. Requires chat:write scope.',
+    schema: SendMessageSchema,
+    handler: handleSendMessage,
+  },
+  slack_add_reaction: {
+    description: 'Add an emoji reaction to a message. Requires reactions:write scope.',
+    schema: AddReactionSchema,
+    handler: handleAddReaction,
+  },
+});

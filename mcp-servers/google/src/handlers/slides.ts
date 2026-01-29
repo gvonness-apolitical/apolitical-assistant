@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
+import { defineHandlers } from '@apolitical-assistant/mcp-shared';
 import type { GoogleAuth } from '../auth.js';
 
 // ==================== ZOD SCHEMAS ====================
@@ -7,16 +7,6 @@ import type { GoogleAuth } from '../auth.js';
 export const SlidesGetPresentationSchema = z.object({
   presentationId: z.string().describe('The Google Slides presentation ID'),
 });
-
-// ==================== TOOL DEFINITIONS ====================
-
-export const slidesTools = [
-  createToolDefinition(
-    'slides_get_presentation',
-    'Get the content and structure of a Google Slides presentation',
-    SlidesGetPresentationSchema
-  ),
-];
 
 // ==================== HANDLER FUNCTIONS ====================
 
@@ -68,3 +58,13 @@ export async function handleSlidesGetPresentation(
     slides,
   };
 }
+
+// ==================== HANDLER BUNDLE ====================
+
+export const slidesDefs = defineHandlers<GoogleAuth>()({
+  slides_get_presentation: {
+    description: 'Get the content and structure of a Google Slides presentation',
+    schema: SlidesGetPresentationSchema,
+    handler: handleSlidesGetPresentation,
+  },
+});

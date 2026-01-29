@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
+import { defineHandlers } from '@apolitical-assistant/mcp-shared';
 import type { GoogleAuth } from '../auth.js';
 
 // ==================== ZOD SCHEMAS ====================
@@ -36,27 +36,6 @@ export const DocsUpdateSchema = z.object({
     .default(false)
     .describe('If true, append content instead of replacing'),
 });
-
-// ==================== TOOL DEFINITIONS ====================
-
-export const docsTools = [
-  createToolDefinition('docs_get_content', 'Get the content of a Google Doc', DocsGetContentSchema),
-  createToolDefinition(
-    'docs_get_comments',
-    'Get comments and suggestions on a Google Doc (uses Drive API)',
-    DocsGetCommentsSchema
-  ),
-  createToolDefinition(
-    'docs_create',
-    'Create a new Google Doc with optional initial markdown content',
-    DocsCreateSchema
-  ),
-  createToolDefinition(
-    'docs_update',
-    'Update Google Doc content with markdown (replace or append)',
-    DocsUpdateSchema
-  ),
-];
 
 // ==================== MARKDOWN CONVERSION ====================
 
@@ -705,3 +684,28 @@ export async function handleDocsUpdate(
     action: append ? 'appended' : 'replaced',
   };
 }
+
+// ==================== HANDLER BUNDLE ====================
+
+export const docsDefs = defineHandlers<GoogleAuth>()({
+  docs_get_content: {
+    description: 'Get the content of a Google Doc',
+    schema: DocsGetContentSchema,
+    handler: handleDocsGetContent,
+  },
+  docs_get_comments: {
+    description: 'Get comments and suggestions on a Google Doc (uses Drive API)',
+    schema: DocsGetCommentsSchema,
+    handler: handleDocsGetComments,
+  },
+  docs_create: {
+    description: 'Create a new Google Doc with optional initial markdown content',
+    schema: DocsCreateSchema,
+    handler: handleDocsCreate,
+  },
+  docs_update: {
+    description: 'Update Google Doc content with markdown (replace or append)',
+    schema: DocsUpdateSchema,
+    handler: handleDocsUpdate,
+  },
+});

@@ -28,7 +28,12 @@ export { HttpClient, HttpError, createBearerClient } from './http-client.js';
 export { createToolRouter, type HandlerRegistry } from './tool-router.js';
 
 // Schema utilities
-export { createToolDefinition } from './schema-utils.js';
+export {
+  createToolDefinition,
+  defineHandlers,
+  type HandlerDef,
+  type HandlerBundle,
+} from './schema-utils.js';
 
 // Server factory
 export {

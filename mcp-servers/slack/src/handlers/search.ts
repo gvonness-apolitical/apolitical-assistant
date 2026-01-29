@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
+import { defineHandlers } from '@apolitical-assistant/mcp-shared';
 import { slackApi, enrichUserInfo, type SlackResponse } from './api.js';
 
 // ==================== SCHEMAS ====================
@@ -13,16 +13,6 @@ export const SearchSchema = z.object({
     .default('score')
     .describe('Sort by relevance (score) or recency (timestamp)'),
 });
-
-// ==================== TOOL DEFINITIONS ====================
-
-export const searchTools = [
-  createToolDefinition(
-    'slack_search',
-    'Search for messages in Slack. Uses Slack search syntax (from:@user, in:#channel, has:link, before:date, after:date, etc.)',
-    SearchSchema
-  ),
-];
 
 // ==================== HANDLERS ====================
 
@@ -69,3 +59,14 @@ export async function handleSearch(
     messages,
   };
 }
+
+// ==================== HANDLER BUNDLE ====================
+
+export const searchDefs = defineHandlers<string>()({
+  slack_search: {
+    description:
+      'Search for messages in Slack. Uses Slack search syntax (from:@user, in:#channel, has:link, before:date, after:date, etc.)',
+    schema: SearchSchema,
+    handler: handleSearch,
+  },
+});

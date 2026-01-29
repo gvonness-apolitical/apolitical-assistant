@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
+import { defineHandlers } from '@apolitical-assistant/mcp-shared';
 import type { GoogleAuth } from '../auth.js';
 import { buildRfc2822Message, encodeForGmail } from '../utils/email-builder.js';
 
@@ -26,21 +26,6 @@ export const GmailCreateDraftSchema = z.object({
   bcc: z.array(z.string()).optional().describe('Array of BCC email addresses'),
   replyToMessageId: z.string().optional().describe('Message ID to reply to'),
 });
-
-// ==================== TOOL DEFINITIONS ====================
-
-export const gmailWriteTools = [
-  createToolDefinition(
-    'gmail_send_message',
-    'Send an email message. Requires gmail.send scope.',
-    GmailSendMessageSchema
-  ),
-  createToolDefinition(
-    'gmail_create_draft',
-    'Create a draft email (not sent). Useful for composing emails that need review before sending.',
-    GmailCreateDraftSchema
-  ),
-];
 
 // ==================== HANDLER FUNCTIONS ====================
 
@@ -115,3 +100,19 @@ export async function handleGmailCreateDraft(
     note: 'Draft created. Open Gmail to review and send.',
   };
 }
+
+// ==================== HANDLER BUNDLE ====================
+
+export const gmailWriteDefs = defineHandlers<GoogleAuth>()({
+  gmail_send_message: {
+    description: 'Send an email message. Requires gmail.send scope.',
+    schema: GmailSendMessageSchema,
+    handler: handleGmailSendMessage,
+  },
+  gmail_create_draft: {
+    description:
+      'Create a draft email (not sent). Useful for composing emails that need review before sending.',
+    schema: GmailCreateDraftSchema,
+    handler: handleGmailCreateDraft,
+  },
+});

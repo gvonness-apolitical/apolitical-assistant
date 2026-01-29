@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
+import { defineHandlers } from '@apolitical-assistant/mcp-shared';
 import type { GoogleAuth } from '../auth.js';
 
 // ==================== ZOD SCHEMAS ====================
@@ -12,21 +12,6 @@ export const SheetsGetValuesSchema = z.object({
 export const SheetsGetMetadataSchema = z.object({
   spreadsheetId: z.string().describe('The Google Sheet ID'),
 });
-
-// ==================== TOOL DEFINITIONS ====================
-
-export const sheetsTools = [
-  createToolDefinition(
-    'sheets_get_values',
-    'Get values from a Google Sheet',
-    SheetsGetValuesSchema
-  ),
-  createToolDefinition(
-    'sheets_get_metadata',
-    'Get metadata about a Google Sheet (sheets, named ranges, etc.)',
-    SheetsGetMetadataSchema
-  ),
-];
 
 // ==================== HANDLER FUNCTIONS ====================
 
@@ -51,3 +36,18 @@ export async function handleSheetsGetMetadata(
 
   return await response.json();
 }
+
+// ==================== HANDLER BUNDLE ====================
+
+export const sheetsDefs = defineHandlers<GoogleAuth>()({
+  sheets_get_values: {
+    description: 'Get values from a Google Sheet',
+    schema: SheetsGetValuesSchema,
+    handler: handleSheetsGetValues,
+  },
+  sheets_get_metadata: {
+    description: 'Get metadata about a Google Sheet (sheets, named ranges, etc.)',
+    schema: SheetsGetMetadataSchema,
+    handler: handleSheetsGetMetadata,
+  },
+});

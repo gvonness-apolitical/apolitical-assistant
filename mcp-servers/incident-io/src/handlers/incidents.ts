@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createToolDefinition, type HttpClient } from '@apolitical-assistant/mcp-shared';
+import { defineHandlers, type HttpClient } from '@apolitical-assistant/mcp-shared';
 import type { Incident } from './types.js';
 
 // ==================== SCHEMAS ====================
@@ -41,31 +41,6 @@ export const UpdateIncidentSchema = z.object({
   summary: z.string().optional().describe('Updated summary'),
   severity: z.string().optional().describe('New severity ID'),
 });
-
-// ==================== TOOL DEFINITIONS ====================
-
-export const incidentTools = [
-  createToolDefinition(
-    'incidentio_list_incidents',
-    'List incidents from Incident.io. Can filter by status (active/resolved) and severity level. Returns incident details including title, status, severity, and timestamps.',
-    ListIncidentsSchema
-  ),
-  createToolDefinition(
-    'incidentio_get_incident',
-    'Get detailed information about a specific incident including full timeline, affected services, and team members involved.',
-    GetIncidentSchema
-  ),
-  createToolDefinition(
-    'incidentio_create_incident',
-    'Create a new incident in Incident.io. Returns the created incident with its ID and status.',
-    CreateIncidentSchema
-  ),
-  createToolDefinition(
-    'incidentio_update_incident',
-    'Update an existing incident (name, summary, severity).',
-    UpdateIncidentSchema
-  ),
-];
 
 // ==================== HANDLERS ====================
 
@@ -165,3 +140,31 @@ export async function handleUpdateIncident(
     severity: data.incident.severity?.name,
   };
 }
+
+// ==================== HANDLER BUNDLE ====================
+
+export const incidentDefs = defineHandlers<HttpClient>()({
+  incidentio_list_incidents: {
+    description:
+      'List incidents from Incident.io. Can filter by status (active/resolved) and severity level. Returns incident details including title, status, severity, and timestamps.',
+    schema: ListIncidentsSchema,
+    handler: handleListIncidents,
+  },
+  incidentio_get_incident: {
+    description:
+      'Get detailed information about a specific incident including full timeline, affected services, and team members involved.',
+    schema: GetIncidentSchema,
+    handler: handleGetIncident,
+  },
+  incidentio_create_incident: {
+    description:
+      'Create a new incident in Incident.io. Returns the created incident with its ID and status.',
+    schema: CreateIncidentSchema,
+    handler: handleCreateIncident,
+  },
+  incidentio_update_incident: {
+    description: 'Update an existing incident (name, summary, severity).',
+    schema: UpdateIncidentSchema,
+    handler: handleUpdateIncident,
+  },
+});

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
+import { defineHandlers } from '@apolitical-assistant/mcp-shared';
 import type { GoogleAuth } from '../auth.js';
 
 // ==================== ZOD SCHEMAS ====================
@@ -18,31 +18,6 @@ export const GmailListLabelsSchema = z.object({});
 export const GmailGetAttachmentsSchema = z.object({
   messageId: z.string().describe('The Gmail message ID'),
 });
-
-// ==================== TOOL DEFINITIONS ====================
-
-export const gmailReadTools = [
-  createToolDefinition(
-    'gmail_search',
-    'Search Gmail messages. Use Gmail search syntax (from:, to:, subject:, is:unread, etc.)',
-    GmailSearchSchema
-  ),
-  createToolDefinition(
-    'gmail_get_message',
-    'Get the full content of a specific Gmail message by ID',
-    GmailGetMessageSchema
-  ),
-  createToolDefinition(
-    'gmail_list_labels',
-    'List all Gmail labels (folders)',
-    GmailListLabelsSchema
-  ),
-  createToolDefinition(
-    'gmail_get_attachments',
-    'Get list of attachments for a Gmail message with their metadata',
-    GmailGetAttachmentsSchema
-  ),
-];
 
 // ==================== HANDLER FUNCTIONS ====================
 
@@ -145,7 +120,10 @@ export async function handleGmailGetMessage(
   };
 }
 
-export async function handleGmailListLabels(auth: GoogleAuth): Promise<unknown> {
+export async function handleGmailListLabels(
+  _args: z.infer<typeof GmailListLabelsSchema>,
+  auth: GoogleAuth
+): Promise<unknown> {
   const url = 'https://gmail.googleapis.com/gmail/v1/users/me/labels';
   const response = await auth.fetch(url);
   if (!response.ok) throw new Error(`Gmail API error: ${response.status}`);
@@ -215,3 +193,29 @@ export async function handleGmailGetAttachments(
     attachments,
   };
 }
+
+// ==================== HANDLER BUNDLE ====================
+
+export const gmailReadDefs = defineHandlers<GoogleAuth>()({
+  gmail_search: {
+    description:
+      'Search Gmail messages. Use Gmail search syntax (from:, to:, subject:, is:unread, etc.)',
+    schema: GmailSearchSchema,
+    handler: handleGmailSearch,
+  },
+  gmail_get_message: {
+    description: 'Get the full content of a specific Gmail message by ID',
+    schema: GmailGetMessageSchema,
+    handler: handleGmailGetMessage,
+  },
+  gmail_list_labels: {
+    description: 'List all Gmail labels (folders)',
+    schema: GmailListLabelsSchema,
+    handler: handleGmailListLabels,
+  },
+  gmail_get_attachments: {
+    description: 'Get list of attachments for a Gmail message with their metadata',
+    schema: GmailGetAttachmentsSchema,
+    handler: handleGmailGetAttachments,
+  },
+});

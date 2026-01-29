@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
+import { defineHandlers } from '@apolitical-assistant/mcp-shared';
 import type { GoogleAuth } from '../auth.js';
 
 // ==================== ZOD SCHEMAS ====================
@@ -72,41 +72,6 @@ export const CalendarUpdateEventSchema = z.object({
     .default(true)
     .describe('Send update notifications to attendees'),
 });
-
-// ==================== TOOL DEFINITIONS ====================
-
-export const calendarTools = [
-  createToolDefinition(
-    'calendar_list_events',
-    'List calendar events within a time range',
-    CalendarListEventsSchema
-  ),
-  createToolDefinition(
-    'calendar_get_event',
-    'Get details of a specific calendar event',
-    CalendarGetEventSchema
-  ),
-  createToolDefinition(
-    'calendar_list_calendars',
-    'List all calendars the user has access to, including meeting rooms and shared calendars',
-    CalendarListCalendarsSchema
-  ),
-  createToolDefinition(
-    'calendar_get_freebusy',
-    'Check availability (free/busy) for multiple calendars within a time range. Useful for finding meeting slots.',
-    CalendarGetFreeBusySchema
-  ),
-  createToolDefinition(
-    'calendar_create_event',
-    'Create a new calendar event with attendees and optional meeting room',
-    CalendarCreateEventSchema
-  ),
-  createToolDefinition(
-    'calendar_update_event',
-    'Update an existing calendar event',
-    CalendarUpdateEventSchema
-  ),
-];
 
 // ==================== HANDLER FUNCTIONS ====================
 
@@ -350,3 +315,40 @@ export async function handleCalendarUpdateEvent(
     link: data.htmlLink,
   };
 }
+
+// ==================== HANDLER BUNDLE ====================
+
+export const calendarDefs = defineHandlers<GoogleAuth>()({
+  calendar_list_events: {
+    description: 'List calendar events within a time range',
+    schema: CalendarListEventsSchema,
+    handler: handleCalendarListEvents,
+  },
+  calendar_get_event: {
+    description: 'Get details of a specific calendar event',
+    schema: CalendarGetEventSchema,
+    handler: handleCalendarGetEvent,
+  },
+  calendar_list_calendars: {
+    description:
+      'List all calendars the user has access to, including meeting rooms and shared calendars',
+    schema: CalendarListCalendarsSchema,
+    handler: handleCalendarListCalendars,
+  },
+  calendar_get_freebusy: {
+    description:
+      'Check availability (free/busy) for multiple calendars within a time range. Useful for finding meeting slots.',
+    schema: CalendarGetFreeBusySchema,
+    handler: handleCalendarGetFreeBusy,
+  },
+  calendar_create_event: {
+    description: 'Create a new calendar event with attendees and optional meeting room',
+    schema: CalendarCreateEventSchema,
+    handler: handleCalendarCreateEvent,
+  },
+  calendar_update_event: {
+    description: 'Update an existing calendar event',
+    schema: CalendarUpdateEventSchema,
+    handler: handleCalendarUpdateEvent,
+  },
+});

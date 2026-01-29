@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createToolDefinition, type HttpClient } from '@apolitical-assistant/mcp-shared';
+import { defineHandlers, type HttpClient } from '@apolitical-assistant/mcp-shared';
 import type { Incident } from './types.js';
 
 // ==================== SCHEMAS ====================
@@ -7,16 +7,6 @@ import type { Incident } from './types.js';
 export const GetPostmortemSchema = z.object({
   incidentId: z.string().describe('The incident ID to get postmortem for'),
 });
-
-// ==================== TOOL DEFINITIONS ====================
-
-export const postmortemTools = [
-  createToolDefinition(
-    'incidentio_get_postmortem',
-    'Get the postmortem/retrospective document for a resolved incident. Contains root cause analysis, timeline, and learnings.',
-    GetPostmortemSchema
-  ),
-];
 
 // ==================== HANDLERS ====================
 
@@ -45,3 +35,14 @@ export async function handleGetPostmortem(
     ),
   };
 }
+
+// ==================== HANDLER BUNDLE ====================
+
+export const postmortemDefs = defineHandlers<HttpClient>()({
+  incidentio_get_postmortem: {
+    description:
+      'Get the postmortem/retrospective document for a resolved incident. Contains root cause analysis, timeline, and learnings.',
+    schema: GetPostmortemSchema,
+    handler: handleGetPostmortem,
+  },
+});

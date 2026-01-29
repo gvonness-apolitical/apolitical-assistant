@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
+import { defineHandlers } from '@apolitical-assistant/mcp-shared';
 import { slackApi, type SlackResponse } from './api.js';
 
 // ==================== SCHEMAS ====================
@@ -28,16 +28,6 @@ interface BookmarkListResponse extends SlackResponse {
   bookmarks: Bookmark[];
 }
 
-// ==================== TOOL DEFINITIONS ====================
-
-export const bookmarkTools = [
-  createToolDefinition(
-    'slack_get_bookmarks',
-    'Get bookmarked messages and links from a Slack channel. Returns bookmarks with title, link, and metadata.',
-    GetBookmarksSchema
-  ),
-];
-
 // ==================== HANDLERS ====================
 
 export async function handleGetBookmarks(
@@ -61,3 +51,14 @@ export async function handleGetBookmarks(
     })),
   };
 }
+
+// ==================== HANDLER BUNDLE ====================
+
+export const bookmarkDefs = defineHandlers<string>()({
+  slack_get_bookmarks: {
+    description:
+      'Get bookmarked messages and links from a Slack channel. Returns bookmarks with title, link, and metadata.',
+    schema: GetBookmarksSchema,
+    handler: handleGetBookmarks,
+  },
+});

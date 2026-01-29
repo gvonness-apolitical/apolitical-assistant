@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
+import { defineHandlers } from '@apolitical-assistant/mcp-shared';
 import type { GoogleAuth } from '../auth.js';
 import { executeBatchOperation } from '../utils/batch-operation.js';
 
@@ -16,26 +16,6 @@ export const GmailDeleteSchema = z.object({
 export const GmailArchiveSchema = z.object({
   messageIds: z.array(z.string()).describe('Array of Gmail message IDs to archive'),
 });
-
-// ==================== TOOL DEFINITIONS ====================
-
-export const gmailManageTools = [
-  createToolDefinition(
-    'gmail_trash',
-    'Move Gmail messages to trash. Requires gmail.modify scope.',
-    GmailTrashSchema
-  ),
-  createToolDefinition(
-    'gmail_delete',
-    'Permanently delete Gmail messages (cannot be undone). Requires gmail.modify scope.',
-    GmailDeleteSchema
-  ),
-  createToolDefinition(
-    'gmail_archive',
-    'Archive Gmail messages (remove from inbox but keep in All Mail). Requires gmail.modify scope.',
-    GmailArchiveSchema
-  ),
-];
 
 // ==================== HANDLER FUNCTIONS ====================
 
@@ -100,3 +80,25 @@ export async function handleGmailArchive(
     details: result.details,
   };
 }
+
+// ==================== HANDLER BUNDLE ====================
+
+export const gmailManageDefs = defineHandlers<GoogleAuth>()({
+  gmail_trash: {
+    description: 'Move Gmail messages to trash. Requires gmail.modify scope.',
+    schema: GmailTrashSchema,
+    handler: handleGmailTrash,
+  },
+  gmail_delete: {
+    description:
+      'Permanently delete Gmail messages (cannot be undone). Requires gmail.modify scope.',
+    schema: GmailDeleteSchema,
+    handler: handleGmailDelete,
+  },
+  gmail_archive: {
+    description:
+      'Archive Gmail messages (remove from inbox but keep in All Mail). Requires gmail.modify scope.',
+    schema: GmailArchiveSchema,
+    handler: handleGmailArchive,
+  },
+});

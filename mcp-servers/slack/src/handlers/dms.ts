@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
+import { defineHandlers } from '@apolitical-assistant/mcp-shared';
 import { slackApi, enrichUserInfo, type SlackResponse, type SlackMessage } from './api.js';
 
 // ==================== SCHEMAS ====================
@@ -17,22 +17,6 @@ export const SendDmSchema = z.object({
   userId: z.string().describe('User ID to send DM to (e.g., U1234567890)'),
   text: z.string().describe('Message text (supports Slack markdown)'),
 });
-
-// ==================== TOOL DEFINITIONS ====================
-
-export const dmTools = [
-  createToolDefinition('slack_list_dms', 'List your direct message conversations', ListDmsSchema),
-  createToolDefinition(
-    'slack_read_dm',
-    'Read messages from a direct message conversation',
-    ReadDmSchema
-  ),
-  createToolDefinition(
-    'slack_send_dm',
-    'Send a direct message to a user. Requires chat:write scope.',
-    SendDmSchema
-  ),
-];
 
 // ==================== HANDLERS ====================
 
@@ -140,3 +124,23 @@ export async function handleSendDm(
     text: data.message.text,
   };
 }
+
+// ==================== HANDLER BUNDLE ====================
+
+export const dmDefs = defineHandlers<string>()({
+  slack_list_dms: {
+    description: 'List your direct message conversations',
+    schema: ListDmsSchema,
+    handler: handleListDms,
+  },
+  slack_read_dm: {
+    description: 'Read messages from a direct message conversation',
+    schema: ReadDmSchema,
+    handler: handleReadDm,
+  },
+  slack_send_dm: {
+    description: 'Send a direct message to a user. Requires chat:write scope.',
+    schema: SendDmSchema,
+    handler: handleSendDm,
+  },
+});
