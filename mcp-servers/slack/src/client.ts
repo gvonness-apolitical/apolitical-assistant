@@ -8,7 +8,11 @@
  * - User info enrichment with caching
  */
 
-import { HttpClient, createBearerClient, type FetchFunction } from '@apolitical-assistant/mcp-shared';
+import {
+  HttpClient,
+  createBearerClient,
+  type FetchFunction,
+} from '@apolitical-assistant/mcp-shared';
 
 // Slack API methods that use GET (all others use POST)
 const GET_METHODS = new Set([

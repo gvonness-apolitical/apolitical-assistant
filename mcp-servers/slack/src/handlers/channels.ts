@@ -1,6 +1,11 @@
 import { z } from 'zod';
 import { defineHandlers } from '@apolitical-assistant/mcp-shared';
-import { SlackClient, type SlackResponse, type SlackChannel, type SlackMessage } from '../client.js';
+import {
+  SlackClient,
+  type SlackResponse,
+  type SlackChannel,
+  type SlackMessage,
+} from '../client.js';
 
 // ==================== SCHEMAS ====================
 
