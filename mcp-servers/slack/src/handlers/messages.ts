@@ -1,12 +1,6 @@
 import { z } from 'zod';
 import { defineHandlers } from '@apolitical-assistant/mcp-shared';
-import {
-  slackApi,
-  resolveChannelId,
-  enrichUserInfo,
-  type SlackResponse,
-  type SlackMessage,
-} from './api.js';
+import { SlackClient, type SlackResponse, type SlackMessage } from '../client.js';
 
 // ==================== SCHEMAS ====================
 
@@ -38,13 +32,13 @@ export const AddReactionSchema = z.object({
 
 export async function handleReadThread(
   args: z.infer<typeof ReadThreadSchema>,
-  token: string
+  client: SlackClient
 ): Promise<unknown> {
   interface RepliesResponse extends SlackResponse {
     messages: SlackMessage[];
   }
 
-  const data = await slackApi<RepliesResponse>('conversations.replies', token, {
+  const data = await client.call<RepliesResponse>('conversations.replies', {
     channel: args.channel,
     ts: args.threadTs,
     limit: args.limit,
@@ -52,7 +46,7 @@ export async function handleReadThread(
 
   const messages = await Promise.all(
     data.messages.map(async (msg) => {
-      const userInfo = await enrichUserInfo(msg.user, token);
+      const userInfo = await client.enrichUserInfo(msg.user);
       return {
         timestamp: msg.ts,
         text: msg.text,
@@ -67,11 +61,11 @@ export async function handleReadThread(
 
 export async function handleSendMessage(
   args: z.infer<typeof SendMessageSchema>,
-  token: string
+  client: SlackClient
 ): Promise<unknown> {
-  const channelId = await resolveChannelId(args.channel, token);
+  const channelId = await client.resolveChannelId(args.channel);
 
-  const params: Record<string, string | number | boolean> = {
+  const params: Record<string, unknown> = {
     channel: channelId,
     text: args.text,
     unfurl_links: args.unfurlLinks,
@@ -84,7 +78,7 @@ export async function handleSendMessage(
     message: { text: string };
   }
 
-  const data = await slackApi<PostMessageResponse>('chat.postMessage', token, params);
+  const data = await client.call<PostMessageResponse>('chat.postMessage', params);
 
   return {
     success: true,
@@ -96,9 +90,9 @@ export async function handleSendMessage(
 
 export async function handleAddReaction(
   args: z.infer<typeof AddReactionSchema>,
-  token: string
+  client: SlackClient
 ): Promise<unknown> {
-  await slackApi<SlackResponse>('reactions.add', token, {
+  await client.call<SlackResponse>('reactions.add', {
     channel: args.channel,
     timestamp: args.timestamp,
     name: args.emoji,
@@ -114,7 +108,7 @@ export async function handleAddReaction(
 
 // ==================== HANDLER BUNDLE ====================
 
-export const messageDefs = defineHandlers<string>()({
+export const messageDefs = defineHandlers<SlackClient>()({
   slack_read_thread: {
     description: 'Read replies in a Slack thread',
     schema: ReadThreadSchema,

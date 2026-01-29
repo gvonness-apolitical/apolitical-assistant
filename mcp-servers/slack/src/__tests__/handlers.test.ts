@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import type { HttpClient } from '@apolitical-assistant/mcp-shared';
 import { handleToolCall } from '../tools.js';
 import type { SlackContext } from '../index.js';
+import { SlackClient } from '../client.js';
 
 // Mock the global fetch
 const mockFetch = vi.fn();
@@ -19,8 +19,7 @@ function mockSlackResponse(data: Record<string, unknown>, ok = true) {
 // Create a mock context
 function createMockContext(): SlackContext {
   return {
-    client: {} as HttpClient,
-    token: 'xoxb-mock-token',
+    slackClient: new SlackClient('xoxb-mock-token', mockFetch),
   };
 }
 

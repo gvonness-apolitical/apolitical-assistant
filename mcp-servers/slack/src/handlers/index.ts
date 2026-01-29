@@ -1,4 +1,5 @@
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
+import type { SlackClient } from '../client.js';
 
 // Import handler bundles
 import { searchDefs } from './search.js';
@@ -79,7 +80,7 @@ export const allTools: Tool[] = [
 // Combine all handler registries from bundles
 export const handlerRegistry: Record<
   string,
-  (args: Record<string, unknown>, token: string) => Promise<unknown>
+  (args: Record<string, unknown>, client: SlackClient) => Promise<unknown>
 > = {
   ...searchDefs.handlers,
   ...channelDefs.handlers,

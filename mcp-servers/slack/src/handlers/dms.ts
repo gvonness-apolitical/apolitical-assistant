@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { defineHandlers } from '@apolitical-assistant/mcp-shared';
-import { slackApi, enrichUserInfo, type SlackResponse, type SlackMessage } from './api.js';
+import { SlackClient, type SlackResponse, type SlackMessage } from '../client.js';
 
 // ==================== SCHEMAS ====================
 
@@ -22,20 +22,20 @@ export const SendDmSchema = z.object({
 
 export async function handleListDms(
   args: z.infer<typeof ListDmsSchema>,
-  token: string
+  client: SlackClient
 ): Promise<unknown> {
   interface DmListResponse extends SlackResponse {
     channels: Array<{ id: string; user: string }>;
   }
 
-  const data = await slackApi<DmListResponse>('conversations.list', token, {
+  const data = await client.call<DmListResponse>('conversations.list', {
     types: 'im',
     limit: args.limit,
   });
 
   const dms = await Promise.all(
     data.channels.map(async (dm) => {
-      const userInfo = await enrichUserInfo(dm.user, token);
+      const userInfo = await client.enrichUserInfo(dm.user);
       return {
         channelId: dm.id,
         userId: dm.user,
@@ -50,14 +50,14 @@ export async function handleListDms(
 
 export async function handleReadDm(
   args: z.infer<typeof ReadDmSchema>,
-  token: string
+  client: SlackClient
 ): Promise<unknown> {
   // Open/get the DM channel with this user
   interface OpenResponse extends SlackResponse {
     channel: { id: string };
   }
 
-  const openData = await slackApi<OpenResponse>('conversations.open', token, {
+  const openData = await client.call<OpenResponse>('conversations.open', {
     users: args.userId,
   });
 
@@ -67,14 +67,14 @@ export async function handleReadDm(
     messages: SlackMessage[];
   }
 
-  const data = await slackApi<HistoryResponse>('conversations.history', token, {
+  const data = await client.call<HistoryResponse>('conversations.history', {
     channel: channelId,
     limit: Math.min(args.limit, 100),
   });
 
   const messages = await Promise.all(
     data.messages.map(async (msg) => {
-      const userInfo = await enrichUserInfo(msg.user, token);
+      const userInfo = await client.enrichUserInfo(msg.user);
       return {
         timestamp: msg.ts,
         text: msg.text,
@@ -92,14 +92,14 @@ export async function handleReadDm(
 
 export async function handleSendDm(
   args: z.infer<typeof SendDmSchema>,
-  token: string
+  client: SlackClient
 ): Promise<unknown> {
   // First open/get the DM channel
   interface OpenResponse extends SlackResponse {
     channel: { id: string };
   }
 
-  const openData = await slackApi<OpenResponse>('conversations.open', token, {
+  const openData = await client.call<OpenResponse>('conversations.open', {
     users: args.userId,
   });
 
@@ -111,7 +111,7 @@ export async function handleSendDm(
     message: { text: string };
   }
 
-  const data = await slackApi<PostMessageResponse>('chat.postMessage', token, {
+  const data = await client.call<PostMessageResponse>('chat.postMessage', {
     channel: channelId,
     text: args.text,
   });
@@ -127,7 +127,7 @@ export async function handleSendDm(
 
 // ==================== HANDLER BUNDLE ====================
 
-export const dmDefs = defineHandlers<string>()({
+export const dmDefs = defineHandlers<SlackClient>()({
   slack_list_dms: {
     description: 'List your direct message conversations',
     schema: ListDmsSchema,

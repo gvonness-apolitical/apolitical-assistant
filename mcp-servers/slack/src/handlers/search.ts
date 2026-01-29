@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { defineHandlers } from '@apolitical-assistant/mcp-shared';
-import { slackApi, enrichUserInfo, type SlackResponse } from './api.js';
+import { SlackClient, type SlackResponse } from '../client.js';
 
 // ==================== SCHEMAS ====================
 
@@ -18,7 +18,7 @@ export const SearchSchema = z.object({
 
 export async function handleSearch(
   args: z.infer<typeof SearchSchema>,
-  token: string
+  client: SlackClient
 ): Promise<unknown> {
   interface SearchResponse extends SlackResponse {
     messages: {
@@ -33,7 +33,7 @@ export async function handleSearch(
     };
   }
 
-  const data = await slackApi<SearchResponse>('search.messages', token, {
+  const data = await client.call<SearchResponse>('search.messages', {
     query: args.query,
     count: Math.min(args.count, 100),
     sort: args.sort,
@@ -41,7 +41,7 @@ export async function handleSearch(
 
   const messages = await Promise.all(
     data.messages.matches.map(async (msg) => {
-      const userInfo = await enrichUserInfo(msg.user, token);
+      const userInfo = await client.enrichUserInfo(msg.user);
       return {
         timestamp: msg.ts,
         text: msg.text,
@@ -62,7 +62,7 @@ export async function handleSearch(
 
 // ==================== HANDLER BUNDLE ====================
 
-export const searchDefs = defineHandlers<string>()({
+export const searchDefs = defineHandlers<SlackClient>()({
   slack_search: {
     description:
       'Search for messages in Slack. Uses Slack search syntax (from:@user, in:#channel, has:link, before:date, after:date, etc.)',

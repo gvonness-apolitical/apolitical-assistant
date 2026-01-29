@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { defineHandlers } from '@apolitical-assistant/mcp-shared';
-import { slackApi, type SlackResponse, type SlackUser } from './api.js';
+import { SlackClient, type SlackResponse, type SlackUser } from '../client.js';
 
 // ==================== SCHEMAS ====================
 
@@ -16,13 +16,13 @@ export const GetUserSchema = z.object({
 
 export async function handleListUsers(
   args: z.infer<typeof ListUsersSchema>,
-  token: string
+  client: SlackClient
 ): Promise<unknown> {
   interface UsersListResponse extends SlackResponse {
     members: SlackUser[];
   }
 
-  const data = await slackApi<UsersListResponse>('users.list', token, {
+  const data = await client.call<UsersListResponse>('users.list', {
     limit: args.limit,
   });
 
@@ -42,13 +42,13 @@ export async function handleListUsers(
 
 export async function handleGetUser(
   args: z.infer<typeof GetUserSchema>,
-  token: string
+  client: SlackClient
 ): Promise<unknown> {
   interface UserInfoResponse extends SlackResponse {
     user: SlackUser;
   }
 
-  const data = await slackApi<UserInfoResponse>('users.info', token, {
+  const data = await client.call<UserInfoResponse>('users.info', {
     user: args.userId,
   });
 
@@ -70,7 +70,7 @@ export async function handleGetUser(
 
 // ==================== HANDLER BUNDLE ====================
 
-export const userDefs = defineHandlers<string>()({
+export const userDefs = defineHandlers<SlackClient>()({
   slack_list_users: {
     description: 'List users in the workspace',
     schema: ListUsersSchema,

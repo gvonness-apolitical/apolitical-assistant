@@ -32,4 +32,7 @@ export function createTools(): Tool[] {
 
 // ==================== MAIN HANDLER ====================
 
-export const handleToolCall = createToolRouter(handlerRegistry, (ctx: SlackContext) => ctx.token);
+export const handleToolCall = createToolRouter(
+  handlerRegistry,
+  (ctx: SlackContext) => ctx.slackClient
+);

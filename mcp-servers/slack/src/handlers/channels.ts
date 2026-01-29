@@ -1,13 +1,11 @@
 import { z } from 'zod';
 import { defineHandlers } from '@apolitical-assistant/mcp-shared';
 import {
-  slackApi,
-  resolveChannelId,
-  enrichUserInfo,
+  SlackClient,
   type SlackResponse,
   type SlackChannel,
   type SlackMessage,
-} from './api.js';
+} from '../client.js';
 
 // ==================== SCHEMAS ====================
 
@@ -33,13 +31,13 @@ export const GetChannelInfoSchema = z.object({
 
 export async function handleListChannels(
   args: z.infer<typeof ListChannelsSchema>,
-  token: string
+  client: SlackClient
 ): Promise<unknown> {
   interface ChannelListResponse extends SlackResponse {
     channels: SlackChannel[];
   }
 
-  const data = await slackApi<ChannelListResponse>('conversations.list', token, {
+  const data = await client.call<ChannelListResponse>('conversations.list', {
     types: args.types,
     limit: args.limit,
     exclude_archived: true,
@@ -57,22 +55,22 @@ export async function handleListChannels(
 
 export async function handleReadChannel(
   args: z.infer<typeof ReadChannelSchema>,
-  token: string
+  client: SlackClient
 ): Promise<unknown> {
-  const channelId = await resolveChannelId(args.channel, token);
+  const channelId = await client.resolveChannelId(args.channel);
 
   interface HistoryResponse extends SlackResponse {
     messages: SlackMessage[];
   }
 
-  const data = await slackApi<HistoryResponse>('conversations.history', token, {
+  const data = await client.call<HistoryResponse>('conversations.history', {
     channel: channelId,
     limit: Math.min(args.limit, 100),
   });
 
   const messages = await Promise.all(
     data.messages.map(async (msg) => {
-      const userInfo = await enrichUserInfo(msg.user, token);
+      const userInfo = await client.enrichUserInfo(msg.user);
       return {
         timestamp: msg.ts,
         text: msg.text,
@@ -92,13 +90,13 @@ export async function handleReadChannel(
 
 export async function handleGetChannelInfo(
   args: z.infer<typeof GetChannelInfoSchema>,
-  token: string
+  client: SlackClient
 ): Promise<unknown> {
   interface ChannelInfoResponse extends SlackResponse {
     channel: SlackChannel;
   }
 
-  const data = await slackApi<ChannelInfoResponse>('conversations.info', token, {
+  const data = await client.call<ChannelInfoResponse>('conversations.info', {
     channel: args.channel,
   });
 
@@ -117,7 +115,7 @@ export async function handleGetChannelInfo(
 
 // ==================== HANDLER BUNDLE ====================
 
-export const channelDefs = defineHandlers<string>()({
+export const channelDefs = defineHandlers<SlackClient>()({
   slack_list_channels: {
     description: 'List Slack channels you have access to',
     schema: ListChannelsSchema,
