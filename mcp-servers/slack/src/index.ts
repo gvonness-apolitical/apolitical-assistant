@@ -1,15 +1,11 @@
 #!/usr/bin/env node
 
-import {
-  runMcpServer,
-  createBearerClient,
-  type HttpClient,
-} from '@apolitical-assistant/mcp-shared';
+import { runMcpServer } from '@apolitical-assistant/mcp-shared';
 import { createTools, handleToolCall } from './tools.js';
+import { SlackClient } from './client.js';
 
 export interface SlackContext {
-  client: HttpClient;
-  token: string; // Keep token for specialized Slack API calls
+  slackClient: SlackClient;
 }
 
 runMcpServer<SlackContext>({
@@ -27,7 +23,6 @@ runMcpServer<SlackContext>({
   createTools,
   handleToolCall,
   createContext: (env) => ({
-    client: createBearerClient('https://slack.com/api', env.SLACK_TOKEN!),
-    token: env.SLACK_TOKEN!,
+    slackClient: new SlackClient(env.SLACK_TOKEN!),
   }),
 });

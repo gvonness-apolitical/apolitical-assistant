@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { defineHandlers } from '@apolitical-assistant/mcp-shared';
-import { slackApi, type SlackResponse } from './api.js';
+import { SlackClient, type SlackResponse } from '../client.js';
 
 // ==================== SCHEMAS ====================
 
@@ -32,9 +32,9 @@ interface BookmarkListResponse extends SlackResponse {
 
 export async function handleGetBookmarks(
   args: z.infer<typeof GetBookmarksSchema>,
-  token: string
+  client: SlackClient
 ): Promise<unknown> {
-  const data = await slackApi<BookmarkListResponse>('bookmarks.list', token, {
+  const data = await client.call<BookmarkListResponse>('bookmarks.list', {
     channel_id: args.channel_id,
   });
 
@@ -54,7 +54,7 @@ export async function handleGetBookmarks(
 
 // ==================== HANDLER BUNDLE ====================
 
-export const bookmarkDefs = defineHandlers<string>()({
+export const bookmarkDefs = defineHandlers<SlackClient>()({
   slack_get_bookmarks: {
     description:
       'Get bookmarked messages and links from a Slack channel. Returns bookmarks with title, link, and metadata.',

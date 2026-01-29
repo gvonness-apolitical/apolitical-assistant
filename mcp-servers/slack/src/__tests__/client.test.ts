@@ -1,16 +1,13 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { slackApi, resolveChannelId, enrichUserInfo } from '../handlers/api.js';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { SlackClient } from '../client.js';
 
-// Mock fetch globally
-const mockFetch = vi.fn();
-
-// Use unique names to avoid module-level cache collisions between tests
+// Use unique names to avoid cache collisions between tests
 let testCounter = 0;
 function uniqueChannelName(): string {
   return `test-channel-${testCounter++}`;
 }
 function uniqueUserId(): string {
-  return `UAPITEST${String(testCounter++).padStart(5, '0')}`;
+  return `UCLIENTTEST${String(testCounter++).padStart(5, '0')}`;
 }
 
 function mockSlackOk(data: Record<string, unknown> = {}): Response {
@@ -37,37 +34,37 @@ function mockHttpError(status: number, statusText: string): Response {
     status,
     statusText,
     json: async () => ({}),
+    text: async () => statusText,
   } as Response;
 }
 
-describe('slackApi', () => {
-  beforeEach(() => {
-    vi.stubGlobal('fetch', mockFetch);
-    vi.clearAllMocks();
-  });
+describe('SlackClient.call', () => {
+  let mockFetch: ReturnType<typeof vi.fn>;
+  let client: SlackClient;
 
-  afterEach(() => {
-    vi.unstubAllGlobals();
+  beforeEach(() => {
+    mockFetch = vi.fn();
+    client = new SlackClient('xoxp-test-token', mockFetch);
   });
 
   it('should use GET for GET methods and pass params as query string', async () => {
     mockFetch.mockResolvedValueOnce(mockSlackOk({ messages: [] }));
 
-    await slackApi('search.messages', 'xoxp-test-token', { query: 'hello', count: 10 });
+    await client.call('search.messages', { query: 'hello', count: 10 });
 
     expect(mockFetch).toHaveBeenCalledOnce();
     const [url, options] = mockFetch.mock.calls[0]!;
     expect(url).toContain('https://slack.com/api/search.messages');
     expect(url).toContain('query=hello');
     expect(url).toContain('count=10');
-    expect(options.method).toBeUndefined(); // GET is default
+    expect(options.method).toBe('GET');
     expect(options.headers.Authorization).toBe('Bearer xoxp-test-token');
   });
 
   it('should use POST for non-GET methods and pass params as JSON body', async () => {
     mockFetch.mockResolvedValueOnce(mockSlackOk({ ts: '123.456' }));
 
-    await slackApi('chat.postMessage', 'xoxp-test-token', {
+    await client.call('chat.postMessage', {
       channel: 'C123',
       text: 'Hello!',
     });
@@ -94,29 +91,28 @@ describe('slackApi', () => {
       'conversations.open',
       'bookmarks.list',
       'files.info',
+      'files.list',
     ];
 
     for (const method of getMethods) {
       mockFetch.mockResolvedValueOnce(mockSlackOk());
-      await slackApi(method, 'token');
+      await client.call(method);
 
       const lastCall = mockFetch.mock.calls.at(-1)!;
-      expect(lastCall[1].method).toBeUndefined();
+      expect(lastCall[1].method).toBe('GET');
     }
   });
 
   it('should throw on HTTP error', async () => {
     mockFetch.mockResolvedValueOnce(mockHttpError(500, 'Internal Server Error'));
 
-    await expect(slackApi('chat.postMessage', 'token', {})).rejects.toThrow(
-      'Slack API error: 500 Internal Server Error'
-    );
+    await expect(client.call('chat.postMessage', {})).rejects.toThrow('HTTP 500');
   });
 
   it('should throw on Slack API error (ok: false)', async () => {
     mockFetch.mockResolvedValueOnce(mockSlackError('channel_not_found'));
 
-    await expect(slackApi('conversations.history', 'token', { channel: 'C999' })).rejects.toThrow(
+    await expect(client.call('conversations.history', { channel: 'C999' })).rejects.toThrow(
       'Slack API error: channel_not_found'
     );
   });
@@ -133,36 +129,35 @@ describe('slackApi', () => {
       channels: Array<{ id: string; name: string }>;
     }
 
-    const result = await slackApi<TestResponse>('conversations.list', 'token');
+    const result = await client.call<TestResponse>('conversations.list');
     expect(result.channels).toHaveLength(1);
     expect(result.channels[0]!.id).toBe('C123');
   });
 });
 
-describe('resolveChannelId', () => {
-  beforeEach(() => {
-    vi.stubGlobal('fetch', mockFetch);
-    vi.clearAllMocks();
-  });
+describe('SlackClient.resolveChannelId', () => {
+  let mockFetch: ReturnType<typeof vi.fn>;
+  let client: SlackClient;
 
-  afterEach(() => {
-    vi.unstubAllGlobals();
+  beforeEach(() => {
+    mockFetch = vi.fn();
+    client = new SlackClient('xoxp-test-token', mockFetch);
   });
 
   it('should return channel ID directly if it matches ID pattern', async () => {
-    const result = await resolveChannelId('C0123456789', 'token');
+    const result = await client.resolveChannelId('C0123456789');
     expect(result).toBe('C0123456789');
     expect(mockFetch).not.toHaveBeenCalled();
   });
 
   it('should return group ID directly (G prefix)', async () => {
-    const result = await resolveChannelId('G0123456789', 'token');
+    const result = await client.resolveChannelId('G0123456789');
     expect(result).toBe('G0123456789');
     expect(mockFetch).not.toHaveBeenCalled();
   });
 
   it('should return DM ID directly (D prefix)', async () => {
-    const result = await resolveChannelId('D0123456789', 'token');
+    const result = await client.resolveChannelId('D0123456789');
     expect(result).toBe('D0123456789');
     expect(mockFetch).not.toHaveBeenCalled();
   });
@@ -178,7 +173,7 @@ describe('resolveChannelId', () => {
       })
     );
 
-    const result = await resolveChannelId(channelName, 'token');
+    const result = await client.resolveChannelId(channelName);
     expect(result).toBe('C222');
   });
 
@@ -190,7 +185,7 @@ describe('resolveChannelId', () => {
       })
     );
 
-    const result = await resolveChannelId(`#${channelName}`, 'token');
+    const result = await client.resolveChannelId(`#${channelName}`);
     expect(result).toBe('C333');
   });
 
@@ -202,8 +197,8 @@ describe('resolveChannelId', () => {
       })
     );
 
-    const result1 = await resolveChannelId(channelName, 'token');
-    const result2 = await resolveChannelId(channelName, 'token');
+    const result1 = await client.resolveChannelId(channelName);
+    const result2 = await client.resolveChannelId(channelName);
 
     expect(result1).toBe('C444');
     expect(result2).toBe('C444');
@@ -218,20 +213,19 @@ describe('resolveChannelId', () => {
       })
     );
 
-    await expect(resolveChannelId(channelName, 'token')).rejects.toThrow(
+    await expect(client.resolveChannelId(channelName)).rejects.toThrow(
       `Channel not found: ${channelName}`
     );
   });
 });
 
-describe('enrichUserInfo', () => {
-  beforeEach(() => {
-    vi.stubGlobal('fetch', mockFetch);
-    vi.clearAllMocks();
-  });
+describe('SlackClient.enrichUserInfo', () => {
+  let mockFetch: ReturnType<typeof vi.fn>;
+  let client: SlackClient;
 
-  afterEach(() => {
-    vi.unstubAllGlobals();
+  beforeEach(() => {
+    mockFetch = vi.fn();
+    client = new SlackClient('xoxp-test-token', mockFetch);
   });
 
   it('should fetch and return user info', async () => {
@@ -242,7 +236,7 @@ describe('enrichUserInfo', () => {
       })
     );
 
-    const result = await enrichUserInfo(userId, 'token');
+    const result = await client.enrichUserInfo(userId);
 
     expect(result).toEqual({ name: 'johndoe', realName: 'John Doe' });
     expect(mockFetch).toHaveBeenCalledOnce();
@@ -256,8 +250,8 @@ describe('enrichUserInfo', () => {
       })
     );
 
-    const result1 = await enrichUserInfo(userId, 'token');
-    const result2 = await enrichUserInfo(userId, 'token');
+    const result1 = await client.enrichUserInfo(userId);
+    const result2 = await client.enrichUserInfo(userId);
 
     expect(result1).toEqual({ name: 'cached', realName: 'Cached User' });
     expect(result2).toEqual({ name: 'cached', realName: 'Cached User' });
@@ -268,8 +262,27 @@ describe('enrichUserInfo', () => {
     const userId = uniqueUserId();
     mockFetch.mockRejectedValueOnce(new Error('Network error'));
 
-    const result = await enrichUserInfo(userId, 'token');
+    const result = await client.enrichUserInfo(userId);
 
     expect(result).toEqual({ name: userId, realName: userId });
+  });
+});
+
+describe('SlackClient.fetchRaw', () => {
+  it('should fetch with authorization header', async () => {
+    const mockFetch = vi.fn().mockResolvedValueOnce({
+      ok: true,
+      text: async () => 'file content',
+    } as Response);
+
+    const client = new SlackClient('xoxp-test-token', mockFetch);
+    const response = await client.fetchRaw('https://files.slack.com/files-pri/T123/download');
+
+    expect(mockFetch).toHaveBeenCalledWith('https://files.slack.com/files-pri/T123/download', {
+      headers: {
+        Authorization: 'Bearer xoxp-test-token',
+      },
+    });
+    expect(await response.text()).toBe('file content');
   });
 });

@@ -23,7 +23,7 @@
 
 import { z } from 'zod';
 import { defineHandlers } from '@apolitical-assistant/mcp-shared';
-import { slackApi, type SlackResponse } from './api.js';
+import { SlackClient, type SlackResponse } from '../client.js';
 
 // ==================== SCHEMAS ====================
 
@@ -117,13 +117,13 @@ interface FilesListResponse extends SlackResponse {
 
 export async function handleGetCanvas(
   args: z.infer<typeof GetCanvasSchema>,
-  token: string
+  client: SlackClient
 ): Promise<unknown> {
   // Strategy: Use files.info to get the download URL, then fetch the content.
   // Canvases are stored as files with filetype 'quip' and mimetype 'application/vnd.slack-docs'.
 
   // 1. Get file info including download URL
-  const fileInfo = await slackApi<FileInfoResponse>('files.info', token, {
+  const fileInfo = await client.call<FileInfoResponse>('files.info', {
     file: args.canvas_id,
   });
 
@@ -135,11 +135,7 @@ export async function handleGetCanvas(
 
   if (file.url_private_download) {
     try {
-      const response = await fetch(file.url_private_download, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await client.fetchRaw(file.url_private_download);
 
       if (response.ok) {
         contentType = response.headers.get('content-type');
@@ -165,7 +161,7 @@ export async function handleGetCanvas(
 
 export async function handleUpdateCanvas(
   args: z.infer<typeof UpdateCanvasSchema>,
-  token: string
+  client: SlackClient
 ): Promise<unknown> {
   // Build the changes array for the API
   const changes = args.changes.map((change) => {
@@ -184,7 +180,7 @@ export async function handleUpdateCanvas(
     return apiChange;
   });
 
-  const data = await slackApi<CanvasEditResponse>('canvases.edit', token, {
+  const data = await client.call<CanvasEditResponse>('canvases.edit', {
     canvas_id: args.canvas_id,
     changes: JSON.stringify(changes),
   });
@@ -197,7 +193,7 @@ export async function handleUpdateCanvas(
 
 export async function handleCreateCanvas(
   args: z.infer<typeof CreateCanvasSchema>,
-  token: string
+  client: SlackClient
 ): Promise<unknown> {
   const params: Record<string, string | number | boolean> = {
     title: args.title,
@@ -207,12 +203,12 @@ export async function handleCreateCanvas(
     params.document_content = JSON.stringify(args.document_content);
   }
 
-  const data = await slackApi<CanvasCreateResponse>('canvases.create', token, params);
+  const data = await client.call<CanvasCreateResponse>('canvases.create', params);
 
   // If channel_id provided, set the canvas access for that channel
   if (args.channel_id && data.canvas_id) {
     try {
-      await slackApi<SlackResponse>('canvases.access.set', token, {
+      await client.call<SlackResponse>('canvases.access.set', {
         canvas_id: data.canvas_id,
         channel_ids: JSON.stringify([args.channel_id]),
         access_level: 'write',
@@ -244,7 +240,7 @@ interface ConversationInfoResponse extends SlackResponse {
 
 export async function handleListCanvases(
   args: z.infer<typeof ListCanvasesSchema>,
-  token: string
+  client: SlackClient
 ): Promise<unknown> {
   const canvases: Array<{
     id: string;
@@ -258,7 +254,7 @@ export async function handleListCanvases(
 
   // 1. Check for built-in channel canvas via conversations.info
   try {
-    const convData = await slackApi<ConversationInfoResponse>('conversations.info', token, {
+    const convData = await client.call<ConversationInfoResponse>('conversations.info', {
       channel: args.channel_id,
     });
 
@@ -277,7 +273,7 @@ export async function handleListCanvases(
 
   // 2. Find standalone canvases shared in the channel via files.list
   try {
-    const filesData = await slackApi<FilesListResponse>('files.list', token, {
+    const filesData = await client.call<FilesListResponse>('files.list', {
       channel: args.channel_id,
       types: 'canvas',
       count: args.limit || 20,
@@ -308,9 +304,9 @@ export async function handleListCanvases(
 
 export async function handleDeleteCanvas(
   args: z.infer<typeof DeleteCanvasSchema>,
-  token: string
+  client: SlackClient
 ): Promise<unknown> {
-  await slackApi<SlackResponse>('canvases.delete', token, {
+  await client.call<SlackResponse>('canvases.delete', {
     canvas_id: args.canvas_id,
   });
 
@@ -323,7 +319,7 @@ export async function handleDeleteCanvas(
 
 // ==================== HANDLER BUNDLE ====================
 
-export const canvasDefs = defineHandlers<string>()({
+export const canvasDefs = defineHandlers<SlackClient>()({
   slack_get_canvas: {
     description:
       'Read canvas content from Slack. Uses files.info API to get file metadata and downloads content via url_private_download.',
