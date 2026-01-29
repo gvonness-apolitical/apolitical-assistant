@@ -25,6 +25,7 @@ Use `/[skill-name]` in Claude Code to invoke workflows:
 ### Daily Operations
 | Skill | Purpose |
 |-------|---------|
+| `/begin-day` | Full morning workflow: handoff, orient, todos, email triage, slack read, briefing |
 | `/orient` | Gather context at session start (calendar, emails, Slack, Linear, incidents) |
 | `/morning-briefing` | Generate daily briefing |
 | `/end-of-day` | Generate EOD summary |
