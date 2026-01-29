@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
+import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
 import type { GoogleAuth } from '../auth.js';
 
 // ==================== ZOD SCHEMAS ====================
@@ -39,82 +39,23 @@ export const DocsUpdateSchema = z.object({
 
 // ==================== TOOL DEFINITIONS ====================
 
-export const docsTools: Tool[] = [
-  {
-    name: 'docs_get_content',
-    description: 'Get the content of a Google Doc',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        documentId: {
-          type: 'string',
-          description: 'The Google Doc ID',
-        },
-      },
-      required: ['documentId'],
-    },
-  },
-  {
-    name: 'docs_get_comments',
-    description: 'Get comments and suggestions on a Google Doc (uses Drive API)',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        documentId: {
-          type: 'string',
-          description: 'The Google Doc ID',
-        },
-        includeResolved: {
-          type: 'boolean',
-          default: false,
-          description: 'Include resolved comments',
-        },
-      },
-      required: ['documentId'],
-    },
-  },
-  {
-    name: 'docs_create',
-    description: 'Create a new Google Doc with optional initial markdown content',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        title: {
-          type: 'string',
-          description: 'The title for the new document',
-        },
-        content: {
-          type: 'string',
-          description: 'Initial markdown content (# headings, **bold**, *italic*, lists, tables)',
-        },
-      },
-      required: ['title'],
-    },
-  },
-  {
-    name: 'docs_update',
-    description: 'Update Google Doc content with markdown (replace or append)',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        documentId: {
-          type: 'string',
-          description: 'The Google Doc ID to update',
-        },
-        content: {
-          type: 'string',
-          description:
-            'Markdown content (# headings, **bold**, *italic*, lists, tables, code blocks)',
-        },
-        append: {
-          type: 'boolean',
-          default: false,
-          description: 'If true, append content instead of replacing',
-        },
-      },
-      required: ['documentId', 'content'],
-    },
-  },
+export const docsTools = [
+  createToolDefinition('docs_get_content', 'Get the content of a Google Doc', DocsGetContentSchema),
+  createToolDefinition(
+    'docs_get_comments',
+    'Get comments and suggestions on a Google Doc (uses Drive API)',
+    DocsGetCommentsSchema
+  ),
+  createToolDefinition(
+    'docs_create',
+    'Create a new Google Doc with optional initial markdown content',
+    DocsCreateSchema
+  ),
+  createToolDefinition(
+    'docs_update',
+    'Update Google Doc content with markdown (replace or append)',
+    DocsUpdateSchema
+  ),
 ];
 
 // ==================== MARKDOWN CONVERSION ====================

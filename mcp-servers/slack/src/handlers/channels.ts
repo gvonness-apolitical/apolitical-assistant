@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
+import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
 import {
   slackApi,
   resolveChannelId,
@@ -31,59 +31,22 @@ export const GetChannelInfoSchema = z.object({
 
 // ==================== TOOL DEFINITIONS ====================
 
-export const channelTools: Tool[] = [
-  {
-    name: 'slack_list_channels',
-    description: 'List Slack channels you have access to',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        types: {
-          type: 'string',
-          default: 'public_channel,private_channel',
-          description: 'Comma-separated channel types: public_channel, private_channel, mpim, im',
-        },
-        limit: {
-          type: 'number',
-          default: 100,
-          description: 'Maximum number of channels to return',
-        },
-      },
-    },
-  },
-  {
-    name: 'slack_read_channel',
-    description: 'Read recent messages from a Slack channel',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        channel: {
-          type: 'string',
-          description: 'Channel ID (e.g., C1234567890) or channel name (e.g., #general)',
-        },
-        limit: {
-          type: 'number',
-          default: 20,
-          description: 'Number of messages to retrieve (max 100)',
-        },
-      },
-      required: ['channel'],
-    },
-  },
-  {
-    name: 'slack_get_channel_info',
-    description: 'Get information about a specific channel',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        channel: {
-          type: 'string',
-          description: 'Channel ID (e.g., C1234567890)',
-        },
-      },
-      required: ['channel'],
-    },
-  },
+export const channelTools = [
+  createToolDefinition(
+    'slack_list_channels',
+    'List Slack channels you have access to',
+    ListChannelsSchema
+  ),
+  createToolDefinition(
+    'slack_read_channel',
+    'Read recent messages from a Slack channel',
+    ReadChannelSchema
+  ),
+  createToolDefinition(
+    'slack_get_channel_info',
+    'Get information about a specific channel',
+    GetChannelInfoSchema
+  ),
 ];
 
 // ==================== HANDLERS ====================

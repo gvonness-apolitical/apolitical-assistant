@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
+import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
 import {
   slackApi,
   resolveChannelId,
@@ -36,79 +36,18 @@ export const AddReactionSchema = z.object({
 
 // ==================== TOOL DEFINITIONS ====================
 
-export const messageTools: Tool[] = [
-  {
-    name: 'slack_read_thread',
-    description: 'Read replies in a Slack thread',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        channel: {
-          type: 'string',
-          description: 'Channel ID where the thread is',
-        },
-        threadTs: {
-          type: 'string',
-          description: 'Timestamp of the parent message (thread_ts)',
-        },
-        limit: {
-          type: 'number',
-          default: 50,
-          description: 'Number of replies to retrieve',
-        },
-      },
-      required: ['channel', 'threadTs'],
-    },
-  },
-  {
-    name: 'slack_send_message',
-    description: 'Send a message to a Slack channel. Requires chat:write scope.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        channel: {
-          type: 'string',
-          description: 'Channel ID (e.g., C1234567890) or channel name (e.g., #general)',
-        },
-        text: {
-          type: 'string',
-          description: 'Message text (supports Slack markdown)',
-        },
-        threadTs: {
-          type: 'string',
-          description: 'Thread timestamp to reply to (makes this a threaded reply)',
-        },
-        unfurlLinks: {
-          type: 'boolean',
-          default: true,
-          description: 'Unfurl links in the message',
-        },
-      },
-      required: ['channel', 'text'],
-    },
-  },
-  {
-    name: 'slack_add_reaction',
-    description: 'Add an emoji reaction to a message. Requires reactions:write scope.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        channel: {
-          type: 'string',
-          description: 'Channel ID where the message is',
-        },
-        timestamp: {
-          type: 'string',
-          description: 'Timestamp of the message to react to',
-        },
-        emoji: {
-          type: 'string',
-          description: 'Emoji name without colons (e.g., "thumbsup", "eyes", "white_check_mark")',
-        },
-      },
-      required: ['channel', 'timestamp', 'emoji'],
-    },
-  },
+export const messageTools = [
+  createToolDefinition('slack_read_thread', 'Read replies in a Slack thread', ReadThreadSchema),
+  createToolDefinition(
+    'slack_send_message',
+    'Send a message to a Slack channel. Requires chat:write scope.',
+    SendMessageSchema
+  ),
+  createToolDefinition(
+    'slack_add_reaction',
+    'Add an emoji reaction to a message. Requires reactions:write scope.',
+    AddReactionSchema
+  ),
 ];
 
 // ==================== HANDLERS ====================

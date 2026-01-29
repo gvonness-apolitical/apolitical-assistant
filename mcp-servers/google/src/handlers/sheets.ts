@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
+import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
 import type { GoogleAuth } from '../auth.js';
 
 // ==================== ZOD SCHEMAS ====================
@@ -15,39 +15,17 @@ export const SheetsGetMetadataSchema = z.object({
 
 // ==================== TOOL DEFINITIONS ====================
 
-export const sheetsTools: Tool[] = [
-  {
-    name: 'sheets_get_values',
-    description: 'Get values from a Google Sheet',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        spreadsheetId: {
-          type: 'string',
-          description: 'The Google Sheet ID',
-        },
-        range: {
-          type: 'string',
-          description: 'The A1 notation range (e.g., "Sheet1!A1:D10")',
-        },
-      },
-      required: ['spreadsheetId', 'range'],
-    },
-  },
-  {
-    name: 'sheets_get_metadata',
-    description: 'Get metadata about a Google Sheet (sheets, named ranges, etc.)',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        spreadsheetId: {
-          type: 'string',
-          description: 'The Google Sheet ID',
-        },
-      },
-      required: ['spreadsheetId'],
-    },
-  },
+export const sheetsTools = [
+  createToolDefinition(
+    'sheets_get_values',
+    'Get values from a Google Sheet',
+    SheetsGetValuesSchema
+  ),
+  createToolDefinition(
+    'sheets_get_metadata',
+    'Get metadata about a Google Sheet (sheets, named ranges, etc.)',
+    SheetsGetMetadataSchema
+  ),
 ];
 
 // ==================== HANDLER FUNCTIONS ====================

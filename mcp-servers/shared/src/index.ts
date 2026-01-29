@@ -27,6 +27,9 @@ export { HttpClient, HttpError, createBearerClient } from './http-client.js';
 // Tool router
 export { createToolRouter, type HandlerRegistry } from './tool-router.js';
 
+// Schema utilities
+export { createToolDefinition } from './schema-utils.js';
+
 // Server factory
 export {
   createMcpServer,

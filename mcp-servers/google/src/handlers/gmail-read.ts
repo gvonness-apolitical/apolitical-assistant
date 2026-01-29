@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
+import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
 import type { GoogleAuth } from '../auth.js';
 
 // ==================== ZOD SCHEMAS ====================
@@ -21,63 +21,27 @@ export const GmailGetAttachmentsSchema = z.object({
 
 // ==================== TOOL DEFINITIONS ====================
 
-export const gmailReadTools: Tool[] = [
-  {
-    name: 'gmail_search',
-    description:
-      'Search Gmail messages. Use Gmail search syntax (from:, to:, subject:, is:unread, etc.)',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        query: {
-          type: 'string',
-          description: 'Gmail search query (e.g., "is:unread from:boss@company.com")',
-        },
-        maxResults: {
-          type: 'number',
-          default: 10,
-          description: 'Maximum number of messages to return',
-        },
-      },
-      required: ['query'],
-    },
-  },
-  {
-    name: 'gmail_get_message',
-    description: 'Get the full content of a specific Gmail message by ID',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        messageId: {
-          type: 'string',
-          description: 'The Gmail message ID',
-        },
-      },
-      required: ['messageId'],
-    },
-  },
-  {
-    name: 'gmail_list_labels',
-    description: 'List all Gmail labels (folders)',
-    inputSchema: {
-      type: 'object',
-      properties: {},
-    },
-  },
-  {
-    name: 'gmail_get_attachments',
-    description: 'Get list of attachments for a Gmail message with their metadata',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        messageId: {
-          type: 'string',
-          description: 'The Gmail message ID',
-        },
-      },
-      required: ['messageId'],
-    },
-  },
+export const gmailReadTools = [
+  createToolDefinition(
+    'gmail_search',
+    'Search Gmail messages. Use Gmail search syntax (from:, to:, subject:, is:unread, etc.)',
+    GmailSearchSchema
+  ),
+  createToolDefinition(
+    'gmail_get_message',
+    'Get the full content of a specific Gmail message by ID',
+    GmailGetMessageSchema
+  ),
+  createToolDefinition(
+    'gmail_list_labels',
+    'List all Gmail labels (folders)',
+    GmailListLabelsSchema
+  ),
+  createToolDefinition(
+    'gmail_get_attachments',
+    'Get list of attachments for a Gmail message with their metadata',
+    GmailGetAttachmentsSchema
+  ),
 ];
 
 // ==================== HANDLER FUNCTIONS ====================

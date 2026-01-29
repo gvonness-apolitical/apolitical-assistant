@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
+import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
 import type { GoogleAuth } from '../auth.js';
 import { buildRfc2822Message, encodeForGmail } from '../utils/email-builder.js';
 
@@ -29,86 +29,17 @@ export const GmailCreateDraftSchema = z.object({
 
 // ==================== TOOL DEFINITIONS ====================
 
-export const gmailWriteTools: Tool[] = [
-  {
-    name: 'gmail_send_message',
-    description: 'Send an email message. Requires gmail.send scope.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        to: {
-          type: 'array',
-          items: { type: 'string' },
-          description: 'Array of recipient email addresses',
-        },
-        subject: {
-          type: 'string',
-          description: 'Email subject line',
-        },
-        body: {
-          type: 'string',
-          description: 'Email body (plain text)',
-        },
-        cc: {
-          type: 'array',
-          items: { type: 'string' },
-          description: 'Array of CC email addresses',
-        },
-        bcc: {
-          type: 'array',
-          items: { type: 'string' },
-          description: 'Array of BCC email addresses',
-        },
-        replyToMessageId: {
-          type: 'string',
-          description: 'Message ID to reply to (sets In-Reply-To and References headers)',
-        },
-        threadId: {
-          type: 'string',
-          description: 'Thread ID to add the message to',
-        },
-      },
-      required: ['to', 'subject', 'body'],
-    },
-  },
-  {
-    name: 'gmail_create_draft',
-    description:
-      'Create a draft email (not sent). Useful for composing emails that need review before sending.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        to: {
-          type: 'array',
-          items: { type: 'string' },
-          description: 'Array of recipient email addresses',
-        },
-        subject: {
-          type: 'string',
-          description: 'Email subject line',
-        },
-        body: {
-          type: 'string',
-          description: 'Email body (plain text)',
-        },
-        cc: {
-          type: 'array',
-          items: { type: 'string' },
-          description: 'Array of CC email addresses',
-        },
-        bcc: {
-          type: 'array',
-          items: { type: 'string' },
-          description: 'Array of BCC email addresses',
-        },
-        replyToMessageId: {
-          type: 'string',
-          description: 'Message ID to reply to',
-        },
-      },
-      required: ['to', 'subject', 'body'],
-    },
-  },
+export const gmailWriteTools = [
+  createToolDefinition(
+    'gmail_send_message',
+    'Send an email message. Requires gmail.send scope.',
+    GmailSendMessageSchema
+  ),
+  createToolDefinition(
+    'gmail_create_draft',
+    'Create a draft email (not sent). Useful for composing emails that need review before sending.',
+    GmailCreateDraftSchema
+  ),
 ];
 
 // ==================== HANDLER FUNCTIONS ====================

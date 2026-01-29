@@ -22,7 +22,7 @@
  */
 
 import { z } from 'zod';
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
+import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
 import { slackApi, type SlackResponse } from './api.js';
 
 // ==================== SCHEMAS ====================
@@ -115,125 +115,32 @@ interface FilesListResponse extends SlackResponse {
 
 // ==================== TOOL DEFINITIONS ====================
 
-export const canvasTools: Tool[] = [
-  {
-    name: 'slack_get_canvas',
-    description:
-      'Read canvas content from Slack. Uses files.info API to get file metadata and downloads content via url_private_download.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        canvas_id: {
-          type: 'string',
-          description: 'The canvas ID (e.g., F0123456789)',
-        },
-      },
-      required: ['canvas_id'],
-    },
-  },
-  {
-    name: 'slack_update_canvas',
-    description:
-      'Update canvas content. Supports inserting at start/end, replacing sections, or deleting sections.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        canvas_id: {
-          type: 'string',
-          description: 'The canvas ID to update',
-        },
-        changes: {
-          type: 'array',
-          items: {
-            type: 'object',
-            properties: {
-              operation: {
-                type: 'string',
-                enum: ['insert_at_start', 'insert_at_end', 'replace', 'delete'],
-                description: 'The operation to perform',
-              },
-              section_id: {
-                type: 'string',
-                description: 'Section ID for replace/delete operations',
-              },
-              document_content: {
-                type: 'object',
-                properties: {
-                  type: { type: 'string', enum: ['markdown'] },
-                  markdown: { type: 'string', description: 'Markdown content' },
-                },
-                description: 'Content for insert/replace operations',
-              },
-            },
-            required: ['operation'],
-          },
-          description: 'Array of changes to apply',
-        },
-      },
-      required: ['canvas_id', 'changes'],
-    },
-  },
-  {
-    name: 'slack_create_canvas',
-    description: 'Create a new canvas, optionally attached to a channel or DM.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        title: {
-          type: 'string',
-          description: 'Title of the canvas',
-        },
-        document_content: {
-          type: 'object',
-          properties: {
-            type: { type: 'string', enum: ['markdown'] },
-            markdown: { type: 'string', description: 'Initial markdown content' },
-          },
-          description: 'Initial content for the canvas',
-        },
-        channel_id: {
-          type: 'string',
-          description: 'Channel or DM ID to attach the canvas to',
-        },
-      },
-      required: ['title'],
-    },
-  },
-  {
-    name: 'slack_list_canvases',
-    description:
-      'List all canvases in a channel or DM. Returns both the built-in channel canvas (if any) and standalone canvases shared in the channel.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        channel_id: {
-          type: 'string',
-          description: 'Channel or DM ID to list canvases from',
-        },
-        limit: {
-          type: 'number',
-          default: 20,
-          description: 'Maximum number of canvases to return',
-        },
-      },
-      required: ['channel_id'],
-    },
-  },
-  {
-    name: 'slack_delete_canvas',
-    description:
-      'Delete a canvas. Use with caution - this permanently removes the canvas and its content.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        canvas_id: {
-          type: 'string',
-          description: 'The canvas ID to delete (e.g., F0123456789)',
-        },
-      },
-      required: ['canvas_id'],
-    },
-  },
+export const canvasTools = [
+  createToolDefinition(
+    'slack_get_canvas',
+    'Read canvas content from Slack. Uses files.info API to get file metadata and downloads content via url_private_download.',
+    GetCanvasSchema
+  ),
+  createToolDefinition(
+    'slack_update_canvas',
+    'Update canvas content. Supports inserting at start/end, replacing sections, or deleting sections.',
+    UpdateCanvasSchema
+  ),
+  createToolDefinition(
+    'slack_create_canvas',
+    'Create a new canvas, optionally attached to a channel or DM.',
+    CreateCanvasSchema
+  ),
+  createToolDefinition(
+    'slack_list_canvases',
+    'List all canvases in a channel or DM. Returns both the built-in channel canvas (if any) and standalone canvases shared in the channel.',
+    ListCanvasesSchema
+  ),
+  createToolDefinition(
+    'slack_delete_canvas',
+    'Delete a canvas. Use with caution - this permanently removes the canvas and its content.',
+    DeleteCanvasSchema
+  ),
 ];
 
 // ==================== HANDLERS ====================

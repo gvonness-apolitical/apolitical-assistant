@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
+import { createToolDefinition } from '@apolitical-assistant/mcp-shared';
 import type { GoogleAuth } from '../auth.js';
 
 // ==================== ZOD SCHEMAS ====================
@@ -19,44 +19,9 @@ export const DriveGetFileSchema = z.object({
 
 // ==================== TOOL DEFINITIONS ====================
 
-export const driveTools: Tool[] = [
-  {
-    name: 'drive_search',
-    description: 'Search for files in Google Drive',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        query: {
-          type: 'string',
-          description: 'Search query (file name or content keywords)',
-        },
-        mimeType: {
-          type: 'string',
-          description: 'Filter by MIME type (e.g., "application/vnd.google-apps.document")',
-        },
-        maxResults: {
-          type: 'number',
-          default: 10,
-          description: 'Maximum number of files to return',
-        },
-      },
-      required: ['query'],
-    },
-  },
-  {
-    name: 'drive_get_file',
-    description: 'Get metadata about a specific file',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        fileId: {
-          type: 'string',
-          description: 'The Drive file ID',
-        },
-      },
-      required: ['fileId'],
-    },
-  },
+export const driveTools = [
+  createToolDefinition('drive_search', 'Search for files in Google Drive', DriveSearchSchema),
+  createToolDefinition('drive_get_file', 'Get metadata about a specific file', DriveGetFileSchema),
 ];
 
 // ==================== HANDLER FUNCTIONS ====================

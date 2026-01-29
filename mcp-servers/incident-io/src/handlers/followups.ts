@@ -1,6 +1,5 @@
 import { z } from 'zod';
-import type { Tool } from '@modelcontextprotocol/sdk/types.js';
-import type { HttpClient } from '@apolitical-assistant/mcp-shared';
+import { createToolDefinition, type HttpClient } from '@apolitical-assistant/mcp-shared';
 import type { FollowUp } from './types.js';
 
 // ==================== SCHEMAS ====================
@@ -24,57 +23,17 @@ export const CreateFollowupSchema = z.object({
 
 // ==================== TOOL DEFINITIONS ====================
 
-export const followupTools: Tool[] = [
-  {
-    name: 'incidentio_list_followups',
-    description:
-      'List follow-up actions from incidents. Useful for tracking outstanding action items that need completion.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        incidentId: {
-          type: 'string',
-          description: 'Filter by specific incident',
-        },
-        status: {
-          type: 'string',
-          enum: ['outstanding', 'completed', 'all'],
-          default: 'outstanding',
-          description: 'Follow-up status filter',
-        },
-        assigneeId: {
-          type: 'string',
-          description: 'Filter by assignee user ID',
-        },
-      },
-    },
-  },
-  {
-    name: 'incidentio_create_followup',
-    description: 'Create a follow-up action item for an incident.',
-    inputSchema: {
-      type: 'object',
-      properties: {
-        incidentId: {
-          type: 'string',
-          description: 'The incident ID to create follow-up for',
-        },
-        title: {
-          type: 'string',
-          description: 'Follow-up title',
-        },
-        description: {
-          type: 'string',
-          description: 'Follow-up description',
-        },
-        assigneeId: {
-          type: 'string',
-          description: 'User ID to assign the follow-up to',
-        },
-      },
-      required: ['incidentId', 'title'],
-    },
-  },
+export const followupTools = [
+  createToolDefinition(
+    'incidentio_list_followups',
+    'List follow-up actions from incidents. Useful for tracking outstanding action items that need completion.',
+    ListFollowupsSchema
+  ),
+  createToolDefinition(
+    'incidentio_create_followup',
+    'Create a follow-up action item for an incident.',
+    CreateFollowupSchema
+  ),
 ];
 
 // ==================== HANDLERS ====================
