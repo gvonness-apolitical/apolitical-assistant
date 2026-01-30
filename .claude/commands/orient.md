@@ -61,6 +61,12 @@ People cache is 12 days old. Consider running `/sync-people --refresh` to update
 - Recent rubberduck sessions (last 7 days)
 - Open decisions or threads from previous sessions
 
+### Design Context
+- Recent Figma activity from `.claude/figma-sources.json`
+  - Files shared in last 7 days
+  - Files shared in engineering/product channels
+- Note any design work relevant to current priorities
+
 ## Output
 
 ### Session Context File

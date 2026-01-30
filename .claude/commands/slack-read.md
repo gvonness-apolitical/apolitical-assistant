@@ -377,6 +377,82 @@ After generating the summary, update `context/YYYY-MM-DD/index.md`:
 
 Create the index file from template (`.claude/templates/context-index.md`) if it doesn't exist. Append a new Slack summary section (timestamped) if running multiple times per day.
 
+## Figma Link Extraction
+
+While processing messages, extract and persist any Figma links to `.claude/figma-sources.json`.
+
+### Detection Pattern
+
+Match URLs containing:
+- `figma.com/design/[fileKey]/...`
+- `figma.com/board/[fileKey]/...`
+- `figma.com/file/[fileKey]/...`
+- `figma.com/make/[fileKey]/...`
+
+### Extraction
+
+For each Figma URL found:
+
+1. **Parse URL components**:
+   - `fileKey`: The unique file identifier (e.g., `rj0xT7eM2bqWK5JT1kX6Ii`)
+   - `type`: `design`, `board`, `file`, or `make`
+   - `name`: URL-decoded file name from path
+   - `nodeId`: From `?node-id=X-Y` parameter if present
+
+2. **Capture context**:
+   - `owner`: Message author (displayName, email if in people.json, slackUserId)
+   - `sharedIn`: Channel name or DM identifier
+   - `lastShared`: Message timestamp (YYYY-MM-DD)
+   - `description`: Surrounding message text (first 200 chars)
+
+3. **Cross-reference people.json**:
+   - Look up message author's slackUserId in `indices.bySlackUserId`
+   - If found, use their email as the owner email
+   - If not found, add to `discoveredPeople` section
+
+### Update figma-sources.json
+
+1. **Load existing file**: Read `.claude/figma-sources.json`
+2. **Check if exists**: Look for fileKey in `files` object
+3. **If new entry**:
+   - Add to `files` with full metadata
+   - Add to `indices.byCategory` (infer from channel: engineering channels → "engineering", etc.)
+   - Add to `indices.byOwnerSlackId`
+4. **If existing entry**:
+   - Update `lastShared` if more recent
+   - Add channel to `sharedIn` if not already present
+   - Update description if new context is more informative
+5. **Update metadata**:
+   - Set `lastUpdated` to current timestamp
+6. **Write file**: Save updated JSON
+
+### Category Inference
+
+Infer category from channel name patterns:
+- `*engineering*`, `*platform*`, `*data*`, `*infrastructure*` → `engineering`
+- `*product*`, `*roadmap*`, `*feature*` → `product`
+- `*design*`, `*ux*`, `*ui*` → `design`
+- `*marketing*`, `*comms*`, `*brand*` → `marketing`
+- `*partnerships*`, `*sales*`, `*customer*` → `partnerships`
+- `*incident*`, `*bug*`, `*support*` → `operations`
+- Default → `general`
+
+### Output
+
+Include in summary:
+
+```markdown
+## Figma Links Found (3 new, 2 updated)
+
+| File | Type | Shared By | Channel |
+|------|------|-----------|---------|
+| [Futura user flow](url) | board | Lowell | #product |
+| [ARC Assessment](url) | design | Tri | #partnerships-google |
+| [Homepage Feed](url) | design | Tanya | #partnerships |
+
+Updated in `.claude/figma-sources.json`
+```
+
 ## Notes
 
 - DMs are always highest priority - don't miss personal messages
@@ -386,3 +462,4 @@ Create the index file from template (`.claude/templates/context-index.md`) if it
 - Summary file persists for reference at `context/YYYY-MM-DD/slack-HHMM.md`
 - Run regularly to stay on top of Slack (e.g., start of day, after meetings)
 - Daily context index accumulates Slack summaries throughout the day
+- **Figma links are automatically extracted and persisted to figma-sources.json**

@@ -274,6 +274,56 @@ Save to `meetings/output/[meeting-type]/YYYY-MM-DD-[attendee-or-title]-prep.md`
 
 Meeting types: `one-on-ones/`, `squad/`, `planning/`, `external/`, `general/`
 
+## Figma Link Extraction
+
+While reading channel content and canvases, extract and persist any Figma links to `.claude/figma-sources.json`.
+
+### When to Extract
+
+- Reading channel messages for meeting context
+- Reading canvas content
+- Processing DM history with attendees
+
+### Extraction Process
+
+Same as `/slack-read`:
+
+1. **Detect Figma URLs** in message/canvas content:
+   - `figma.com/design/[fileKey]/...`
+   - `figma.com/board/[fileKey]/...`
+   - `figma.com/file/[fileKey]/...`
+
+2. **Parse and capture**:
+   - fileKey, type, name, nodeId
+   - Owner (message author)
+   - Channel/canvas source
+   - Date shared
+
+3. **Update figma-sources.json**:
+   - Add new entries or update existing
+   - Cross-reference with people.json for owner email
+   - Infer category from channel context
+
+### Meeting Context
+
+For meeting-related Figma files:
+- Tag with meeting name in description
+- Note if file is actively discussed (multiple shares)
+- Include in meeting prep output under "Related Resources"
+
+### Output
+
+Include in meeting prep:
+
+```markdown
+## Related Figma Files
+
+| File | Last Shared | By |
+|------|-------------|-----|
+| [Design spec](url) | 2026-01-28 | Tri |
+| [User flow](url) | 2026-01-25 | Lowell |
+```
+
 ## Notes
 
 - For 1:1s, also check Humaans for any time off or role changes
@@ -283,6 +333,7 @@ Meeting types: `one-on-ones/`, `squad/`, `planning/`, `external/`, `general/`
 - Always update `lastPrepDate` after successful prep
 - Canvas updates require confirmation before writing
 - Linear ticket links are automatically added to canvas action items
+- **Figma links are automatically extracted and persisted to figma-sources.json**
 
 ## Configuration File
 

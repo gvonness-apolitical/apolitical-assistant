@@ -29,6 +29,9 @@ Before gathering fresh data, check for existing context:
 4. **Linear**: Tickets assigned to me, blocked items, upcoming due dates
 5. **Incidents**: Any active incidents from incident.io
 6. **Team**: Who's out today (check Humaans time off)
+7. **Figma**: Recent design activity (last 24-48 hours)
+   - Check `.claude/figma-sources.json` for recently shared files
+   - Note files shared in engineering/product channels
 
 ## Output Structure
 
@@ -52,6 +55,7 @@ Important but not urgent:
 - Active incidents
 - Ongoing threads to watch
 - Team availability notes
+- Recent design shares (Figma files shared in last 24h)
 
 Save to `briefings/YYYY-MM-DD.md`
 

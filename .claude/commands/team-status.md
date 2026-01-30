@@ -64,6 +64,11 @@ Use local context to supplement API calls and provide historical context.
    - **PRDs**: Active product specs for the team's initiatives
    - **RFCs**: Technical decisions affecting the team (Accepted or In Review)
 
+7. **Figma** (load from `.claude/figma-sources.json`):
+   - Recent design files shared in team channels
+   - Active design work by category matching team (e.g., "engineering" for Platform)
+   - Files owned by team members (cross-reference with people.json)
+
 ## Output Structure
 
 ### [Team Name] Status - [Date]
@@ -89,6 +94,10 @@ Use local context to supplement API calls and provide historical context.
 
 ### Recent Completions
 Tickets and PRs completed this week
+
+### Active Design Work
+Recent Figma files shared by or relevant to the team:
+| File | Owner | Last Shared | Category |
 
 ### Health Indicators
 - Cycle time trend

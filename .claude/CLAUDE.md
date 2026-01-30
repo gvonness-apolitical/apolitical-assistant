@@ -51,6 +51,13 @@ You have access to the following integrations through MCP servers:
 - Create and track follow-up actions
 - Access postmortems
 
+### Figma
+- Get screenshots of design nodes
+- Get design context and generate UI code
+- Get file/node metadata
+- Get variable definitions
+- Access FigJam boards
+
 ## Available Skills
 
 Use `/[skill-name]` to invoke these workflows:
@@ -65,6 +72,7 @@ Use `/[skill-name]` to invoke these workflows:
 - `/slack-read` - Process all unread Slack messages, summarize activity, create tasks for requests
 - `/update-todos` - Scan canvases, Slack, email, Notion, and Google Docs for action items assigned to you
 - `/sync-people` - Refresh person identifier cache from Humaans and Slack
+- `/sync-figma` - Verify and maintain Figma sources cache (discover new links, cleanup stale entries)
 
 ### Meetings
 - `/prep-meeting [meeting]` - Prepare for an upcoming meeting (integrates with mapped Slack channels/canvases)
@@ -484,6 +492,56 @@ When searching these sources, use these patterns:
 **For RFCs**: "RFC", "proposal", "architecture", "design", "technical decision"
 **For PRDs**: "PRD", "product spec", "feature", "initiative", "requirements"
 **For Roadmap**: "roadmap", "priorities", "upcoming", "planned", "Q1", "Q2", etc.
+
+## Figma Sources System
+
+The Figma sources system (`.claude/figma-sources.json`) tracks Figma files shared across the organization.
+
+### Data File
+
+`.claude/figma-sources.json` contains:
+- **files**: Keyed by Figma fileKey, includes metadata (name, type, url, owner, category, etc.)
+- **indices**: Quick lookups by category and owner Slack ID
+- **discoveredPeople**: Slack users who share Figma files but aren't in people.json
+- **archivedFiles**: Previously tracked files that are stale or inaccessible
+
+### Automatic Capture
+
+Figma links are automatically extracted and added to the cache by:
+- `/slack-read` - When processing messages containing Figma URLs
+- `/prep-meeting` - When reading channel content for meeting prep
+
+### URL Patterns
+
+Recognized Figma URL formats:
+- `figma.com/design/[fileKey]/[name]` - Design files
+- `figma.com/board/[fileKey]/[name]` - FigJam boards
+- `figma.com/file/[fileKey]/[name]` - Legacy format
+- `figma.com/make/[fileKey]/[name]` - Slide decks
+
+### Category Inference
+
+Categories are inferred from the Slack channel where the file was shared:
+- `*engineering*`, `*platform*`, `*data*` → `engineering`
+- `*product*`, `*roadmap*` → `product`
+- `*design*`, `*ux*` → `design`
+- `*marketing*`, `*comms*` → `marketing`
+- `*partnerships*`, `*sales*` → `partnerships`
+- `*incident*`, `*bug*` → `operations`
+
+### Cache Maintenance
+
+Run `/sync-figma` periodically to:
+- **Verify** existing entries are still accessible via Figma API
+- **Discover** new Figma links shared in Slack
+- **Cleanup** stale entries (not shared in 90+ days)
+
+### Using the Cache
+
+When you need Figma context:
+1. Load `.claude/figma-sources.json`
+2. Look up by category (`indices.byCategory`) or owner (`indices.byOwnerSlackId`)
+3. Use file URLs to fetch screenshots or metadata via Figma MCP tools
 
 ## Project Context
 
