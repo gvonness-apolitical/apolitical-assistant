@@ -1,19 +1,269 @@
 {
   "version": 1,
-  "lastUpdated": null,
+  "lastUpdated": "2026-01-30T19:10:00Z",
   "description": "Cached Linear structure to reduce API calls. Run /sync-linear to populate.",
-  "teams": {},
-  "projects": {},
+  "teams": {
+    "c96481ee-5e8b-4622-961a-b3502a1e8644": {
+      "name": "Platform",
+      "key": "PLT",
+      "icon": ":whale2:"
+    },
+    "e3a47de3-09a2-4306-b13f-f133c308aaab": {
+      "name": "AI Tools",
+      "key": "AIT",
+      "icon": ":robot_face:"
+    },
+    "af99ba78-20d8-4e31-93b9-f73dceac6aa3": {
+      "name": "Enterprise",
+      "key": "ENT",
+      "icon": ":briefcase:"
+    },
+    "be1c5e07-95c0-4012-9d5b-228a156f5de1": {
+      "name": "Apolitical",
+      "key": "APO",
+      "icon": ":classical_building:"
+    },
+    "d065a65a-73cc-4043-a45f-a82f02471c5f": {
+      "name": "AI Learning",
+      "key": "AIL",
+      "icon": ":mortar_board:"
+    },
+    "31a0e6e6-b43e-4549-94a6-0ab61b8edf27": {
+      "name": "Data",
+      "key": "DAT",
+      "icon": ":chart_with_upwards_trend:"
+    }
+  },
+  "projects": {
+    "33f9f6c9-8691-44c2-863c-385c89fa07fd": {
+      "name": "Quick Wins: Discussions",
+      "status": "Planned"
+    },
+    "c64d3917-74cf-4fbf-8063-04a18c8f4389": {
+      "name": "2. Ethiopia Prep",
+      "status": "Planned"
+    },
+    "033f037d-ada6-4fc0-8546-c4b2f7680655": {
+      "name": "Emails Workflows (Academies)",
+      "status": "Completed"
+    },
+    "5d6f9f02-ff3f-48ff-b1dc-907cc51f79fa": {
+      "name": "Text to speech on lessons",
+      "status": "In Progress"
+    },
+    "bd25df37-aed1-4299-92a4-1b1abcc9c525": {
+      "name": "Contextualising ai feedback Scenarios w/ Futura Data",
+      "status": "In Progress"
+    },
+    "e7fe5a54-67f8-42f9-b849-c098aac3d21b": {
+      "name": "Bughunt",
+      "status": "In Progress"
+    },
+    "0200c6dc-a922-4097-838b-c8effa13375a": {
+      "name": "1. Cohorts Removal Functionality",
+      "status": "In Progress"
+    },
+    "ed73b641-b2a8-4807-9032-dec7c1b714e0": {
+      "name": "OpenFGA on Communities",
+      "status": "Completed"
+    },
+    "b733ae6a-2a3e-4e1e-8de9-0f2d342a09e8": {
+      "name": "Access Expiration",
+      "status": "Completed"
+    },
+    "ae52d2b3-92b3-41b5-931c-1a11e8aad837": {
+      "name": "Quick Wins: Academies",
+      "status": "In Progress"
+    },
+    "a5a1db01-7001-4c89-8882-793bcbc45778": {
+      "name": "Quick Wins: Cohorting",
+      "status": "In Progress"
+    },
+    "79ba4877-6a36-4a10-ae78-98405fb69274": {
+      "name": "Partner scaling (Rwanda etc)",
+      "status": "In Progress"
+    },
+    "c00b2019-7fe9-44b0-a173-3db7e6321e1c": {
+      "name": "UI Migration",
+      "status": "In Progress"
+    },
+    "44a8a341-19e4-46ba-a9a3-d5df03630288": {
+      "name": "Building out deep-research agents within the PIM",
+      "status": "In Progress"
+    }
+  },
   "cycles": {
-    "current": null,
+    "current": {
+      "c96481ee-5e8b-4622-961a-b3502a1e8644": {
+        "id": "5ead8bda-e20d-4a38-b646-cde347a9ed79",
+        "title": "Platform 7",
+        "number": 7,
+        "startsAt": "2026-01-19",
+        "endsAt": "2026-02-02",
+        "progress": {
+          "completed": 12,
+          "total": 44
+        }
+      },
+      "e3a47de3-09a2-4306-b13f-f133c308aaab": {
+        "id": "277f89bd-f53a-4bd0-9758-ea063ffbe1ec",
+        "title": "AI 6",
+        "number": 6,
+        "startsAt": "2026-01-19",
+        "endsAt": "2026-02-02",
+        "progress": {
+          "completed": 23,
+          "total": 37
+        }
+      },
+      "af99ba78-20d8-4e31-93b9-f73dceac6aa3": {
+        "id": "7402fad8-a24d-4127-ba79-d265e3397c4d",
+        "number": 5,
+        "startsAt": "2026-01-19",
+        "endsAt": "2026-02-02",
+        "progress": {
+          "completed": 15,
+          "total": 24
+        }
+      },
+      "d065a65a-73cc-4043-a45f-a82f02471c5f": {
+        "id": "3dfb0fd4-34f6-4ae0-960a-4b3c6d24e13f",
+        "number": 6,
+        "startsAt": "2026-01-19",
+        "endsAt": "2026-02-02",
+        "progress": {
+          "completed": 26,
+          "total": 49
+        }
+      },
+      "31a0e6e6-b43e-4549-94a6-0ab61b8edf27": {
+        "id": "54be308e-991a-4304-b9e5-b8e69d3d7f65",
+        "title": "Data 6",
+        "number": 6,
+        "startsAt": "2026-01-19",
+        "endsAt": "2026-02-02",
+        "progress": {
+          "completed": 1,
+          "total": 11
+        }
+      }
+    },
     "upcoming": []
   },
-  "statuses": {},
-  "labels": {},
+  "statuses": {
+    "c96481ee-5e8b-4622-961a-b3502a1e8644": [
+      { "id": "e898f493-0d60-442e-a7fa-76db35340601", "name": "Triage", "type": "triage" },
+      { "id": "19f275de-d2a7-45b7-bde0-a246a6dcdbf6", "name": "Backlog", "type": "backlog" },
+      { "id": "4a424a19-1788-4537-85ed-2635df0ad319", "name": "Ready", "type": "unstarted" },
+      { "id": "028e3c37-fc71-495b-a9cf-3980ca2bddf3", "name": "In Progress", "type": "started" },
+      { "id": "b9222e8f-3193-4bf4-8169-32dd0f5d3d69", "name": "In Review", "type": "started" },
+      { "id": "9a94e43c-edae-451c-8161-1c56abab0a86", "name": "Done", "type": "completed" },
+      { "id": "e306b8a8-2afc-4fdb-8e0e-e908a8dd47b6", "name": "Canceled", "type": "canceled" }
+    ],
+    "e3a47de3-09a2-4306-b13f-f133c308aaab": [
+      { "id": "cdd6ff6f-e2e2-4e3a-be9e-00df72bb9f86", "name": "Triage", "type": "triage" },
+      { "id": "dcccc65e-55fb-447f-a244-fe545675e9f6", "name": "Backlog", "type": "backlog" },
+      { "id": "fd67d1eb-3b32-46bd-a266-b7af4ded56ea", "name": "Ready", "type": "unstarted" },
+      { "id": "81260e2f-8bd0-4033-9eb1-10f60387895f", "name": "In Progress", "type": "started" },
+      { "id": "8cbef2a6-7787-4767-8a59-b2351c3fd8c2", "name": "In Review", "type": "started" },
+      { "id": "cb2a23c8-39dc-4347-8774-1472b7bf615b", "name": "Done", "type": "completed" },
+      { "id": "fcea0fb0-4cab-4d79-bb63-eee6388415d7", "name": "Canceled", "type": "canceled" }
+    ],
+    "af99ba78-20d8-4e31-93b9-f73dceac6aa3": [
+      { "id": "29877ef1-92ea-4036-b1d2-434ad1f241e5", "name": "Triage", "type": "triage" },
+      { "id": "68d59d19-9e2f-4af9-a07b-fc4e52f0c2b0", "name": "Backlog", "type": "backlog" },
+      { "id": "8ca23fce-0a10-4721-af4d-dd15587c537b", "name": "Ready", "type": "unstarted" },
+      { "id": "edca520e-e1b1-495c-908c-c3ef6ef991e4", "name": "In Progress", "type": "started" },
+      { "id": "57ea7893-3013-4dc1-ae1e-d49f6c32a882", "name": "In Review", "type": "started" },
+      { "id": "97c4fc77-c2c1-42f4-ab60-ee6e253ee71e", "name": "Done", "type": "completed" },
+      { "id": "3f74a481-0d54-483a-ac3f-d839db7f7dad", "name": "Canceled", "type": "canceled" }
+    ],
+    "d065a65a-73cc-4043-a45f-a82f02471c5f": [
+      { "id": "f7c4d45b-25d8-421b-be0c-41f6f34754ab", "name": "Triage", "type": "triage" },
+      { "id": "c54ed04f-c446-46c1-b7bc-58e2e652e0c1", "name": "Backlog", "type": "backlog" },
+      { "id": "c1a1bcb7-5b2a-4a17-be39-00cd10829b0e", "name": "Ready", "type": "unstarted" },
+      { "id": "af02d614-9e59-4e1d-a58b-c5fc68f5ca70", "name": "In Progress", "type": "started" },
+      { "id": "7be6ec18-d86e-4d77-b2ec-b70d0e34f250", "name": "In Review", "type": "started" },
+      { "id": "72ada8a7-d9a8-4b59-850e-b21d026bf08a", "name": "Done", "type": "completed" },
+      { "id": "908f949d-9164-4f05-a474-1df0ff8a08a3", "name": "Canceled", "type": "canceled" }
+    ],
+    "31a0e6e6-b43e-4549-94a6-0ab61b8edf27": [
+      { "id": "fcd33dbf-dbd5-4979-9c2d-7145c456c15e", "name": "Triage", "type": "triage" },
+      { "id": "6079d44d-c949-4257-944f-e39cc2b39ca5", "name": "Backlog", "type": "backlog" },
+      { "id": "7787a57a-70ee-4d73-bbba-10613bfa2cdb", "name": "Ready", "type": "unstarted" },
+      { "id": "248acc7b-fc4a-412a-b839-e8747cc3e98f", "name": "In Progress", "type": "started" },
+      { "id": "b7796a3a-c794-4fe8-b06c-930aa26b1257", "name": "In Review", "type": "started" },
+      { "id": "d437afbe-20e6-4cc2-94a6-236ec8982645", "name": "Done", "type": "completed" },
+      { "id": "1576583b-a161-4142-9ea9-ba2e4b82b143", "name": "Canceled", "type": "canceled" }
+    ],
+    "be1c5e07-95c0-4012-9d5b-228a156f5de1": [
+      { "id": "a779ae90-5584-448b-833a-03b0b8c486d1", "name": "Triage", "type": "triage" },
+      { "id": "c0ec7644-6a6a-4083-b0b9-b0d48a9e0de9", "name": "Backlog", "type": "backlog" },
+      { "id": "5bf98a8c-a02b-4308-bcc0-630d8cc5c13b", "name": "Ready", "type": "unstarted" },
+      { "id": "5417ad28-8c21-4428-b018-205e684b0d47", "name": "In Progress", "type": "started" },
+      { "id": "4fce7d36-0397-47c4-8abf-05991f70f85d", "name": "In Review", "type": "started" },
+      { "id": "d360e896-a973-464c-9ac9-6995a28fe9c6", "name": "Done", "type": "completed" },
+      { "id": "78668edd-02e2-4eee-8d83-e74eeb49e4a5", "name": "Canceled", "type": "canceled" }
+    ]
+  },
+  "labels": {
+    "25de1f1f-e394-49a0-a6a5-8f8677eefb68": { "name": "type: bug", "color": "#ee0701" },
+    "5f35c6a0-99f1-4aef-966e-24edb8bfbb62": { "name": "type: spike", "color": "#7f8c8d" },
+    "a0ee102c-0e1d-4cd9-818e-99832594dff4": { "name": "type: enhancement", "color": "#428bca" },
+    "e709e517-ab65-42c7-b6a2-f15e85b3df36": { "name": "type: maintenance", "color": "#ed9121" },
+    "704e19ac-bf93-4a71-83f8-e8e2c76c9cfa": { "name": "squads: platform", "color": "#1D76DB" },
+    "380e4a2b-8212-4f9a-b8cf-a1e079498031": { "name": "squads: ai", "color": "#dddd37" },
+    "0dc75727-1865-4a39-be06-0577fbcc18c2": { "name": "squad: enterprise", "color": "#4e1893" },
+    "347efc23-924c-46ea-b291-bb3c4fcffce3": { "name": "squads: learning", "color": "#38d028" },
+    "dfb08512-f7e6-4deb-82cf-e8133c23bd31": { "name": "bug severity: 1", "color": "#cc0a00" },
+    "4a2ee7f6-33cd-4210-b674-aece47a055c6": { "name": "bug severity: 2", "color": "#fc0c00" },
+    "a25fb554-21d1-454f-a379-173495e96726": { "name": "bug severity: 3", "color": "#ff392e" },
+    "fe24e780-4473-4a07-b3c1-9d45f82260e0": { "name": "bug severity: 4", "color": "#ff675f" }
+  },
   "indices": {
-    "teamByKey": {},
-    "teamByName": {},
-    "projectByName": {},
-    "labelByName": {}
+    "teamByKey": {
+      "PLT": "c96481ee-5e8b-4622-961a-b3502a1e8644",
+      "AIT": "e3a47de3-09a2-4306-b13f-f133c308aaab",
+      "ENT": "af99ba78-20d8-4e31-93b9-f73dceac6aa3",
+      "APO": "be1c5e07-95c0-4012-9d5b-228a156f5de1",
+      "AIL": "d065a65a-73cc-4043-a45f-a82f02471c5f",
+      "DAT": "31a0e6e6-b43e-4549-94a6-0ab61b8edf27"
+    },
+    "teamByName": {
+      "platform": "c96481ee-5e8b-4622-961a-b3502a1e8644",
+      "ai tools": "e3a47de3-09a2-4306-b13f-f133c308aaab",
+      "enterprise": "af99ba78-20d8-4e31-93b9-f73dceac6aa3",
+      "apolitical": "be1c5e07-95c0-4012-9d5b-228a156f5de1",
+      "ai learning": "d065a65a-73cc-4043-a45f-a82f02471c5f",
+      "data": "31a0e6e6-b43e-4549-94a6-0ab61b8edf27"
+    },
+    "projectByName": {
+      "quick wins: discussions": "33f9f6c9-8691-44c2-863c-385c89fa07fd",
+      "ethiopia prep": "c64d3917-74cf-4fbf-8063-04a18c8f4389",
+      "emails workflows": "033f037d-ada6-4fc0-8546-c4b2f7680655",
+      "text to speech": "5d6f9f02-ff3f-48ff-b1dc-907cc51f79fa",
+      "bughunt": "e7fe5a54-67f8-42f9-b849-c098aac3d21b",
+      "cohorts removal": "0200c6dc-a922-4097-838b-c8effa13375a",
+      "openfga communities": "ed73b641-b2a8-4807-9032-dec7c1b714e0",
+      "access expiration": "b733ae6a-2a3e-4e1e-8de9-0f2d342a09e8",
+      "quick wins: academies": "ae52d2b3-92b3-41b5-931c-1a11e8aad837",
+      "quick wins: cohorting": "a5a1db01-7001-4c89-8882-793bcbc45778",
+      "partner scaling": "79ba4877-6a36-4a10-ae78-98405fb69274",
+      "ui migration": "c00b2019-7fe9-44b0-a173-3db7e6321e1c"
+    },
+    "labelByName": {
+      "type: bug": "25de1f1f-e394-49a0-a6a5-8f8677eefb68",
+      "type: spike": "5f35c6a0-99f1-4aef-966e-24edb8bfbb62",
+      "type: enhancement": "a0ee102c-0e1d-4cd9-818e-99832594dff4",
+      "type: maintenance": "e709e517-ab65-42c7-b6a2-f15e85b3df36",
+      "squads: platform": "704e19ac-bf93-4a71-83f8-e8e2c76c9cfa",
+      "squads: ai": "380e4a2b-8212-4f9a-b8cf-a1e079498031",
+      "squad: enterprise": "0dc75727-1865-4a39-be06-0577fbcc18c2",
+      "squads: learning": "347efc23-924c-46ea-b291-bb3c4fcffce3",
+      "bug severity: 1": "dfb08512-f7e6-4deb-82cf-e8133c23bd31",
+      "bug severity: 2": "4a2ee7f6-33cd-4210-b674-aece47a055c6",
+      "bug severity: 3": "a25fb554-21d1-454f-a379-173495e96726",
+      "bug severity: 4": "fe24e780-4473-4a07-b3c1-9d45f82260e0"
+    }
   }
 }
