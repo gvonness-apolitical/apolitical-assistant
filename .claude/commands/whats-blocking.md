@@ -3,8 +3,16 @@
 Quick check on what's blocking a person or project.
 
 ## Usage
+
 - `/whats-blocking [person]` - what's blocking this person
 - `/whats-blocking [project/squad]` - what's blocking this team/project
+
+## Core Patterns Used
+
+- [Person Resolution](../patterns/person-resolution.md) - Resolve person to identifiers
+- [Local Context First](../patterns/local-context-first.md) - Check caches before API calls
+- [Progressive Discovery](../patterns/progressive-discovery.md) - Cache discovered GitHub/Linear IDs
+- [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
 
 ## Person Resolution
 

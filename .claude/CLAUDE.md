@@ -72,6 +72,8 @@ Use `/[skill-name]` to invoke these workflows:
 - `/slack-read` - Process all unread Slack messages, summarize activity, create tasks for requests
 - `/update-todos` - Scan canvases, Slack, email, Notion, and Google Docs for action items assigned to you
 - `/sync-people` - Refresh person identifier cache from Humaans and Slack
+- `/sync-linear` - Refresh Linear structure cache (teams, projects, cycles, statuses)
+- `/sync-slack` - Refresh Slack channels cache (IDs, names, categories)
 - `/sync-figma` - Verify and maintain Figma sources cache (discover new links, cleanup stale entries)
 
 ### Meetings
@@ -542,6 +544,100 @@ When you need Figma context:
 1. Load `.claude/figma-sources.json`
 2. Look up by category (`indices.byCategory`) or owner (`indices.byOwnerSlackId`)
 3. Use file URLs to fetch screenshots or metadata via Figma MCP tools
+
+## Core Patterns
+
+Reusable patterns in `.claude/patterns/` reduce duplication across skills and ensure consistent behavior.
+
+### Available Patterns
+
+| Pattern | Purpose | Skills Using |
+|---------|---------|--------------|
+| [person-resolution](patterns/person-resolution.md) | Resolve names to system IDs | 12+ |
+| [local-context-first](patterns/local-context-first.md) | Check cache before API calls | 7+ |
+| [figma-extraction](patterns/figma-extraction.md) | Extract Figma links from text | 3 |
+| [frontmatter](patterns/frontmatter.md) | YAML metadata for artifacts | All |
+| [daily-index-update](patterns/daily-index-update.md) | Append to context index | 8 |
+| [progressive-discovery](patterns/progressive-discovery.md) | Cache discovered IDs | 5+ |
+| [error-handling](patterns/error-handling.md) | Graceful degradation | All |
+| [rate-limiting](patterns/rate-limiting.md) | Batch and throttle API calls | API-heavy |
+
+### Using Patterns
+
+Skills reference patterns at the top of their file:
+
+```markdown
+## Core Patterns Used
+- [Person Resolution](../patterns/person-resolution.md)
+- [Local Context First](../patterns/local-context-first.md)
+```
+
+Patterns contain step-by-step algorithms, examples, and the list of files involved.
+
+## Skill Modes
+
+Many skills support modes for different scenarios.
+
+### Quick/Offline Mode
+
+Use `--quick` or `--offline` to skip API calls and use cached data only:
+
+```
+/orient --quick
+/find-context Byron --quick
+/team-status Platform --quick
+/morning-briefing --quick
+```
+
+**When to use:**
+- MCP servers are down or slow
+- You need fast results
+- Working offline
+- You've recently run /orient and have fresh context
+
+**Output note:** Skills will indicate "Quick mode - using cached data only" when run this way.
+
+### Dry Run Mode
+
+Some skills support `--dry-run` to preview changes:
+
+```
+/slack-read --dry-run
+```
+
+This shows what would be processed without making any changes.
+
+## Cache Files
+
+| Cache | Purpose | Refresh Skill | Staleness Threshold |
+|-------|---------|---------------|---------------------|
+| `people.json` | Person identifiers and metadata | `/sync-people` | 7 days |
+| `linear-cache.json` | Linear teams, projects, cycles | `/sync-linear` | 1 day |
+| `slack-channels.json` | Channel IDs, names, categories | `/sync-slack` | 30 days |
+| `notion-cache.json` | Page IDs, schemas | Progressive | On access |
+| `figma-sources.json` | Figma files and metadata | `/sync-figma` | 90 days |
+
+### Cache Freshness Checks
+
+The `/orient` skill checks cache freshness and prompts when caches are stale:
+
+```
+People cache is 12 days old. Consider running /sync-people --refresh.
+Linear cache is 3 days old. Run /sync-linear to refresh.
+```
+
+### Settings File
+
+Consolidated settings in `.claude/settings.json`:
+
+```json
+{
+  "linearDefaults": { "defaultTeam": null, "defaultProject": null },
+  "retention": { "contextDays": 30, "briefingDays": 90 },
+  "thresholds": { "stalePeopleDays": 7, "staleLinearDays": 1 },
+  "rateLimits": { "slackConcurrentChannels": 5 }
+}
+```
 
 ## Project Context
 

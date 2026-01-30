@@ -3,7 +3,15 @@
 Wrap up the day with a summary and handoff notes.
 
 ## Usage
+
 - `/end-of-day` - generate EOD summary
+
+## Core Patterns Used
+
+- [Local Context First](../patterns/local-context-first.md) - Read accumulated daily context
+- [Daily Index Update](../patterns/daily-index-update.md) - Update daily context index
+- [Frontmatter](../patterns/frontmatter.md) - YAML metadata for EOD file
+- [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
 
 ## Read Daily Context
 

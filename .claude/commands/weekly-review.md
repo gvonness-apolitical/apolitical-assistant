@@ -3,8 +3,15 @@
 Generate a comprehensive end-of-week summary and retrospective.
 
 ## Usage
+
 - `/weekly-review` - review the current week (Mon-Fri)
 - `/weekly-review [date]` - review week containing that date
+
+## Core Patterns Used
+
+- [Local Context First](../patterns/local-context-first.md) - Read daily context files first
+- [Frontmatter](../patterns/frontmatter.md) - YAML metadata for review file
+- [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
 
 ## Read Daily Context Files First
 

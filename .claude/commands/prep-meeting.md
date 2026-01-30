@@ -8,6 +8,14 @@ Prepare for an upcoming meeting by gathering relevant context from all systems i
 - `/prep-meeting [name]` - prep for meeting with specific person
 - `/prep-meeting [meeting title]` - prep for specific meeting
 
+## Core Patterns Used
+
+- [Person Resolution](../patterns/person-resolution.md) - Resolve attendees to identifiers
+- [Local Context First](../patterns/local-context-first.md) - Check caches before API calls
+- [Figma Extraction](../patterns/figma-extraction.md) - Extract Figma links from channels
+- [Daily Index Update](../patterns/daily-index-update.md) - Log meeting prep activity
+- [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
+
 ## Attendee Resolution
 
 When preparing for a meeting, resolve attendees using `.claude/people.json`:

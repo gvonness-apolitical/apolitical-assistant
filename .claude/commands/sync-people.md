@@ -3,9 +3,16 @@
 Initialize or refresh the person identifier cache from Humaans and Slack.
 
 ## Usage
+
 - `/sync-people` - Full sync from Humaans and Slack, populate people.json
 - `/sync-people --refresh` - Re-verify existing people, mark missing as inactive
 - `/sync-people --add-contact [email] [name]` - Add external contact manually
+
+## Core Patterns Used
+
+- [Progressive Discovery](../patterns/progressive-discovery.md) - Build identifier cache
+- [Error Handling](../patterns/error-handling.md) - Handle Humaans/Slack unavailability
+- [Rate Limiting](../patterns/rate-limiting.md) - Batch user lookups
 
 ## What This Does
 

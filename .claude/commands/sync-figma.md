@@ -10,6 +10,14 @@ Synchronize and maintain the Figma sources cache. Verify existing entries, disco
 - `/sync-figma --cleanup` - Archive/remove stale entries (not shared in 90+ days)
 - `/sync-figma --stats` - Show cache statistics
 
+## Core Patterns Used
+
+- [Figma Extraction](../patterns/figma-extraction.md) - URL parsing and metadata capture
+- [Person Resolution](../patterns/person-resolution.md) - Cross-reference owners with people.json
+- [Progressive Discovery](../patterns/progressive-discovery.md) - Migrate discoveredPeople to contacts
+- [Rate Limiting](../patterns/rate-limiting.md) - Batch Figma API calls
+- [Error Handling](../patterns/error-handling.md) - Handle API errors gracefully
+
 ## Process
 
 ### 1. Load Current Cache

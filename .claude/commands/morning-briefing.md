@@ -3,7 +3,35 @@
 Generate a daily briefing to start the day.
 
 ## Usage
+
 - `/morning-briefing` - generate briefing for today
+- `/morning-briefing --quick` - briefing from cached data only, no API calls
+
+## Core Patterns Used
+
+- [Person Resolution](../patterns/person-resolution.md) - Resolve attendee names
+- [Local Context First](../patterns/local-context-first.md) - Check caches before API calls
+- [Daily Index Update](../patterns/daily-index-update.md) - Update daily context index
+- [Frontmatter](../patterns/frontmatter.md) - YAML metadata for briefing file
+- [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
+
+## Quick Mode
+
+When `--quick` flag is provided:
+
+1. Skip all MCP/API calls (calendar, email, Slack, Linear, Humaans)
+2. Use only cached data:
+   - `context/eod-*.md` - Yesterday's EOD for carry-forward items
+   - `context/YYYY-MM-DD/` - Today's accumulated context
+   - `people.json` - Team information
+   - `linear-cache.json` - Sprint structure
+   - `figma-sources.json` - Recent Figma shares
+3. Note in output: "Quick briefing - using cached data. Some information may be missing."
+
+Use quick mode when:
+- MCP servers are down
+- You need a rapid start
+- You've already run /orient and have fresh context
 
 ## Check Existing Context
 

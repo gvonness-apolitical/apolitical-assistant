@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "lastUpdated": null,
+  "description": "Cached Slack channels for faster lookups. Run /sync-slack to populate.",
+  "channels": {},
+  "indices": {
+    "byName": {},
+    "byCategory": {
+      "engineering": [],
+      "product": [],
+      "leadership": [],
+      "operations": [],
+      "general": []
+    }
+  },
+  "categoryPatterns": {
+    "engineering": ["engineering", "platform", "data", "devops", "infrastructure", "eng-"],
+    "product": ["product", "roadmap", "feature", "design", "ux"],
+    "leadership": ["management", "leadership", "exec", "managers", "priv-management"],
+    "operations": ["incident", "oncall", "alerts", "support", "bug"],
+    "partnerships": ["partnerships", "sales", "customer", "commercial"],
+    "marketing": ["marketing", "comms", "brand", "social"]
+  },
+  "notes": {
+    "privateChannelTip": "When listing channels via API, use types='private_channel' separately to ensure private channels are included (default limit may exclude them when mixed with public)"
+  }
+}

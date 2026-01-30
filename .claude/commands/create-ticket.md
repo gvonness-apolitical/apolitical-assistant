@@ -3,10 +3,18 @@
 Create a well-structured Linear ticket that aligns with team norms and conventions.
 
 ## Usage
+
 - `/create-ticket [description]` - Create a ticket from a description
 - `/create-ticket` - Interactive ticket creation
 
+## Core Patterns Used
+
+- [Person Resolution](../patterns/person-resolution.md) - Resolve assignees to Linear user IDs
+- [Progressive Discovery](../patterns/progressive-discovery.md) - Cache discovered Linear user IDs
+- [Error Handling](../patterns/error-handling.md) - Handle Linear API issues
+
 ## Arguments
+
 - `$ARGUMENTS` - Brief description of the work needed (optional, will prompt if not provided)
 
 ## Process

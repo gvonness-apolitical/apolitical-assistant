@@ -631,6 +631,73 @@
       "dburns-apolitical": "dec.burns@apolitical.co",
       "dgaulton-apolitical": "dom.gaulton@apolitical.co",
       "oadebayo-apolitical": "onuchukwu.adebayo@apolitical.co"
+    },
+    "byLinearUserId": {},
+    "byTeam": {
+      "Engineering": [
+        "romilly.eveleigh@apolitical.co",
+        "khalifa.idris@apolitical.co",
+        "yang.chih-yuan@apolitical.co",
+        "dominic.harries@apolitical.co",
+        "charles.killer@apolitical.co",
+        "byron.sorgdrager@apolitical.co",
+        "rihards.jukna@apolitical.co",
+        "annika.chauhan@apolitical.co",
+        "kabir.seth@apolitical.co",
+        "samuel.balogun@apolitical.co",
+        "fatimat.gbajabiamila@apolitical.co",
+        "riccardo.altieri@apolitical.co",
+        "borja.hidalgo@apolitical.co",
+        "penny.lam@apolitical.co",
+        "robbie.ho@apolitical.co",
+        "renzo.rozza@apolitical.co",
+        "leonardo.maglio@apolitical.co",
+        "dec.burns@apolitical.co",
+        "dom.gaulton@apolitical.co",
+        "onuchukwu.adebayo@apolitical.co"
+      ],
+      "Data": [
+        "peter.shatwell@apolitical.co"
+      ],
+      "People": [
+        "lauren.benson-armer@apolitical.co"
+      ],
+      "Commercial": [
+        "amber.keates@apolitical.co"
+      ]
+    },
+    "bySquad": {
+      "Platform": [
+        "khalifa.idris@apolitical.co",
+        "byron.sorgdrager@apolitical.co",
+        "rihards.jukna@apolitical.co",
+        "samuel.balogun@apolitical.co",
+        "fatimat.gbajabiamila@apolitical.co",
+        "borja.hidalgo@apolitical.co"
+      ],
+      "Learning": [
+        "romilly.eveleigh@apolitical.co",
+        "dominic.harries@apolitical.co",
+        "penny.lam@apolitical.co",
+        "onuchukwu.adebayo@apolitical.co"
+      ],
+      "AI": [
+        "charles.killer@apolitical.co",
+        "annika.chauhan@apolitical.co",
+        "kabir.seth@apolitical.co",
+        "riccardo.altieri@apolitical.co",
+        "dec.burns@apolitical.co"
+      ],
+      "Enterprise": [
+        "robbie.ho@apolitical.co",
+        "renzo.rozza@apolitical.co",
+        "leonardo.maglio@apolitical.co",
+        "dom.gaulton@apolitical.co"
+      ],
+      "Data": [
+        "peter.shatwell@apolitical.co",
+        "yang.chih-yuan@apolitical.co"
+      ]
     }
   }
 }

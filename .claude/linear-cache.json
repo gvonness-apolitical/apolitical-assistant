@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "lastUpdated": null,
+  "description": "Cached Linear structure to reduce API calls. Run /sync-linear to populate.",
+  "teams": {},
+  "projects": {},
+  "cycles": {
+    "current": null,
+    "upcoming": []
+  },
+  "statuses": {},
+  "labels": {},
+  "indices": {
+    "teamByKey": {},
+    "teamByName": {},
+    "projectByName": {},
+    "labelByName": {}
+  }
+}

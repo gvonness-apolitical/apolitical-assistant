@@ -3,8 +3,35 @@
 Get a comprehensive status update on a team or squad.
 
 ## Usage
+
 - `/team-status [squad/team name]` - status for a specific team
 - `/team-status` - status for engineering (default)
+- `/team-status [squad] --quick` - use cached data only, no API calls
+
+## Core Patterns Used
+
+- [Person Resolution](../patterns/person-resolution.md) - Resolve team members
+- [Local Context First](../patterns/local-context-first.md) - Check caches before API calls
+- [Progressive Discovery](../patterns/progressive-discovery.md) - Cache GitHub/Linear user IDs
+- [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
+- [Rate Limiting](../patterns/rate-limiting.md) - Batch API calls efficiently
+
+## Quick Mode
+
+When `--quick` flag is provided:
+
+1. Skip all MCP/API calls
+2. Use only cached data:
+   - `people.json` - Team roster with `indices.byTeam` and `indices.bySquad`
+   - `linear-cache.json` - Sprint structure and progress
+   - `context/YYYY-MM-DD/` - Today's context (incidents, blockers)
+   - `figma-sources.json` - Recent design activity
+3. Note in output: "Quick mode - cached data (may be stale)"
+
+Use quick mode when:
+- You need a fast team overview
+- MCP servers are unavailable
+- Checking team composition without live status
 
 ## Person Resolution
 
