@@ -1,0 +1,56 @@
+{
+  "description": "Priority Notion sources for context gathering. Skills should check these first when searching Notion.",
+  "lastUpdated": "2026-01-30",
+  "sources": {
+    "rfcs": {
+      "name": "Proposals (aka RFCs)",
+      "pageId": "090aa88ff28d43cb9d1ddeeb91ce0cc6",
+      "dataSourceId": "collection://2ad49888-f273-4788-81e2-87e13d17559d",
+      "location": "Team Pages > Engineering",
+      "description": "Technical RFCs for architectural decisions, API designs, infrastructure changes",
+      "schema": {
+        "Name": "Title of the RFC",
+        "Status": "Draft | Rejected | Accepted | Superseded | Suspended",
+        "Created": "Date",
+        "Owner": "Person",
+        "Contributors": "People"
+      },
+      "useFor": ["find-context", "prep-meeting", "review-rfc", "team-status", "whats-blocking"],
+      "searchPatterns": ["RFC", "proposal", "architecture", "design", "technical decision"]
+    },
+    "prds": {
+      "name": "Product Documents",
+      "pageId": "dfff60fd2b0d4fd0a71498ca83e897a5",
+      "dataSourceId": "collection://889fc508-6332-4e95-a361-474c1293bcc5",
+      "location": "Team Pages > Product",
+      "description": "PRDs, discovery research, product specs for features and initiatives",
+      "schema": {
+        "Name": "Title of the document",
+        "Status": "Draft | In Review | Approved | Archived",
+        "Type": "Product Spec | Discovery Research | User Research | Market Analysis",
+        "Squad": "AI Learning | AI Tools | Enterprise | Customer",
+        "Stakeholders": "People"
+      },
+      "useFor": ["find-context", "prep-meeting", "team-status"],
+      "searchPatterns": ["PRD", "product spec", "feature", "initiative", "requirements"]
+    },
+    "roadmap": {
+      "name": "Product Roadmap",
+      "pageId": "72bad0609a3e4d74a12226642bbaa490",
+      "location": "Team Pages > Product",
+      "description": "Product roadmap with inline databases for each squad's priorities",
+      "squads": {
+        "ai_learning": "AI Learning squad roadmap",
+        "ai_tools": "AI Tools squad roadmap",
+        "enterprise": "Enterprise squad roadmap",
+        "customer": "Customer squad roadmap"
+      },
+      "useFor": ["find-context", "team-status", "prep-meeting"],
+      "searchPatterns": ["roadmap", "priorities", "upcoming", "planned", "Q1", "Q2", "Q3", "Q4"]
+    }
+  },
+  "usage": {
+    "search_priority": "When gathering context from Notion, check these sources FIRST before general searches. Use notion-search with the page IDs or data source IDs to get targeted results.",
+    "skill_integration": "Skills should load this config and query relevant sources based on the context type (technical decisions -> RFCs, features -> PRDs, team priorities -> roadmap)."
+  }
+}

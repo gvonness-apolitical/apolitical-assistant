@@ -59,6 +59,11 @@ Use local context to supplement API calls and provide historical context.
    - Recent team channel activity
    - Any escalations or blockers flagged
 
+6. **Notion Priority Sources** (load from `.claude/notion-sources.json`):
+   - **Product Roadmap**: Squad's upcoming priorities and planned work
+   - **PRDs**: Active product specs for the team's initiatives
+   - **RFCs**: Technical decisions affecting the team (Accepted or In Review)
+
 ## Output Structure
 
 ### [Team Name] Status - [Date]

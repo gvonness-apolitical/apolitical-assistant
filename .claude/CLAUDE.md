@@ -38,6 +38,7 @@ You have access to the following integrations through MCP servers:
 - Access team wikis
 - View databases
 - Create pages and add comments
+- **Priority sources**: RFCs, PRDs, Product Roadmap (see Priority Notion Sources below)
 
 ### Humaans (HR)
 - View team roster and org chart
@@ -422,6 +423,67 @@ If a person is not in the cache:
 1. Search Humaans/Slack by name
 2. Add them to people.json with discovered info
 3. Continue with the original operation
+
+## Priority Notion Sources
+
+Three key Notion databases should be checked **first** when gathering context. Configuration is stored in `.claude/notion-sources.json`.
+
+### Data Sources
+
+| Source | Location | Use For |
+|--------|----------|---------|
+| **RFCs** | Team Pages > Engineering | Technical decisions, architecture, API designs |
+| **PRDs** | Team Pages > Product | Feature specs, discovery research, requirements |
+| **Product Roadmap** | Team Pages > Product | Squad priorities, upcoming work, planned initiatives |
+
+### Source Details
+
+**RFCs (Proposals)**
+- Page ID: `090aa88ff28d43cb9d1ddeeb91ce0cc6`
+- Data source: `collection://2ad49888-f273-4788-81e2-87e13d17559d`
+- Schema: Name, Status (Draft/Rejected/Accepted/Superseded/Suspended), Owner, Contributors
+- Check when: Technical topics, architecture questions, design decisions
+
+**Product Documents (PRDs)**
+- Page ID: `dfff60fd2b0d4fd0a71498ca83e897a5`
+- Data source: `collection://889fc508-6332-4e95-a361-474c1293bcc5`
+- Schema: Name, Status, Type (Product Spec/Discovery Research/etc.), Squad, Stakeholders
+- Check when: Feature context, product requirements, initiative details
+
+**Product Roadmap**
+- Page ID: `72bad0609a3e4d74a12226642bbaa490`
+- Contains inline databases for each squad (AI Learning, AI Tools, Enterprise, Customer)
+- Check when: Team priorities, upcoming work, strategic planning context
+
+### Integration with Skills
+
+Skills that gather Notion context should:
+
+1. **Load config**: Read `.claude/notion-sources.json` at the start
+2. **Check priority sources first**: Based on context type:
+   - Technical decisions/blockers → RFCs
+   - Features/initiatives → PRDs
+   - Team priorities/planning → Roadmap
+3. **Use targeted searches**: Query specific page IDs before general Notion searches
+4. **Cross-reference**: If an RFC references a PRD (or vice versa), follow the link
+
+### Skills Using Priority Sources
+
+| Skill | Sources Checked | When |
+|-------|-----------------|------|
+| `/find-context` | All three | Project/topic lookups |
+| `/prep-meeting` | RFCs, PRDs | Meeting involves technical/product topics |
+| `/team-status` | Roadmap, PRDs | Understanding squad priorities |
+| `/whats-blocking` | RFCs | Technical decisions blocking progress |
+| `/review-rfc` | RFCs database | Finding related RFCs |
+
+### Search Patterns
+
+When searching these sources, use these patterns:
+
+**For RFCs**: "RFC", "proposal", "architecture", "design", "technical decision"
+**For PRDs**: "PRD", "product spec", "feature", "initiative", "requirements"
+**For Roadmap**: "roadmap", "priorities", "upcoming", "planned", "Q1", "Q2", etc.
 
 ## Project Context
 

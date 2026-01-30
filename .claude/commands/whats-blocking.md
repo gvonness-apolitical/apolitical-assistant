@@ -45,7 +45,10 @@ Use local context first, then supplement with fresh Linear/GitHub/Slack API call
 
 1. **Linear**: All blocked tickets in the project
 2. **GitHub**: Open PRs with stale reviews or failing CI
-3. **Dependencies**: External blockers (vendor, other team, decision needed)
+3. **Notion Priority Sources** (load from `.claude/notion-sources.json`):
+   - **RFCs**: Draft or In Review status (decisions pending that may block progress)
+   - **PRDs**: Requirements awaiting approval
+4. **Dependencies**: External blockers (vendor, other team, decision needed)
 
 ## Output
 
