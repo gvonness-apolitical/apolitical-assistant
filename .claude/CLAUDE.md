@@ -75,6 +75,7 @@ Use `/[skill-name]` to invoke these workflows:
 - `/sync-linear` - Refresh Linear structure cache (teams, projects, cycles, statuses)
 - `/sync-slack` - Refresh Slack channels cache (IDs, names, categories)
 - `/sync-figma` - Verify and maintain Figma sources cache (discover new links, cleanup stale entries)
+- `/catchup [days]` - Rebuild context for days you were away (vacation, absence)
 
 ### Meetings
 - `/prep-meeting [meeting]` - Prepare for an upcoming meeting (integrates with mapped Slack channels/canvases)
