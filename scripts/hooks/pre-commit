@@ -1,0 +1,74 @@
+#!/bin/bash
+# pre-commit hook - Verify git-crypt is working before committing encrypted files
+#
+# Install with:
+#   cp scripts/hooks/pre-commit .git/hooks/pre-commit
+#   chmod +x .git/hooks/pre-commit
+
+ENCRYPTED_PATTERNS=(
+    "context/*"
+    "briefings/*"
+    "work/*"
+    "reviews/*"
+    "investigations/*"
+    "rubberduck/*"
+    "meetings/*"
+    "121/*"
+)
+
+# Check if any staged files match encrypted patterns
+staged_encrypted=""
+for pattern in "${ENCRYPTED_PATTERNS[@]}"; do
+    matches=$(git diff --cached --name-only -- "$pattern" 2>/dev/null)
+    if [ -n "$matches" ]; then
+        staged_encrypted="${staged_encrypted}${matches}"$'\n'
+    fi
+done
+
+# If no encrypted files staged, allow commit
+if [ -z "$staged_encrypted" ]; then
+    exit 0
+fi
+
+# Verify git-crypt filters are configured
+smudge=$(git config --get filter.git-crypt.smudge 2>/dev/null || echo "")
+clean=$(git config --get filter.git-crypt.clean 2>/dev/null || echo "")
+
+if [ -z "$smudge" ] || [ -z "$clean" ]; then
+    echo "ERROR: git-crypt filters not configured!"
+    echo ""
+    echo "You're trying to commit files that should be encrypted:"
+    echo "$staged_encrypted"
+    echo ""
+    echo "But git-crypt is not set up. Run:"
+    echo "  git-crypt unlock"
+    echo ""
+    exit 1
+fi
+
+if [[ "$smudge" == "cat" ]] || [[ "$clean" == "cat" ]]; then
+    echo "ERROR: git-crypt filters are bypassed!"
+    echo ""
+    echo "You're trying to commit files that should be encrypted:"
+    echo "$staged_encrypted"
+    echo ""
+    echo "But encryption filters are disabled. Run:"
+    echo "  git-crypt unlock"
+    echo ""
+    exit 1
+fi
+
+# Check that git-crypt keys exist
+if [ ! -d ".git/git-crypt/keys" ]; then
+    echo "ERROR: git-crypt keys not found!"
+    echo ""
+    echo "You're trying to commit files that should be encrypted:"
+    echo "$staged_encrypted"
+    echo ""
+    echo "Run: git-crypt unlock"
+    echo ""
+    exit 1
+fi
+
+# All checks passed
+exit 0

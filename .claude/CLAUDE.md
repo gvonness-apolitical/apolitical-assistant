@@ -640,6 +640,91 @@ Consolidated settings in `.claude/settings.json`:
 }
 ```
 
+## Git-Crypt Encryption
+
+Sensitive files are encrypted using git-crypt. The following directories are encrypted:
+
+| Directory | Content |
+|-----------|---------|
+| `context/` | Daily context, session notes, todos |
+| `briefings/` | Daily briefings |
+| `work/` | Ad-hoc work products |
+| `reviews/` | Weekly, executive, and MBR reviews |
+| `investigations/` | Research and analysis |
+| `rubberduck/` | Thinking sessions |
+| `meetings/` | Meeting prep and notes |
+| `121/` | 1:1 meeting archives |
+
+### Setup
+
+After cloning the repository:
+
+```bash
+# Install git-crypt (if not already installed)
+brew install git-crypt
+
+# Unlock the repository (requires authorized GPG key)
+git-crypt unlock
+
+# Install the pre-commit hook
+npm run setup-hooks
+```
+
+### Verification
+
+Check that git-crypt is properly configured:
+
+```bash
+npm run git-crypt:check
+```
+
+If issues are detected:
+
+```bash
+npm run git-crypt:fix
+```
+
+### Pre-Commit Protection
+
+A pre-commit hook prevents committing to encrypted directories when git-crypt is not properly configured. This guards against accidentally committing plaintext to encrypted paths.
+
+The hook checks:
+1. Whether any staged files are in encrypted paths
+2. Whether git-crypt filters are configured
+3. Whether filters are bypassed (set to `cat`)
+4. Whether git-crypt keys exist
+
+If any check fails, the commit is blocked with instructions to fix.
+
+### CI Validation
+
+CI runs `./scripts/ci-check-encrypted.sh` which verifies that all files in encrypted directories have proper `GITCRYPT` headers. This catches any files that were accidentally committed unencrypted.
+
+### Troubleshooting
+
+**"git-crypt filters not configured" error:**
+```bash
+git-crypt unlock
+```
+
+**"encrypted file has been tampered with" error:**
+This usually means a file was committed when git-crypt wasn't active. The file appears encrypted (has GITCRYPT header) but was written incorrectly. To fix:
+1. Check out a known-good version of the file
+2. Make your changes again with git-crypt properly unlocked
+3. Commit
+
+**Verifying a file is encrypted:**
+```bash
+head -c 10 context/some-file.md | cat -v
+# Should show: ^@GITCRYPT^@... (binary data)
+```
+
+**Never bypass git-crypt filters:**
+```bash
+# DON'T DO THIS - it can corrupt encrypted files
+git -c filter.git-crypt.smudge=cat ...
+```
+
 ## Project Context
 
 This assistant is specific to Apolitical, a company focused on making governments more effective. Key context:
