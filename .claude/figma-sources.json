@@ -1,0 +1,364 @@
+{
+  "version": 1,
+  "lastUpdated": "2026-01-30T10:00:00Z",
+  "files": {
+    "rj0xT7eM2bqWK5JT1kX6Ii": {
+      "name": "Futura user flow",
+      "type": "board",
+      "url": "https://www.figma.com/board/rj0xT7eM2bqWK5JT1kX6Ii/Futura-user-flow",
+      "category": "product",
+      "description": "Roadmap and user flow for Futura product. On track for January 2026 goals.",
+      "owner": {
+        "displayName": "Lowell Weisbord",
+        "email": "lowell.weisbord@apolitical.co",
+        "slackUserId": "UBZSLAWP9"
+      },
+      "sharedIn": ["mpdm-joel.patrick--greg.vonnessi--lowell.weisbord-1"],
+      "lastShared": "2026-01-29"
+    },
+    "U9eygPC6J7aUOaS3499rzK": {
+      "name": "Engineering resource",
+      "type": "board",
+      "url": "https://www.figma.com/board/U9eygPC6J7aUOaS3499rzK/Engineering-resource",
+      "category": "engineering",
+      "description": "Engineering resource planning board.",
+      "owner": {
+        "displayName": "Joel Patrick",
+        "email": "joel.patrick@apolitical.co",
+        "slackUserId": "U04A8BBTBEC"
+      },
+      "sharedIn": ["DM with Greg"],
+      "lastShared": "2025-09-03"
+    },
+    "oAopjcMPJmEo701fjT6ZCV": {
+      "name": "AI Readiness Check (ARC) Assessment Tool",
+      "type": "design",
+      "url": "https://www.figma.com/design/oAopjcMPJmEo701fjT6ZCV/AI-Readiness-Check--ARC--%E2%80%93-Assessment-Tool",
+      "category": "product",
+      "description": "Design for AI Readiness Check assessment tool. Includes PDF generation designs.",
+      "owner": {
+        "displayName": "Tri Sanguanbun",
+        "email": null,
+        "slackUserId": "UG5D6EV16"
+      },
+      "contributors": [
+        {
+          "displayName": "Lowell Weisbord",
+          "email": "lowell.weisbord@apolitical.co",
+          "slackUserId": "UBZSLAWP9"
+        },
+        {
+          "displayName": "Charles Killer",
+          "email": "charles.killer@apolitical.co",
+          "slackUserId": "U07RWGEBG4D"
+        }
+      ],
+      "sharedIn": ["partnerships-google-arctranslations"],
+      "lastShared": "2025-12-21"
+    },
+    "4g5oT6tpdLYvUALogH265z": {
+      "name": "Homepage Feed",
+      "type": "design",
+      "url": "https://www.figma.com/design/4g5oT6tpdLYvUALogH265z/Homepage-Feed",
+      "category": "product",
+      "description": "Adding Academies to the homepage. Reviewing naming conventions (Academy vs Basic/Premium Academy).",
+      "owner": {
+        "displayName": "Tanya Riordan",
+        "email": "tanya.riordan@apolitical.co",
+        "slackUserId": "U09ECJKFLV7"
+      },
+      "sharedIn": ["partnerships"],
+      "lastShared": "2025-08-14"
+    },
+    "52JgtGA6VhViD7QRTv7NMi": {
+      "name": "Government AI Campus Sign-Up Redesign",
+      "type": "board",
+      "url": "https://www.figma.com/board/52JgtGA6VhViD7QRTv7NMi/Government-AI-Campus-%E2%80%9CSign-Up-Now%E2%80%9D-CTA-%E2%80%93-Redesign",
+      "category": "product",
+      "description": "Redesign of the GAIC sign-up CTA and user flow.",
+      "owner": {
+        "displayName": "Daisy",
+        "email": null,
+        "slackUserId": "UQ05V751S"
+      },
+      "sharedIn": ["campus-gov-ai"],
+      "lastShared": "2025-09-10"
+    },
+    "oic8bwKREtpsMge2aRDhbS": {
+      "name": "Academy email journey",
+      "type": "board",
+      "url": "https://www.figma.com/board/oic8bwKREtpsMge2aRDhbS/Apolitical-Academy-email-journey",
+      "category": "operations",
+      "description": "Email journey design for Academy product. Includes events and attributes mapping.",
+      "owner": {
+        "displayName": "Jayna Mistry",
+        "email": null,
+        "slackUserId": "U05PL1DFNRM"
+      },
+      "sharedIn": ["product-integrations-and-academies"],
+      "lastShared": "2025-12-17"
+    },
+    "XShE2b1Apw5XFU7OqYVohZ": {
+      "name": "Bulk Onboarding Troubleshooting Workflow",
+      "type": "board",
+      "url": "https://www.figma.com/board/XShE2b1Apw5XFU7OqYVohZ/Bulk-Onboarding-Troubleshooting-Workflow",
+      "category": "operations",
+      "description": "Customer support troubleshooting workflow for bulk onboarding issues.",
+      "owner": {
+        "displayName": "Jayna Mistry",
+        "email": null,
+        "slackUserId": "U05PL1DFNRM"
+      },
+      "sharedIn": ["customer-support", "bug-hunt"],
+      "lastShared": "2026-01-28"
+    },
+    "WAPDUdzS6LDaHdbUyjmWQp": {
+      "name": "Community Email Updates/Tests",
+      "type": "board",
+      "url": "https://www.figma.com/board/WAPDUdzS6LDaHdbUyjmWQp/Community-Email-Updates",
+      "category": "operations",
+      "description": "A/B testing for community emails. Tracks Join Community, Contribute, and notification emails.",
+      "owner": {
+        "displayName": "Ilana Munckton",
+        "email": null,
+        "slackUserId": "U01USJJNEPQ"
+      },
+      "sharedIn": ["communities", "email-coord"],
+      "lastShared": "2025-12-04"
+    },
+    "JJEjIoe9Lpthn4uwQDSZ8b": {
+      "name": "Learning Experience Research",
+      "type": "board",
+      "url": "https://www.figma.com/board/JJEjIoe9Lpthn4uwQDSZ8b/Learning-Experience-Research",
+      "category": "research",
+      "description": "Research consultation board with four key questions. Input deadline was Jan 22, 2026.",
+      "owner": {
+        "displayName": "Kristen Harmse-Klaasen",
+        "email": null,
+        "slackUserId": "U023PQ5U7UG"
+      },
+      "sharedIn": ["temp-learning-research"],
+      "lastShared": "2026-01-06"
+    },
+    "a69fG032TWoN9obIMAcLMj": {
+      "name": "Social media tiles 2026",
+      "type": "design",
+      "url": "https://www.figma.com/design/a69fG032TWoN9obIMAcLMj/Social-media-tiles-2026",
+      "category": "marketing",
+      "description": "New 2026 social media tiles. Located in Figma teams > Brand + Marketing > Social Media.",
+      "owner": {
+        "displayName": "Alice Sinclair",
+        "email": null,
+        "slackUserId": "U0967F8QGHW"
+      },
+      "sharedIn": ["comms-social-media"],
+      "lastShared": "2026-01-05"
+    },
+    "mfS7PRJvkFZfHrV2Xk0doB": {
+      "name": "TB-UK Collateral (G-Cloud 15)",
+      "type": "design",
+      "url": "https://www.figma.com/design/mfS7PRJvkFZfHrV2Xk0doB/TB-UK-Collateral",
+      "category": "marketing",
+      "description": "G-Cloud 15 framework submission materials including pricing document and service definitions.",
+      "owner": {
+        "displayName": "Tom Butler",
+        "email": null,
+        "slackUserId": "U099R58RW77"
+      },
+      "sharedIn": ["temp-gcloud-15-framework-submission"],
+      "lastShared": "2026-01-28"
+    },
+    "nfCFglN9PLLhsPi1GertPj": {
+      "name": "Academy overview page",
+      "type": "design",
+      "url": "https://www.figma.com/design/nfCFglN9PLLhsPi1GertPj/Academy-overview-page",
+      "category": "marketing",
+      "description": "Academy product collateral PDF. Editable by partnerships team.",
+      "owner": {
+        "displayName": "Alice Sinclair",
+        "email": null,
+        "slackUserId": "U0967F8QGHW"
+      },
+      "contributors": [
+        {
+          "displayName": "Ché Thomson",
+          "email": "che.thomson@apolitical.co",
+          "slackUserId": "U01DGBELKQ8"
+        }
+      ],
+      "sharedIn": ["product-integrations-and-academies"],
+      "lastShared": "2025-08-01"
+    },
+    "k1K1LaUP3eoeyV3Na6uhDa": {
+      "name": "Track Completion Summary Document",
+      "type": "design",
+      "url": "https://www.figma.com/make/k1K1LaUP3eoeyV3Na6uhDa/Track-Completion-Summary-Document",
+      "category": "product",
+      "description": "Downloadable summary of individual track completions for Ethiopia academy partner.",
+      "owner": {
+        "displayName": "Tanya Riordan",
+        "email": "tanya.riordan@apolitical.co",
+        "slackUserId": "U09ECJKFLV7"
+      },
+      "sharedIn": ["partnerships-ethiopia-fcsc"],
+      "lastShared": "2026-01-27"
+    },
+    "e1PBxEbRGckXPt2jKNtSDA": {
+      "name": "Course Certificates",
+      "type": "design",
+      "url": "https://www.figma.com/design/e1PBxEbRGckXPt2jKNtSDA/Course-Certificates--Copy-",
+      "category": "product",
+      "description": "Course certificate designs.",
+      "owner": {
+        "displayName": "Sarah Masters",
+        "email": null,
+        "slackUserId": "U07KHDVM84S"
+      },
+      "sharedIn": ["temp-one-big-thing"],
+      "lastShared": "2025-09-19"
+    },
+    "Aw1pTgSziMDyCSvGTqmsNz": {
+      "name": "One Big Thing Delivery Retro",
+      "type": "board",
+      "url": "https://www.figma.com/board/Aw1pTgSziMDyCSvGTqmsNz/One-Big-Thing-%7C-Delivery-retro",
+      "category": "operations",
+      "description": "Retrospective board for One Big Thing project delivery.",
+      "owner": {
+        "displayName": "Jayna Mistry",
+        "email": null,
+        "slackUserId": "U05PL1DFNRM"
+      },
+      "sharedIn": ["temp-one-big-thing"],
+      "lastShared": "2025-10-15"
+    },
+    "8PFGr0HeVlzS9icH7VQwod": {
+      "name": "Babco Design Requests - AI Insight Brief",
+      "type": "design",
+      "url": "https://www.figma.com/design/8PFGr0HeVlzS9icH7VQwod/Babco-Design-Requests",
+      "category": "marketing",
+      "description": "AI Insight brief one-pager design from Babco agency.",
+      "owner": {
+        "displayName": "Alice Sinclair",
+        "email": null,
+        "slackUserId": "U0967F8QGHW"
+      },
+      "sharedIn": ["campus-gov-ai"],
+      "lastShared": "2025-10-22"
+    },
+    "W1nzWwrpxQQRX742LzOOGk": {
+      "name": "Comms Asana Ideation",
+      "type": "board",
+      "url": "https://www.figma.com/board/W1nzWwrpxQQRX742LzOOGk/Comms-Asana-Ideation",
+      "category": "operations",
+      "description": "Brainstorming board for Comms team Asana portfolio structure.",
+      "owner": {
+        "displayName": "Jayna Mistry",
+        "email": null,
+        "slackUserId": "U05PL1DFNRM"
+      },
+      "sharedIn": ["team-comms-ceg-alignment"],
+      "lastShared": "2025-09-11"
+    }
+  },
+  "indices": {
+    "byCategory": {
+      "product": [
+        "rj0xT7eM2bqWK5JT1kX6Ii",
+        "oAopjcMPJmEo701fjT6ZCV",
+        "4g5oT6tpdLYvUALogH265z",
+        "52JgtGA6VhViD7QRTv7NMi",
+        "k1K1LaUP3eoeyV3Na6uhDa",
+        "e1PBxEbRGckXPt2jKNtSDA"
+      ],
+      "engineering": ["U9eygPC6J7aUOaS3499rzK"],
+      "operations": [
+        "oic8bwKREtpsMge2aRDhbS",
+        "XShE2b1Apw5XFU7OqYVohZ",
+        "WAPDUdzS6LDaHdbUyjmWQp",
+        "Aw1pTgSziMDyCSvGTqmsNz",
+        "W1nzWwrpxQQRX742LzOOGk"
+      ],
+      "research": ["JJEjIoe9Lpthn4uwQDSZ8b"],
+      "marketing": [
+        "a69fG032TWoN9obIMAcLMj",
+        "mfS7PRJvkFZfHrV2Xk0doB",
+        "nfCFglN9PLLhsPi1GertPj",
+        "8PFGr0HeVlzS9icH7VQwod"
+      ]
+    },
+    "byOwnerSlackId": {
+      "UBZSLAWP9": ["rj0xT7eM2bqWK5JT1kX6Ii"],
+      "U04A8BBTBEC": ["U9eygPC6J7aUOaS3499rzK"],
+      "UG5D6EV16": ["oAopjcMPJmEo701fjT6ZCV"],
+      "U09ECJKFLV7": ["4g5oT6tpdLYvUALogH265z", "k1K1LaUP3eoeyV3Na6uhDa"],
+      "UQ05V751S": ["52JgtGA6VhViD7QRTv7NMi"],
+      "U05PL1DFNRM": [
+        "oic8bwKREtpsMge2aRDhbS",
+        "XShE2b1Apw5XFU7OqYVohZ",
+        "Aw1pTgSziMDyCSvGTqmsNz",
+        "W1nzWwrpxQQRX742LzOOGk"
+      ],
+      "U01USJJNEPQ": ["WAPDUdzS6LDaHdbUyjmWQp"],
+      "U023PQ5U7UG": ["JJEjIoe9Lpthn4uwQDSZ8b"],
+      "U0967F8QGHW": ["a69fG032TWoN9obIMAcLMj", "nfCFglN9PLLhsPi1GertPj", "8PFGr0HeVlzS9icH7VQwod"],
+      "U099R58RW77": ["mfS7PRJvkFZfHrV2Xk0doB"],
+      "U07KHDVM84S": ["e1PBxEbRGckXPt2jKNtSDA"]
+    }
+  },
+  "discoveredPeople": {
+    "U05PL1DFNRM": {
+      "displayName": "Jayna Mistry",
+      "note": "Operations/Project Management - frequent Figma user"
+    },
+    "U099R58RW77": {
+      "displayName": "Tom Butler",
+      "note": "Marketing/Collateral"
+    },
+    "UG5D6EV16": {
+      "displayName": "Tri Sanguanbun",
+      "note": "Design - ARC and course graphics"
+    },
+    "U023PQ5U7UG": {
+      "displayName": "Kristen Harmse-Klaasen",
+      "note": "Research/Evaluation"
+    },
+    "U0967F8QGHW": {
+      "displayName": "Alice Sinclair",
+      "note": "Brand/Marketing design"
+    },
+    "U07KHDVM84S": {
+      "displayName": "Sarah Masters",
+      "note": "Product - certificates and academies"
+    },
+    "U01USJJNEPQ": {
+      "displayName": "Ilana Munckton",
+      "note": "Communities/Email"
+    },
+    "UQ05V751S": {
+      "displayName": "Daisy",
+      "note": "GAIC/Customer Support"
+    },
+    "U04A8BBTBEC": {
+      "displayName": "Joel Patrick",
+      "email": "joel.patrick@apolitical.co",
+      "note": "VP Engineering - in people.json"
+    },
+    "U07RWGEBG4D": {
+      "displayName": "Charles Killer",
+      "email": "charles.killer@apolitical.co",
+      "note": "AI Squad Tech Lead - in people.json"
+    }
+  },
+  "archivedFiles": {},
+  "config": {
+    "staleDays": 90,
+    "categoryPatterns": {
+      "engineering": ["*engineering*", "*platform*", "*data*", "*infrastructure*"],
+      "product": ["*product*", "*roadmap*", "*feature*"],
+      "design": ["*design*", "*ux*", "*ui*"],
+      "marketing": ["*marketing*", "*comms*", "*brand*"],
+      "partnerships": ["*partnerships*", "*sales*", "*customer*"],
+      "operations": ["*incident*", "*bug*", "*support*", "*ops*"]
+    }
+  }
+}

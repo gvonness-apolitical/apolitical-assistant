@@ -274,6 +274,18 @@ Add to monthly routine:
 
 Or schedule via cron/launchd to run first of each month.
 
+## Related Maintenance
+
+As part of monthly maintenance, also consider running:
+
+- `/sync-figma --cleanup` - Archive stale Figma entries (>90 days without activity)
+- `/sync-people --refresh` - Verify and update people cache
+
+These can be combined in a monthly maintenance routine:
+```
+/archive-old --auto && /sync-figma --cleanup && /sync-people --refresh
+```
+
 ## Notes
 
 - Archives preserve original directory structure
@@ -281,3 +293,4 @@ Or schedule via cron/launchd to run first of each month.
 - Archive index enables quick lookup without extraction
 - Restoration is straightforward for both compressed and flat archives
 - Manual archive decision for investigations and thinking sessions
+- Figma sources are maintained separately via `/sync-figma`

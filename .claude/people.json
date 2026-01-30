@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "lastUpdated": "2026-01-28T11:15:00Z",
+  "lastUpdated": "2026-01-30T10:00:00Z",
   "me": {
     "email": "greg.vonness@apolitical.co",
     "displayName": "Greg von Ness",
@@ -13,7 +13,7 @@
       "displayName": "Joel Patrick",
       "aliases": ["Joel", "JP"],
       "identifiers": {
-        "slackUserId": null,
+        "slackUserId": "U04A8BBTBEC",
         "slackDmChannelId": "D08NDKCA733",
         "githubUsername": null,
         "linearUserId": null,
@@ -126,7 +126,7 @@
       "displayName": "Charles Killer",
       "aliases": ["Charles", "Charlie"],
       "identifiers": {
-        "slackUserId": null,
+        "slackUserId": "U07RWGEBG4D",
         "slackDmChannelId": "D08FU78CKT9",
         "githubUsername": "ckiller-apolitical",
         "linearUserId": null,
@@ -142,10 +142,10 @@
       "lastVerified": "2026-01-28"
     },
     "che.thomson@apolitical.co": {
-      "displayName": "Che Thomson",
-      "aliases": ["Che"],
+      "displayName": "Ché Thomson",
+      "aliases": ["Ché", "Che"],
       "identifiers": {
-        "slackUserId": null,
+        "slackUserId": "U01DGBELKQ8",
         "slackDmChannelId": "D08JNFURRC3",
         "githubUsername": null,
         "linearUserId": null,
@@ -200,7 +200,7 @@
       "displayName": "Tanya Riordan",
       "aliases": ["Tanya"],
       "identifiers": {
-        "slackUserId": null,
+        "slackUserId": "U09ECJKFLV7",
         "slackDmChannelId": "D09EAG8454N",
         "githubUsername": null,
         "linearUserId": null,
@@ -237,7 +237,7 @@
       "displayName": "Lowell Weisbord",
       "aliases": ["Lowell"],
       "identifiers": {
-        "slackUserId": null,
+        "slackUserId": "UBZSLAWP9",
         "slackDmChannelId": null,
         "githubUsername": null,
         "linearUserId": null,
@@ -570,6 +570,7 @@
       "charles": "charles.killer@apolitical.co",
       "charlie": "charles.killer@apolitical.co",
       "che": "che.thomson@apolitical.co",
+      "ché": "che.thomson@apolitical.co",
       "jess": "jessica.vanonselen@apolitical.co",
       "jessica": "jessica.vanonselen@apolitical.co",
       "byron": "byron.sorgdrager@apolitical.co",
@@ -596,11 +597,17 @@
       "onu": "onuchukwu.adebayo@apolitical.co"
     },
     "bySlackUserId": {
+      "U04A8BBTBEC": "joel.patrick@apolitical.co",
+      "U07RWGEBG4D": "charles.killer@apolitical.co",
+      "U01DGBELKQ8": "che.thomson@apolitical.co",
+      "UBZSLAWP9": "lowell.weisbord@apolitical.co",
+      "U09ECJKFLV7": "tanya.riordan@apolitical.co",
       "U07UJU7CBLL": "leonardo.maglio@apolitical.co",
       "U023PQ65QSU": "lauren.benson-armer@apolitical.co",
       "U03RQ9S67T7": "amber.keates@apolitical.co",
       "U0143B3HQTB": "renzo.rozza@apolitical.co",
-      "U05BBP2MW5B": "annika.chauhan@apolitical.co"
+      "U05BBP2MW5B": "annika.chauhan@apolitical.co",
+      "U09RR0S5X5L": "samuel.balogun@apolitical.co"
     },
     "byGithubUsername": {
       "pshatwell-apolitical": "peter.shatwell@apolitical.co",

@@ -36,6 +36,10 @@ This provides a comprehensive view with minimal API calls.
 5. **Email**: Important threads sent/received
 6. **Incidents**: Any incidents this week and their status
 7. **Humaans**: Team changes, who was out
+8. **Figma**: Design files shared this week
+   - Load `.claude/figma-sources.json`
+   - Filter files with `lastShared` within the week
+   - Group by category and owner
 
 ## Output Structure
 
@@ -55,6 +59,11 @@ By category: 1:1s, planning, reviews, external, other
 - PRs reviewed with brief notes
 - Documents reviewed
 - Designs or proposals reviewed
+
+### Design Activity
+Figma files shared this week:
+| File | Owner | Category | Channel |
+- Note any major design work or updates
 
 ### Team Activity
 - Who was out and when

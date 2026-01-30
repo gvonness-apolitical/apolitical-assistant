@@ -62,6 +62,9 @@ First resolve the person using people.json (see Lookup Algorithm above). Then se
 6. **Linear**: Shared tickets or projects (use `linearUserId` if cached)
 7. **GitHub**: Shared PRs or reviews (use `githubUsername` if cached)
 8. **Notion**: Docs they've authored or are mentioned in
+9. **Figma**: Design files they own or contributed to
+   - Check `.claude/figma-sources.json` → `indices.byOwnerSlackId[slackUserId]`
+   - Include recently shared files where they're a contributor
 
 **If person not in cache**: Search Humaans/Slack by name, then add them to people.json.
 
@@ -69,6 +72,7 @@ First resolve the person using people.json (see Lookup Algorithm above). Then se
 - Profile summary (role, team, tenure)
 - Recent interactions (last 2 weeks)
 - Shared work (tickets, PRs, projects)
+- Design work (Figma files owned or contributed to)
 - Communication patterns (how we typically interact)
 - Open items (things pending with them)
 
@@ -84,6 +88,10 @@ Search across:
 4. **Notion General**: Other project docs and wikis
 5. **Slack**: Project channels, recent discussions
 6. **Incidents**: Related incidents
+7. **Figma**: Related design files
+   - Search `.claude/figma-sources.json` by category matching project type
+   - Search file names/descriptions for project keywords
+   - Check files shared in project-related channels
 
 ### Output for Project
 - Project overview (goals, timeline, status)
@@ -91,6 +99,7 @@ Search across:
 - Recent activity summary
 - Current blockers or risks
 - Key docs and resources
+- Related Figma files (designs, flows, boards)
 
 ## For a Topic
 
@@ -104,6 +113,10 @@ Search across all systems for keyword/phrase:
 4. **Google Drive**: Docs and sheets
 5. **Linear**: Tickets and projects
 6. **GitHub**: Issues, PRs, code
+7. **Figma**: Design files related to topic
+   - Search `.claude/figma-sources.json` file names and descriptions
+   - Match topic keywords against category, sharedIn channels
+   - If design-related topic, fetch screenshot via Figma API for visual context
 
 ### Output for Topic
 - Overview of what was found

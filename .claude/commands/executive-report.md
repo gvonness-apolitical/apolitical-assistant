@@ -64,6 +64,11 @@ Read Gemini auto-notes from `121/` directory for the period:
 - Leadership meetings (strategic context)
 - Team meetings (project updates)
 
+#### Figma (`.claude/figma-sources.json`)
+- Design files shared during the period
+- Group by category (product, engineering, marketing)
+- Note significant design work (user flows, new features, system diagrams)
+
 ### 3. Analyze & Categorize
 
 Group findings into:

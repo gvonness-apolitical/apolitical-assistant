@@ -48,7 +48,11 @@ Use local context first, then supplement with fresh Linear/GitHub/Slack API call
 3. **Notion Priority Sources** (load from `.claude/notion-sources.json`):
    - **RFCs**: Draft or In Review status (decisions pending that may block progress)
    - **PRDs**: Requirements awaiting approval
-4. **Dependencies**: External blockers (vendor, other team, decision needed)
+4. **Figma** (load from `.claude/figma-sources.json`):
+   - Check if design work is pending for blocked tickets
+   - Look for recent design files in project channels that might indicate work in progress
+   - Note if design decisions are needed
+5. **Dependencies**: External blockers (vendor, other team, decision needed, design)
 
 ## Output
 
