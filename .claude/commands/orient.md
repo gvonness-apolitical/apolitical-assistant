@@ -3,7 +3,35 @@
 Gather context at the start of a session to be effective as an assistant.
 
 ## Usage
+
 - `/orient` - Gather comprehensive context and be ready to assist
+- `/orient --quick` - Use cached data only, no API calls (fast, works offline)
+
+## Core Patterns Used
+
+- [Person Resolution](../patterns/person-resolution.md) - Resolving names in calendar/Slack
+- [Local Context First](../patterns/local-context-first.md) - Check caches before API calls
+- [Daily Index Update](../patterns/daily-index-update.md) - Update daily context index
+- [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
+
+## Quick Mode
+
+When `--quick` flag is provided:
+
+1. Skip all MCP/API calls
+2. Load only from local caches:
+   - `people.json` - Team information
+   - `linear-cache.json` - Sprint/project structure
+   - `slack-channels.json` - Channel priorities
+   - `figma-sources.json` - Recent Figma activity
+   - `context/YYYY-MM-DD/` - Today's accumulated context
+3. Note in output: "Quick mode - using cached data only"
+4. Complete in <2 seconds
+
+Use quick mode when:
+- MCP servers are unavailable
+- You need a fast status check
+- Working offline
 
 ## What This Does
 

@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "description": "Consolidated settings for skills and caches. Local overrides in settings.local.json.",
+
+  "linearDefaults": {
+    "defaultTeam": null,
+    "defaultProject": null,
+    "defaultLabels": []
+  },
+
+  "retention": {
+    "contextDays": 30,
+    "briefingDays": 90,
+    "reviewDays": 365,
+    "workProductDays": 90,
+    "eodDays": 30
+  },
+
+  "thresholds": {
+    "stalePeopleDays": 7,
+    "staleLinearDays": 1,
+    "staleSlackChannelsDays": 30,
+    "staleFigmaDays": 90,
+    "staleContextItemDays": 7
+  },
+
+  "rateLimits": {
+    "slackConcurrentChannels": 5,
+    "linearBatchSize": 50,
+    "githubRequestsPerMinute": 30,
+    "defaultDelayMs": 100
+  },
+
+  "priorities": {
+    "p0Keywords": ["incident", "security", "outage", "urgent", "critical", "blocker"],
+    "p1Keywords": ["blocking", "deadline", "today", "asap", "review"],
+    "prioritySenders": [],
+    "priorityChannels": []
+  },
+
+  "notifications": {
+    "promptForStaleCache": true,
+    "warnOnMissingIntegration": true,
+    "showQuickModeReminder": true
+  },
+
+  "skills": {
+    "orient": {
+      "checkPeopleCache": true,
+      "checkLinearCache": true,
+      "checkFigmaCache": true
+    },
+    "slackRead": {
+      "maxAgeDays": 30,
+      "autoMarkBotsRead": true,
+      "extractFigmaLinks": true
+    },
+    "createTicket": {
+      "requireConfirmation": true,
+      "suggestLabels": true,
+      "suggestEstimate": true
+    }
+  },
+
+  "output": {
+    "defaultArtifactDirectory": "work",
+    "includeSourceLinks": true,
+    "includeTimestamps": true
+  }
+}

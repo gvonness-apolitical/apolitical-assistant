@@ -8,6 +8,13 @@ Gather action items and requests from all systems where you've been tagged, ment
 - `/update-todos --quick` - Quick scan (canvases and Slack only)
 - `/update-todos --source [source]` - Scan specific source (canvases, slack, email, notion, google)
 
+## Core Patterns Used
+
+- [Person Resolution](../patterns/person-resolution.md) - Detect mentions using your Slack ID
+- [Daily Index Update](../patterns/daily-index-update.md) - Update daily context index
+- [Rate Limiting](../patterns/rate-limiting.md) - Batch API calls efficiently
+- [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
+
 ## Sources
 
 ### 1. Slack Canvases (from meeting-config.json)

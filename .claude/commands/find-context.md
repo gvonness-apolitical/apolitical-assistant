@@ -3,9 +3,36 @@
 Search across all systems to gather context on a person, project, or topic.
 
 ## Usage
+
 - `/find-context [person name]` - gather all context about interactions with a person
 - `/find-context [project/squad name]` - gather context about a project
 - `/find-context [topic/keyword]` - search for relevant information on a topic
+- `/find-context [query] --quick` - search local caches only, no API calls
+
+## Core Patterns Used
+
+- [Person Resolution](../patterns/person-resolution.md) - Resolve names to identifiers
+- [Local Context First](../patterns/local-context-first.md) - Check caches before API calls
+- [Progressive Discovery](../patterns/progressive-discovery.md) - Cache newly discovered IDs
+- [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
+
+## Quick Mode
+
+When `--quick` flag is provided:
+
+1. Skip all MCP/API calls
+2. Search only local sources:
+   - `people.json` - Person info and identifiers
+   - `context/YYYY-MM-DD/` - Today's accumulated context
+   - `context/eod-*.md` - Recent EOD summaries
+   - `figma-sources.json` - Figma files cache
+   - `linear-cache.json` - Project/team structure
+3. Note in output: "Quick mode - local data only. Run without --quick for comprehensive search."
+
+Use quick mode when:
+- You need fast results
+- MCP servers are slow or unavailable
+- Checking if context already exists locally
 
 ## Person Lookup
 

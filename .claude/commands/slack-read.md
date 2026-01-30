@@ -8,6 +8,14 @@ Process all unread Slack messages, summarize activity, create tasks for requests
 - `/slack-read --quick` - Summary only, no task creation
 - `/slack-read --dry-run` - Preview what would be processed without marking read
 
+## Core Patterns Used
+
+- [Person Resolution](../patterns/person-resolution.md) - Resolve message authors
+- [Figma Extraction](../patterns/figma-extraction.md) - Extract and cache Figma links
+- [Daily Index Update](../patterns/daily-index-update.md) - Update daily context index
+- [Rate Limiting](../patterns/rate-limiting.md) - Batch channel reads efficiently
+- [Error Handling](../patterns/error-handling.md) - Handle Slack API issues
+
 ## Purpose
 
 Kill the Slack notification count while ensuring nothing important is missed:
