@@ -77,9 +77,13 @@ First resolve the person using people.json (see Lookup Algorithm above). Then se
 Search across:
 1. **Linear**: Project/squad tickets, milestones, roadmap
 2. **GitHub**: Related repositories, recent PRs
-3. **Notion**: Project docs, RFCs, specs
-4. **Slack**: Project channels, recent discussions
-5. **Incidents**: Related incidents
+3. **Notion Priority Sources** (check first - load from `.claude/notion-sources.json`):
+   - **RFCs**: Technical decisions, architecture proposals for the project
+   - **PRDs**: Feature specs, requirements, discovery research
+   - **Product Roadmap**: Squad priorities and planned work
+4. **Notion General**: Other project docs and wikis
+5. **Slack**: Project channels, recent discussions
+6. **Incidents**: Related incidents
 
 ### Output for Project
 - Project overview (goals, timeline, status)
@@ -91,11 +95,15 @@ Search across:
 ## For a Topic
 
 Search across all systems for keyword/phrase:
-1. **Slack**: Threads mentioning topic
-2. **Notion**: Pages and databases
-3. **Google Drive**: Docs and sheets
-4. **Linear**: Tickets and projects
-5. **GitHub**: Issues, PRs, code
+1. **Notion Priority Sources** (check first - load from `.claude/notion-sources.json`):
+   - **RFCs**: If topic is technical (architecture, API, infrastructure)
+   - **PRDs**: If topic is feature/product related
+   - **Product Roadmap**: If topic relates to priorities/planning
+2. **Slack**: Threads mentioning topic
+3. **Notion General**: Other pages and databases
+4. **Google Drive**: Docs and sheets
+5. **Linear**: Tickets and projects
+6. **GitHub**: Issues, PRs, code
 
 ### Output for Topic
 - Overview of what was found

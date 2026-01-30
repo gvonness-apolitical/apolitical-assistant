@@ -78,15 +78,18 @@ Scan inbox for emails requiring action.
 
 Find pages where you've been mentioned or assigned.
 
-1. **Search for mentions**: Use `notion-search` for your name/email
-2. **Check comments**: Look for unresolved comments tagging you
-3. **Check databases**:
+1. **Check priority sources first** (load from `.claude/notion-sources.json`):
+   - **RFCs**: Comments tagging you on proposals needing review/input
+   - **PRDs**: Comments or action items assigned to you
+2. **Search for mentions**: Use `notion-search` for your name/email
+3. **Check comments**: Look for unresolved comments tagging you
+4. **Check databases**:
    - Tasks/tickets assigned to you
    - Action items with your name
-4. **Filter**:
+5. **Filter**:
    - Unresolved/open items only
    - Last 30 days
-5. **Extract**:
+6. **Extract**:
    - Page title
    - Comment or task text
    - Link to page

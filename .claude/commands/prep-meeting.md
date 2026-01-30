@@ -53,7 +53,11 @@ Use local context to reduce API calls and provide richer context.
 3. **Linear**: Check for shared tickets or projects with attendees
 4. **GitHub**: Recent PRs authored or reviewed by attendees (if engineering)
 5. **Previous meetings**: Search for prior meeting notes in `meetings/output/`
-6. **Notion**: Search for relevant docs or RFCs involving attendees
+6. **Notion Priority Sources** (load from `.claude/notion-sources.json`):
+   - **RFCs**: If meeting involves technical topics or engineering decisions
+   - **PRDs**: If meeting involves product/feature discussions
+   - **Product Roadmap**: If meeting is about planning or priorities
+7. **Notion General**: Other docs involving attendees
 
 ### Channel Context (Named Meetings with Mapping)
 

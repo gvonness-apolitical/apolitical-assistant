@@ -42,8 +42,11 @@ Perform a comprehensive technical review of an RFC in Notion, providing structur
 - Check recent PRs in affected areas
 - Review related issues or technical debt
 
-**From Notion:**
-- Search for related RFCs and architecture decision records
+**From Notion** (load `.claude/notion-sources.json` for priority sources):
+- **RFCs database**: Search for related RFCs and architecture decision records
+  - Page ID: `090aa88ff28d43cb9d1ddeeb91ce0cc6`
+  - Check for RFCs with similar scope, referenced systems, or by same author
+- **PRDs**: Related product specs that inform requirements
 - Find existing documentation on affected systems
 - Check for relevant technical guidelines
 
