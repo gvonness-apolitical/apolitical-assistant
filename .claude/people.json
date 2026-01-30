@@ -656,9 +656,15 @@
         "dom.gaulton@apolitical.co",
         "onuchukwu.adebayo@apolitical.co"
       ],
-      "Data": ["peter.shatwell@apolitical.co"],
-      "People": ["lauren.benson-armer@apolitical.co"],
-      "Commercial": ["amber.keates@apolitical.co"]
+      "Data": [
+        "peter.shatwell@apolitical.co"
+      ],
+      "People": [
+        "lauren.benson-armer@apolitical.co"
+      ],
+      "Commercial": [
+        "amber.keates@apolitical.co"
+      ]
     },
     "bySquad": {
       "Platform": [
@@ -688,7 +694,10 @@
         "leonardo.maglio@apolitical.co",
         "dom.gaulton@apolitical.co"
       ],
-      "Data": ["peter.shatwell@apolitical.co", "yang.chih-yuan@apolitical.co"]
+      "Data": [
+        "peter.shatwell@apolitical.co",
+        "yang.chih-yuan@apolitical.co"
+      ]
     }
   }
 }
