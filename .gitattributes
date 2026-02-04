@@ -1,41 +1,43 @@
-# git-crypt encrypted files
-# Directories containing sensitive data
-
-# Daily context - session notes, orient summaries, slack reads
-context/** filter=git-crypt diff=git-crypt
-context/**/* filter=git-crypt diff=git-crypt
-
-# Meetings - 1:1 scripts, prep notes, attendee context
-meetings/** filter=git-crypt diff=git-crypt
-meetings/**/* filter=git-crypt diff=git-crypt
-
-# 1:1 archives - Gemini meeting transcripts
-121/** filter=git-crypt diff=git-crypt
-121/**/* filter=git-crypt diff=git-crypt
-
-# Daily briefings - email/calendar/incident summaries
-briefings/** filter=git-crypt diff=git-crypt
-briefings/**/* filter=git-crypt diff=git-crypt
-
-# Work products - CV reviews, drafts, internal deliverables
-work/** filter=git-crypt diff=git-crypt
-work/**/* filter=git-crypt diff=git-crypt
-
-# Periodic reviews - weekly/executive summaries
-reviews/** filter=git-crypt diff=git-crypt
-reviews/**/* filter=git-crypt diff=git-crypt
-
-# Investigations - internal research and analysis
-investigations/** filter=git-crypt diff=git-crypt
-investigations/**/* filter=git-crypt diff=git-crypt
-
-# Rubberduck - strategy and thinking sessions
-rubberduck/** filter=git-crypt diff=git-crypt
-rubberduck/**/* filter=git-crypt diff=git-crypt
-
-# Ensure consistent line endings
+# Ensure consistent line endings (must come BEFORE git-crypt rules)
 * text=auto
 *.ts text eol=lf
 *.json text eol=lf
 *.md text eol=lf
 *.sh text eol=lf
+
+# git-crypt encrypted files
+# IMPORTANT: These rules must come AFTER line-ending rules above.
+# The -text attribute prevents git from applying line-ending normalization
+# to encrypted binary blobs, which corrupts the authentication tag.
+
+# Daily context - session notes, orient summaries, slack reads
+context/** filter=git-crypt diff=git-crypt -text
+context/**/* filter=git-crypt diff=git-crypt -text
+
+# Meetings - 1:1 scripts, prep notes, attendee context
+meetings/** filter=git-crypt diff=git-crypt -text
+meetings/**/* filter=git-crypt diff=git-crypt -text
+
+# 1:1 archives - Gemini meeting transcripts
+121/** filter=git-crypt diff=git-crypt -text
+121/**/* filter=git-crypt diff=git-crypt -text
+
+# Daily briefings - email/calendar/incident summaries
+briefings/** filter=git-crypt diff=git-crypt -text
+briefings/**/* filter=git-crypt diff=git-crypt -text
+
+# Work products - CV reviews, drafts, internal deliverables
+work/** filter=git-crypt diff=git-crypt -text
+work/**/* filter=git-crypt diff=git-crypt -text
+
+# Periodic reviews - weekly/executive summaries
+reviews/** filter=git-crypt diff=git-crypt -text
+reviews/**/* filter=git-crypt diff=git-crypt -text
+
+# Investigations - internal research and analysis
+investigations/** filter=git-crypt diff=git-crypt -text
+investigations/**/* filter=git-crypt diff=git-crypt -text
+
+# Rubberduck - strategy and thinking sessions
+rubberduck/** filter=git-crypt diff=git-crypt -text
+rubberduck/**/* filter=git-crypt diff=git-crypt -text

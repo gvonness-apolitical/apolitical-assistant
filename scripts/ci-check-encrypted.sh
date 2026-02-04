@@ -37,9 +37,15 @@ for path in "${ENCRYPTED_PATHS[@]}"; do
         # The header is: \x00GITCRYPT\x00
         header=$(head -c 10 "$file" 2>/dev/null | cat -v || echo "")
 
+        file_size=$(wc -c < "$file" 2>/dev/null | tr -d '[:space:]')
+
         if [[ "$header" == *"GITCRYPT"* ]] || [[ "$header" == "^@GITCRYPT"* ]]; then
-            # File is properly encrypted
-            :
+            # File has correct header — verify it's at least 10 bytes (header size)
+            if [ "$file_size" -lt 10 ]; then
+                echo -e "${RED}ERROR: Encrypted file too small ($file_size bytes): $file${NC}"
+                echo "  Encrypted files must be at least 10 bytes (GITCRYPT header)."
+                ERRORS=$((ERRORS + 1))
+            fi
         elif [[ -z "$header" ]]; then
             # Empty file - this is fine
             :
