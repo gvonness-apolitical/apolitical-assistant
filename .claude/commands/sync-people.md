@@ -7,9 +7,27 @@ Initialize or refresh the person identifier cache from Humaans and Slack.
 - `/sync-people` - Full sync from Humaans and Slack, populate people.json
 - `/sync-people --refresh` - Re-verify existing people, mark missing as inactive
 - `/sync-people --add-contact [email] [name]` - Add external contact manually
+- `/sync-people --resume` - Resume from last completed step if previous run was interrupted
+
+## Checkpoint Discipline
+
+**You MUST complete each step before moving to the next.**
+
+After each step, output a checkpoint marker:
+
+```
+✓ CHECKPOINT: Step N complete - [step name]
+  [Brief summary of what was done]
+
+Proceeding to Step N+1: [next step name]
+```
+
+**Progress tracking:** Append to `context/YYYY-MM-DD/index.md`
+**Resume with:** `/sync-people --resume`
 
 ## Core Patterns Used
 
+- [Checkpointing](../patterns/checkpointing.md) - Progress tracking and resume
 - [Progressive Discovery](../patterns/progressive-discovery.md) - Build identifier cache
 - [Error Handling](../patterns/error-handling.md) - Handle Humaans/Slack unavailability
 - [Rate Limiting](../patterns/rate-limiting.md) - Batch user lookups
@@ -20,14 +38,21 @@ Populates `.claude/people.json` with team member identifiers from multiple sourc
 
 ## Process
 
-### 1. Load Existing Data
+### Step 1: Load Existing Data
 
 Read current `.claude/people.json` if it exists:
 - Preserve manually added aliases
 - Preserve `contacts` section (external people)
 - Preserve discovered identifiers (GitHub, Linear)
 
-### 2. Gather Fresh Data
+```
+✓ CHECKPOINT: Step 1 complete - Load Existing Data
+  Existing people: [N] | Contacts: [N] | Aliases preserved: [N]
+
+Proceeding to Step 2: Gather Fresh Data
+```
+
+### Step 2: Gather Fresh Data
 
 **From Humaans** (`humaans_list_employees`):
 - Employee ID, email, name
@@ -44,7 +69,14 @@ Read current `.claude/people.json` if it exists:
 - Canvas IDs from `oneOnOnes`
 - `isDirectReport` flags
 
-### 3. Build Person Records
+```
+✓ CHECKPOINT: Step 2 complete - Gather Fresh Data
+  Humaans: [N] employees | Slack: [N] users | Meeting Config: [N] 1:1s
+
+Proceeding to Step 3: Build Person Records
+```
+
+### Step 3: Build Person Records
 
 For each employee in Humaans:
 
@@ -69,7 +101,14 @@ For each employee in Humaans:
 }
 ```
 
-### 4. Generate Aliases
+```
+✓ CHECKPOINT: Step 3 complete - Build Person Records
+  Records built: [N] | Slack IDs matched: [N]
+
+Proceeding to Step 4: Generate Aliases
+```
+
+### Step 4: Generate Aliases
 
 For each person, create aliases from:
 - First name (always)
@@ -97,7 +136,14 @@ For each person, create aliases from:
 
 Preserve any manually added aliases from existing data.
 
-### 5. Build Indices
+```
+✓ CHECKPOINT: Step 4 complete - Generate Aliases
+  Aliases generated: [N] | Nicknames applied: [N]
+
+Proceeding to Step 5: Build Indices
+```
+
+### Step 5: Build Indices
 
 **byAlias** - lowercase alias → email:
 ```json
@@ -114,7 +160,14 @@ Preserve any manually added aliases from existing data.
 }
 ```
 
-### 6. Update "me" Section
+```
+✓ CHECKPOINT: Step 5 complete - Build Indices
+  Alias index: [N] entries | Slack ID index: [N] entries
+
+Proceeding to Step 6: Update "me" Section
+```
+
+### Step 6: Update "me" Section
 
 Populate with your identity:
 ```json
@@ -127,12 +180,67 @@ Populate with your identity:
 }
 ```
 
-### 7. Write people.json
+```
+✓ CHECKPOINT: Step 6 complete - Update "me" Section
+  Identity configured: [email]
+
+Proceeding to Step 7: Write people.json
+```
+
+### Step 7: Write people.json
 
 Save to `.claude/people.json` with:
 - Updated `lastUpdated` timestamp
 - Version number preserved
 - All sections populated
+
+```
+✓ CHECKPOINT: Step 7 complete - Write people.json
+  File saved: .claude/people.json
+```
+
+## Final Summary
+
+After ALL 7 steps complete, display:
+
+```
+# Sync People Complete - YYYY-MM-DD
+
+## Steps Completed
+✓ 1. Load Existing     ✓ 2. Gather Fresh    ✓ 3. Build Records
+✓ 4. Generate Aliases  ✓ 5. Build Indices   ✓ 6. Update "me"
+✓ 7. Write File
+
+## Key Results
+- **People synced**: [N]
+- **New people**: [N]
+- **Marked inactive**: [N]
+- **Slack IDs matched**: [N]
+- **Aliases indexed**: [N]
+
+## Saved to
+.claude/people.json
+
+---
+People sync complete.
+```
+
+## Error Handling
+
+If any step fails:
+1. Log the error and step number
+2. **Save progress** to daily context
+3. Continue with remaining steps if possible
+4. Note the failure in the final summary
+5. Suggest: "Resume with: /sync-people --resume"
+
+### Resume Behavior
+
+When `/sync-people --resume` is run:
+1. Check daily context for incomplete sync
+2. Skip completed steps
+3. Resume from first incomplete step
+4. Continue through remaining steps
 
 ## Refresh Mode (`--refresh`)
 

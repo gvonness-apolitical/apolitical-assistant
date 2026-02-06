@@ -7,14 +7,36 @@ Prepare for an upcoming meeting by gathering relevant context from all systems i
 - `/prep-meeting` - prep for next meeting on calendar
 - `/prep-meeting [name]` - prep for meeting with specific person
 - `/prep-meeting [meeting title]` - prep for specific meeting
+- `/prep-meeting --resume` - Resume from last completed step if previous run was interrupted
+
+## Checkpoint Discipline
+
+**You MUST complete each step before moving to the next.**
+
+After each step, output a checkpoint marker:
+
+```
+✓ CHECKPOINT: Step N complete - [step name]
+  [Brief summary of what was done]
+
+Proceeding to Step N+1: [next step name]
+```
+
+**Progress tracking:** Append to `context/YYYY-MM-DD/index.md`
+**Resume with:** `/prep-meeting --resume`
 
 ## Core Patterns Used
 
+- [Checkpointing](../patterns/checkpointing.md) - Progress tracking and resume
 - [Person Resolution](../patterns/person-resolution.md) - Resolve attendees to identifiers
 - [Local Context First](../patterns/local-context-first.md) - Check caches before API calls
 - [Figma Extraction](../patterns/figma-extraction.md) - Extract Figma links from channels
 - [Daily Index Update](../patterns/daily-index-update.md) - Log meeting prep activity
 - [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
+
+## Process
+
+### Step 1: Identify Meeting & Attendees
 
 ## Attendee Resolution
 
@@ -30,7 +52,14 @@ When preparing for a meeting, resolve attendees using `.claude/people.json`:
 
 3. **Fallback**: If attendee not in cache, search by email in meeting-config.json `oneOnOnes`
 
-## Check Daily Context First
+```
+✓ CHECKPOINT: Step 1 complete - Identify Meeting & Attendees
+  Meeting: [name] at [time] | Attendees: [N] | Type: [1:1/group/external]
+
+Proceeding to Step 2: Check Daily Context
+```
+
+### Step 2: Check Daily Context
 
 Before making API calls, check local context files:
 
@@ -52,7 +81,14 @@ Before making API calls, check local context files:
 
 Use local context to reduce API calls and provide richer context.
 
-## Gather Context
+```
+✓ CHECKPOINT: Step 2 complete - Check Daily Context
+  Local context found: [yes/no] | MBR found: [yes/no/n/a]
+
+Proceeding to Step 3: Gather External Context
+```
+
+### Step 3: Gather External Context
 
 ### Standard Context (All Meetings)
 
@@ -67,7 +103,16 @@ Use local context to reduce API calls and provide richer context.
    - **Product Roadmap**: If meeting is about planning or priorities
 7. **Notion General**: Other docs involving attendees
 
-### Channel Context (Named Meetings with Mapping)
+```
+✓ CHECKPOINT: Step 3 complete - Gather External Context
+  Calendar: ✓ | Slack: [N] msgs | Linear: [N] tickets | GitHub: [N] PRs | Notion: [N] docs
+
+Proceeding to Step 4: Channel/Canvas Context
+```
+
+### Step 4: Channel/Canvas Context
+
+#### Channel Context (Named Meetings with Mapping)
 
 If the meeting has a configured channel in `.claude/meeting-config.json`:
 
@@ -135,6 +180,15 @@ If this is a 1:1 with a configured canvas in `oneOnOnes`:
    - Use `settings.canvasTemplate` or `customTemplate` if set
    - If accepted, use `slack_create_canvas` and update config
 8. **Update config**: Set `lastPrepDate` to current time
+
+```
+✓ CHECKPOINT: Step 4 complete - Channel/Canvas Context
+  Channel msgs: [N] | Canvas items: [N] | Action items: [N]
+
+Proceeding to Step 5: Generate Prep Document
+```
+
+### Step 5: Generate Prep Document
 
 ## Message Filtering
 
@@ -281,6 +335,53 @@ Create a meeting prep note with:
 Save to `meetings/output/[meeting-type]/YYYY-MM-DD-[attendee-or-title]-prep.md`
 
 Meeting types: `one-on-ones/`, `squad/`, `planning/`, `external/`, `general/`
+
+```
+✓ CHECKPOINT: Step 5 complete - Generate Prep Document
+  Saved to: meetings/output/[type]/YYYY-MM-DD-[name]-prep.md
+```
+
+## Final Summary
+
+After ALL 5 steps complete, display:
+
+```
+# Meeting Prep Complete - YYYY-MM-DD
+
+## Steps Completed
+✓ 1. Identify Meeting    ✓ 2. Check Local Context    ✓ 3. Gather External
+✓ 4. Channel/Canvas      ✓ 5. Generate Prep
+
+## Key Results
+- **Meeting**: [name] at [time]
+- **Attendees**: [N]
+- **Action items found**: [N] (mine: [N])
+- **Talking points generated**: [N]
+- **Linear tickets created**: [N]
+
+## Saved to
+meetings/output/[type]/YYYY-MM-DD-[name]-prep.md
+
+---
+Meeting prep complete.
+```
+
+## Error Handling
+
+If any step fails:
+1. Log the error and step number
+2. **Save progress** to daily context
+3. Continue with remaining steps if possible
+4. Note the failure in the final summary
+5. Suggest: "Resume with: /prep-meeting --resume"
+
+### Resume Behavior
+
+When `/prep-meeting --resume` is run:
+1. Check daily context for incomplete meeting prep
+2. Skip completed steps
+3. Resume from first incomplete step
+4. Continue through remaining steps
 
 ## Figma Link Extraction
 

@@ -7,6 +7,31 @@ Monthly maintenance skill to archive old artifacts and maintain a clean working 
 - `/archive-old` - Interactive mode with confirmations
 - `/archive-old --dry-run` - Preview what would be archived
 - `/archive-old --auto` - Archive without confirmations (for automation)
+- `/archive-old --resume` - Resume from last completed step if previous run was interrupted
+
+## Checkpoint Discipline
+
+**You MUST complete each step before moving to the next.**
+
+After each step, output a checkpoint marker:
+
+```
+✓ CHECKPOINT: Step N complete - [step name]
+  [Brief summary of what was done]
+
+Proceeding to Step N+1: [next step name]
+```
+
+**IMPORTANT:** Steps 4-5 involve file deletion. Always checkpoint before these steps.
+
+**Progress tracking:** Append to `context/YYYY-MM-DD/index.md`
+**Resume with:** `/archive-old --resume`
+
+## Core Patterns Used
+
+- [Checkpointing](../patterns/checkpointing.md) - Progress tracking and resume
+- [Frontmatter](../patterns/frontmatter.md) - Update archived files' metadata
+- [Error Handling](../patterns/error-handling.md) - Graceful degradation
 
 ## Purpose
 
@@ -27,7 +52,7 @@ Keep working directories clean by archiving old artifacts according to retention
 
 ## Process
 
-### 1. Scan for Old Artifacts
+### Step 1: Scan for Old Artifacts
 
 ```
 Scanning for artifacts older than retention period...
@@ -69,7 +94,14 @@ Summary:
   - Reviews to move: 2
 ```
 
-### 2. Confirm Archive
+```
+✓ CHECKPOINT: Step 1 complete - Scan for Old Artifacts
+  Context dirs: [N] | Briefings: [N] | EOD: [N] | Work: [N] | Reviews: [N]
+
+Proceeding to Step 2: Confirm Archive
+```
+
+### Step 2: Confirm Archive (User Confirmation Gate)
 
 ```
 Ready to archive 47 items:
@@ -82,7 +114,16 @@ Ready to archive 47 items:
 Choice:
 ```
 
-### 3. Create Archive Structure
+Skip if `--auto` mode (proceed with all).
+
+```
+✓ CHECKPOINT: Step 2 complete - Confirm Archive
+  User choice: [all/by-category/cancel]
+
+Proceeding to Step 3: Create Archive Structure
+```
+
+### Step 3: Create Archive Structure
 
 Ensure archive directories exist:
 ```
@@ -93,7 +134,21 @@ archive/
 └── reviews/
 ```
 
-### 4. Archive Daily Context
+```
+✓ CHECKPOINT: Step 3 complete - Create Archive Structure
+  Directories created: [N]
+
+Proceeding to Step 4: Archive Daily Context
+```
+
+### Step 4: Archive Daily Context (⚠️ DESTRUCTIVE)
+
+**⚠️ This step deletes original files after archiving.**
+
+```
+⚠️  DESTRUCTIVE STEP: About to compress and delete [N] day directories.
+    Progress saved. Resume with: /archive-old --resume
+```
 
 For each month with old day directories:
 
@@ -133,7 +188,16 @@ For each month with old day directories:
 
 4. **Remove originals**: Delete day directories and EOD files
 
-### 5. Move Other Artifacts
+```
+✓ CHECKPOINT: Step 4 complete - Archive Daily Context
+  Archives created: [N] | Directories removed: [N]
+
+Proceeding to Step 5: Move Other Artifacts
+```
+
+### Step 5: Move Other Artifacts (⚠️ DESTRUCTIVE)
+
+**⚠️ This step moves files from active directories to archive.**
 
 For briefings, work products, and reviews:
 
@@ -148,7 +212,14 @@ Moving briefings/2025-10-16.md → archive/briefings/2025-10-16.md ✓
 ...
 ```
 
-### 6. Update Archive Index
+```
+✓ CHECKPOINT: Step 5 complete - Move Other Artifacts
+  Briefings: [N] | Work products: [N] | Reviews: [N]
+
+Proceeding to Step 6: Update Archive Index
+```
+
+### Step 6: Update Archive Index
 
 Maintain searchable index at `archive/index.md`:
 
@@ -192,7 +263,14 @@ To find content in archives:
 4. Clean up: `rm -rf /tmp/2025-12/`
 ```
 
-### 7. Report
+```
+✓ CHECKPOINT: Step 6 complete - Update Archive Index
+  Index updated with [N] new entries
+
+Proceeding to Step 7: Report
+```
+
+### Step 7: Report
 
 ```
 Archive Complete
@@ -212,6 +290,73 @@ Archive index updated: archive/index.md
 Note: Investigations and rubberduck sessions are not auto-archived.
 Run with specific dates to archive manually.
 ```
+
+```
+✓ CHECKPOINT: Step 7 complete - Report
+  Summary displayed to user
+```
+
+## Final Summary
+
+After ALL 7 steps complete, display:
+
+```
+# Archive Complete - YYYY-MM-DD
+
+## Steps Completed
+✓ 1. Scan           ✓ 2. Confirm        ✓ 3. Create Structure
+✓ 4. Archive Context ✓ 5. Move Artifacts ✓ 6. Update Index
+✓ 7. Report
+
+## Key Results
+- **Day directories compressed**: [N] → archive/context/
+- **EOD summaries included**: [N]
+- **Briefings moved**: [N]
+- **Work products moved**: [N]
+- **Reviews moved**: [N]
+- **Space recovered**: [X] MB
+
+---
+Archive complete.
+```
+
+## Error Handling
+
+If any step fails:
+1. Log the error and step number
+2. **Save progress** to daily context
+3. Continue with remaining steps if possible
+4. Note the failure in the final summary
+5. Suggest: "Resume with: /archive-old --resume"
+
+### Resume Behavior
+
+When `/archive-old --resume` is run:
+1. Check daily context for incomplete archive run
+2. Skip completed steps
+3. Resume from first incomplete step
+4. For destructive steps (4-5), verify what was already processed
+
+## Mode Reference
+
+| Flag | Steps Run | Destructive Steps | Use Case |
+|------|-----------|-------------------|----------|
+| (none) | All 7 | 4, 5 execute with confirmation | Interactive archive |
+| `--dry-run` | 1-3, 6-7 | Skip 4-5 | Preview only |
+| `--auto` | All 7 | 4, 5 execute without confirmation | Automation |
+| `--resume` | Remaining | If not done | Recovery |
+
+### Step Summary by Mode
+
+| Step | Default | --dry-run | --auto |
+|------|:-------:|:---------:|:------:|
+| 1. Scan | ✓ | ✓ | ✓ |
+| 2. Confirm | ✓ | ✓ | - |
+| 3. Create Structure | ✓ | ✓ | ✓ |
+| 4. Archive Context ⚠️ | ✓ | - | ✓ |
+| 5. Move Artifacts ⚠️ | ✓ | - | ✓ |
+| 6. Update Index | ✓ | ✓ | ✓ |
+| 7. Report | ✓ | ✓ | ✓ |
 
 ## Manual Archive
 
