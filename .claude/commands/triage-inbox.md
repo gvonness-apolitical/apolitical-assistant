@@ -9,6 +9,39 @@ Review inbox and categorise emails for action.
 - `/triage-inbox --quick` - Fast triage without cross-system context
 - `/triage-inbox --since-last` - Only emails since last triage
 - `/triage-inbox --backlog` - Handle large inbox (paginated, no context)
+- `/triage-inbox --resume` - Resume from last completed step if previous run was interrupted
+
+## Checkpoint Discipline
+
+**You MUST complete each step before moving to the next.**
+
+After each step, output a checkpoint marker:
+
+```
+✓ CHECKPOINT: Step N complete - [step name]
+  [Brief summary of what was done]
+
+Proceeding to Step N+1: [next step name]
+```
+
+If a step is skipped (due to mode flag), note it explicitly:
+
+```
+⊘ CHECKPOINT: Step N skipped - [step name] ([reason])
+
+Proceeding to Step N+1: [next step name]
+```
+
+**IMPORTANT:** Step 8 (Execute Actions) is **destructive** - includes delete and archive operations. Always checkpoint before this step.
+
+**Progress tracking:** Stored in `.claude/email-rules.json` (triage state section)
+**Resume with:** `/triage-inbox --resume`
+
+## Core Patterns Used
+
+- [Checkpointing](../patterns/checkpointing.md) - Progress tracking and resume capability
+- [Person Resolution](../patterns/person-resolution.md) - Resolve senders to identifiers
+- [Error Handling](../patterns/error-handling.md) - Handle Gmail API issues
 
 ## Configuration
 
@@ -39,20 +72,34 @@ Map categories to Gmail labels. Skill will check if labels exist and offer to cr
 
 ## Process
 
-### 1. Load Configuration
+### Step 1: Load Configuration
 
 1. Read `.claude/email-rules.json` (create from example if missing)
 2. Check for snoozed emails that are now due
 3. If `--since-last`, use `lastTriageDate` as cutoff
 
-### 2. Fetch & Group Emails
+```
+✓ CHECKPOINT: Step 1 complete - Load Configuration
+  Rules loaded: [N] auto-delete | [N] always-keep | Snoozed due: [N]
+
+Proceeding to Step 2: Fetch & Group Emails
+```
+
+### Step 2: Fetch & Group Emails
 
 1. Search Gmail for unread/recent emails
 2. Group by thread using Gmail's `threadId`
 3. For each thread, fetch all messages to understand conversation state
 4. Apply pagination if count exceeds limit (show progress)
 
-### 3. Gather Sender Context (skip with --quick)
+```
+✓ CHECKPOINT: Step 2 complete - Fetch & Group Emails
+  Emails: [N] | Threads: [N] | Unique senders: [N]
+
+Proceeding to Step 3: Gather Sender Context
+```
+
+### Step 3: Gather Sender Context (skip with --quick)
 
 For each unique sender (excluding auto-delete matches):
 
@@ -63,7 +110,14 @@ For each unique sender (excluding auto-delete matches):
 
 Cache context within session to avoid duplicate lookups.
 
-### 4. Analyze Each Thread
+```
+✓ CHECKPOINT: Step 3 complete - Gather Sender Context
+  Senders with context: [N] | Exec: [N] | Team: [N] | External: [N]
+
+Proceeding to Step 4: Analyze Each Thread
+```
+
+### Step 4: Analyze Each Thread
 
 **Conversation State**:
 - **Awaiting you**: Their last message, no reply from you -> needs action
@@ -80,7 +134,14 @@ Cache context within session to avoid duplicate lookups.
 - Calculate hours since last message from sender
 - Flag if exceeds `slaHoursInternal` (team) or `slaHoursExternal`
 
-### 5. Apply Rules
+```
+✓ CHECKPOINT: Step 4 complete - Analyze Each Thread
+  Awaiting you: [N] | Awaiting them: [N] | Stale: [N] | SLA breaches: [N]
+
+Proceeding to Step 5: Apply Rules
+```
+
+### Step 5: Apply Rules
 
 **Auto-Delete** (from config):
 - Match `from` and/or `subject` patterns
@@ -92,7 +153,14 @@ Cache context within session to avoid duplicate lookups.
 - Never auto-delete these patterns
 - Still categorize normally
 
-### 6. Categorize Remaining
+```
+✓ CHECKPOINT: Step 5 complete - Apply Rules
+  Auto-delete candidates: [N] | Always-keep matched: [N]
+
+Proceeding to Step 6: Categorize Remaining
+```
+
+### Step 6: Categorize Remaining
 
 - **Respond** - Awaiting you, needs reply
 - **Review** - Needs attention but no reply (PR reviews, doc comments, FYI)
@@ -101,7 +169,14 @@ Cache context within session to avoid duplicate lookups.
 - **Snooze** - Needs action later (prompt for date)
 - **Delete** - No value (confirm before acting)
 
-### 7. Generate Drafts
+```
+✓ CHECKPOINT: Step 6 complete - Categorize Remaining
+  Respond: [N] | Review: [N] | Delegate: [N] | Archive: [N] | Snooze: [N] | Delete: [N]
+
+Proceeding to Step 7: Generate Drafts
+```
+
+### Step 7: Generate Drafts
 
 For each "Respond" item:
 1. Analyze thread context and tone
@@ -113,7 +188,51 @@ Draft options:
 - **Display only**: Show in output (copy/paste)
 - **Both**: Save and display
 
-### 8. Present Summary & Act
+```
+✓ CHECKPOINT: Step 7 complete - Generate Drafts
+  Drafts generated: [N]
+
+Proceeding to Step 8: Present Summary & Act
+```
+
+### Step 8: Present Summary & Act (⚠️ DESTRUCTIVE)
+
+**⚠️ This step includes destructive operations - delete and archive cannot be easily undone.**
+
+```
+⚠️  DESTRUCTIVE STEP: Bulk actions will delete [N] and archive [N] emails.
+    Deleted emails recoverable from Trash for 30 days.
+    Progress saved. Resume with: /triage-inbox --resume
+```
+
+Present summary and confirm bulk actions before executing.
+
+```
+✓ CHECKPOINT: Step 8 complete - Present Summary & Act
+  Deleted: [N] | Archived: [N] | Labeled: [N] | Drafts saved: [N]
+```
+
+## Final Summary
+
+After ALL 8 steps complete, display:
+
+```
+# Email Triage Complete - YYYY-MM-DD
+
+## Steps Completed
+✓ 1. Load Config       ✓ 2. Fetch Emails    ✓ 3. Gather Context
+✓ 4. Analyze Threads   ✓ 5. Apply Rules     ✓ 6. Categorize
+✓ 7. Generate Drafts   ✓ 8. Execute Actions
+
+## Key Results
+- **Processed**: [N] emails across [N] threads
+- **SLA breaches**: [N]
+- **Deleted**: [N] | **Archived**: [N]
+- **Respond pending**: [N] (drafts saved)
+
+---
+Email triage complete.
+```
 
 ## Output Format
 
@@ -356,3 +475,43 @@ Create the daily context file if it doesn't exist. Append a new Email Triage sec
 - Run with `--quick` if context gathering is slow
 - Large backlogs: use `--backlog` mode with pagination
 - Daily context file accumulates email triage summaries throughout the day
+
+## Error Handling
+
+If any step fails:
+1. Log the error and step number
+2. **Save progress** to email-rules.json (triage state)
+3. Continue with remaining steps if possible
+4. Note the failure in the final summary
+5. Suggest: "Resume with: /triage-inbox --resume"
+
+### Resume Behavior
+
+When `/triage-inbox --resume` is run:
+1. Check email-rules.json for incomplete triage state
+2. Restore categorization and drafts from previous run
+3. Skip to Step 8 (Present Summary & Act) to complete actions
+4. Clear triage state after completion
+
+## Mode Reference
+
+| Flag | Steps Run | Destructive Step | Use Case |
+|------|-----------|------------------|----------|
+| (none) | All 8 | Step 8 executes | Normal triage |
+| `--quick` | 1, 2, 4, 5, 6, 8 | Step 8 executes | Fast, no context |
+| `--backlog` | 1, 2, 5, 6, 8 | Step 8 executes | Large inbox |
+| `--since-last` | All 8 | Step 8 executes | Incremental |
+| `--resume` | Remaining | If not done | Recovery |
+
+### Step Summary by Mode
+
+| Step | Default | --quick | --backlog |
+|------|:-------:|:-------:|:---------:|
+| 1. Load Config | ✓ | ✓ | ✓ |
+| 2. Fetch Emails | ✓ | ✓ | ✓ |
+| 3. Gather Context | ✓ | - | - |
+| 4. Analyze Threads | ✓ | ✓ | - |
+| 5. Apply Rules | ✓ | ✓ | ✓ |
+| 6. Categorize | ✓ | ✓ | ✓ |
+| 7. Generate Drafts | ✓ | - | - |
+| 8. Execute Actions ⚠️ | ✓ | ✓ | ✓ |

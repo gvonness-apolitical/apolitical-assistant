@@ -7,9 +7,49 @@ Gather action items and requests from all systems where you've been tagged, ment
 - `/update-todos` - Full scan of all sources
 - `/update-todos --quick` - Quick scan (canvases and Slack only)
 - `/update-todos --source [source]` - Scan specific source (canvases, slack, email, notion, google)
+- `/update-todos --resume` - Resume from last completed source if previous run was interrupted
+
+## Checkpoint Discipline
+
+**Complete each source before moving to the next.**
+
+After each source completes, output a checkpoint marker:
+
+```
+✓ CHECKPOINT: Source complete - [source name]
+  Items found: [N]
+
+Proceeding to Source: [next source name]
+```
+
+If a source is skipped (due to mode flag or error), note it explicitly:
+
+```
+⊘ CHECKPOINT: Source skipped - [source name] ([reason])
+
+Proceeding to Source: [next source name]
+```
+
+**Progress tracking with per-source status:**
+```markdown
+## Scanning Sources
+
+Sources:
+- [x] Canvases - 4 items found
+- [x] Slack - 3 items found
+- [ ] Email - (in progress...)
+- [ ] Notion
+- [ ] Google Docs
+
+If interrupted: Resume retries incomplete sources, skips completed ones.
+```
+
+**Progress tracking:** Append to `context/YYYY-MM-DD/index.md`
+**Resume with:** `/update-todos --resume`
 
 ## Core Patterns Used
 
+- [Checkpointing](../patterns/checkpointing.md) - Per-source tracking and resume
 - [Person Resolution](../patterns/person-resolution.md) - Detect mentions using your Slack ID
 - [Daily Index Update](../patterns/daily-index-update.md) - Update daily context index
 - [Rate Limiting](../patterns/rate-limiting.md) - Batch API calls efficiently
@@ -17,7 +57,7 @@ Gather action items and requests from all systems where you've been tagged, ment
 
 ## Sources
 
-### 1. Slack Canvases (from meeting-config.json)
+### Source 1: Slack Canvases (from meeting-config.json)
 
 Scan all configured canvases for action items assigned to you.
 
@@ -38,7 +78,14 @@ Scan all configured canvases for action items assigned to you.
    - Overdue (has date that's passed)
 6. **Track source**: Note which canvas/meeting each item came from
 
-### 2. Slack Messages
+```
+✓ CHECKPOINT: Source complete - Canvases
+  Items found: [N] | Open: [N] | Blocked: [N] | Overdue: [N]
+
+Proceeding to Source: Slack Messages
+```
+
+### Source 2: Slack Messages
 
 Search for messages where you've been mentioned or tagged with requests.
 
@@ -59,7 +106,14 @@ Search for messages where you've been mentioned or tagged with requests.
    - Message preview
    - Link to message
 
-### 3. Gmail Inbox
+```
+✓ CHECKPOINT: Source complete - Slack Messages
+  Items found: [N] | Questions: [N] | Requests: [N]
+
+Proceeding to Source: Gmail Inbox
+```
+
+### Source 3: Gmail Inbox
 
 Scan inbox for emails requiring action.
 
@@ -81,7 +135,14 @@ Scan inbox for emails requiring action.
    - Preview snippet
    - Priority (based on sender, keywords)
 
-### 4. Notion
+```
+✓ CHECKPOINT: Source complete - Gmail Inbox
+  Items found: [N] | Respond: [N] | Review: [N] | Approve: [N]
+
+Proceeding to Source: Notion
+```
+
+### Source 4: Notion
 
 Find pages where you've been mentioned or assigned.
 
@@ -101,7 +162,14 @@ Find pages where you've been mentioned or assigned.
    - Comment or task text
    - Link to page
 
-### 5. Google Workspace
+```
+✓ CHECKPOINT: Source complete - Notion
+  Items found: [N] | RFC comments: [N] | PRD tasks: [N]
+
+Proceeding to Source: Google Workspace
+```
+
+### Source 5: Google Workspace
 
 Find docs where you've been tagged for comments or suggestions.
 
@@ -122,6 +190,13 @@ Find docs where you've been tagged for comments or suggestions.
    - Use `drive_search` for recent shared items
    - Filter by `modifiedTime` in last 7 days
    - Check items shared with you that you haven't opened
+
+```
+✓ CHECKPOINT: Source complete - Google Workspace
+  Items found: [N] | Doc comments: [N] | New shares: [N]
+
+All sources complete. Proceeding to Deduplication.
+```
 
 ## Deduplication
 
@@ -236,6 +311,69 @@ After scanning, update `context/daily/YYYY-MM-DD.md`:
 ```
 
 Create the daily context file if it doesn't exist.
+
+## Final Summary
+
+After all sources scanned and deduplicated, display:
+
+```
+# Update Todos Complete - YYYY-MM-DD
+
+## Sources Scanned
+✓ Canvases   ✓ Slack   ✓ Email   ✓ Notion   ✓ Google
+
+## Key Results
+- **Total items found**: [N]
+- **Deduplicated**: [N] (already existed)
+- **New items added**: [N]
+
+## By Source
+- Canvases: [N]
+- Slack: [N]
+- Email: [N]
+- Notion: [N]
+- Google Docs: [N]
+
+---
+Update todos complete.
+```
+
+## Error Handling
+
+If any source fails:
+1. Log the error and source name
+2. Mark source as failed (will retry on resume)
+3. Continue with remaining sources
+4. Note the failure in the final summary
+5. Suggest: "Resume with: /update-todos --resume"
+
+### Resume Behavior
+
+When `/update-todos --resume` is run:
+1. Check daily context for incomplete todo scan
+2. Skip sources already completed
+3. Resume from first incomplete source
+4. Merge results with previously found items
+
+## Mode Reference
+
+| Flag | Sources Scanned | Use Case |
+|------|-----------------|----------|
+| (none) | All 5 | Full scan |
+| `--quick` | Canvases, Slack | Fast scan |
+| `--source canvases` | Canvases only | Targeted |
+| `--source slack` | Slack only | Targeted |
+| `--resume` | Remaining | Recovery |
+
+### Source Summary by Mode
+
+| Source | Default | --quick |
+|--------|:-------:|:-------:|
+| 1. Canvases | ✓ | ✓ |
+| 2. Slack | ✓ | ✓ |
+| 3. Email | ✓ | - |
+| 4. Notion | ✓ | - |
+| 5. Google Workspace | ✓ | - |
 
 ## Notes
 

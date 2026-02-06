@@ -5,6 +5,46 @@ Generate an executive summary of engineering activity for a given time period, s
 ## Usage
 - `/executive-report [period]` - Generate report for specified period
 - `/executive-report` - Interactive mode (will prompt for date range)
+- `/executive-report --resume` - Resume from last completed step if previous run was interrupted
+
+## Checkpoint Discipline
+
+**You MUST complete each step before moving to the next.**
+
+After each step, output a checkpoint marker:
+
+```
+✓ CHECKPOINT: Step N complete - [step name]
+  [Brief summary of what was done]
+
+Proceeding to Step N+1: [next step name]
+```
+
+For Step 2 (Gather Data from Sources), track each source:
+
+```markdown
+## Step 2: Gather Data from Sources
+
+Sources:
+- [x] GitHub - 45 PRs, 3 releases
+- [x] Linear - 67 completed, 12 blocked
+- [x] Slack - 15 key threads
+- [ ] Email - (in progress...)
+- [ ] Meeting Notes
+- [ ] Figma
+
+If interrupted: Resume retries incomplete sources, skips completed ones.
+```
+
+**Progress tracking:** Append to `context/YYYY-MM-DD/index.md`
+**Resume with:** `/executive-report --resume`
+
+## Core Patterns Used
+
+- [Checkpointing](../patterns/checkpointing.md) - Progress tracking and resume
+- [Local Context First](../patterns/local-context-first.md) - Check existing reviews first
+- [Frontmatter](../patterns/frontmatter.md) - YAML metadata for report
+- [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
 
 ## Arguments
 - `$ARGUMENTS` - Time period (optional). Accepts:
@@ -17,7 +57,7 @@ Generate an executive summary of engineering activity for a given time period, s
 
 ## Process
 
-### 1. Determine Date Range
+### Step 1: Determine Date Range
 
 Parse the period argument or prompt the user:
 - **last week**: 7 days ending yesterday
@@ -28,7 +68,14 @@ Parse the period argument or prompt the user:
 
 Confirm the date range with the user before proceeding.
 
-### 2. Gather Data from Sources
+```
+✓ CHECKPOINT: Step 1 complete - Determine Date Range
+  Period: [start-date] to [end-date] ([N] days)
+
+Proceeding to Step 2: Gather Data from Sources
+```
+
+### Step 2: Gather Data from Sources
 
 Collect information from each system for the date range:
 
@@ -69,7 +116,14 @@ Read Gemini auto-notes from `121/` directory for the period:
 - Group by category (product, engineering, marketing)
 - Note significant design work (user flows, new features, system diagrams)
 
-### 3. Analyze & Categorize
+```
+✓ CHECKPOINT: Step 2 complete - Gather Data from Sources
+  GitHub: [N] PRs | Linear: [N] tickets | Slack: [N] threads | Email: [N] | Meetings: [N] | Figma: [N]
+
+Proceeding to Step 3: Analyze & Categorize
+```
+
+### Step 3: Analyze & Categorize
 
 Group findings into:
 
@@ -93,7 +147,14 @@ Group findings into:
 - Planned initiatives for next period
 - Risks or dependencies to watch
 
-### 4. Generate Report
+```
+✓ CHECKPOINT: Step 3 complete - Analyze & Categorize
+  Highlights: [N] | Lowlights: [N] | Team focus areas: [N]
+
+Proceeding to Step 4: Generate Report
+```
+
+### Step 4: Generate Report
 
 Use this format:
 
@@ -148,7 +209,14 @@ Use this format:
 - **[Risk/Dependency]** — [What to watch]
 ```
 
-### 5. Review & Refine
+```
+✓ CHECKPOINT: Step 4 complete - Generate Report
+  Report drafted with [N] highlights, [N] lowlights
+
+Proceeding to Step 5: Review & Refine
+```
+
+### Step 5: Review & Refine
 
 Before presenting:
 - Verify facts against source data
@@ -156,7 +224,14 @@ Before presenting:
 - Check that highlights and lowlights are balanced and fair
 - Confirm team attributions are accurate
 
-### 6. Output
+```
+✓ CHECKPOINT: Step 5 complete - Review & Refine
+  Report reviewed and refined
+
+Proceeding to Step 6: Output
+```
+
+### Step 6: Output
 
 Save the report to: `reviews/executive/[start-date]-to-[end-date].md`
 
@@ -176,6 +251,52 @@ Present a summary to the user and offer:
 - "Copy to clipboard?"
 - "Create Google Doc?"
 - "Email to [recipient]?"
+
+```
+✓ CHECKPOINT: Step 6 complete - Output
+  Saved to: reviews/executive/[start-date]-to-[end-date].md
+```
+
+## Final Summary
+
+After ALL 6 steps complete, display:
+
+```
+# Executive Report Complete - YYYY-MM-DD
+
+## Steps Completed
+✓ 1. Determine Range   ✓ 2. Gather Data      ✓ 3. Analyze
+✓ 4. Generate Report   ✓ 5. Review & Refine  ✓ 6. Output
+
+## Key Results
+- **Period**: [start-date] to [end-date]
+- **Highlights**: [N] items
+- **Lowlights**: [N] items
+- **Teams covered**: [N]
+
+## Saved to
+reviews/executive/[start-date]-to-[end-date].md
+
+---
+Executive report complete.
+```
+
+## Error Handling
+
+If any step fails:
+1. Log the error and step number
+2. **Save progress** to daily context
+3. Continue with remaining steps if possible
+4. Note the failure in the final summary
+5. Suggest: "Resume with: /executive-report --resume"
+
+### Resume Behavior
+
+When `/executive-report --resume` is run:
+1. Check daily context for incomplete executive report
+2. Skip completed steps
+3. For Step 2 (Gather Data), resume from first incomplete source
+4. Continue from first incomplete step
 
 ## Data Source Priority
 

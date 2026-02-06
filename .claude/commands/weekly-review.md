@@ -6,14 +6,65 @@ Generate a comprehensive end-of-week summary and retrospective.
 
 - `/weekly-review` - review the current week (Mon-Fri)
 - `/weekly-review [date]` - review week containing that date
+- `/weekly-review --resume` - Resume from last completed step if previous run was interrupted
+
+## Checkpoint Discipline
+
+**You MUST complete each step before moving to the next.**
+
+After each step, output a checkpoint marker:
+
+```
+✓ CHECKPOINT: Step N complete - [step name]
+  [Brief summary of what was done]
+
+Proceeding to Step N+1: [next step name]
+```
+
+For Step 3 (Gather Additional Data), track each source:
+
+```markdown
+## Step 3: Gather Additional Data
+
+Sources:
+- [x] Calendar - 12 meetings found
+- [x] GitHub - 8 PRs reviewed
+- [x] Linear - 15 tickets completed
+- [ ] Slack - (in progress...)
+- [ ] Email
+- [ ] Incidents
+- [ ] Humaans
+- [ ] Figma
+
+If interrupted: Resume retries incomplete sources, skips completed ones.
+```
+
+**Progress tracking:** Append to `context/YYYY-MM-DD/index.md`
+**Resume with:** `/weekly-review --resume`
 
 ## Core Patterns Used
 
+- [Checkpointing](../patterns/checkpointing.md) - Progress tracking and resume
 - [Local Context First](../patterns/local-context-first.md) - Read daily context files first
 - [Frontmatter](../patterns/frontmatter.md) - YAML metadata for review file
 - [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
 
-## Read Daily Context Files First
+## Process
+
+### Step 1: Determine Week Range
+
+Parse the date argument (if provided) or use current week:
+- Identify Monday-Friday of the target week
+- Confirm the date range with user if ambiguous
+
+```
+✓ CHECKPOINT: Step 1 complete - Determine Week Range
+  Week: Mon YYYY-MM-DD to Fri YYYY-MM-DD
+
+Proceeding to Step 2: Read Daily Context Files
+```
+
+### Step 2: Read Daily Context Files
 
 Before making API calls, read accumulated context from the week:
 
@@ -34,7 +85,16 @@ Before making API calls, read accumulated context from the week:
 
 This provides a comprehensive view with minimal API calls.
 
-## Gather Additional Data
+```
+✓ CHECKPOINT: Step 2 complete - Read Daily Context Files
+  Days with context: [N]/5 | EODs found: [N] | Briefings found: [N]
+
+Proceeding to Step 3: Gather Additional Data
+```
+
+### Step 3: Gather Additional Data
+
+Track each source as it completes:
 
 1. **Calendar**: All meetings attended this week
 2. **GitHub**: PRs reviewed, merged, or commented on
@@ -48,7 +108,14 @@ This provides a comprehensive view with minimal API calls.
    - Filter files with `lastShared` within the week
    - Group by category and owner
 
-## Output Structure
+```
+✓ CHECKPOINT: Step 3 complete - Gather Additional Data
+  Calendar: [N] | GitHub: [N] | Linear: [N] | Slack: [N] | Email: [N] | Incidents: [N] | Figma: [N]
+
+Proceeding to Step 4: Generate Review
+```
+
+### Step 4: Generate Review
 
 ### Week of [DATE RANGE]
 
@@ -96,7 +163,14 @@ Figma files shared this week:
 - What could be improved
 - Time allocation analysis (meetings vs deep work)
 
-## Save Location
+```
+✓ CHECKPOINT: Step 4 complete - Generate Review
+  Sections populated: [N]
+
+Proceeding to Step 5: Save Review
+```
+
+### Step 5: Save Review
 
 Save to `reviews/weekly/YYYY-MM-DD.md`
 
@@ -109,6 +183,54 @@ period: week
 tags: []
 ---
 ```
+
+```
+✓ CHECKPOINT: Step 5 complete - Save Review
+  Saved to: reviews/weekly/YYYY-MM-DD.md
+```
+
+## Final Summary
+
+After ALL 5 steps complete, display:
+
+```
+# Weekly Review Complete - YYYY-MM-DD
+
+## Steps Completed
+✓ 1. Determine Week    ✓ 2. Read Context    ✓ 3. Gather Data
+✓ 4. Generate Review   ✓ 5. Save Review
+
+## Key Results
+- **Week**: Mon YYYY-MM-DD to Fri YYYY-MM-DD
+- **Accomplishments**: [N] items
+- **Meetings**: [N] attended
+- **PRs reviewed**: [N]
+- **Tickets completed**: [N]
+- **Incidents**: [N]
+
+## Saved to
+reviews/weekly/YYYY-MM-DD.md
+
+---
+Weekly review complete.
+```
+
+## Error Handling
+
+If any step fails:
+1. Log the error and step number
+2. **Save progress** to daily context
+3. Continue with remaining steps if possible
+4. Note the failure in the final summary
+5. Suggest: "Resume with: /weekly-review --resume"
+
+### Resume Behavior
+
+When `/weekly-review --resume` is run:
+1. Check daily context for incomplete weekly review
+2. Skip completed steps
+3. For Step 3 (Gather Data), resume from first incomplete source
+4. Continue from first incomplete step
 
 ## Notes
 - Include links to relevant tickets, PRs, docs where helpful

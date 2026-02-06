@@ -9,9 +9,27 @@ Synchronize and maintain the Figma sources cache. Verify existing entries, disco
 - `/sync-figma --discover` - Search Slack for Figma links not yet cached
 - `/sync-figma --cleanup` - Archive/remove stale entries (not shared in 90+ days)
 - `/sync-figma --stats` - Show cache statistics
+- `/sync-figma --resume` - Resume from last completed step if previous run was interrupted
+
+## Checkpoint Discipline
+
+**You MUST complete each step before moving to the next.**
+
+After each step, output a checkpoint marker:
+
+```
+✓ CHECKPOINT: Step N complete - [step name]
+  [Brief summary of what was done]
+
+Proceeding to Step N+1: [next step name]
+```
+
+**Progress tracking:** Append to `context/YYYY-MM-DD/index.md`
+**Resume with:** `/sync-figma --resume`
 
 ## Core Patterns Used
 
+- [Checkpointing](../patterns/checkpointing.md) - Progress tracking and resume
 - [Figma Extraction](../patterns/figma-extraction.md) - URL parsing and metadata capture
 - [Person Resolution](../patterns/person-resolution.md) - Cross-reference owners with people.json
 - [Progressive Discovery](../patterns/progressive-discovery.md) - Migrate discoveredPeople to contacts
@@ -20,7 +38,7 @@ Synchronize and maintain the Figma sources cache. Verify existing entries, disco
 
 ## Process
 
-### 1. Load Current Cache
+### Step 1: Load Current Cache
 
 Read `.claude/figma-sources.json` and gather statistics:
 - Total entries
@@ -29,7 +47,14 @@ Read `.claude/figma-sources.json` and gather statistics:
 - Oldest/newest entries
 - Last updated timestamp
 
-### 2. Verify Existing Entries (--verify or default)
+```
+✓ CHECKPOINT: Step 1 complete - Load Current Cache
+  Entries: [N] | By category: [breakdown] | Last updated: [date]
+
+Proceeding to Step 2: Verify Existing Entries
+```
+
+### Step 2: Verify Existing Entries (--verify or default)
 
 For each entry in `files`:
 
@@ -51,7 +76,14 @@ For each entry in `files`:
    - If `lastShared` > 90 days ago and not recently verified as active → mark as stale
    - Stale threshold is configurable (default 90 days)
 
-### 3. Discover New Links (--discover or default)
+```
+✓ CHECKPOINT: Step 2 complete - Verify Existing Entries
+  Verified: [N] | Active: [N] | Inaccessible: [N] | Stale: [N]
+
+Proceeding to Step 3: Discover New Links
+```
+
+### Step 3: Discover New Links (--discover or default)
 
 Search Slack for Figma links not yet in cache:
 
@@ -79,7 +111,14 @@ Search Slack for Figma links not yet in cache:
    - Call Figma API to confirm accessibility
    - Capture file name from API response (more accurate than URL)
 
-### 4. Cleanup Stale Entries (--cleanup)
+```
+✓ CHECKPOINT: Step 3 complete - Discover New Links
+  Slack searched: [N] msgs | New links: [N] | Already cached: [N]
+
+Proceeding to Step 4: Cleanup Stale Entries
+```
+
+### Step 4: Cleanup Stale Entries (--cleanup)
 
 For entries marked as stale or inaccessible:
 
@@ -120,13 +159,66 @@ For entries marked as stale or inaccessible:
    - Rebuild `byCategory` index
    - Rebuild `byOwnerSlackId` index
 
-### 5. Update Cache
+```
+✓ CHECKPOINT: Step 4 complete - Cleanup Stale Entries
+  Archived: [N] | Removed: [N] | Indices rebuilt
+
+Proceeding to Step 5: Update Cache
+```
+
+### Step 5: Update Cache
 
 After any changes:
 
 1. Update `lastUpdated` timestamp
 2. Write to `.claude/figma-sources.json`
 3. Report changes made
+
+```
+✓ CHECKPOINT: Step 5 complete - Update Cache
+  File saved: .claude/figma-sources.json
+```
+
+## Final Summary
+
+After ALL 5 steps complete, display:
+
+```
+# Figma Sync Complete - YYYY-MM-DD
+
+## Steps Completed
+✓ 1. Load Cache     ✓ 2. Verify Entries   ✓ 3. Discover Links
+✓ 4. Cleanup Stale  ✓ 5. Update Cache
+
+## Key Results
+- **Total entries**: [N]
+- **Verified**: [N] | Active: [N] | Stale: [N]
+- **New discovered**: [N]
+- **Archived/removed**: [N]
+
+## Saved to
+.claude/figma-sources.json
+
+---
+Figma sync complete.
+```
+
+## Error Handling
+
+If any step fails:
+1. Log the error and step number
+2. **Save progress** to daily context
+3. Continue with remaining steps if possible
+4. Note the failure in the final summary
+5. Suggest: "Resume with: /sync-figma --resume"
+
+### Resume Behavior
+
+When `/sync-figma --resume` is run:
+1. Check daily context for incomplete sync
+2. Skip completed steps
+3. Resume from first incomplete step
+4. Continue through remaining steps
 
 ## Output
 

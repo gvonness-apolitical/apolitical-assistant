@@ -7,9 +7,37 @@ Process all unread Slack messages, summarize activity, create tasks for requests
 - `/slack-read` - Process all unread messages (last 30 days)
 - `/slack-read --quick` - Summary only, no task creation
 - `/slack-read --dry-run` - Preview what would be processed without marking read
+- `/slack-read --resume` - Resume from last completed step if previous run was interrupted
+
+## Checkpoint Discipline
+
+**You MUST complete each step before moving to the next.**
+
+After each step, output a checkpoint marker:
+
+```
+✓ CHECKPOINT: Step N complete - [step name]
+  [Brief summary of what was done]
+
+Proceeding to Step N+1: [next step name]
+```
+
+If a step is skipped (due to mode flag), note it explicitly:
+
+```
+⊘ CHECKPOINT: Step N skipped - [step name] ([reason])
+
+Proceeding to Step N+1: [next step name]
+```
+
+**IMPORTANT:** Step 6 (Mark as Read) is **destructive**. Always checkpoint before this step.
+
+**Progress tracking:** Append to `context/YYYY-MM-DD/index.md`
+**Resume with:** `/slack-read --resume`
 
 ## Core Patterns Used
 
+- [Checkpointing](../patterns/checkpointing.md) - Progress tracking and resume capability
 - [Person Resolution](../patterns/person-resolution.md) - Resolve message authors
 - [Figma Extraction](../patterns/figma-extraction.md) - Extract and cache Figma links
 - [Daily Index Update](../patterns/daily-index-update.md) - Update daily context index
@@ -39,7 +67,7 @@ Use this ID for:
 
 ## Process
 
-### 1. Gather Unread Messages
+### Step 1: Gather Unread Messages
 
 Collect unread messages from all sources (last 30 days max):
 
@@ -59,7 +87,14 @@ Collect unread messages from all sources (last 30 days max):
 - Fetch full thread context with `slack_read_thread`
 - Flag as "replied" or "not replied" based on user's participation
 
-### 2. Categorize & Filter
+```
+✓ CHECKPOINT: Step 1 complete - Gather Unread Messages
+  DMs: [N] conversations | Channels: [N] | Threads: [N] tagged
+
+Proceeding to Step 2: Categorize & Filter
+```
+
+### Step 2: Categorize & Filter
 
 **Bot Messages (count only):**
 Identify and count messages from:
@@ -89,7 +124,14 @@ Output: "47 bot notifications (GitHub: 23, Linear: 15, Calendar: 9) - will be ma
 - Channels from `meeting-config.json`
 - **Private channels from `.claude/channels-config.json`** (leadership, engineering, data sections with `priority: high`)
 
-### 3. Extract Action Items
+```
+✓ CHECKPOINT: Step 2 complete - Categorize & Filter
+  P0 (DMs): [N] | P1 (@mentions): [N] | P2 (high-priority): [N] | P3 (other): [N] | Bot: [N]
+
+Proceeding to Step 3: Extract Action Items
+```
+
+### Step 3: Extract Action Items
 
 For messages where you're @mentioned (use `me.slackUserId` from people.json), analyze for:
 
@@ -112,7 +154,14 @@ For messages where you're @mentioned (use `me.slackUserId` from people.json), an
 - If you've already replied → likely resolved, lower priority
 - If you haven't replied → needs attention, higher priority
 
-### 4. Generate Summary
+```
+✓ CHECKPOINT: Step 3 complete - Extract Action Items
+  Questions: [N] | Requests: [N] | FYI only: [N] | Needs response: [N]
+
+Proceeding to Step 4: Generate Summary
+```
+
+### Step 4: Generate Summary
 
 Write to: `context/YYYY-MM-DD/slack-HHMM.md`
 
@@ -256,7 +305,14 @@ Mark all 234 messages as read? This will clear your unread count.
 - [ ] Bot notifications (47 messages)
 ```
 
-### 5. Create Tasks
+```
+✓ CHECKPOINT: Step 4 complete - Generate Summary
+  Saved to: context/YYYY-MM-DD/slack-HHMM.md
+
+Proceeding to Step 5: Create Tasks
+```
+
+### Step 5: Create Tasks
 
 For each identified action item, use `TaskCreate`:
 
@@ -268,7 +324,25 @@ ActiveForm: Responding to Joel's Slack message
 
 Include source link in description for context.
 
-### 6. Confirm & Mark Read
+Skip task creation if `--quick` mode is active.
+
+```
+✓ CHECKPOINT: Step 5 complete - Create Tasks
+  Tasks created: [N]
+
+Proceeding to Step 6: Confirm & Mark Read
+```
+
+### Step 6: Confirm & Mark Read (⚠️ DESTRUCTIVE)
+
+**⚠️ This step is destructive - marking messages as read cannot be undone.**
+
+Skip if `--dry-run` mode is active.
+
+```
+⚠️  DESTRUCTIVE STEP: About to mark [N] messages as read.
+    Progress saved. Resume with: /slack-read --resume
+```
 
 Present options:
 
@@ -305,18 +379,42 @@ Mark #incidents as read? (5 messages) [y/n]: n
 - Set to timestamp of most recent message in channel
 - For threads, mark the thread as read
 
-### 7. Final Confirmation
+```
+✓ CHECKPOINT: Step 6 complete - Mark as Read
+  Marked read: [N] | Skipped: [N]
+
+Proceeding to Step 7: Final Confirmation
+```
+
+### Step 7: Final Confirmation
 
 ```
-Slack Read Complete
-===================
+✓ CHECKPOINT: Step 7 complete - Final Confirmation
+```
 
-Processed: 234 messages
-Marked read: 212 messages
-Skipped: 22 messages (#incidents)
-Tasks created: 3
+## Final Summary
 
-Summary saved to: context/2026-01-26-1630-slack-read.md
+After ALL 7 steps complete (or explicitly skipped), display:
+
+```
+# Slack Read Complete - YYYY-MM-DD
+
+## Steps Completed
+✓ 1. Gather Messages  ✓ 2. Categorize   ✓ 3. Extract Actions
+✓ 4. Generate Summary ✓ 5. Create Tasks ✓ 6. Mark Read
+✓ 7. Final Confirmation
+
+## Key Results
+- **Processed**: 234 messages
+- **Marked read**: 212 messages
+- **Skipped**: 22 messages (#incidents)
+- **Tasks created**: 3
+
+## Summary
+Saved to: context/YYYY-MM-DD/slack-HHMM.md
+
+---
+Slack Read complete.
 ```
 
 ## Configuration
@@ -384,6 +482,44 @@ After generating the summary, update `context/YYYY-MM-DD/index.md`:
 ```
 
 Create the index file from template (`.claude/templates/context-index.md`) if it doesn't exist. Append a new Slack summary section (timestamped) if running multiple times per day.
+
+## Error Handling
+
+If any step fails:
+1. Log the error and step number
+2. **Save progress** to daily context (for resume)
+3. Continue with remaining steps if possible
+4. Note the failure in the final summary
+5. Suggest: "Resume with: /slack-read --resume"
+
+### Resume Behavior
+
+When `/slack-read --resume` is run:
+1. Check daily context for incomplete Slack Read
+2. Skip completed steps (gathering, categorizing, etc.)
+3. Resume from last incomplete step
+4. For Step 6 (mark-as-read), re-display summary and re-prompt for confirmation
+
+## Mode Reference
+
+| Flag | Steps Run | Destructive Step | Use Case |
+|------|-----------|------------------|----------|
+| (none) | All 7 | Step 6 executes | Normal processing |
+| `--quick` | 1, 2, 3, 4, 7 | Skip 5, 6 | Fast summary only |
+| `--dry-run` | 1, 2, 3, 4, 5, 7 | Skip 6 | Preview without changes |
+| `--resume` | Remaining | If not done | Recovery |
+
+### Step Summary by Mode
+
+| Step | Default | --quick | --dry-run |
+|------|:-------:|:-------:|:---------:|
+| 1. Gather Messages | ✓ | ✓ | ✓ |
+| 2. Categorize & Filter | ✓ | ✓ | ✓ |
+| 3. Extract Action Items | ✓ | ✓ | ✓ |
+| 4. Generate Summary | ✓ | ✓ | ✓ |
+| 5. Create Tasks | ✓ | - | ✓ |
+| 6. Mark as Read ⚠️ | ✓ | - | - |
+| 7. Final Confirmation | ✓ | ✓ | ✓ |
 
 ## Figma Link Extraction
 

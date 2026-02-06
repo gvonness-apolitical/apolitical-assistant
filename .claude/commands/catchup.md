@@ -9,9 +9,64 @@ Rebuild context for days you were away, getting the assistant up to speed with e
 - `/catchup 2026-01-27` - Catch up from a specific date to today
 - `/catchup 2026-01-20 2026-01-24` - Catch up for a specific date range
 - `/catchup --quick` - Summary only, skip detailed context file creation
+- `/catchup --resume` - Resume from last completed day if previous run was interrupted
+
+## Checkpoint Discipline
+
+**You MUST complete each step before moving to the next.**
+
+After each step (and each day within Step 3), output a checkpoint marker:
+
+```
+✓ CHECKPOINT: Step N complete - [step name]
+  [Brief summary of what was done]
+
+Proceeding to Step N+1: [next step name]
+```
+
+For per-day tracking in Step 3:
+
+```
+✓ CHECKPOINT: Day 2026-01-28 complete
+  Calendar: 5 | Email: 34 | Slack: 45 | Linear: 8 | GitHub: 3 | Incidents: 0
+
+Proceeding to Day 2026-01-29
+```
+
+**Progress tracking:** State saved to `context/catchup-YYYY-MM-DD-state.json`
+**Resume with:** `/catchup --resume`
+
+### State File Structure
+
+```json
+{
+  "skill": "catchup",
+  "dateRange": {
+    "start": "2026-01-27",
+    "end": "2026-01-29"
+  },
+  "startedAt": "2026-01-30T09:00:00Z",
+  "currentStep": 3,
+  "stepsCompleted": [1, 2],
+  "daysCompleted": ["2026-01-27"],
+  "daysInProgress": {
+    "2026-01-28": {
+      "sourcesCompleted": ["calendar", "email", "slack"],
+      "sourcesFailed": [],
+      "sourcesRemaining": ["linear", "github", "incidents", "humaans"]
+    }
+  },
+  "daysRemaining": ["2026-01-29"],
+  "options": {
+    "quick": false
+  },
+  "lastUpdated": "2026-01-30T09:20:00Z"
+}
+```
 
 ## Core Patterns Used
 
+- [Checkpointing](../patterns/checkpointing.md) - State file and resume capability
 - [Person Resolution](../patterns/person-resolution.md) - Resolve names in historical data
 - [Local Context First](../patterns/local-context-first.md) - Check what context already exists
 - [Daily Index Update](../patterns/daily-index-update.md) - Create context files for each day
@@ -29,7 +84,7 @@ Retroactively builds context for days you were away by:
 
 ## Process
 
-### 1. Determine Date Range
+### Step 1: Determine Date Range
 
 ```
 IF no arguments:
@@ -45,7 +100,16 @@ IF two dates:
   → Specific range (inclusive)
 ```
 
-### 2. Check Existing Context
+**Save state**: Record date range and options
+
+```
+✓ CHECKPOINT: Step 1 complete - Determine Date Range
+  Date range: 2026-01-27 to 2026-01-29 (3 days)
+
+Proceeding to Step 2: Check Existing Context
+```
+
+### Step 2: Check Existing Context
 
 For each day in range:
 1. Check if `context/YYYY-MM-DD/` directory exists
@@ -53,9 +117,34 @@ For each day in range:
 3. Note which days have partial vs no context
 4. Skip days that already have complete context (unless `--force`)
 
-### 3. Gather Historical Data Per Day
+**Save state**: Record days to process
 
-For each day needing context:
+```
+✓ CHECKPOINT: Step 2 complete - Check Existing Context
+  Days needing context: [N] | Days with partial context: [N] | Days to skip: [N]
+
+Proceeding to Step 3: Gather Historical Data Per Day
+```
+
+### Step 3: Gather Historical Data Per Day
+
+For each day needing context, track per-source progress:
+
+**Per-Day Source Tracking:**
+```markdown
+## Processing: 2026-01-28
+
+Sources:
+- [x] Calendar - 5 meetings
+- [x] Email - 34 messages (12 important)
+- [x] Slack - 45 messages, 2 @mentions
+- [ ] Linear - (in progress)
+- [ ] GitHub
+- [ ] Incidents
+- [ ] Humaans
+
+If interrupted: Resume retries incomplete sources for this day.
+```
 
 **Calendar** (Google Calendar):
 ```
@@ -67,6 +156,7 @@ calendar_list_events(
 - Meetings attended
 - Attendees and outcomes
 - Any meeting notes created
+- **Mark source complete**
 
 **Email** (Gmail):
 ```
@@ -75,6 +165,7 @@ gmail_search("after:YYYY/MM/DD before:YYYY/MM/DD+1")
 - Important threads received
 - Emails sent (decisions, responses)
 - Apply email-rules.json to filter noise
+- **Mark source complete**
 
 **Slack**:
 ```
@@ -85,6 +176,7 @@ slack_search("to:@me after:YYYY-MM-DD before:YYYY-MM-DD+1")
 - DMs received
 - @mentions and requests
 - Threads you participated in
+- **Mark source complete**
 
 **Linear**:
 ```
@@ -94,6 +186,7 @@ list_issues(filter: {updatedAt: {gte: "YYYY-MM-DD", lte: "YYYY-MM-DD"}})
 - New tickets created
 - Status changes
 - Comments and decisions
+- **Mark source complete**
 
 **GitHub**:
 ```
@@ -102,6 +195,7 @@ gh api search/issues?q=involves:USERNAME+updated:YYYY-MM-DD
 - PRs merged or reviewed
 - Issues updated
 - CI/CD activity
+- **Mark source complete**
 
 **Incidents** (incident.io):
 ```
@@ -110,12 +204,32 @@ incidentio_list_incidents(created_after: "YYYY-MM-DD")
 - Any incidents that day
 - Follow-ups assigned
 - Postmortems created
+- **Mark source complete**
 
 **Humaans**:
 - Who was out that day
 - Any team changes
+- **Mark source complete**
 
-### 4. Create Context Files
+**After each day completes:**
+```
+✓ CHECKPOINT: Day 2026-01-28 complete
+  Calendar: 5 | Email: 34 | Slack: 45 | Linear: 8 | GitHub: 3 | Incidents: 0
+
+Proceeding to Day 2026-01-29
+```
+
+**After all days complete:**
+```
+✓ CHECKPOINT: Step 3 complete - Gather Historical Data
+  Days processed: [N] | Total meetings: [N] | Total emails: [N] | Incidents: [N]
+
+Proceeding to Step 4: Create Context Files
+```
+
+### Step 4: Create Context Files
+
+Skip if `--quick` mode is active.
 
 For each day, create:
 
@@ -182,7 +296,14 @@ catchup_date: 2026-01-30
 **`context/YYYY-MM-DD/catchup-summary.md`**:
 Detailed breakdown if `--quick` not used.
 
-### 5. Build Cumulative Summary
+```
+✓ CHECKPOINT: Step 4 complete - Create Context Files
+  Files created: [N] context directories
+
+Proceeding to Step 5: Build Cumulative Summary
+```
+
+### Step 5: Build Cumulative Summary
 
 After processing all days, create a catchup summary:
 
@@ -252,6 +373,37 @@ days_covered: 3
 - context/2026-01-27/index.md
 - context/2026-01-28/index.md
 - context/2026-01-29/index.md
+```
+
+```
+✓ CHECKPOINT: Step 5 complete - Build Cumulative Summary
+  Summary saved: context/catchup-YYYY-MM-DD.md | Action items: [N]
+```
+
+## Final Summary
+
+After ALL steps complete, display:
+
+```
+# Catchup Complete - YYYY-MM-DD
+
+## Steps Completed
+✓ 1. Determine Date Range   ✓ 2. Check Existing Context
+✓ 3. Gather Historical Data ✓ 4. Create Context Files
+✓ 5. Build Cumulative Summary
+
+## Key Results
+- **Period**: 2026-01-27 to 2026-01-29 (3 days)
+- **Context files created**: [N]
+- **Still needs attention**: [N] items
+
+## Attention Required
+1. [Priority item 1]
+2. [Priority item 2]
+3. [Priority item 3]
+
+---
+Catchup complete. Ready to proceed with today's work.
 ```
 
 ## Output
@@ -355,6 +507,31 @@ Historical queries can be API-intensive:
 4. **Cache results**: If interrupted, resume from last completed day
 
 ## Error Handling
+
+If any step fails:
+1. Log the error and step/day
+2. **Save progress** to state file (for `--resume`)
+3. Continue with remaining days/sources if possible
+4. Note the failure in the final summary
+5. Suggest: "Resume with: /catchup --resume"
+
+### Resume Behavior
+
+When `/catchup --resume` is run:
+1. Load state file from `context/catchup-YYYY-MM-DD-state.json`
+2. Display completed days and their summaries
+3. For partially completed days, resume from last completed source
+4. Skip fully completed days
+5. Continue through remaining days
+
+### Per-Source Resume
+
+If interrupted mid-day:
+- State file tracks which sources are complete
+- Resume queries only incomplete sources
+- Merge results with previously fetched data
+
+### Error Cases
 
 ### Partial Data Available
 ```

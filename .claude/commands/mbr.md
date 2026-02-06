@@ -6,6 +6,65 @@ Generate the Engineering MBR following Mark Douglas's format: header block, 5-8 
 
 - `/mbr [month]` - Generate MBR for specified month
 - `/mbr` - Interactive mode (will prompt for month)
+- `/mbr --resume` - Resume from last completed step if previous run was interrupted
+
+## Checkpoint Discipline
+
+**You MUST complete each step before moving to the next.**
+
+After each step, output a checkpoint marker:
+
+```
+✓ CHECKPOINT: Step N complete - [step name]
+  [Brief summary of what was done]
+
+Proceeding to Step N+1: [next step name]
+```
+
+If a step is skipped (due to unavailable data), note it explicitly:
+
+```
+⊘ CHECKPOINT: Step N skipped - [step name] ([reason])
+
+Proceeding to Step N+1: [next step name]
+```
+
+**Progress tracking:** State saved to `context/YYYY-MM-DD/mbr-state.json`
+**Resume with:** `/mbr --resume`
+
+### State File Structure
+
+```json
+{
+  "skill": "mbr",
+  "month": "2026-01",
+  "startedAt": "2026-01-30T09:00:00Z",
+  "currentStep": 5,
+  "stepsCompleted": [1, 2, 3, 4],
+  "data": {
+    "analyticsDocId": "doc-id",
+    "previousRag": "green",
+    "repoContext": {},
+    "externalContext": {}
+  },
+  "sourceProgress": {
+    "okrTracker": "complete",
+    "incidents": "complete",
+    "humaans": "in_progress",
+    "linear": "pending",
+    "github": "pending",
+    "slack": "pending",
+    "notion": "pending"
+  },
+  "userDecisions": {
+    "proceedWithoutAnalytics": false,
+    "exceptionsAccepted": [],
+    "ragConfirmed": false,
+    "draftApproved": false
+  },
+  "lastUpdated": "2026-01-30T09:15:00Z"
+}
+```
 
 ## Arguments
 
@@ -15,9 +74,16 @@ Generate the Engineering MBR following Mark Douglas's format: header block, 5-8 
   - `last month` - Previous calendar month
   - If omitted, prompt user to confirm month
 
+## Core Patterns Used
+
+- [Checkpointing](../patterns/checkpointing.md) - State file and resume capability
+- [Error Handling](../patterns/error-handling.md) - Graceful degradation for API failures
+- [Daily Index Update](../patterns/daily-index-update.md) - Update daily context on completion
+- [Frontmatter](../patterns/frontmatter.md) - YAML metadata for MBR file
+
 ## Process
 
-### 1. Parse Month & Validate
+### Step 1: Parse Month & Validate
 
 Resolve the argument to a YYYY-MM period:
 - **Named month**: Parse "January 2026" → 2026-01
@@ -30,8 +96,16 @@ Then check for the dev analytics director report:
 2. If found, note the document ID for step 3
 3. If not found, warn: "Dev analytics director report not found for [month]. Have analytics been run? The MBR relies heavily on this data."
 4. Ask user to confirm whether to proceed (with or without analytics)
+5. **Save state**: Record month and user decision in state file
 
-### 2. Load Previous MBR
+```
+✓ CHECKPOINT: Step 1 complete - Parse Month & Validate
+  Month: January 2026 | Analytics report: [found/not found]
+
+Proceeding to Step 2: Load Previous MBR
+```
+
+### Step 2: Load Previous MBR
 
 Check `reviews/mbr/` for the prior month's MBR:
 - If found, read it and extract:
@@ -40,8 +114,16 @@ Check `reviews/mbr/` for the prior month's MBR:
   - Exception register items (any unresolved)
   - This enables variance comparisons ("RAG unchanged at ...", "Lead time flagged last month has now recovered")
 - If not found (first MBR), note: "No previous MBR found — this will be the baseline"
+- **Save state**: Record previous RAG and themes
 
-### 3. Read Dev Analytics
+```
+✓ CHECKPOINT: Step 2 complete - Load Previous MBR
+  Previous RAG: [green/amber/red] | Unresolved exceptions: [N]
+
+Proceeding to Step 3: Read Dev Analytics
+```
+
+### Step 3: Read Dev Analytics
 
 Read the director report and all squad reports from Google Drive/Docs:
 
@@ -61,7 +143,16 @@ Read the director report and all squad reports from Google Drive/Docs:
 - **Concerns**: Metrics with red/warning trend status or that dropped a DORA level
 - This classification accelerates the analysis step
 
-### 4. Read Repo Context
+**Save state**: Store analytics data in state file
+
+```
+✓ CHECKPOINT: Step 3 complete - Read Dev Analytics
+  Director report: [loaded/skipped] | Squad reports: [N] read | Metrics classified: [wins/concerns]
+
+Proceeding to Step 4: Read Repo Context
+```
+
+### Step 4: Read Repo Context
 
 Gather local context for the month (YYYY-MM):
 
@@ -74,46 +165,84 @@ Gather local context for the month (YYYY-MM):
 
 Extract themes: recurring topics, decisions made, escalations, wins.
 
-### 5. Gather External Context
+**Save state**: Store repo context summary in state file
 
-Query external systems for supplementary data:
+```
+✓ CHECKPOINT: Step 4 complete - Read Repo Context
+  Weekly reviews: [N] | EOD summaries: [N] | Meeting notes: [N] | Themes extracted: [N]
+
+Proceeding to Step 5: Gather External Context
+```
+
+### Step 5: Gather External Context
+
+Query external systems for supplementary data. Track each source for resume capability:
+
+**Source Progress Tracking:**
+```markdown
+Sources:
+- [ ] OKR Tracker - (pending)
+- [ ] Incident.io - (pending)
+- [ ] Humaans - (pending)
+- [ ] Linear - (pending)
+- [ ] GitHub - (pending)
+- [ ] Slack - (pending)
+- [ ] Notion - (pending)
+
+If interrupted: Resume retries incomplete sources, skips completed ones.
+```
 
 #### OKR Tracker (PANTHEON)
 - Read Google Sheet `1DAQkiXe5WISbTA0aEqUBlVCQ595CG61Vwosk9ZfAc2w`
 - Extract engineering initiative RAG statuses, drivers, and asks
 - Note any RAG changes from previous month
+- **Mark source complete in state**
 
 #### Incident.io (`mcp__incident-io__*`)
 - List incidents for the month
 - Note P0/P1 incidents, resolution status, outstanding follow-ups
 - Get postmortems for resolved incidents
+- **Mark source complete in state**
 
 #### Humaans (`mcp__humaans__*`)
 - Team changes: joiners, leavers, role changes during the month
 - Current headcount
+- **Mark source complete in state**
 
 #### Linear (`mcp__linear__*`)
 - Projects completed or with significant milestones
 - Epic/initiative progress
+- **Mark source complete in state**
 
 #### GitHub (`mcp__github__*`)
 - Major releases during the month
 - Notable repository activity
+- **Mark source complete in state**
 
 #### Slack (`mcp__slack__*`)
 - Search `#engineering` for wins, announcements
 - Search `#incidents` for incident context
 - Search for "shipped", "launched", "released" in engineering channels
+- **Mark source complete in state**
 
 #### Notion (`mcp__notion__*`)
 - RFCs published or approved during the month
 - Architecture decisions
+- **Mark source complete in state**
 
 #### Gmail (`mcp__google__gmail_*`)
 - Stakeholder updates sent/received about engineering
 - Cross-functional coordination threads
+- **Mark source complete in state**
 
-### 6. Auto-Suggest Exceptions
+```
+✓ CHECKPOINT: Step 5 complete - Gather External Context
+  Sources: 7/7 complete | OKR: [N] initiatives | Incidents: [N] | Team changes: [N]
+
+Proceeding to Step 6: Auto-Suggest Exceptions
+```
+
+### Step 6: Auto-Suggest Exceptions (User Confirmation Gate)
 
 Before drafting, analyze collected data and flag candidate exception items:
 
@@ -137,7 +266,16 @@ Accept all / Select which to include / Add your own:
 
 Use AskUserQuestion to let the user accept, reject, or modify the suggested exceptions, and add any they want to include manually.
 
-### 7. Analyze & Determine RAG
+**Save state**: Record selected exceptions in userDecisions
+
+```
+✓ CHECKPOINT: Step 6 complete - Auto-Suggest Exceptions
+  Candidates suggested: [N] | Accepted: [N] | User-added: [N]
+
+Proceeding to Step 7: Analyze & Determine RAG
+```
+
+### Step 7: Analyze & Determine RAG (User Confirmation Gate)
 
 Assess the topline RAG status using weighted signals:
 
@@ -162,7 +300,16 @@ Assess the topline RAG status using weighted signals:
 
 Present the proposed RAG to the user with rationale. Allow override.
 
-### 8. Draft MBR
+**Save state**: Record RAG decision and user confirmation
+
+```
+✓ CHECKPOINT: Step 7 complete - Analyze & Determine RAG
+  Proposed RAG: [green/amber/red] | Previous: [status] | User confirmed: [yes/override]
+
+Proceeding to Step 8: Draft MBR
+```
+
+### Step 8: Draft MBR (User Confirmation Gate)
 
 Compose the MBR following Mark's format exactly:
 
@@ -204,7 +351,16 @@ Review: Accept / Edit / Regenerate?
 
 Use AskUserQuestion to get user approval before proceeding to publish.
 
-### 9. Create Google Doc
+**Save state**: Record draft content and user approval
+
+```
+✓ CHECKPOINT: Step 8 complete - Draft MBR
+  Draft generated: [N] words | User approved: [yes/revision requested]
+
+Proceeding to Step 9: Create Google Doc
+```
+
+### Step 9: Create Google Doc
 
 Once the user approves the draft:
 
@@ -215,7 +371,16 @@ Once the user approves the draft:
 
 Note the document URL for the user and for the local copy.
 
-### 10. Save Local Copy
+**Save state**: Record Google Doc URL
+
+```
+✓ CHECKPOINT: Step 9 complete - Create Google Doc
+  Doc created: [url]
+
+Proceeding to Step 10: Save Local Copy
+```
+
+### Step 10: Save Local Copy
 
 Save to `reviews/mbr/YYYY-MM.md` with YAML frontmatter and data sources appendix:
 
@@ -264,7 +429,14 @@ After the MBR content, include a data sources appendix:
 - Rejected: [count]
 ```
 
-### 11. Offer OKR Tracker Update
+```
+✓ CHECKPOINT: Step 10 complete - Save Local Copy
+  Saved to: reviews/mbr/YYYY-MM.md
+
+Proceeding to Step 11: Offer OKR Tracker Update
+```
+
+### Step 11: Offer OKR Tracker Update (Optional)
 
 After saving, prompt the user:
 
@@ -284,7 +456,14 @@ If accepted:
 - Present the exact cells and values to the user for confirmation before writing
 - Note: Writing to Google Sheets requires the sheets update tool — if not available, provide the values for manual entry
 
-### 12. Update Daily Context
+```
+✓ CHECKPOINT: Step 11 complete - Offer OKR Tracker Update
+  OKR tracker: [updated/skipped/manual values provided]
+
+Proceeding to Step 12: Update Daily Context
+```
+
+### Step 12: Update Daily Context
 
 Append to today's daily context index `context/YYYY-MM-DD/index.md`:
 
@@ -294,13 +473,63 @@ Append to today's daily context index `context/YYYY-MM-DD/index.md`:
 
 Create the day directory and index if they don't exist yet (use the context-index template).
 
+**Clean up state file** (optional): Delete `context/YYYY-MM-DD/mbr-state.json` or mark as complete.
+
+```
+✓ CHECKPOINT: Step 12 complete - Update Daily Context
+  Daily context updated.
+```
+
+## Final Summary
+
+After ALL 12 steps complete, display:
+
+```
+# MBR Complete - [Month YYYY]
+
+## Steps Completed
+✓ 1. Parse Month       ✓ 2. Load Previous   ✓ 3. Read Analytics
+✓ 4. Repo Context      ✓ 5. External Context ✓ 6. Suggest Exceptions
+✓ 7. Determine RAG     ✓ 8. Draft MBR        ✓ 9. Create Google Doc
+✓ 10. Save Local Copy  ✓ 11. OKR Tracker     ✓ 12. Update Context
+
+## Key Results
+- **Month**: [Month YYYY]
+- **RAG**: [status] ([unchanged/improved/worsened] from [previous])
+- **Exceptions**: [N] registered
+- **Google Doc**: [url]
+- **Local copy**: reviews/mbr/YYYY-MM.md
+
+---
+MBR complete.
+```
+
 ## Error Handling
 
+If any step fails:
+1. Log the error and step number
+2. **Save progress** to state file (for `--resume`)
+3. Continue with remaining steps if possible
+4. Note the failure in the final summary
+5. Suggest: "Resume with: /mbr --resume"
+
+### Specific Error Cases
+
 - **Dev analytics not found**: Warn but allow proceeding — MBR will rely more on repo context and external systems. Note in data sources appendix.
-- **MCP server unavailable**: Note which integration is down, continue with available sources, flag gaps in output.
+- **MCP server unavailable**: Note which integration is down, continue with available sources, flag gaps in output. Mark source as failed in state file.
 - **Previous MBR not found**: Proceed without variance comparison — note this is the baseline MBR.
 - **OKR tracker unreadable**: Skip OKR context and tracker update step — provide values for manual entry.
 - **Google Doc creation fails**: Save local copy, provide content for manual doc creation.
+- **Interruption at any step**: State file preserves progress. Resume from last completed step.
+
+### Resume Behavior
+
+When `/mbr --resume` is run:
+1. Load state file from `context/YYYY-MM-DD/mbr-state.json`
+2. Display completed steps and their results
+3. Restore user decisions (exceptions, RAG, draft approval)
+4. Resume from first incomplete step
+5. Continue through remaining steps
 
 ## Examples
 
