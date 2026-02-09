@@ -10,6 +10,8 @@ import {
   handleDriveSearch,
   handleDocsGetContent,
   handleSheetsGetValues,
+  handleSheetsCreate,
+  handleSheetsUpdateValues,
   handleSlidesGetPresentation,
 } from '../handlers/index.js';
 
@@ -363,6 +365,116 @@ describe('Sheets Handlers', () => {
 
       expect(result.values).toHaveLength(3);
       expect(result.values[0]).toEqual(['Name', 'Value']);
+    });
+  });
+
+  describe('handleSheetsCreate', () => {
+    it('should create a spreadsheet with default sheet', async () => {
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          spreadsheetId: 'new-sheet-id',
+          spreadsheetUrl: 'https://docs.google.com/spreadsheets/d/new-sheet-id',
+          properties: { title: 'My Spreadsheet' },
+          sheets: [{ properties: { title: 'Sheet1', sheetId: 0 } }],
+        })
+      );
+
+      const result = (await handleSheetsCreate({ title: 'My Spreadsheet' }, auth)) as {
+        spreadsheetId: string;
+        spreadsheetUrl: string;
+        title: string;
+        sheets: Array<{ title: string; sheetId: number }>;
+      };
+
+      expect(result.spreadsheetId).toBe('new-sheet-id');
+      expect(result.title).toBe('My Spreadsheet');
+      expect(result.sheets).toHaveLength(1);
+      expect(result.sheets[0]?.title).toBe('Sheet1');
+    });
+
+    it('should create a spreadsheet with named sheets', async () => {
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          spreadsheetId: 'new-sheet-id',
+          spreadsheetUrl: 'https://docs.google.com/spreadsheets/d/new-sheet-id',
+          properties: { title: 'OKR Tracker' },
+          sheets: [
+            { properties: { title: 'Summary', sheetId: 0 } },
+            { properties: { title: 'Initiatives', sheetId: 1 } },
+          ],
+        })
+      );
+
+      const result = (await handleSheetsCreate(
+        { title: 'OKR Tracker', sheetNames: ['Summary', 'Initiatives'] },
+        auth
+      )) as {
+        sheets: Array<{ title: string }>;
+      };
+
+      expect(result.sheets).toHaveLength(2);
+      expect(result.sheets[0]?.title).toBe('Summary');
+      expect(result.sheets[1]?.title).toBe('Initiatives');
+
+      // Verify the POST body
+      const callArgs = fetchMock.mock.calls[0]!;
+      const body = JSON.parse(callArgs[1]?.body as string);
+      expect(body.properties.title).toBe('OKR Tracker');
+      expect(body.sheets).toHaveLength(2);
+    });
+
+    it('should handle API errors', async () => {
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({}, false, 403));
+
+      await expect(handleSheetsCreate({ title: 'Test' }, auth)).rejects.toThrow(
+        'Sheets API error: 403'
+      );
+    });
+  });
+
+  describe('handleSheetsUpdateValues', () => {
+    it('should update values in a range', async () => {
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          spreadsheetId: 'sheet123',
+          updatedRange: 'Sheet1!A1:B2',
+          updatedRows: 2,
+          updatedColumns: 2,
+          updatedCells: 4,
+        })
+      );
+
+      const result = (await handleSheetsUpdateValues(
+        {
+          spreadsheetId: 'sheet123',
+          range: 'Sheet1!A1:B2',
+          values: [
+            ['Name', 'Value'],
+            ['Item 1', '100'],
+          ],
+        },
+        auth
+      )) as { updatedCells: number };
+
+      expect(result.updatedCells).toBe(4);
+
+      // Verify the PUT body
+      const callArgs = fetchMock.mock.calls[0]!;
+      expect(callArgs[1]?.method).toBe('PUT');
+      const body = JSON.parse(callArgs[1]?.body as string);
+      expect(body.values).toHaveLength(2);
+      expect(body.majorDimension).toBe('ROWS');
+    });
+
+    it('should handle API errors', async () => {
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({}, false, 404));
+
+      await expect(
+        handleSheetsUpdateValues(
+          { spreadsheetId: 'bad-id', range: 'Sheet1!A1', values: [['test']] },
+          auth
+        )
+      ).rejects.toThrow('Sheets API error: 404');
     });
   });
 });

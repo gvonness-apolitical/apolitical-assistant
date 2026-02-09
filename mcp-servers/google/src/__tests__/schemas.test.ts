@@ -18,6 +18,9 @@ import {
   CalendarGetFreeBusySchema,
   CalendarCreateEventSchema,
   CalendarUpdateEventSchema,
+  // Calendar helpers
+  buildWeeklyRRule,
+  buildRecurrenceRules,
   // Drive schemas
   DriveSearchSchema,
   DriveGetFileSchema,
@@ -27,6 +30,8 @@ import {
   // Sheets schemas
   SheetsGetValuesSchema,
   SheetsGetMetadataSchema,
+  SheetsCreateSchema,
+  SheetsUpdateValuesSchema,
   // Slides schemas
   SlidesGetPresentationSchema,
 } from '../handlers/index.js';
@@ -296,6 +301,237 @@ describe('Calendar Schemas', () => {
       expect(result.start).toBe('2024-01-20T15:00:00Z');
       expect(result.end).toBeUndefined();
     });
+
+    it('should accept allDay flag', () => {
+      const result = CalendarUpdateEventSchema.parse({
+        eventId: 'event123',
+        allDay: true,
+        start: '2024-01-20',
+        end: '2024-01-21',
+      });
+      expect(result.allDay).toBe(true);
+    });
+
+    it('should accept simplified recurrence pattern', () => {
+      const result = CalendarUpdateEventSchema.parse({
+        eventId: 'event123',
+        recurrence: {
+          frequency: 'weekly',
+          days: ['TU', 'WE', 'FR'],
+        },
+      });
+      expect(result.recurrence).toEqual({
+        frequency: 'weekly',
+        days: ['TU', 'WE', 'FR'],
+        interval: 1,
+      });
+    });
+
+    it('should accept raw RRULE array', () => {
+      const result = CalendarUpdateEventSchema.parse({
+        eventId: 'event123',
+        recurrence: ['RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR'],
+      });
+      expect(result.recurrence).toEqual(['RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR']);
+    });
+  });
+
+  describe('CalendarCreateEventSchema with recurrence', () => {
+    it('should accept allDay events', () => {
+      const result = CalendarCreateEventSchema.parse({
+        summary: 'Office Day',
+        start: '2024-01-20',
+        end: '2024-01-21',
+        allDay: true,
+      });
+      expect(result.allDay).toBe(true);
+      expect(result.start).toBe('2024-01-20');
+    });
+
+    it('should accept simplified recurrence pattern', () => {
+      const result = CalendarCreateEventSchema.parse({
+        summary: 'Office Days',
+        start: '2024-01-20',
+        end: '2024-01-21',
+        allDay: true,
+        recurrence: {
+          frequency: 'weekly',
+          days: ['TU', 'WE', 'FR'],
+        },
+      });
+      expect(result.recurrence).toEqual({
+        frequency: 'weekly',
+        days: ['TU', 'WE', 'FR'],
+        interval: 1,
+      });
+    });
+
+    it('should accept recurrence with interval', () => {
+      const result = CalendarCreateEventSchema.parse({
+        summary: 'Bi-weekly Meeting',
+        start: '2024-01-20T10:00:00Z',
+        end: '2024-01-20T11:00:00Z',
+        recurrence: {
+          frequency: 'weekly',
+          interval: 2,
+        },
+      });
+      expect(result.recurrence).toEqual({
+        frequency: 'weekly',
+        interval: 2,
+      });
+    });
+
+    it('should accept recurrence with count', () => {
+      const result = CalendarCreateEventSchema.parse({
+        summary: 'Limited Series',
+        start: '2024-01-20T10:00:00Z',
+        end: '2024-01-20T11:00:00Z',
+        recurrence: {
+          frequency: 'daily',
+          count: 10,
+        },
+      });
+      expect(result.recurrence).toEqual({
+        frequency: 'daily',
+        interval: 1,
+        count: 10,
+      });
+    });
+
+    it('should accept recurrence with until date', () => {
+      const result = CalendarCreateEventSchema.parse({
+        summary: 'Until End of Year',
+        start: '2024-01-20T10:00:00Z',
+        end: '2024-01-20T11:00:00Z',
+        recurrence: {
+          frequency: 'monthly',
+          until: '20241231',
+        },
+      });
+      expect(result.recurrence).toEqual({
+        frequency: 'monthly',
+        interval: 1,
+        until: '20241231',
+      });
+    });
+
+    it('should accept raw RRULE strings', () => {
+      const result = CalendarCreateEventSchema.parse({
+        summary: 'Complex Pattern',
+        start: '2024-01-20T10:00:00Z',
+        end: '2024-01-20T11:00:00Z',
+        recurrence: ['RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR;COUNT=10'],
+      });
+      expect(result.recurrence).toEqual(['RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR;COUNT=10']);
+    });
+
+    it('should reject invalid day codes', () => {
+      expect(() =>
+        CalendarCreateEventSchema.parse({
+          summary: 'Invalid Days',
+          start: '2024-01-20',
+          end: '2024-01-21',
+          recurrence: {
+            frequency: 'weekly',
+            days: ['MONDAY', 'TUESDAY'],
+          },
+        })
+      ).toThrow(ZodError);
+    });
+  });
+
+  describe('buildWeeklyRRule', () => {
+    it('should build RRULE for single day', () => {
+      const result = buildWeeklyRRule(['MO']);
+      expect(result).toBe('RRULE:FREQ=WEEKLY;BYDAY=MO');
+    });
+
+    it('should build RRULE for multiple days', () => {
+      const result = buildWeeklyRRule(['TU', 'WE', 'FR']);
+      expect(result).toBe('RRULE:FREQ=WEEKLY;BYDAY=TU,WE,FR');
+    });
+
+    it('should build RRULE for all weekdays', () => {
+      const result = buildWeeklyRRule(['MO', 'TU', 'WE', 'TH', 'FR']);
+      expect(result).toBe('RRULE:FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR');
+    });
+
+    it('should throw for empty days array', () => {
+      expect(() => buildWeeklyRRule([])).toThrow('Invalid days');
+    });
+
+    it('should filter invalid days', () => {
+      // @ts-expect-error testing invalid input
+      const result = buildWeeklyRRule(['MO', 'INVALID', 'FR']);
+      expect(result).toBe('RRULE:FREQ=WEEKLY;BYDAY=MO,FR');
+    });
+  });
+
+  describe('buildRecurrenceRules', () => {
+    it('should return undefined for undefined input', () => {
+      const result = buildRecurrenceRules(undefined);
+      expect(result).toBeUndefined();
+    });
+
+    it('should pass through raw RRULE arrays', () => {
+      const input = ['RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR'];
+      const result = buildRecurrenceRules(input);
+      expect(result).toEqual(input);
+    });
+
+    it('should build RRULE from simplified weekly pattern', () => {
+      const result = buildRecurrenceRules({
+        frequency: 'weekly',
+        days: ['TU', 'WE', 'FR'],
+        interval: 1,
+      });
+      expect(result).toEqual(['RRULE:FREQ=WEEKLY;BYDAY=TU,WE,FR']);
+    });
+
+    it('should include interval when > 1', () => {
+      const result = buildRecurrenceRules({
+        frequency: 'weekly',
+        interval: 2,
+      });
+      expect(result).toEqual(['RRULE:FREQ=WEEKLY;INTERVAL=2']);
+    });
+
+    it('should include count when specified', () => {
+      const result = buildRecurrenceRules({
+        frequency: 'daily',
+        count: 10,
+        interval: 1,
+      });
+      expect(result).toEqual(['RRULE:FREQ=DAILY;COUNT=10']);
+    });
+
+    it('should include until when specified', () => {
+      const result = buildRecurrenceRules({
+        frequency: 'monthly',
+        until: '20241231',
+        interval: 1,
+      });
+      expect(result).toEqual(['RRULE:FREQ=MONTHLY;UNTIL=20241231']);
+    });
+
+    it('should prefer count over until when both specified', () => {
+      const result = buildRecurrenceRules({
+        frequency: 'weekly',
+        count: 5,
+        until: '20241231',
+        interval: 1,
+      });
+      expect(result).toEqual(['RRULE:FREQ=WEEKLY;COUNT=5']);
+    });
+
+    it('should handle yearly frequency', () => {
+      const result = buildRecurrenceRules({
+        frequency: 'yearly',
+        interval: 1,
+      });
+      expect(result).toEqual(['RRULE:FREQ=YEARLY']);
+    });
   });
 });
 
@@ -383,6 +619,60 @@ describe('Sheets Schemas', () => {
     it('should validate with spreadsheetId', () => {
       const result = SheetsGetMetadataSchema.parse({ spreadsheetId: 'sheet-456' });
       expect(result.spreadsheetId).toBe('sheet-456');
+    });
+  });
+
+  describe('SheetsCreateSchema', () => {
+    it('should validate with required title', () => {
+      const result = SheetsCreateSchema.parse({ title: 'My Spreadsheet' });
+      expect(result.title).toBe('My Spreadsheet');
+      expect(result.sheetNames).toBeUndefined();
+    });
+
+    it('should accept optional sheet names', () => {
+      const result = SheetsCreateSchema.parse({
+        title: 'OKR Tracker',
+        sheetNames: ['Summary', 'Initiatives', 'Progress'],
+      });
+      expect(result.sheetNames).toEqual(['Summary', 'Initiatives', 'Progress']);
+    });
+
+    it('should reject missing title', () => {
+      expect(() => SheetsCreateSchema.parse({})).toThrow(ZodError);
+    });
+  });
+
+  describe('SheetsUpdateValuesSchema', () => {
+    it('should validate with required fields', () => {
+      const result = SheetsUpdateValuesSchema.parse({
+        spreadsheetId: 'sheet-789',
+        range: 'Sheet1!A1:B2',
+        values: [
+          ['Name', 'Value'],
+          ['Item 1', '100'],
+        ],
+      });
+      expect(result.spreadsheetId).toBe('sheet-789');
+      expect(result.range).toBe('Sheet1!A1:B2');
+      expect(result.values).toHaveLength(2);
+    });
+
+    it('should accept mixed value types', () => {
+      const result = SheetsUpdateValuesSchema.parse({
+        spreadsheetId: 'sheet-789',
+        range: 'Sheet1!A1:C1',
+        values: [['text', 42, true]],
+      });
+      expect(result.values[0]).toEqual(['text', 42, true]);
+    });
+
+    it('should reject missing fields', () => {
+      expect(() => SheetsUpdateValuesSchema.parse({ spreadsheetId: 'sheet-789' })).toThrow(
+        ZodError
+      );
+      expect(() =>
+        SheetsUpdateValuesSchema.parse({ spreadsheetId: 'sheet-789', range: 'A1:B2' })
+      ).toThrow(ZodError);
     });
   });
 });

@@ -48,6 +48,9 @@ export {
   handleCalendarGetFreeBusy,
   handleCalendarCreateEvent,
   handleCalendarUpdateEvent,
+  // Calendar helpers
+  buildWeeklyRRule,
+  buildRecurrenceRules,
 } from './calendar.js';
 
 export {
@@ -76,16 +79,24 @@ export {
   // Sheets schemas
   SheetsGetValuesSchema,
   SheetsGetMetadataSchema,
+  SheetsCreateSchema,
+  SheetsUpdateValuesSchema,
   // Sheets handlers
   handleSheetsGetValues,
   handleSheetsGetMetadata,
+  handleSheetsCreate,
+  handleSheetsUpdateValues,
 } from './sheets.js';
 
 export {
   // Slides schemas
   SlidesGetPresentationSchema,
+  SlidesCreateSchema,
+  SlidesAddSlideSchema,
   // Slides handlers
   handleSlidesGetPresentation,
+  handleSlidesCreate,
+  handleSlidesAddSlide,
 } from './slides.js';
 
 // Combine all tools from handler bundles
