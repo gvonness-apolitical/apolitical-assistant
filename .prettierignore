@@ -9,3 +9,12 @@ meetings/
 121/
 morning-briefing/
 tech-notes/
+briefings/
+investigations/
+rubberduck/
+reviews/
+work/
+
+# git-crypt encrypted files
+.claude/email-rules.json
+.claude/meeting-config.json

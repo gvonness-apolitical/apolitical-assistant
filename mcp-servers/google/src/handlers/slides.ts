@@ -37,7 +37,10 @@ export const SlidesAddSlideSchema = z.object({
     .optional()
     .default('TITLE_AND_BODY')
     .describe('Slide layout type'),
-  insertionIndex: z.number().optional().describe('Position to insert slide (0-indexed, omit to append)'),
+  insertionIndex: z
+    .number()
+    .optional()
+    .describe('Position to insert slide (0-indexed, omit to append)'),
 });
 
 // ==================== HANDLER FUNCTIONS ====================
@@ -138,7 +141,9 @@ function createTextRequests(
 // Helper to parse body text and detect bullet points
 function parseBodyText(body: string): { text: string; isBulletList: boolean } {
   const lines = body.split('\n');
-  const isBulletList = lines.some((line) => line.trim().startsWith('- ') || line.trim().startsWith('• '));
+  const isBulletList = lines.some(
+    (line) => line.trim().startsWith('- ') || line.trim().startsWith('• ')
+  );
 
   // Clean up bullet prefixes for Slides (it will add its own bullets)
   const cleanedLines = lines.map((line) => {
@@ -206,9 +211,7 @@ export async function handleSlidesCreate(
             predefinedLayout: LAYOUT_MAPPINGS[layout],
           },
           placeholderIdMappings: [
-            ...(slide.title
-              ? [{ layoutPlaceholder: { type: 'TITLE' }, objectId: titleId }]
-              : []),
+            ...(slide.title ? [{ layoutPlaceholder: { type: 'TITLE' }, objectId: titleId }] : []),
             ...(slide.body && layout !== 'TITLE_ONLY' && layout !== 'TITLE'
               ? [{ layoutPlaceholder: { type: 'BODY' }, objectId: bodyId }]
               : []),

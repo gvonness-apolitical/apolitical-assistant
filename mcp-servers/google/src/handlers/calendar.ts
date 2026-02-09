@@ -30,7 +30,9 @@ const RecurrenceSchema = z
     z.array(z.string()).describe('Array of RRULE/EXDATE strings (RFC 5545 format)'),
     z
       .object({
-        frequency: z.enum(['daily', 'weekly', 'monthly', 'yearly']).describe('Recurrence frequency'),
+        frequency: z
+          .enum(['daily', 'weekly', 'monthly', 'yearly'])
+          .describe('Recurrence frequency'),
         days: z
           .array(z.enum(['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU']))
           .optional()
@@ -392,15 +394,14 @@ export async function handleCalendarUpdateEvent(
   const existingStart = existingEvent.start as { date?: string; dateTime?: string } | undefined;
   const wasAllDay = existingStart?.date !== undefined;
   const isAllDay =
-    args.allDay ?? (args.start ? !args.start.includes('T') && !args.start.includes(':') : wasAllDay);
+    args.allDay ??
+    (args.start ? !args.start.includes('T') && !args.start.includes(':') : wasAllDay);
 
   // Update only provided fields
   if (args.summary !== undefined) existingEvent.summary = args.summary;
   if (args.description !== undefined) existingEvent.description = args.description;
   if (args.start !== undefined) {
-    existingEvent.start = isAllDay
-      ? { date: args.start.split('T')[0] }
-      : { dateTime: args.start };
+    existingEvent.start = isAllDay ? { date: args.start.split('T')[0] } : { dateTime: args.start };
   }
   if (args.end !== undefined) {
     existingEvent.end = isAllDay ? { date: args.end.split('T')[0] } : { dateTime: args.end };
