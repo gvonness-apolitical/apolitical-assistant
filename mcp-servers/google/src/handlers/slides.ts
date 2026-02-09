@@ -8,6 +8,41 @@ export const SlidesGetPresentationSchema = z.object({
   presentationId: z.string().describe('The Google Slides presentation ID'),
 });
 
+const SlideContentSchema = z.object({
+  title: z.string().optional().describe('Slide title'),
+  body: z.string().optional().describe('Slide body text (supports bullet points with - prefix)'),
+  notes: z.string().optional().describe('Speaker notes for this slide'),
+  layout: z
+    .enum(['TITLE', 'TITLE_AND_BODY', 'TITLE_ONLY', 'BLANK'])
+    .optional()
+    .default('TITLE_AND_BODY')
+    .describe('Slide layout type'),
+});
+
+export const SlidesCreateSchema = z.object({
+  title: z.string().describe('The title for the new presentation'),
+  slides: z
+    .array(SlideContentSchema)
+    .optional()
+    .describe('Array of slides to create (each with title, body, notes, layout)'),
+});
+
+export const SlidesAddSlideSchema = z.object({
+  presentationId: z.string().describe('The Google Slides presentation ID'),
+  title: z.string().optional().describe('Slide title'),
+  body: z.string().optional().describe('Slide body text'),
+  notes: z.string().optional().describe('Speaker notes'),
+  layout: z
+    .enum(['TITLE', 'TITLE_AND_BODY', 'TITLE_ONLY', 'BLANK'])
+    .optional()
+    .default('TITLE_AND_BODY')
+    .describe('Slide layout type'),
+  insertionIndex: z
+    .number()
+    .optional()
+    .describe('Position to insert slide (0-indexed, omit to append)'),
+});
+
 // ==================== HANDLER FUNCTIONS ====================
 
 export async function handleSlidesGetPresentation(
@@ -59,6 +94,246 @@ export async function handleSlidesGetPresentation(
   };
 }
 
+// Layout mapping to predefined layout object IDs (Google Slides uses these)
+const LAYOUT_MAPPINGS: Record<string, string> = {
+  TITLE: 'TITLE',
+  TITLE_AND_BODY: 'TITLE_AND_BODY',
+  TITLE_ONLY: 'TITLE_ONLY',
+  BLANK: 'BLANK',
+};
+
+// Helper to generate unique object IDs
+function generateObjectId(): string {
+  return `obj_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+}
+
+// Helper to create text insertion requests for a shape
+function createTextRequests(
+  objectId: string,
+  text: string,
+  isBulletList: boolean = false
+): Array<Record<string, unknown>> {
+  const requests: Array<Record<string, unknown>> = [];
+
+  // Insert text
+  requests.push({
+    insertText: {
+      objectId,
+      text,
+      insertionIndex: 0,
+    },
+  });
+
+  // If it looks like bullet points, create a bulleted list
+  if (isBulletList && text.includes('\n')) {
+    requests.push({
+      createParagraphBullets: {
+        objectId,
+        textRange: { type: 'ALL' },
+        bulletPreset: 'BULLET_DISC_CIRCLE_SQUARE',
+      },
+    });
+  }
+
+  return requests;
+}
+
+// Helper to parse body text and detect bullet points
+function parseBodyText(body: string): { text: string; isBulletList: boolean } {
+  const lines = body.split('\n');
+  const isBulletList = lines.some(
+    (line) => line.trim().startsWith('- ') || line.trim().startsWith('• ')
+  );
+
+  // Clean up bullet prefixes for Slides (it will add its own bullets)
+  const cleanedLines = lines.map((line) => {
+    const trimmed = line.trim();
+    if (trimmed.startsWith('- ')) return trimmed.substring(2);
+    if (trimmed.startsWith('• ')) return trimmed.substring(2);
+    return trimmed;
+  });
+
+  return {
+    text: cleanedLines.join('\n'),
+    isBulletList,
+  };
+}
+
+export async function handleSlidesCreate(
+  args: z.infer<typeof SlidesCreateSchema>,
+  auth: GoogleAuth
+): Promise<unknown> {
+  // Step 1: Create the presentation
+  const createUrl = 'https://slides.googleapis.com/v1/presentations';
+  const createResponse = await auth.fetch(createUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ title: args.title }),
+  });
+
+  if (!createResponse.ok) {
+    const error = await createResponse.text();
+    throw new Error(`Slides API error creating presentation: ${createResponse.status} - ${error}`);
+  }
+
+  const presentation = (await createResponse.json()) as {
+    presentationId: string;
+    title: string;
+    slides: Array<{ objectId: string }>;
+  };
+
+  // Step 2: If slides provided, add them
+  if (args.slides && args.slides.length > 0) {
+    const requests: Array<Record<string, unknown>> = [];
+    const slidesToAdd = args.slides;
+
+    // Delete the default blank slide that Google creates
+    const firstSlide = presentation.slides?.[0];
+    if (firstSlide) {
+      requests.push({
+        deleteObject: { objectId: firstSlide.objectId },
+      });
+    }
+
+    // Create each slide
+    slidesToAdd.forEach((slide, i) => {
+      const slideId = generateObjectId();
+      const titleId = `${slideId}_title`;
+      const bodyId = `${slideId}_body`;
+      const layout = slide.layout || 'TITLE_AND_BODY';
+
+      // Create the slide with a predefined layout
+      requests.push({
+        createSlide: {
+          objectId: slideId,
+          insertionIndex: i,
+          slideLayoutReference: {
+            predefinedLayout: LAYOUT_MAPPINGS[layout],
+          },
+          placeholderIdMappings: [
+            ...(slide.title ? [{ layoutPlaceholder: { type: 'TITLE' }, objectId: titleId }] : []),
+            ...(slide.body && layout !== 'TITLE_ONLY' && layout !== 'TITLE'
+              ? [{ layoutPlaceholder: { type: 'BODY' }, objectId: bodyId }]
+              : []),
+          ],
+        },
+      });
+
+      // Add title text if provided
+      if (slide.title) {
+        requests.push({
+          insertText: {
+            objectId: titleId,
+            text: slide.title,
+            insertionIndex: 0,
+          },
+        });
+      }
+
+      // Add body text if provided
+      if (slide.body && layout !== 'TITLE_ONLY' && layout !== 'TITLE') {
+        const { text, isBulletList } = parseBodyText(slide.body);
+        requests.push(...createTextRequests(bodyId, text, isBulletList));
+      }
+
+      // Add speaker notes if provided
+      if (slide.notes) {
+        requests.push({
+          insertText: {
+            objectId: `${slideId}_notes`,
+            text: slide.notes,
+            insertionIndex: 0,
+          },
+        });
+      }
+    });
+
+    // Execute batch update
+    const updateUrl = `https://slides.googleapis.com/v1/presentations/${presentation.presentationId}:batchUpdate`;
+    const updateResponse = await auth.fetch(updateUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ requests }),
+    });
+
+    if (!updateResponse.ok) {
+      const error = await updateResponse.text();
+      throw new Error(`Slides API error adding slides: ${updateResponse.status} - ${error}`);
+    }
+  }
+
+  return {
+    presentationId: presentation.presentationId,
+    title: presentation.title,
+    url: `https://docs.google.com/presentation/d/${presentation.presentationId}/edit`,
+    slideCount: args.slides?.length || 1,
+  };
+}
+
+export async function handleSlidesAddSlide(
+  args: z.infer<typeof SlidesAddSlideSchema>,
+  auth: GoogleAuth
+): Promise<unknown> {
+  const slideId = generateObjectId();
+  const titleId = `${slideId}_title`;
+  const bodyId = `${slideId}_body`;
+
+  const requests: Array<Record<string, unknown>> = [];
+
+  // Create the slide
+  requests.push({
+    createSlide: {
+      objectId: slideId,
+      ...(args.insertionIndex !== undefined && { insertionIndex: args.insertionIndex }),
+      slideLayoutReference: {
+        predefinedLayout: LAYOUT_MAPPINGS[args.layout || 'TITLE_AND_BODY'],
+      },
+      placeholderIdMappings: [
+        ...(args.title ? [{ layoutPlaceholder: { type: 'TITLE' }, objectId: titleId }] : []),
+        ...(args.body && args.layout !== 'TITLE_ONLY' && args.layout !== 'TITLE'
+          ? [{ layoutPlaceholder: { type: 'BODY' }, objectId: bodyId }]
+          : []),
+      ],
+    },
+  });
+
+  // Add title text
+  if (args.title) {
+    requests.push({
+      insertText: {
+        objectId: titleId,
+        text: args.title,
+        insertionIndex: 0,
+      },
+    });
+  }
+
+  // Add body text
+  if (args.body && args.layout !== 'TITLE_ONLY' && args.layout !== 'TITLE') {
+    const { text, isBulletList } = parseBodyText(args.body);
+    requests.push(...createTextRequests(bodyId, text, isBulletList));
+  }
+
+  // Execute batch update
+  const updateUrl = `https://slides.googleapis.com/v1/presentations/${args.presentationId}:batchUpdate`;
+  const updateResponse = await auth.fetch(updateUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ requests }),
+  });
+
+  if (!updateResponse.ok) {
+    const error = await updateResponse.text();
+    throw new Error(`Slides API error adding slide: ${updateResponse.status} - ${error}`);
+  }
+
+  return {
+    presentationId: args.presentationId,
+    slideId,
+    url: `https://docs.google.com/presentation/d/${args.presentationId}/edit`,
+  };
+}
+
 // ==================== HANDLER BUNDLE ====================
 
 export const slidesDefs = defineHandlers<GoogleAuth>()({
@@ -66,5 +341,16 @@ export const slidesDefs = defineHandlers<GoogleAuth>()({
     description: 'Get the content and structure of a Google Slides presentation',
     schema: SlidesGetPresentationSchema,
     handler: handleSlidesGetPresentation,
+  },
+  slides_create: {
+    description:
+      'Create a new Google Slides presentation with optional slides (each slide can have title, body with bullet points, speaker notes, and layout)',
+    schema: SlidesCreateSchema,
+    handler: handleSlidesCreate,
+  },
+  slides_add_slide: {
+    description: 'Add a slide to an existing Google Slides presentation',
+    schema: SlidesAddSlideSchema,
+    handler: handleSlidesAddSlide,
   },
 });

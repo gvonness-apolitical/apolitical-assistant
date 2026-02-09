@@ -41,3 +41,7 @@ investigations/**/* filter=git-crypt diff=git-crypt -text
 # Rubberduck - strategy and thinking sessions
 rubberduck/** filter=git-crypt diff=git-crypt -text
 rubberduck/**/* filter=git-crypt diff=git-crypt -text
+
+# Claude config files with sensitive data
+.claude/meeting-config.json filter=git-crypt diff=git-crypt -text
+.claude/email-rules.json filter=git-crypt diff=git-crypt -text
