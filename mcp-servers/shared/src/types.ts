@@ -3,12 +3,19 @@
  */
 
 /**
+ * A single content item in an MCP tool response.
+ */
+export type ContentItem =
+  | { type: 'text'; text: string }
+  | { type: 'image'; data: string; mimeType: string };
+
+/**
  * Standard MCP tool response format
  * Uses index signature to be compatible with MCP SDK's looser type requirements
  */
 export interface ToolResponse {
   [key: string]: unknown;
-  content: Array<{ type: 'text'; text: string }>;
+  content: ContentItem[];
 }
 
 /**

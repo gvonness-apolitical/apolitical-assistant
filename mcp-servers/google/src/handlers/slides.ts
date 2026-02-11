@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { defineHandlers } from '@apolitical-assistant/mcp-shared';
+import { defineHandlers, createImageResponse, RawResponse } from '@apolitical-assistant/mcp-shared';
 import type { GoogleAuth } from '../auth.js';
 
 // ==================== ZOD SCHEMAS ====================
@@ -41,6 +41,18 @@ export const SlidesAddSlideSchema = z.object({
     .number()
     .optional()
     .describe('Position to insert slide (0-indexed, omit to append)'),
+});
+
+export const SlidesGetThumbnailSchema = z.object({
+  presentationId: z.string().describe('The Google Slides presentation ID'),
+  pageObjectId: z
+    .string()
+    .describe('The slide page object ID (from slides_get_presentation response)'),
+  thumbnailSize: z
+    .enum(['LARGE', 'MEDIUM', 'SMALL'])
+    .optional()
+    .default('LARGE')
+    .describe('Thumbnail size: LARGE (1600px), MEDIUM (800px), or SMALL (200px)'),
 });
 
 // ==================== HANDLER FUNCTIONS ====================
@@ -334,6 +346,33 @@ export async function handleSlidesAddSlide(
   };
 }
 
+export async function handleSlidesGetThumbnail(
+  args: z.infer<typeof SlidesGetThumbnailSchema>,
+  auth: GoogleAuth
+): Promise<RawResponse> {
+  // 1. Get the thumbnail URL from the Slides API
+  const url = `https://slides.googleapis.com/v1/presentations/${args.presentationId}/pages/${args.pageObjectId}/thumbnail?thumbnailProperties.thumbnailSize=${args.thumbnailSize}`;
+  const response = await auth.fetch(url);
+  if (!response.ok) throw new Error(`Slides thumbnail API error: ${response.status}`);
+
+  const thumbnail = (await response.json()) as {
+    contentUrl: string;
+    width: number;
+    height: number;
+  };
+
+  // 2. Download the image from the temporary URL
+  const imageResponse = await auth.fetch(thumbnail.contentUrl);
+  if (!imageResponse.ok) throw new Error(`Failed to download thumbnail: ${imageResponse.status}`);
+
+  const imageBuffer = Buffer.from(await imageResponse.arrayBuffer());
+  const base64 = imageBuffer.toString('base64');
+
+  // 3. Return as MCP image content
+  const caption = `Slide thumbnail (${thumbnail.width}x${thumbnail.height})`;
+  return new RawResponse(createImageResponse(base64, 'image/png', caption));
+}
+
 // ==================== HANDLER BUNDLE ====================
 
 export const slidesDefs = defineHandlers<GoogleAuth>()({
@@ -352,5 +391,11 @@ export const slidesDefs = defineHandlers<GoogleAuth>()({
     description: 'Add a slide to an existing Google Slides presentation',
     schema: SlidesAddSlideSchema,
     handler: handleSlidesAddSlide,
+  },
+  slides_get_thumbnail: {
+    description:
+      'Get a rendered thumbnail image of a specific slide. Returns the image inline for visual analysis. Use slides_get_presentation first to get page object IDs.',
+    schema: SlidesGetThumbnailSchema,
+    handler: handleSlidesGetThumbnail,
   },
 });

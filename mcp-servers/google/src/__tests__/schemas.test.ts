@@ -24,6 +24,7 @@ import {
   // Drive schemas
   DriveSearchSchema,
   DriveGetFileSchema,
+  DriveExportSchema,
   // Docs schemas
   DocsGetContentSchema,
   DocsGetCommentsSchema,
@@ -34,6 +35,7 @@ import {
   SheetsUpdateValuesSchema,
   // Slides schemas
   SlidesGetPresentationSchema,
+  SlidesGetThumbnailSchema,
 } from '../handlers/index.js';
 
 describe('Gmail Schemas', () => {
@@ -567,6 +569,29 @@ describe('Drive Schemas', () => {
       expect(() => DriveGetFileSchema.parse({})).toThrow(ZodError);
     });
   });
+
+  describe('DriveExportSchema', () => {
+    it('should validate with fileId and defaults', () => {
+      const result = DriveExportSchema.parse({ fileId: 'abc123' });
+      expect(result.fileId).toBe('abc123');
+      expect(result.mimeType).toBe('application/pdf');
+      expect(result.outputPath).toBeUndefined();
+    });
+
+    it('should accept custom mimeType', () => {
+      const result = DriveExportSchema.parse({ fileId: 'abc123', mimeType: 'image/png' });
+      expect(result.mimeType).toBe('image/png');
+    });
+
+    it('should accept custom outputPath', () => {
+      const result = DriveExportSchema.parse({ fileId: 'abc123', outputPath: '/tmp/out.pdf' });
+      expect(result.outputPath).toBe('/tmp/out.pdf');
+    });
+
+    it('should reject missing fileId', () => {
+      expect(() => DriveExportSchema.parse({})).toThrow(ZodError);
+    });
+  });
 });
 
 describe('Docs Schemas', () => {
@@ -686,6 +711,44 @@ describe('Slides Schemas', () => {
 
     it('should reject missing presentationId', () => {
       expect(() => SlidesGetPresentationSchema.parse({})).toThrow(ZodError);
+    });
+  });
+
+  describe('SlidesGetThumbnailSchema', () => {
+    it('should validate with required fields and defaults', () => {
+      const result = SlidesGetThumbnailSchema.parse({
+        presentationId: 'pres-123',
+        pageObjectId: 'page-1',
+      });
+      expect(result.presentationId).toBe('pres-123');
+      expect(result.pageObjectId).toBe('page-1');
+      expect(result.thumbnailSize).toBe('LARGE');
+    });
+
+    it('should accept custom thumbnail size', () => {
+      const result = SlidesGetThumbnailSchema.parse({
+        presentationId: 'pres-123',
+        pageObjectId: 'page-1',
+        thumbnailSize: 'MEDIUM',
+      });
+      expect(result.thumbnailSize).toBe('MEDIUM');
+    });
+
+    it('should reject invalid thumbnail size', () => {
+      expect(() =>
+        SlidesGetThumbnailSchema.parse({
+          presentationId: 'pres-123',
+          pageObjectId: 'page-1',
+          thumbnailSize: 'HUGE',
+        })
+      ).toThrow(ZodError);
+    });
+
+    it('should reject missing required fields', () => {
+      expect(() => SlidesGetThumbnailSchema.parse({ presentationId: 'pres-123' })).toThrow(
+        ZodError
+      );
+      expect(() => SlidesGetThumbnailSchema.parse({ pageObjectId: 'page-1' })).toThrow(ZodError);
     });
   });
 });
