@@ -310,10 +310,11 @@ describe('Drive Handlers', () => {
       fetchMock.mockResolvedValueOnce({
         ok: true,
         status: 200,
-        arrayBuffer: async () => pdfContent.buffer.slice(
-          pdfContent.byteOffset,
-          pdfContent.byteOffset + pdfContent.byteLength
-        ),
+        arrayBuffer: async () =>
+          pdfContent.buffer.slice(
+            pdfContent.byteOffset,
+            pdfContent.byteOffset + pdfContent.byteLength
+          ),
       } as Response);
 
       const result = (await handleDriveExport(
@@ -343,10 +344,11 @@ describe('Drive Handlers', () => {
       fetchMock.mockResolvedValueOnce({
         ok: true,
         status: 200,
-        arrayBuffer: async () => fileContent.buffer.slice(
-          fileContent.byteOffset,
-          fileContent.byteOffset + fileContent.byteLength
-        ),
+        arrayBuffer: async () =>
+          fileContent.buffer.slice(
+            fileContent.byteOffset,
+            fileContent.byteOffset + fileContent.byteLength
+          ),
       } as Response);
 
       const result = (await handleDriveExport(
@@ -367,10 +369,7 @@ describe('Drive Handlers', () => {
       fetchMock.mockResolvedValueOnce(mockJsonResponse({}, false, 404));
 
       await expect(
-        handleDriveExport(
-          { fileId: 'bad-id', mimeType: 'application/pdf' },
-          auth
-        )
+        handleDriveExport({ fileId: 'bad-id', mimeType: 'application/pdf' }, auth)
       ).rejects.toThrow('Drive API error: 404');
     });
 
@@ -381,10 +380,7 @@ describe('Drive Handlers', () => {
       fetchMock.mockResolvedValueOnce(mockJsonResponse({}, false, 403));
 
       await expect(
-        handleDriveExport(
-          { fileId: 'file-123', mimeType: 'application/pdf' },
-          auth
-        )
+        handleDriveExport({ fileId: 'file-123', mimeType: 'application/pdf' }, auth)
       ).rejects.toThrow('Drive export/download error: 403');
     });
   });
@@ -648,10 +644,11 @@ describe('Slides Handlers', () => {
       fetchMock.mockResolvedValueOnce({
         ok: true,
         status: 200,
-        arrayBuffer: async () => imageBytes.buffer.slice(
-          imageBytes.byteOffset,
-          imageBytes.byteOffset + imageBytes.byteLength
-        ),
+        arrayBuffer: async () =>
+          imageBytes.buffer.slice(
+            imageBytes.byteOffset,
+            imageBytes.byteOffset + imageBytes.byteLength
+          ),
       } as Response);
 
       const result = await handleSlidesGetThumbnail(
