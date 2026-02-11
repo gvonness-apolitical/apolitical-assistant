@@ -80,6 +80,7 @@ Use `/[skill-name]` to invoke these workflows:
 ### Meetings
 - `/prep-meeting [meeting]` - Prepare for an upcoming meeting (integrates with mapped Slack channels/canvases)
 - `/meeting-notes [doc-id]` - Process Gemini auto-notes into structured format
+- `/process-gemini-notes` - Batch process unread Gemini notes: extract action items, save summaries, archive emails
 - `/schedule-meeting [attendees] [topic]` - Smart scheduling with availability checking
 - `/setup-meeting-channels` - Configure Slack channel/canvas mappings for recurring meetings
 - `/tidy-canvas [person]` - Clean up and organize a 1:1 canvas (archive completed items, align to template)
@@ -134,6 +135,33 @@ The handoff document bridges sessions when work is interrupted mid-task (e.g., M
 - Use bullet points for clarity
 - Highlight urgent items prominently
 - Provide context when needed
+
+### Checkpoint Discipline (MANDATORY)
+
+When executing multi-step skills (`/begin-day`, `/update-todos`, `/triage-inbox`, `/slack-read`, `/process-gemini-notes`, etc.):
+
+1. **Output each checkpoint marker explicitly** before proceeding to the next step/source
+2. **Do not summarize or combine steps** — complete one, output the marker, then proceed
+3. **Follow the skill's checkpoint format exactly** as written in the skill file
+4. **Create tasks automatically** when a skill specifies task creation (e.g., `/update-todos` creates tasks after deduplication)
+
+If you catch yourself skipping ahead or summarizing multiple steps together, **stop and output the missed checkpoints**.
+
+**Why this matters:**
+- Checkpoints enable resume capability if a session is interrupted
+- They provide visibility into progress for long-running workflows
+- They ensure no steps are accidentally skipped
+- Task creation keeps the task list current
+
+**Example checkpoint output:**
+```
+✓ CHECKPOINT: Step 3 complete - Email Triage
+  Processed: 30 | Trashed: 10 | Archived: 5 | Kept: 15
+
+Proceeding to Step 4: Process Gemini Notes
+```
+
+This is mandatory, not optional. Rushing through skills without checkpoints defeats their purpose.
 
 ### Privacy & Security
 - Never share personal information externally

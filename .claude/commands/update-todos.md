@@ -208,6 +208,57 @@ Before adding items to the todo list:
 4. **Skip duplicates**: Don't create duplicate tasks
 5. **Update if changed**: If item exists but details changed, note the update
 
+## Priority Assignment
+
+Assign priority to each item based on these rules (in order):
+
+| Priority | Criteria |
+|----------|----------|
+| **P0** | Active incidents, security issues, exec requests |
+| **P1** | Direct questions awaiting response, blocking others, same-day deadlines |
+| **P2** | Action items from canvases, reviews needed, delegate tasks |
+| **P3** | FYI items, low-priority reviews, backlog items |
+
+**Priority signals by source:**
+- **Slack**: Direct question = P1, mention in thread = P2, FYI = P3
+- **Email**: Exec sender = P1, team sender = P2, external = P3
+- **Canvases**: Overdue = P1, Open = P2, Paused/Blocked = P3
+- **Notion/Docs**: Unresolved comment = P2, shared doc = P3
+
+## Automatic Task Creation
+
+After deduplication, **automatically create tasks** ordered by priority.
+
+**IMPORTANT: Every task MUST include its priority level and sequence number.**
+
+1. **Sort all items** by priority (P0 → P1 → P2 → P3)
+2. **Within each priority**, sort by:
+   - Slack items first (quick responses)
+   - Email items second (delegation, replies)
+   - Canvas items third (tracked action items)
+   - Notion/Docs last (reviews)
+3. **Number items sequentially** across all priorities (P0 items first, then P1, etc.)
+4. **Create tasks** using `TaskCreate` with these formatting rules:
+   - **subject**: Must start with priority and sequence number: `P0.1: `, `P1.2: `, `P1.3: `, `P2.4: `, etc.
+   - **description**: Must start with `Priority: P[N]` on the first line, followed by source and details
+   - **activeForm**: Normal present continuous (no prefix needed)
+5. **Display numbered list** showing creation order with priorities
+
+### Task Subject Format
+
+```
+P{priority}.{sequence}: {brief action description}
+```
+
+Examples:
+- `P0.1: Submit Samuel probation feedback`
+- `P1.2: Sign Yang apprenticeship Docusign`
+- `P1.3: Respond to Renzo on RFC comments`
+- `P2.8: Follow up on Ilana's data segmentation`
+- `P3.11: Data residency meeting setup`
+
+The sequence number is global across all priorities (not per-priority), so you can see both the priority AND the recommended order at a glance.
+
 ## Output
 
 ### Summary View
@@ -216,43 +267,56 @@ Before adding items to the todo list:
 Todo Update Summary - 2026-01-26
 ================================
 
-Found 12 new action items:
+Found 12 new action items (after deduplication):
 
-FROM CANVASES (4 items):
-  [Dom 1:1] Schedule follow-up on incident management
-  [Think Tank] Decide and communicate AI budget
-  [Data Huddle] Review segmentation proposal
-  [Sync-up] Follow up on alerting discussion
+P1 - HIGH (2 items):
+  1. [Slack] @byron asked: Can you review the PR for auth changes?
+  2. [Email] Contract review needed - Legal Team (exec sender)
 
-FROM SLACK (3 items):
-  [#team-engineering] @byron asked: Can you review the PR for auth changes?
-  [DM with Joel] Joel asked about Q1 planning timeline
-  [@mention] Renzo tagged you in thread about deployment
+P2 - MEDIUM (7 items):
+  3. [Slack] Renzo tagged you in thread about deployment
+  4. [Email] Delegate: Q1 Budget proposal - Finance
+  5. [Canvas] Schedule follow-up on incident management (Dom 1:1)
+  6. [Canvas] Decide and communicate AI budget (Think Tank)
+  7. [Canvas] Review segmentation proposal (Data Huddle)
+  8. [Notion] Comments requested on API redesign RFC
+  9. [Docs] Comment on "Platform Roadmap 2026" needs response
 
-FROM EMAIL (2 items):
-  [Urgent] Contract review needed - Legal Team
-  [Review] Q1 Budget proposal - Finance
-
-FROM NOTION (2 items):
-  [RFC] Comments requested on API redesign
-  [Sprint Board] Assigned: Update runbook documentation
-
-FROM GOOGLE DOCS (1 item):
-  [Shared Doc] Comment on "Platform Roadmap 2026" needs response
+P3 - LOW (3 items):
+  10. [Canvas] Follow up on alerting discussion (Sync-up) - paused
+  11. [Email] Review: Newsletter digest
+  12. [Notion] Assigned: Update runbook documentation
 
 ================================
-Add these to your task list? (Y/n)
+Creating 12 tasks...
 ```
 
-### Task Creation
+### Task Creation Output
 
-If confirmed, create tasks using `TaskCreate`:
+Tasks are created automatically in priority order:
 
 ```
-Created 12 tasks:
-  #4. Schedule follow-up on incident management (from Dom 1:1)
-  #5. Decide and communicate AI budget (from Think Tank)
-  ...
+Created 12 tasks (ordered by priority):
+
+P1 - HIGH:
+  #1. Review PR for auth changes (from Slack @byron)
+  #2. Contract review needed (from Legal Team email)
+
+P2 - MEDIUM:
+  #3. Respond to Renzo about deployment (from Slack)
+  #4. Delegate Q1 Budget proposal (from Finance email)
+  #5. Schedule follow-up on incident management (from Dom 1:1)
+  #6. Decide and communicate AI budget (from Think Tank)
+  #7. Review segmentation proposal (from Data Huddle)
+  #8. Review API redesign RFC comments (from Notion)
+  #9. Respond to Platform Roadmap comment (from Google Docs)
+
+P3 - LOW:
+  #10. Follow up on alerting discussion (from Sync-up)
+  #11. Review Newsletter digest (from Email)
+  #12. Update runbook documentation (from Notion)
+
+Recommended: Start with #1 and work down the list.
 ```
 
 ### Detailed View
@@ -260,18 +324,21 @@ Created 12 tasks:
 Use `--detailed` flag for full context on each item:
 
 ```
-FROM CANVASES:
+P1 - HIGH:
 
-1. [Dom 1:1 Canvas] Schedule follow-up on incident management
-   Source: F09FCV0HXFX (121 Agenda)
-   Context: Discussed need for better alerting, Greg to schedule follow-up
-   Added: 2026-01-20
+#1. [Slack] Review PR for auth changes
+    Source: #team-engineering (@byron)
+    Context: Byron asked for review on auth changes PR
+    Link: https://slack.com/...
+    Priority: P1 (direct question, blocking)
 
-2. [Think Tank Canvas] Decide and communicate AI budget for engs
-   Source: F08GT4DU49F (Agenda)
-   Context: After aligning with Joe on overall budget
-   Added: 2026-01-15
-   Status: Blocked on Joe alignment
+P2 - MEDIUM:
+
+#5. [Canvas] Schedule follow-up on incident management
+    Source: F09FCV0HXFX (Dom 1:1)
+    Context: Discussed need for better alerting, Greg to schedule follow-up
+    Added: 2026-01-20
+    Priority: P2 (canvas action item)
 ```
 
 ## Configuration
@@ -314,7 +381,7 @@ Create the daily context file if it doesn't exist.
 
 ## Final Summary
 
-After all sources scanned and deduplicated, display:
+After all sources scanned, deduplicated, and tasks created, display:
 
 ```
 # Update Todos Complete - YYYY-MM-DD
@@ -325,7 +392,12 @@ After all sources scanned and deduplicated, display:
 ## Key Results
 - **Total items found**: [N]
 - **Deduplicated**: [N] (already existed)
-- **New items added**: [N]
+- **Tasks created**: [N]
+
+## By Priority
+- P1 (High): [N] tasks
+- P2 (Medium): [N] tasks
+- P3 (Low): [N] tasks
 
 ## By Source
 - Canvases: [N]
@@ -334,8 +406,11 @@ After all sources scanned and deduplicated, display:
 - Notion: [N]
 - Google Docs: [N]
 
+## Recommended Order
+Start with task #1 and work down. P1 items should be addressed today.
+
 ---
-Update todos complete.
+Update todos complete. [N] tasks ready to work.
 ```
 
 ## Error Handling
@@ -378,6 +453,8 @@ When `/update-todos --resume` is run:
 ## Notes
 
 - Run daily as part of morning routine, or before `/morning-briefing`
+- **Tasks are created automatically** - no confirmation prompt
+- **Tasks are numbered by priority** - P1 first, then P2, then P3
 - Items from canvases take priority (explicit action items)
 - Slack mentions are filtered for actionable requests only
 - Email is categorized by type (respond, review, approve, delegate)
@@ -385,3 +462,4 @@ When `/update-todos --resume` is run:
 - Use `--quick` for fast canvas-only scan
 - Tasks created include source reference for context
 - Daily context file accumulates action item summaries
+- Work through tasks in order (#1 first) for optimal prioritization

@@ -4,8 +4,8 @@ Review inbox and categorise emails for action.
 
 ## Usage
 
-- `/triage-inbox` - Triage unread emails (default: 50)
-- `/triage-inbox [count]` - Triage specific number of emails
+- `/triage-inbox` - Triage all unread emails (fetches in batches of 50)
+- `/triage-inbox [count]` - Triage up to a specific number of emails
 - `/triage-inbox --quick` - Fast triage without cross-system context
 - `/triage-inbox --since-last` - Only emails since last triage
 - `/triage-inbox --backlog` - Handle large inbox (paginated, no context)
@@ -54,7 +54,7 @@ Rules are stored in `.claude/email-rules.json`. Copy from `.claude/email-rules.e
 | `slaHoursInternal` | 24 | Hours before internal emails show SLA warning |
 | `slaHoursExternal` | 48 | Hours before external emails show SLA warning |
 | `bulkActionThreshold` | 5 | Confirm before bulk actions exceeding this count |
-| `defaultLimit` | 50 | Default number of emails to fetch |
+| `defaultLimit` | 50 | Batch size per Gmail API call (skill iterates until all unread emails are fetched) |
 | `lastTriageDate` | null | Auto-updated after each triage |
 
 ### Sender Tiers
@@ -87,14 +87,23 @@ Proceeding to Step 2: Fetch & Group Emails
 
 ### Step 2: Fetch & Group Emails
 
-1. Search Gmail for unread/recent emails
-2. Group by thread using Gmail's `threadId`
-3. For each thread, fetch all messages to understand conversation state
-4. Apply pagination if count exceeds limit (show progress)
+**IMPORTANT: Iterate until ALL unread emails are fetched.** The Gmail API returns a limited batch per call. You MUST loop until no more unread emails remain.
+
+1. **Initial fetch**: Search Gmail for `is:unread in:inbox` with `maxResults` set to `defaultLimit` (50)
+2. **Pagination loop**: After each batch, check if there are more results:
+   - If the batch returned `maxResults` emails, there are likely more — fetch the next batch
+   - Continue fetching until a batch returns fewer than `maxResults` emails (indicating end of results)
+   - Show progress after each batch: `Fetched [running total] emails so far...`
+3. **Combine all results**: Merge all batches into a single list
+4. **Group by thread** using Gmail's `threadId`
+5. For each thread, fetch all messages to understand conversation state
+6. **Verify completeness**: Log total fetched vs initial unread count from orient (if available)
+
+**Why this matters**: Gmail's `gmail_search` returns at most `maxResults` emails per call. Without iteration, emails beyond the first batch are silently missed. This was observed in practice — a 40-email inbox was only half-processed when fetching 20 at a time.
 
 ```
 ✓ CHECKPOINT: Step 2 complete - Fetch & Group Emails
-  Emails: [N] | Threads: [N] | Unique senders: [N]
+  Emails: [N] (fetched in [B] batches) | Threads: [N] | Unique senders: [N]
 
 Proceeding to Step 3: Gather Sender Context
 ```
