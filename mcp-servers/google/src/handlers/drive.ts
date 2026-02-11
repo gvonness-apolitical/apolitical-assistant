@@ -1,4 +1,7 @@
 import { z } from 'zod';
+import { writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { defineHandlers } from '@apolitical-assistant/mcp-shared';
 import type { GoogleAuth } from '../auth.js';
 
@@ -16,6 +19,30 @@ export const DriveSearchSchema = z.object({
 export const DriveGetFileSchema = z.object({
   fileId: z.string().describe('The Drive file ID'),
 });
+
+export const DriveExportSchema = z.object({
+  fileId: z.string().describe('The Drive file ID'),
+  mimeType: z
+    .string()
+    .optional()
+    .default('application/pdf')
+    .describe('Export MIME type (e.g. "application/pdf", "image/png"). Defaults to PDF.'),
+  outputPath: z
+    .string()
+    .optional()
+    .describe('Custom save location. Defaults to a temp directory path.'),
+});
+
+const MIME_EXTENSIONS: Record<string, string> = {
+  'application/pdf': 'pdf',
+  'text/plain': 'txt',
+  'text/csv': 'csv',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'pptx',
+  'image/png': 'png',
+  'image/jpeg': 'jpg',
+};
 
 // ==================== HANDLER FUNCTIONS ====================
 
@@ -60,6 +87,50 @@ export async function handleDriveGetFile(
   return await response.json();
 }
 
+export async function handleDriveExport(
+  args: z.infer<typeof DriveExportSchema>,
+  auth: GoogleAuth
+): Promise<unknown> {
+  // 1. Fetch file metadata to determine if it's a native Google file
+  const metaUrl = `https://www.googleapis.com/drive/v3/files/${args.fileId}?fields=name,mimeType`;
+  const metaResponse = await auth.fetch(metaUrl);
+  if (!metaResponse.ok) throw new Error(`Drive API error: ${metaResponse.status}`);
+
+  const meta = (await metaResponse.json()) as { name: string; mimeType: string };
+
+  // 2. Choose export vs direct download
+  const isGoogleApp = meta.mimeType.startsWith('application/vnd.google-apps.');
+  let downloadResponse: Response;
+
+  if (isGoogleApp) {
+    // Export native Google files (Docs, Sheets, Slides, etc.)
+    const exportUrl = `https://www.googleapis.com/drive/v3/files/${args.fileId}/export?mimeType=${encodeURIComponent(args.mimeType)}`;
+    downloadResponse = await auth.fetch(exportUrl);
+  } else {
+    // Direct download for non-native files (uploaded PDFs, images, etc.)
+    const mediaUrl = `https://www.googleapis.com/drive/v3/files/${args.fileId}?alt=media`;
+    downloadResponse = await auth.fetch(mediaUrl);
+  }
+
+  if (!downloadResponse.ok) {
+    throw new Error(`Drive export/download error: ${downloadResponse.status}`);
+  }
+
+  // 3. Read response and write to disk
+  const buffer = Buffer.from(await downloadResponse.arrayBuffer());
+  const ext = MIME_EXTENSIONS[isGoogleApp ? args.mimeType : meta.mimeType] || 'bin';
+  const filePath = args.outputPath || join(tmpdir(), `drive-export-${args.fileId}.${ext}`);
+
+  await writeFile(filePath, buffer);
+
+  return {
+    filePath,
+    fileName: meta.name,
+    mimeType: isGoogleApp ? args.mimeType : meta.mimeType,
+    fileSize: buffer.length,
+  };
+}
+
 // ==================== HANDLER BUNDLE ====================
 
 export const driveDefs = defineHandlers<GoogleAuth>()({
@@ -72,5 +143,11 @@ export const driveDefs = defineHandlers<GoogleAuth>()({
     description: 'Get metadata about a specific file',
     schema: DriveGetFileSchema,
     handler: handleDriveGetFile,
+  },
+  drive_export: {
+    description:
+      'Export or download a Google Drive file to disk. Automatically detects native Google files (Docs/Sheets/Slides) and exports them, or downloads uploaded files directly.',
+    schema: DriveExportSchema,
+    handler: handleDriveExport,
   },
 });

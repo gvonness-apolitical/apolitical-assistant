@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { mockJsonResponse } from '@apolitical-assistant/mcp-shared/testing';
+import { RawResponse } from '@apolitical-assistant/mcp-shared';
 import type { GoogleAuth } from '../auth.js';
 import {
   handleGmailSearch,
@@ -8,11 +9,13 @@ import {
   handleCalendarListEvents,
   handleCalendarGetFreeBusy,
   handleDriveSearch,
+  handleDriveExport,
   handleDocsGetContent,
   handleSheetsGetValues,
   handleSheetsCreate,
   handleSheetsUpdateValues,
   handleSlidesGetPresentation,
+  handleSlidesGetThumbnail,
 } from '../handlers/index.js';
 
 // Create a mock GoogleAuth for testing
@@ -291,6 +294,100 @@ describe('Drive Handlers', () => {
       expect(result[0]?.name).toBe('Project Report.docx');
     });
   });
+
+  describe('handleDriveExport', () => {
+    it('should export a native Google file using export endpoint', async () => {
+      // Metadata response - native Google Slides file
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          name: 'My Presentation',
+          mimeType: 'application/vnd.google-apps.presentation',
+        })
+      );
+
+      // Export response (binary content)
+      const pdfContent = Buffer.from('fake-pdf-content');
+      fetchMock.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        arrayBuffer: async () => pdfContent.buffer.slice(
+          pdfContent.byteOffset,
+          pdfContent.byteOffset + pdfContent.byteLength
+        ),
+      } as Response);
+
+      const result = (await handleDriveExport(
+        { fileId: 'pres-123', mimeType: 'application/pdf', outputPath: '/tmp/test-export.pdf' },
+        auth
+      )) as { filePath: string; fileName: string; mimeType: string; fileSize: number };
+
+      expect(result.filePath).toBe('/tmp/test-export.pdf');
+      expect(result.fileName).toBe('My Presentation');
+      expect(result.mimeType).toBe('application/pdf');
+      expect(result.fileSize).toBe(pdfContent.length);
+
+      // Verify export URL was called (second call)
+      const exportCall = fetchMock.mock.calls[1]![0] as string;
+      expect(exportCall).toContain('/export');
+      expect(exportCall).toContain('mimeType=application%2Fpdf');
+    });
+
+    it('should download a non-native file using media endpoint', async () => {
+      // Metadata response - uploaded PDF
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({ name: 'uploaded.pdf', mimeType: 'application/pdf' })
+      );
+
+      // Media download response
+      const fileContent = Buffer.from('raw-pdf-bytes');
+      fetchMock.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        arrayBuffer: async () => fileContent.buffer.slice(
+          fileContent.byteOffset,
+          fileContent.byteOffset + fileContent.byteLength
+        ),
+      } as Response);
+
+      const result = (await handleDriveExport(
+        { fileId: 'file-456', mimeType: 'application/pdf', outputPath: '/tmp/test-download.pdf' },
+        auth
+      )) as { filePath: string; mimeType: string };
+
+      expect(result.filePath).toBe('/tmp/test-download.pdf');
+      expect(result.mimeType).toBe('application/pdf');
+
+      // Verify media URL was called (not export)
+      const downloadCall = fetchMock.mock.calls[1]![0] as string;
+      expect(downloadCall).toContain('alt=media');
+      expect(downloadCall).not.toContain('/export');
+    });
+
+    it('should handle API errors on metadata fetch', async () => {
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({}, false, 404));
+
+      await expect(
+        handleDriveExport(
+          { fileId: 'bad-id', mimeType: 'application/pdf' },
+          auth
+        )
+      ).rejects.toThrow('Drive API error: 404');
+    });
+
+    it('should handle API errors on export/download', async () => {
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({ name: 'file', mimeType: 'application/vnd.google-apps.document' })
+      );
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({}, false, 403));
+
+      await expect(
+        handleDriveExport(
+          { fileId: 'file-123', mimeType: 'application/pdf' },
+          auth
+        )
+      ).rejects.toThrow('Drive export/download error: 403');
+    });
+  });
 });
 
 describe('Docs Handlers', () => {
@@ -532,6 +629,81 @@ describe('Slides Handlers', () => {
       expect(result.slideCount).toBe(2);
       expect(result.slides[0]?.content).toContain('Slide 1 Title');
       expect(result.slides[1]?.slideNumber).toBe(2);
+    });
+  });
+
+  describe('handleSlidesGetThumbnail', () => {
+    it('should return a RawResponse with image content', async () => {
+      // Thumbnail API response
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          contentUrl: 'https://lh3.googleusercontent.com/thumb-image-url',
+          width: 1600,
+          height: 900,
+        })
+      );
+
+      // Image download response
+      const imageBytes = Buffer.from('fake-png-image-data');
+      fetchMock.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        arrayBuffer: async () => imageBytes.buffer.slice(
+          imageBytes.byteOffset,
+          imageBytes.byteOffset + imageBytes.byteLength
+        ),
+      } as Response);
+
+      const result = await handleSlidesGetThumbnail(
+        { presentationId: 'pres-123', pageObjectId: 'slide-1', thumbnailSize: 'LARGE' },
+        auth
+      );
+
+      expect(result).toBeInstanceOf(RawResponse);
+      const response = result.response;
+      expect(response.content).toHaveLength(2);
+      expect(response.content[0]).toEqual({
+        type: 'text',
+        text: 'Slide thumbnail (1600x900)',
+      });
+      expect(response.content[1]!.type).toBe('image');
+      const imageItem = response.content[1] as { type: 'image'; data: string; mimeType: string };
+      expect(imageItem.mimeType).toBe('image/png');
+      expect(imageItem.data).toBe(imageBytes.toString('base64'));
+
+      // Verify thumbnail URL was correct
+      const thumbCall = fetchMock.mock.calls[0]![0] as string;
+      expect(thumbCall).toContain('/pages/slide-1/thumbnail');
+      expect(thumbCall).toContain('thumbnailSize=LARGE');
+    });
+
+    it('should handle thumbnail API errors', async () => {
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({}, false, 404));
+
+      await expect(
+        handleSlidesGetThumbnail(
+          { presentationId: 'pres-123', pageObjectId: 'bad-id', thumbnailSize: 'LARGE' },
+          auth
+        )
+      ).rejects.toThrow('Slides thumbnail API error: 404');
+    });
+
+    it('should handle image download errors', async () => {
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          contentUrl: 'https://lh3.googleusercontent.com/thumb-url',
+          width: 800,
+          height: 450,
+        })
+      );
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({}, false, 500));
+
+      await expect(
+        handleSlidesGetThumbnail(
+          { presentationId: 'pres-123', pageObjectId: 'slide-1', thumbnailSize: 'MEDIUM' },
+          auth
+        )
+      ).rejects.toThrow('Failed to download thumbnail: 500');
     });
   });
 });

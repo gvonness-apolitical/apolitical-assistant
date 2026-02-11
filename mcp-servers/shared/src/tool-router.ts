@@ -6,7 +6,7 @@
  */
 
 import type { ToolResponse } from './types.js';
-import { createJsonResponse, createErrorResponse } from './response.js';
+import { createJsonResponse, createErrorResponse, RawResponse } from './response.js';
 
 /**
  * A handler registry maps tool names to functions that accept
@@ -37,6 +37,7 @@ export function createToolRouter<TServerContext, THandlerContext>(
       }
 
       const result = await handler(args, extractContext(ctx));
+      if (result instanceof RawResponse) return result.response;
       return createJsonResponse(result);
     } catch (error) {
       return createErrorResponse(error);

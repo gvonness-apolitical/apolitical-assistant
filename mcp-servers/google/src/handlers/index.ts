@@ -57,9 +57,11 @@ export {
   // Drive schemas
   DriveSearchSchema,
   DriveGetFileSchema,
+  DriveExportSchema,
   // Drive handlers
   handleDriveSearch,
   handleDriveGetFile,
+  handleDriveExport,
 } from './drive.js';
 
 export {
@@ -93,10 +95,12 @@ export {
   SlidesGetPresentationSchema,
   SlidesCreateSchema,
   SlidesAddSlideSchema,
+  SlidesGetThumbnailSchema,
   // Slides handlers
   handleSlidesGetPresentation,
   handleSlidesCreate,
   handleSlidesAddSlide,
+  handleSlidesGetThumbnail,
 } from './slides.js';
 
 // Combine all tools from handler bundles

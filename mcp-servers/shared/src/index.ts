@@ -4,6 +4,7 @@
 
 // Types
 export type {
+  ContentItem,
   ToolResponse,
   HttpClientOptions,
   FetchFunction,
@@ -18,7 +19,9 @@ export {
   createJsonResponse,
   createErrorResponse,
   createTextResponse,
+  createImageResponse,
   withErrorHandling,
+  RawResponse,
 } from './response.js';
 
 // HTTP client
