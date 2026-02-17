@@ -171,12 +171,18 @@ Proceeding to Step 6: Categorize Remaining
 
 ### Step 6: Categorize Remaining
 
-- **Respond** - Awaiting you, needs reply
-- **Review** - Needs attention but no reply (PR reviews, doc comments, FYI)
-- **Delegate** - Should be handled by someone else (suggest who)
-- **Archive** - No action needed, keep for reference
-- **Snooze** - Needs action later (prompt for date)
-- **Delete** - No value (confirm before acting)
+Categorize each remaining email. Only **Respond** and **Snooze** items stay in the inbox — everything else is archived after being noted in the triage summary.
+
+| Category | Description | Inbox Action |
+|----------|-------------|-------------|
+| **Respond** | Awaiting you, needs reply | **Stays unread in inbox** |
+| **Review** | Needs attention but no reply (PR reviews, doc comments, FYI) | Noted in summary, then **archived** |
+| **Delegate** | Should be handled by someone else (suggest who) | Noted in summary with delegate target, then **archived** |
+| **Archive** | No action needed, keep for reference | **Archived** |
+| **Snooze** | Needs action later (prompt for date) | **Stays in inbox** (tracked in config) |
+| **Delete** | No value (confirm before acting) | **Trashed** |
+
+**The goal of triage is an empty inbox except for items requiring your direct response.** Everything else has been captured in the triage summary and daily context — it does not need to occupy inbox space.
 
 ```
 ✓ CHECKPOINT: Step 6 complete - Categorize Remaining
@@ -215,6 +221,15 @@ Proceeding to Step 8: Present Summary & Act
 ```
 
 Present summary and confirm bulk actions before executing.
+
+**Execute in this order:**
+
+1. **Trash** all "Delete" category emails (auto-delete rule matches + manually categorized)
+2. **Archive** all "Review", "Delegate", and "Archive" category emails — these have been noted in the triage summary and do not need to remain in the inbox
+3. **Leave in inbox**: Only "Respond" and "Snooze" items remain unread
+4. **Update `lastTriageDate`** in email-rules.json
+
+**After execution, verify**: Search `is:unread in:inbox` and confirm only Respond/Snooze items remain. If unexpected emails remain, categorize and archive them.
 
 ```
 ✓ CHECKPOINT: Step 8 complete - Present Summary & Act

@@ -9,11 +9,75 @@ Gather action items and requests from all systems where you've been tagged, ment
 - `/update-todos --source [source]` - Scan specific source (canvases, slack, email, notion, google)
 - `/update-todos --resume` - Resume from last completed source if previous run was interrupted
 
-## Checkpoint Discipline
+## CRITICAL: Task Naming Format
 
-**Complete each source before moving to the next.**
+**Every task created by this skill MUST use the priority-numbered format:**
 
-After each source completes, output a checkpoint marker:
+```
+P{priority}.{sequence}: {brief action description}
+```
+
+Examples: `P1.1: Respond to Lily — All Hands content`, `P2.5: Review GCP Secret Manager RFC`
+
+Sequence is global across all priorities. Tasks without this format are **wrong** — do not create plain-text subjects like "Respond to Lily Fox: All Hands engineering highlights". Always prefix with `P{N}.{N}: `.
+
+This applies regardless of whether this skill is invoked standalone or as part of `/begin-day`.
+
+## Context Window Management (CRITICAL)
+
+This skill makes many API calls that return large payloads. Without careful management, raw results will fill the context window before processing completes — causing the skill to fail mid-run.
+
+### Core Rule: Sequential Sources with Compaction
+
+**NEVER run multiple sources in parallel.** Process each source fully, compact results, then proceed.
+
+The workflow for EVERY source is:
+
+```
+1. Make API calls for this source (batch if needed)
+2. Extract action items into a compact list
+3. Output the checkpoint with compact results
+4. Proceed to next source — raw API data is behind you
+```
+
+### Canvas Batching
+
+Canvases are the heaviest source (20+ canvases, some >1MB). Read them in batches:
+
+1. **Batch size: 5 canvases per round**
+2. After each batch: extract action items, note which canvases had none
+3. After all batches: output the checkpoint with combined compact results
+4. **Skip oversized canvases** (>100K chars) — search them with Grep for your Slack ID instead of loading the full content
+
+### Compaction Format
+
+After processing each source, output results in this compact format only:
+
+```
+✓ CHECKPOINT: Source complete - [source name]
+  Items found: [N] | Open: [N] | Blocked: [N]
+
+  Items:
+  - [source] [person]: [brief description] (priority hint)
+  - [source] [person]: [brief description] (priority hint)
+```
+
+Do NOT echo back raw API results, full email bodies, full canvas HTML, or full Slack messages. Extract only what's needed: who, what, and priority signal.
+
+### Accumulator
+
+Maintain a running **items accumulator** — a plain list of extracted action items carried between sources. This is the ONLY state that persists across source boundaries. Everything else (raw API responses, full message text, canvas HTML) is processed and discarded within its source step.
+
+### Memory Verification Batching
+
+When running Causantic memory checks (deduplication step):
+- **Batch size: 5 items per round**
+- Query memory for each batch, classify results, then proceed to next batch
+- Do NOT fire all memory queries in parallel
+
+### Checkpoint Format
+
+After each source completes, output:
 
 ```
 ✓ CHECKPOINT: Source complete - [source name]
@@ -22,7 +86,7 @@ After each source completes, output a checkpoint marker:
 Proceeding to Source: [next source name]
 ```
 
-If a source is skipped (due to mode flag or error), note it explicitly:
+If a source is skipped (due to mode flag or error):
 
 ```
 ⊘ CHECKPOINT: Source skipped - [source name] ([reason])
@@ -30,7 +94,9 @@ If a source is skipped (due to mode flag or error), note it explicitly:
 Proceeding to Source: [next source name]
 ```
 
-**Progress tracking with per-source status:**
+### Progress Tracking
+
+Track per-source status:
 ```markdown
 ## Scanning Sources
 
@@ -66,7 +132,11 @@ Scan all configured canvases for action items assigned to you.
    - All `canvasId` values from `channels` section
    - All `canvasId` values from `oneOnOnes` section
    - Skip entries where `canvasId` is null
-3. **Read each canvas**: Use `slack_get_canvas` for each ID
+3. **Read canvases in batches of 5**:
+   - Batch 1: First 5 canvas IDs → read in parallel → extract items → note results
+   - Batch 2: Next 5 → same
+   - Continue until all canvases processed
+   - **If any canvas returns >100K chars**: Skip it and use Grep to search the saved tool result for your Slack ID (`U08EWPC9AP9`) instead
 4. **Extract action items** assigned to you:
    - Tagged with `@U08EWPC9AP9` or `@greg`
    - Prefixed with `GvN -` or `Greg -`
@@ -77,48 +147,55 @@ Scan all configured canvases for action items assigned to you.
    - Blocked (marked as blocked or waiting)
    - Overdue (has date that's passed)
 6. **Track source**: Note which canvas/meeting each item came from
+7. **Compact**: Output only the extracted items, not raw canvas content
 
 ```
 ✓ CHECKPOINT: Source complete - Canvases
-  Items found: [N] | Open: [N] | Blocked: [N] | Overdue: [N]
+  Scanned: [N] canvases ([N] channel + [N] 1:1) | Items found: [N] | Open: [N] | Blocked: [N]
+
+  Items:
+  - [canvas name]: [description] (open/blocked/overdue)
 
 Proceeding to Source: Slack Messages
 ```
 
 ### Source 2: Slack Messages
 
+**Wait for Source 1 checkpoint before starting this source.**
+
 Search for messages where you've been mentioned or tagged with requests.
 
 1. **Search mentions**: Use `slack_search` for `<@U08EWPC9AP9>`
 2. **Check priority private channels**: Load `.claude/channels-config.json` and explicitly read recent messages from high-priority channels (especially `priv-management-team`, `priv-managers`) for action items
 3. **Time window**: Last 7 days (or since last `/update-todos` run)
-3. **Filter for actionable**:
+4. **Filter for actionable**:
    - Contains question directed at you
    - Contains request patterns: "can you", "could you", "please", "need you to"
    - Contains TODO/action patterns
    - Excludes: FYI mentions, thank you messages, completed threads
-4. **Check thread status**:
+5. **Check thread status**:
    - If in thread, check if you've already replied
    - Skip if thread is resolved/closed
-5. **Extract context**:
-   - Channel/DM name
-   - Sender
-   - Message preview
-   - Link to message
+6. **Compact**: Extract only actionable items — channel, sender, one-line description. Do NOT include full message text.
 
 ```
 ✓ CHECKPOINT: Source complete - Slack Messages
   Items found: [N] | Questions: [N] | Requests: [N]
+
+  Items:
+  - [#channel] [person]: [brief description]
 
 Proceeding to Source: Gmail Inbox
 ```
 
 ### Source 3: Gmail Inbox
 
+**Wait for Source 2 checkpoint before starting this source.**
+
 Scan inbox for emails requiring action.
 
 1. **Load email rules**: Read `.claude/email-rules.json` for auto-delete/archive patterns
-2. **Search queries**:
+2. **Search queries** (run sequentially, not in parallel):
    - `is:unread in:inbox` - Unread inbox items
    - `is:starred` - Starred for follow-up
    - `label:action-required` - If label exists
@@ -129,20 +206,22 @@ Scan inbox for emails requiring action.
    - **Review**: Needs attention (shared doc, FYI with action)
    - **Approve**: Waiting for approval/sign-off
    - **Delegate**: Should forward to someone else
-4. **Extract**:
-   - Subject
-   - Sender
-   - Preview snippet
-   - Priority (based on sender, keywords)
+6. **Compact**: Extract only sender, subject one-liner, and category. Do NOT include email body snippets.
 
 ```
 ✓ CHECKPOINT: Source complete - Gmail Inbox
   Items found: [N] | Respond: [N] | Review: [N] | Approve: [N]
 
+  Items:
+  - [Respond] [sender]: [subject one-liner]
+  - [Review] [sender]: [subject one-liner]
+
 Proceeding to Source: Notion
 ```
 
 ### Source 4: Notion
+
+**Wait for Source 3 checkpoint before starting this source.**
 
 Find pages where you've been mentioned or assigned.
 
@@ -157,19 +236,21 @@ Find pages where you've been mentioned or assigned.
 5. **Filter**:
    - Unresolved/open items only
    - Last 30 days
-6. **Extract**:
-   - Page title
-   - Comment or task text
-   - Link to page
+6. **Compact**: Extract only page title and one-line description of the action needed.
 
 ```
 ✓ CHECKPOINT: Source complete - Notion
   Items found: [N] | RFC comments: [N] | PRD tasks: [N]
 
+  Items:
+  - [RFC/PRD] [page title]: [action needed]
+
 Proceeding to Source: Google Workspace
 ```
 
 ### Source 5: Google Workspace
+
+**Wait for Source 4 checkpoint before starting this source.**
 
 Find docs where you've been tagged for comments or suggestions.
 
@@ -191,22 +272,71 @@ Find docs where you've been tagged for comments or suggestions.
    - Filter by `modifiedTime` in last 7 days
    - Check items shared with you that you haven't opened
 
+5. **Compact**: Extract only doc title and action needed.
+
 ```
 ✓ CHECKPOINT: Source complete - Google Workspace
   Items found: [N] | Doc comments: [N] | New shares: [N]
 
+  Items:
+  - [Doc/Sheet/Slide] [title]: [action needed]
+
 All sources complete. Proceeding to Deduplication.
 ```
 
-## Deduplication
+## Deduplication & Memory Verification
 
-Before adding items to the todo list:
+Before adding items to the todo list, deduplicate against both the current task list and Causantic memory.
+
+### Step A: Check Existing Tasks
 
 1. **Check existing tasks**: Use `TaskList` to get current todos
 2. **Match by content**: Fuzzy match task subjects
 3. **Match by source**: Same Slack message ID, email ID, or doc URL
 4. **Skip duplicates**: Don't create duplicate tasks
 5. **Update if changed**: If item exists but details changed, note the update
+
+### Step B: Memory Verification (Causantic)
+
+Check Causantic memory to filter out items already addressed in previous sessions. This prevents creating stale tasks.
+
+**IMPORTANT: Memory verification is expensive for context. Use selective verification to minimise queries.**
+
+#### Triage: Skip Fresh, Verify Stale
+
+Not every item needs a memory check. Fresh items are almost certainly still open.
+
+1. **Skip verification for items < 3 days old** — unread emails from today, Slack mentions from yesterday, etc. These are overwhelmingly still actionable. Create tasks directly.
+2. **Verify items ≥ 3 days old** — canvas action items, older Slack mentions, starred emails. These are candidates for having been addressed in a prior session.
+
+#### Verification Process (stale items only)
+
+Run memory queries **one at a time, sequentially**. Each query should be a short, focused phrase:
+
+- Good: `"replied to Renzo about OpenFGA RFC"`
+- Bad: `"Renzo tagged me in a Slack thread about the OpenFGA RFC and I need to check if I already responded to his questions about the blockers"`
+
+For each stale item:
+1. Search memory with a short query (5-10 words) about the specific action
+2. Classify:
+   - **Not addressed** → Create task
+   - **Partially addressed** → Create task, append one-line note (e.g., "Note: discussed Feb 14, no resolution")
+   - **Completed** → Skip. Log: `⊘ Skipped (completed per memory): {description}`
+3. **Do NOT carry forward the full memory response** — extract only the yes/no classification and a one-line note if partially addressed
+
+### Verification Output
+
+After dedup and memory verification, display:
+
+```
+Deduplication & Memory Verification
+====================================
+Candidates from sources:    [N]
+Duplicates (existing tasks): [N] skipped
+Completed (per memory):      [N] skipped
+Partially addressed:         [N] (tasks created with context)
+New tasks to create:         [N]
+```
 
 ## Priority Assignment
 
@@ -341,6 +471,15 @@ P2 - MEDIUM:
     Priority: P2 (canvas action item)
 ```
 
+## Post-Creation Verification
+
+After creating all tasks, run `TaskList` and verify:
+1. **Every task subject starts with `P{N}.{N}: `** — if any don't, update them immediately with `TaskUpdate`
+2. **Tasks are in priority order** — P0 first, then P1, P2, P3
+3. **No duplicate tasks** — if duplicates found, delete the newer one
+
+This verification is mandatory, not optional.
+
 ## Configuration
 
 Optionally track last run time in `.claude/todo-config.json`:
@@ -453,13 +592,15 @@ When `/update-todos --resume` is run:
 ## Notes
 
 - Run daily as part of morning routine, or before `/morning-briefing`
-- **Tasks are created automatically** - no confirmation prompt
-- **Tasks are numbered by priority** - P1 first, then P2, then P3
+- **Tasks are created automatically** — no confirmation prompt
+- **Tasks are numbered by priority** — P1 first, then P2, then P3, using `P{N}.{N}: ` format
+- **Memory verification prevents stale tasks** — Causantic memory is checked from the source artifact timestamp forward to verify the item hasn't already been addressed in a prior session
 - Items from canvases take priority (explicit action items)
 - Slack mentions are filtered for actionable requests only
 - Email is categorized by type (respond, review, approve, delegate)
-- Deduplication prevents duplicate tasks
-- Use `--quick` for fast canvas-only scan
-- Tasks created include source reference for context
+- Deduplication prevents duplicate tasks (against both task list and memory)
+- Use `--quick` for fast canvas-only scan (skips memory verification for speed)
+- Tasks created include source reference and memory context where available
 - Daily context file accumulates action item summaries
 - Work through tasks in order (#1 first) for optimal prioritization
+- If Causantic MCP is unavailable, skip memory verification and note it in output
