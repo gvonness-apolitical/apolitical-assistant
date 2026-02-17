@@ -37,21 +37,13 @@ Proceeding to Step N+1: [next step name]
 
 Before starting the workflow, perform these checks:
 
-### 1. Yesterday's EOD Check
-
-Check if `context/eod-YYYY-MM-DD.md` exists for yesterday:
-- **If exists**: Note carry-forward items for later inclusion in briefing
-- **If missing**: Display warning: "Yesterday's EOD not found - context may be incomplete. Generate retrospective? [y/N]"
-  - If yes: Generate quick summary of yesterday from available data before proceeding
-  - If no: Continue with warning noted
-
-### 2. People Cache Freshness
+### 1. People Cache Freshness
 
 Check `.claude/people.json` last modified date:
 - **If >7 days old**: Prompt "People cache is X days old. Run /sync-people? [y/N]"
 - Cache refresh is optional but recommended for accurate lookups
 
-### 3. Late Start Detection
+### 2. Late Start Detection
 
 Check current time:
 - **Before 10am**: Normal "Good morning" messaging
@@ -61,7 +53,7 @@ Check current time:
   - Suggest `--quick` if not already specified
   - Focus on remaining day rather than full morning routine
 
-### 4. Weekend/Holiday Detection
+### 3. Weekend/Holiday Detection
 
 Check if today is a weekend or known holiday:
 - **Weekend (Sat/Sun)**: Offer lighter workflow:
@@ -70,7 +62,7 @@ Check if today is a weekend or known holiday:
 - **Holiday**: Check against known holidays or calendar events marked as OOO
   - Similar lighter workflow offered
 
-### 5. Progress State Check (for --resume)
+### 4. Progress State Check (for --resume)
 
 Check `context/YYYY-MM-DD/index.md` for existing "Begin Day" section:
 - **If found with incomplete steps**: Offer to resume from last completed step
@@ -80,7 +72,42 @@ Check `context/YYYY-MM-DD/index.md` for existing "Begin Day" section:
 
 Execute these steps **in order**. Do not skip ahead.
 
-### Step 1: Session Handoff (if applicable)
+### Step 1: Previous EOD Catchup
+
+Read the most recent end-of-day summary to establish context from the previous working day and detect any gaps in coverage.
+
+1. **Find the most recent EOD**: Search backwards from yesterday for `context/eod-YYYY-MM-DD.md`
+   - Check yesterday first, then go back up to 10 days
+2. **If found**, read and present:
+   - **Date**: When the EOD was generated
+   - **Completed**: What was accomplished that day
+   - **In Progress**: Items still in flight
+   - **Carry Forward**: Items explicitly flagged for follow-up
+   - **Notes for Tomorrow**: Context and reminders left for today
+3. **Detect gaps**: Calculate working days between EOD date and today
+   - **Normal** (1 weekday or weekend gap of 2-3 calendar days): Continue normally
+   - **Extended gap** (>3 calendar days or >1 missed working day):
+     ```
+     ⚠ GAP DETECTED: Last EOD is from [date] ([N] working days ago)
+
+     Missing context for: [list of missed working dates]
+
+     Recommend running /catchup [start-date] to rebuild context.
+     Run catchup now? [y/N]
+     ```
+     - If yes: Run `/catchup` for the gap period, then continue begin-day from Step 2
+     - If no: Continue with warning noted (carry-forward items may be stale)
+4. **Surface carry-forward items** as starting context for today's prioritisation
+5. **If no EOD found** (within 10 days): Display note — "No recent EOD found. Starting with fresh context."
+
+```
+✓ CHECKPOINT: Step 1 complete - Previous EOD Catchup
+  Last EOD: YYYY-MM-DD | Gap: [N days / normal] | Carry-forward: X items
+
+Proceeding to Step 2: Session Handoff
+```
+
+### Step 2: Session Handoff (if applicable)
 
 Check for and process any session handoff:
 
@@ -91,16 +118,16 @@ Check for and process any session handoff:
    - **Delete the file** after reading (it's ephemeral)
    - Note any carry-forward items for the briefing
 3. **If not exists**: Continue to next step
-4. **Update progress**: Mark Step 1 complete in daily context
+4. **Update progress**: Mark Step 2 complete in daily context
 
 ```
-✓ CHECKPOINT: Step 1 complete - Session Handoff
+✓ CHECKPOINT: Step 2 complete - Session Handoff
   [Handoff processed / No handoff found]
 
-Proceeding to Step 2: Orient
+Proceeding to Step 3: Orient
 ```
 
-### Step 2: Orient
+### Step 3: Orient
 
 Gather current context from all systems:
 
@@ -113,7 +140,7 @@ Gather current context from all systems:
    - Humaans: Who's out
    - Google Docs: Recently shared or commented docs
 2. **Output**: Context snapshot saved to `context/YYYY-MM-DD/orient-HHMM.md`
-3. **Update progress**: Mark Step 2 complete in daily context
+3. **Update progress**: Mark Step 3 complete in daily context
 
 #### P0 Early Exit Check
 
@@ -136,13 +163,13 @@ Address these now before continuing? [y/N]
 ```
 
 ```
-✓ CHECKPOINT: Step 2 complete - Orient
+✓ CHECKPOINT: Step 3 complete - Orient
   Calendar: X meetings | Email: X unread | Slack: X DMs | Linear: X assigned | Incidents: X
 
-Proceeding to Step 3: Email Triage
+Proceeding to Step 4: Email Triage
 ```
 
-### Step 3: Email Triage
+### Step 4: Email Triage
 
 Process inbox and categorize emails:
 
@@ -154,20 +181,20 @@ Process inbox and categorize emails:
    - Generate drafts for "Respond" items
 2. **Execute bulk actions** with confirmation
 3. **Output**: Triage summary with SLA breaches highlighted
-4. **Update progress**: Mark Step 3 complete in daily context
+4. **Update progress**: Mark Step 4 complete in daily context
 
 Skip if `--quick` or `--focus` flag is used.
 
 With `--catch-up [days]`: Increase limit to handle backlog, use `--backlog` mode for efficiency.
 
 ```
-✓ CHECKPOINT: Step 3 complete - Email Triage
+✓ CHECKPOINT: Step 4 complete - Email Triage
   Processed: X | Trashed: X | Archived: X | Respond: X pending
 
-Proceeding to Step 4: Process Gemini Notes
+Proceeding to Step 5: Process Gemini Notes
 ```
 
-### Step 4: Process Gemini Notes
+### Step 5: Process Gemini Notes
 
 Process any unread Gemini meeting notes:
 
@@ -178,18 +205,18 @@ Process any unread Gemini meeting notes:
    - Note action items assigned to me
 2. **Archive processed emails**
 3. **Output**: List of meetings processed and action items found
-4. **Update progress**: Mark Step 4 complete in daily context
+4. **Update progress**: Mark Step 5 complete in daily context
 
 Skip if `--quick` or `--focus` flag is used, or if no unread Gemini notes.
 
 ```
-✓ CHECKPOINT: Step 4 complete - Process Gemini Notes
+✓ CHECKPOINT: Step 5 complete - Process Gemini Notes
   Meetings: X processed | My action items: X found
 
-Proceeding to Step 5: Slack Read
+Proceeding to Step 6: Slack Read
 ```
 
-### Step 5: Slack Read
+### Step 6: Slack Read
 
 Process Slack messages and activity:
 
@@ -199,49 +226,49 @@ Process Slack messages and activity:
    - Identify action items and requests directed at you
    - Summarize key conversations and decisions
 2. **Output**: Slack activity summary saved to `context/YYYY-MM-DD/slack-HHMM.md`
-3. **Update progress**: Mark Step 5 complete in daily context
+3. **Update progress**: Mark Step 6 complete in daily context
 
 Skip if `--quick` or `--focus` flag is used.
 
 With `--catch-up [days]`: Extend lookback period to cover absence.
 
 ```
-✓ CHECKPOINT: Step 5 complete - Slack Read
+✓ CHECKPOINT: Step 6 complete - Slack Read
   DMs: X conversations | Channels: X checked | Action items: X found
 
-Proceeding to Step 6: Update Todos
+Proceeding to Step 7: Update Todos
 ```
 
-### Step 6: Update Todos
+### Step 7: Update Todos
 
 Scan all systems for action items assigned to you. **This step runs AFTER email, gemini, and slack** so it has full context.
 
 1. **Run the full todo scan** (equivalent to `/update-todos`):
    - Slack canvases (from meeting-config.json)
-   - Slack messages (mentions and requests) - already gathered in Step 5
-   - Gmail inbox (actionable emails) - already gathered in Step 3
-   - Gemini meeting notes - already gathered in Step 4
+   - Slack messages (mentions and requests) - already gathered in Step 6
+   - Gmail inbox (actionable emails) - already gathered in Step 4
+   - Gemini meeting notes - already gathered in Step 5
    - Notion (mentions and assignments)
    - Google Docs (comments and suggestions)
 2. **Deduplicate** against existing tasks and items found in earlier steps
 3. **Create tasks** for new items found
 4. **Output**: Summary of items found by source
-5. **Update progress**: Mark Step 6 complete in daily context
+5. **Update progress**: Mark Step 7 complete in daily context
 
 Skip in `--focus` mode (only shows assigned Linear tickets from orient).
 
 ```
-✓ CHECKPOINT: Step 6 complete - Update Todos
+✓ CHECKPOINT: Step 7 complete - Update Todos
   New items: X | From canvases: X | From Notion: X | From Docs: X
 
-Proceeding to Step 7: Morning Briefing
+Proceeding to Step 8: Morning Briefing
 ```
 
-### Step 7: Morning Briefing
+### Step 8: Morning Briefing
 
 Generate the daily briefing. **Only run after all prior steps are complete.**
 
-1. **Check previous day's EOD**: Read `context/eod-YYYY-MM-DD.md` for yesterday
+1. **Reference previous EOD context** from Step 1:
    - Carry-forward items
    - Context to remember
    - Follow-ups needed
@@ -253,16 +280,16 @@ Generate the daily briefing. **Only run after all prior steps are complete.**
    - FYI - Monitor
 4. **Save to**: `briefings/YYYY-MM-DD.md`
 5. **Update daily context index**
-6. **Update progress**: Mark Step 7 complete in daily context
+6. **Update progress**: Mark Step 8 complete in daily context
 
 ```
-✓ CHECKPOINT: Step 7 complete - Morning Briefing
+✓ CHECKPOINT: Step 8 complete - Morning Briefing
   Saved to: briefings/YYYY-MM-DD.md
 
-Proceeding to Step 8: Standup Prep
+Proceeding to Step 9: Standup Prep
 ```
 
-### Step 8: Standup Prep (if applicable)
+### Step 9: Standup Prep (if applicable)
 
 Check if a standup meeting is scheduled today:
 
@@ -272,7 +299,7 @@ Check if a standup meeting is scheduled today:
    ## Standup Prep - [Meeting Name] at [Time]
 
    ### Yesterday
-   - [Items from yesterday's EOD or activity]
+   - [Items from previous EOD or activity]
 
    ### Today
    - [Top items from P1 list]
@@ -284,21 +311,21 @@ Check if a standup meeting is scheduled today:
 3. **Include in briefing** or display separately if standup is soon
 
 ```
-✓ CHECKPOINT: Step 8 complete - Standup Prep
+✓ CHECKPOINT: Step 9 complete - Standup Prep
   [Talking points generated for X / No standup today]
 ```
 
 ## Final Summary
 
-After ALL 8 steps complete (or explicitly skipped), display:
+After ALL 9 steps complete (or explicitly skipped), display:
 
 ```
 # Begin Day Complete - 2026-01-29
 
 ## Steps Completed
-✓ 1. Handoff      ✓ 2. Orient       ✓ 3. Email Triage
-✓ 4. Gemini Notes ✓ 5. Slack Read   ✓ 6. Update Todos
-✓ 7. Briefing     ✓ 8. Standup Prep
+✓ 1. EOD Catchup  ✓ 2. Handoff      ✓ 3. Orient
+✓ 4. Email Triage ✓ 5. Gemini Notes ✓ 6. Slack Read
+✓ 7. Update Todos ✓ 8. Briefing     ✓ 9. Standup Prep
 
 ## First Meeting
 Data standup in 47 minutes (09:30)
@@ -330,20 +357,33 @@ Ready for the day!
 # Begin Day - 2026-01-29
 
 ## Pre-Flight
-- **Yesterday's EOD**: Found (3 carry-forward items)
 - **People cache**: Current (2 days old)
 - **Mode**: Normal morning start
 
 ---
 
-## Step 1: Session Handoff
-[If applicable: summary of handoff context and immediate tasks]
+## Step 1: Previous EOD Catchup
+- **Last EOD**: YYYY-MM-DD
+- **Gap**: Normal (weekend) / X working days missed
+- **Carry-forward**: X items
+- **Key items**:
+  - [carry-forward item 1]
+  - [carry-forward item 2]
+
+[If gap detected: catchup recommendation shown]
 
 ✓ CHECKPOINT: Step 1 complete
 
 ---
 
-## Step 2: Orient
+## Step 2: Session Handoff
+[If applicable: summary of handoff context and immediate tasks]
+
+✓ CHECKPOINT: Step 2 complete
+
+---
+
+## Step 3: Orient
 - **Calendar**: X meetings today
 - **Email**: X unread (Y urgent)
 - **Slack**: X unread DMs, Y mentions
@@ -353,11 +393,11 @@ Ready for the day!
 
 [P0 items highlighted if any]
 
-✓ CHECKPOINT: Step 2 complete
+✓ CHECKPOINT: Step 3 complete
 
 ---
 
-## Step 3: Email Triage
+## Step 4: Email Triage
 - **Processed**: X emails across Y threads
 - **Auto-processed**: X trashed, Y archived
 - **SLA Breaches**: X threads waiting >24h
@@ -365,41 +405,41 @@ Ready for the day!
 
 [SLA breaches and key items highlighted]
 
-✓ CHECKPOINT: Step 3 complete
-
----
-
-## Step 4: Process Gemini Notes
-- **Meetings processed**: X
-- **Summaries saved**: [list of files]
-- **My action items**: X found
-
 ✓ CHECKPOINT: Step 4 complete
 
 ---
 
-## Step 5: Slack Read
-- **DMs scanned**: X conversations
-- **Channels checked**: X
-- **Action items found**: X
-- **Key threads**: [list]
+## Step 5: Process Gemini Notes
+- **Meetings processed**: X
+- **Summaries saved**: [list of files]
+- **My action items**: X found
 
 ✓ CHECKPOINT: Step 5 complete
 
 ---
 
-## Step 6: Update Todos
+## Step 6: Slack Read
+- **DMs scanned**: X conversations
+- **Channels checked**: X
+- **Action items found**: X
+- **Key threads**: [list]
+
+✓ CHECKPOINT: Step 6 complete
+
+---
+
+## Step 7: Update Todos
 - **Total new items**: X
 - From canvases: X
 - From Notion: X
 - From Google Docs: X
 - Deduplicated: X (already found in earlier steps)
 
-✓ CHECKPOINT: Step 6 complete
+✓ CHECKPOINT: Step 7 complete
 
 ---
 
-## Step 7: Morning Briefing
+## Step 8: Morning Briefing
 
 ### Today's Meetings
 | Time | Meeting | Attendees | Prep |
@@ -416,14 +456,14 @@ Ready for the day!
 - Active incidents
 - Team availability
 
-✓ CHECKPOINT: Step 7 complete
+✓ CHECKPOINT: Step 8 complete
 
 ---
 
-## Step 8: Standup Prep
+## Step 9: Standup Prep
 [If applicable: talking points for standup]
 
-✓ CHECKPOINT: Step 8 complete
+✓ CHECKPOINT: Step 9 complete
 
 ---
 
@@ -436,7 +476,7 @@ Ready for the day!
 [Meeting name] in X minutes at HH:MM
 
 ---
-All 8 steps complete. Ready for the day!
+All 9 steps complete. Ready for the day!
 ```
 
 ## Update Daily Context
@@ -446,7 +486,9 @@ After completing all steps, update `context/YYYY-MM-DD/index.md`:
 ```markdown
 ## Begin Day (HH:MM)
 - **Mode**: [Normal / Late start / Weekend / Catch-up]
-- **Steps completed**: 1, 2, 3, 4, 5, 6, 7, 8
+- **Steps completed**: 1, 2, 3, 4, 5, 6, 7, 8, 9
+- **Previous EOD**: [date] ([N] carry-forward items / not found)
+- **Gap detected**: [None / N working days — catchup run/skipped]
 - **Handoff**: [Processed / None]
 - **Orient**: Calendar X, Email X, Slack X, Linear X, Incidents X
 - **P0 items**: [X critical items / None]
@@ -475,9 +517,9 @@ If any step fails:
 
 Progress is tracked in daily context. If begin-day fails:
 ```
-Begin Day interrupted at Step 4 (Process Gemini Notes)
+Begin Day interrupted at Step 5 (Process Gemini Notes)
 
-Completed: Handoff, Orient, Email Triage
+Completed: EOD Catchup, Handoff, Orient, Email Triage
 Remaining: Gemini Notes, Slack Read, Update Todos, Briefing, Standup Prep
 
 Resume with: /begin-day --resume
@@ -492,36 +534,39 @@ When `--resume` is used:
 
 | Flag | Steps Run | Use Case |
 |------|-----------|----------|
-| (none) | All 8 steps | Normal workday start |
-| `--quick` | 1, 2, 6, 7, 8 | Fast startup, skip triage/gemini/slack |
-| `--focus` | 1, 2, 7 | Deep work day, minimal notifications |
-| `--catch-up N` | All 8 + extended lookback | Return from vacation/absence |
+| (none) | All 9 steps | Normal workday start |
+| `--quick` | 1, 2, 3, 7, 8, 9 | Fast startup, skip triage/gemini/slack |
+| `--focus` | 1, 2, 3, 8 | Deep work day, minimal notifications |
+| `--catch-up N` | All 9 + extended lookback | Return from vacation/absence |
 | `--resume` | Remaining steps | Recovery from failed run |
-| Weekend mode | 2, 7 | Weekend check-in |
+| Weekend mode | 1, 3, 8 | Weekend check-in |
 
 ### Step Summary by Mode
 
 | Step | Default | --quick | --focus | Weekend |
 |------|:-------:|:-------:|:-------:|:-------:|
-| 1. Handoff | ✓ | ✓ | ✓ | - |
-| 2. Orient | ✓ | ✓ | ✓ | ✓ |
-| 3. Email Triage | ✓ | - | - | - |
-| 4. Gemini Notes | ✓ | - | - | - |
-| 5. Slack Read | ✓ | - | - | - |
-| 6. Update Todos | ✓ | ✓ | - | - |
-| 7. Briefing | ✓ | ✓ | ✓ | ✓ |
-| 8. Standup Prep | ✓ | ✓ | - | - |
+| 1. EOD Catchup | ✓ | ✓ | ✓ | ✓ |
+| 2. Handoff | ✓ | ✓ | ✓ | - |
+| 3. Orient | ✓ | ✓ | ✓ | ✓ |
+| 4. Email Triage | ✓ | - | - | - |
+| 5. Gemini Notes | ✓ | - | - | - |
+| 6. Slack Read | ✓ | - | - | - |
+| 7. Update Todos | ✓ | ✓ | - | - |
+| 8. Briefing | ✓ | ✓ | ✓ | ✓ |
+| 9. Standup Prep | ✓ | ✓ | - | - |
 
 ## Notes
 
 - This skill is designed for the start of a workday
 - **CHECKPOINT DISCIPLINE**: Each step must complete before proceeding to the next
 - Each sub-step writes to daily context, so partial runs still capture progress
+- Previous EOD catchup runs first to establish context and detect gaps
+- If a gap is detected, `/catchup` is offered before continuing the rest of the workflow
 - Handoff file is deleted after processing to prevent reprocessing
 - Email triage runs BEFORE gemini/slack/todos so noise is cleared first
 - Gemini notes processing captures meeting action items before todo scan
 - Update Todos runs LAST to have full context from email, meetings, and Slack
-- Briefing incorporates context from all previous steps
+- Briefing incorporates context from all previous steps including carry-forward items from Step 1
 - P0 items get early visibility to allow immediate action
 - Standup prep is auto-generated when a standup meeting is detected
 - "Focus Today" top 3 helps cut through information overload
@@ -529,11 +574,12 @@ When `--resume` is used:
 
 ### Step Order Rationale
 
-1. **Handoff** - Resume interrupted work first
-2. **Orient** - Get the lay of the land (counts, not details)
-3. **Email Triage** - Clear inbox noise, surface urgent items
-4. **Gemini Notes** - Process meeting transcripts, extract action items
-5. **Slack Read** - Catch DM requests and channel activity
-6. **Update Todos** - Now has full context to deduplicate and prioritize
-7. **Briefing** - Synthesize everything into actionable priorities
-8. **Standup Prep** - Ready for first meeting if it's a standup
+1. **EOD Catchup** - Establish context from where you left off, detect missed days
+2. **Handoff** - Resume interrupted work
+3. **Orient** - Get the lay of the land (counts, not details)
+4. **Email Triage** - Clear inbox noise, surface urgent items
+5. **Gemini Notes** - Process meeting transcripts, extract action items
+6. **Slack Read** - Catch DM requests and channel activity
+7. **Update Todos** - Now has full context to deduplicate and prioritize
+8. **Briefing** - Synthesize everything into actionable priorities
+9. **Standup Prep** - Ready for first meeting if it's a standup
