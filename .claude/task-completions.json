@@ -1,0 +1,105 @@
+{
+  "retentionDays": 30,
+  "lastPruned": "2026-02-18",
+  "completions": [
+    {
+      "date": "2026-02-18",
+      "subject": "Respond to Lauren/Tanya — Dominykas hiring decision",
+      "keywords": ["lauren", "tanya", "dominykas", "hiring", "decision"],
+      "source": "slack:priv-management-team",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-18",
+      "subject": "Respond to Lily Fox — All Hands engineering highlights",
+      "keywords": ["lily", "all hands", "engineering", "highlights"],
+      "source": "slack:priv-management-team",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-18",
+      "subject": "Respond to Amber Keates — Security disclosure inquiry",
+      "keywords": ["amber", "security", "disclosure", "inquiry"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-18",
+      "subject": "Respond to Amber Keates — GCP Gemini opt-out follow-up",
+      "keywords": ["amber", "gcp", "gemini", "opt-out"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-18",
+      "subject": "Review Jess VO's data lexicon doc",
+      "keywords": ["jess", "data", "lexicon", "review"],
+      "source": "slack:priv-management-team",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-18",
+      "subject": "Submit interview feedback — Ranjitha Hakkapakki (Data Lead)",
+      "keywords": ["ranjitha", "hakkapakki", "interview", "feedback", "data lead"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-18",
+      "subject": "Decide on Engineering Champions RFC (stale 9 months)",
+      "keywords": ["engineering", "champions", "rfc"],
+      "source": "canvas",
+      "status": "dismissed",
+      "reason": "No one championed anything specific — initiative never gained traction",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-18",
+      "subject": "Process Gemini meeting notes (2 meetings)",
+      "keywords": ["gemini", "meeting", "notes", "sonali", "data huddle"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-18",
+      "subject": "Process remaining Gemini meeting notes (18 meetings)",
+      "keywords": ["gemini", "meeting", "notes", "batch", "futura", "data-huddle", "sync-up", "iso", "compliance", "retro", "think-tank", "segmentation", "e2e", "yang", "samuel", "demo", "all-hands", "ethiopia", "qa", "g-cloud", "analytics-monthly"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-18",
+      "subject": "Resolve Data Analytics Meeting doc actions (stale 30+ days)",
+      "keywords": ["data", "analytics", "insights", "meeting", "google doc", "comments", "kristen"],
+      "source": "google-docs:1I1J7eFINv44-iC8Tt7YBIVc4xxAKVwdm8kVg32XJxxM",
+      "status": "dismissed",
+      "reason": "8 open comments all stale (Jan 16 / Nov 21). Meeting format WIP hasn't been touched since Jan 16. Self-assigned items already captured in Gemini notes. Kristen's data mart question (3 months old) can be addressed at next meeting. Not worth async resolution.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-18",
+      "subject": "Review low-priority emails (3 items)",
+      "keywords": ["email", "low-priority", "triage"],
+      "source": "gmail",
+      "status": "completed",
+      "reason": "Triaged full inbox — 3 trashed (Snyk, recruiter, npm), 7 archived (newsletters, vendor updates, already-handled items), 1 Vercel deploy issue remaining",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-18",
+      "subject": "Build Futura scope impact analysis for Joel 1:1",
+      "keywords": ["futura", "scope", "impact", "analysis", "joel", "dge", "adnoc", "fahar"],
+      "source": "investigation",
+      "status": "completed",
+      "completedVia": "claude"
+    }
+  ]
+}

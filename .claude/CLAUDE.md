@@ -184,6 +184,28 @@ When triaging communications or tasks, use this priority framework:
 3. **P2 - Medium**: Important but not urgent, scheduled work
 4. **P3 - Low**: Nice to have, can be deferred
 
+### Task Completion Logging
+
+When marking a task as completed or dismissed (via TaskUpdate), **immediately** record it in `.claude/task-completions.json`:
+
+1. Read the current log (create with `{"retentionDays": 30, "lastPruned": "YYYY-MM-DD", "completions": []}` if missing)
+2. Append an entry with:
+   - `subject`: task subject (strip `P{n}.{m}: ` prefix)
+   - `keywords`: lowercase significant words (excluding stop words like "the", "a", "to")
+   - `source`: where the item originated (e.g., "slack:channel-name", "gmail", "canvas:name")
+   - `sourceId`: exact identifier if available (Slack message ts, email message ID)
+   - `status`: "completed" or "dismissed"
+   - `reason`: (dismissed only) why it was dismissed
+   - `completedVia`: "claude" (done in session) or "direct" (user reported doing it themselves)
+   - `date`: today's date (YYYY-MM-DD)
+3. Write the updated log
+
+This ensures `/update-todos` won't resurface completed or dismissed items in future sessions.
+
+**"Dismissed" items**: When a user says to ignore, downgrade, or defer an item indefinitely (e.g., "handle if requested", "not worth tracking"), record it as `"status": "dismissed"` with a reason. Dismissed items are also filtered out during dedup.
+
+**This is the primary recording path.** `/end-of-day` also appends completions as a safety net, but inline recording ensures nothing is lost if a session crashes or EOD doesn't run.
+
 ### Meeting Preparation
 When preparing for meetings, gather:
 - Attendee context (recent communications, shared projects)

@@ -7,7 +7,7 @@
     "slackUserId": "U08EWPC9AP9",
     "slackDmChannelId": null,
     "humaansEmployeeId": null,
-    "asanaUserId": null
+    "asanaUserId": "1213324833961689"
   },
   "people": {
     "joel.patrick@apolitical.co": {
@@ -38,7 +38,7 @@
         "githubUsername": "pshatwell-apolitical",
         "linearUserId": null,
         "humaansEmployeeId": null,
-        "asanaUserId": null
+        "asanaUserId": "1207453428946046"
       },
       "metadata": {
         "team": "Data",
@@ -118,7 +118,7 @@
         "githubUsername": "dharries-apolitical",
         "linearUserId": null,
         "humaansEmployeeId": null,
-        "asanaUserId": null
+        "asanaUserId": "1210625781383592"
       },
       "metadata": {
         "team": "Engineering",
@@ -158,7 +158,7 @@
         "githubUsername": null,
         "linearUserId": null,
         "humaansEmployeeId": null,
-        "asanaUserId": null
+        "asanaUserId": "1198712351171398"
       },
       "metadata": {
         "team": null,
@@ -177,7 +177,7 @@
         "githubUsername": null,
         "linearUserId": null,
         "humaansEmployeeId": null,
-        "asanaUserId": null
+        "asanaUserId": "1202301078811248"
       },
       "metadata": {
         "team": null,
@@ -216,7 +216,7 @@
         "githubUsername": null,
         "linearUserId": null,
         "humaansEmployeeId": null,
-        "asanaUserId": null
+        "asanaUserId": "1211282186365507"
       },
       "metadata": {
         "team": null,
@@ -255,7 +255,7 @@
         "githubUsername": null,
         "linearUserId": null,
         "humaansEmployeeId": null,
-        "asanaUserId": null
+        "asanaUserId": "1200677411359804"
       },
       "metadata": {
         "team": null,
@@ -314,7 +314,7 @@
         "githubUsername": "sbalogun-apolitical",
         "linearUserId": null,
         "humaansEmployeeId": null,
-        "asanaUserId": null
+        "asanaUserId": "1211892184938646"
       },
       "metadata": {
         "team": "Engineering",
@@ -434,7 +434,7 @@
         "githubUsername": "rrozza-apolitical",
         "linearUserId": null,
         "humaansEmployeeId": null,
-        "asanaUserId": null
+        "asanaUserId": "1207468393149329"
       },
       "metadata": {
         "team": "Engineering",
@@ -454,7 +454,7 @@
         "githubUsername": null,
         "linearUserId": null,
         "humaansEmployeeId": null,
-        "asanaUserId": null
+        "asanaUserId": "1209600084646608"
       },
       "metadata": {
         "team": null,
@@ -493,7 +493,7 @@
         "githubUsername": null,
         "linearUserId": null,
         "humaansEmployeeId": null,
-        "asanaUserId": null
+        "asanaUserId": "1200327588941285"
       },
       "metadata": {
         "team": "People",
@@ -512,7 +512,7 @@
         "githubUsername": null,
         "linearUserId": null,
         "humaansEmployeeId": null,
-        "asanaUserId": null
+        "asanaUserId": "1202645421072799"
       },
       "metadata": {
         "team": "Commercial",
@@ -663,7 +663,19 @@
       "oadebayo-apolitical": "onuchukwu.adebayo@apolitical.co"
     },
     "byLinearUserId": {},
-    "byAsanaUserId": {},
+    "byAsanaUserId": {
+      "1207453428946046": "peter.shatwell@apolitical.co",
+      "1210625781383592": "dominic.harries@apolitical.co",
+      "1198712351171398": "che.thomson@apolitical.co",
+      "1202301078811248": "jessica.vanonselen@apolitical.co",
+      "1211282186365507": "tanya.riordan@apolitical.co",
+      "1200677411359804": "lowell.weisbord@apolitical.co",
+      "1211892184938646": "samuel.balogun@apolitical.co",
+      "1207468393149329": "renzo.rozza@apolitical.co",
+      "1209600084646608": "noah.edmunds@apolitical.co",
+      "1200327588941285": "lauren.benson-armer@apolitical.co",
+      "1202645421072799": "amber.keates@apolitical.co"
+    },
     "byTeam": {
       "Engineering": [
         "romilly.eveleigh@apolitical.co",

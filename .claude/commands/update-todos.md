@@ -350,6 +350,20 @@ Before adding items to the todo list, deduplicate against both the current task 
 4. **Skip duplicates**: Don't create duplicate tasks
 5. **Update if changed**: If item exists but details changed, note the update
 
+### Step A.5: Check Completion Log
+
+Check the persistent completion log for items already addressed in previous sessions.
+
+1. **Load log**: Read `.claude/task-completions.json`
+2. **If missing**: Skip this step (log will be created by `/end-of-day`)
+3. **Prune stale entries**: Remove completions older than `retentionDays`, update `lastPruned`, write back (lazy pruning)
+4. **For each candidate item**: Compare against `completions` entries from the last 30 days
+   - **First**: Match by `sourceId` if present (exact match)
+   - **Then**: Match by fuzzy keyword overlap (>=2 keywords match) or subject similarity (substring or close match)
+5. **If matched with status "completed"**: Skip the item. Log: `⊘ Skipped (completed per log): {description}`
+6. **If matched with status "dismissed"**: Skip the item. Log: `⊘ Skipped (dismissed per log): {description} — {reason}`
+7. **Benefit**: This runs before Causantic verification, reducing expensive memory queries
+
 ### Step B: Memory Verification (Causantic)
 
 Check Causantic memory to filter out items already addressed in previous sessions. This prevents creating stale tasks.
@@ -387,6 +401,8 @@ Deduplication & Memory Verification
 ====================================
 Candidates from sources:    [N]
 Duplicates (existing tasks): [N] skipped
+Completed (per log):         [N] skipped
+Dismissed (per log):         [N] skipped
 Completed (per memory):      [N] skipped
 Partially addressed:         [N] (tasks created with context)
 New tasks to create:         [N]
