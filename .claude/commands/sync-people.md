@@ -89,7 +89,8 @@ For each employee in Humaans:
     "slackDmChannelId": "D08GD5934R3",
     "githubUsername": null,
     "linearUserId": null,
-    "humaansEmployeeId": "humaans-id"
+    "humaansEmployeeId": "humaans-id",
+    "asanaUserId": null
   },
   "metadata": {
     "team": "Engineering",
@@ -340,6 +341,7 @@ Some identifiers can't be populated during sync:
 |------------|-----------------|
 | `githubUsername` | `/team-status`, `/whats-blocking` - from PR author lookups |
 | `linearUserId` | `/create-ticket`, `/team-status` - from assignee resolution |
+| `asanaUserId` | `/sync-asana`, `/find-context`, `/team-status` - from Asana user lookups |
 
 Skills that discover these identifiers should update people.json:
 1. Look up person by name/email

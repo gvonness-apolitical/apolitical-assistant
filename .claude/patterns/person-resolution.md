@@ -13,6 +13,7 @@ Instant resolution of names to system identifiers using the cached people.json f
 
 - `.claude/people.json` - Primary cache with all person data
 - `.claude/figma-sources.json` - May contain additional people in `discoveredPeople`
+- `.claude/asana-sources.json` - May contain Asana user GIDs
 
 ## Algorithm
 
@@ -27,6 +28,9 @@ ELSE IF query matches Slack ID pattern (starts with U):
 
 ELSE IF query matches GitHub username pattern:
   → Check indices.byGithubUsername[query]
+
+ELSE IF query matches Asana GID pattern (numeric string):
+  → Check indices.byAsanaUserId[query]
 
 ELSE:
   → Proceed to alias/fuzzy matching
@@ -80,6 +84,7 @@ Once resolved, use the appropriate identifier for each system:
 | GitHub | `githubUsername` | PR/issue author searches |
 | Linear | `linearUserId` | Ticket assignee operations |
 | Humaans | `humaansEmployeeId` | HR data lookups |
+| Asana | `asanaUserId` | Cross-functional task lookups |
 
 ## Metadata Usage
 

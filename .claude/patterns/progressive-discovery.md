@@ -14,6 +14,7 @@ Cache discovered identifiers during skill execution for future use.
 - `.claude/linear-cache.json` - Linear structure cache
 - `.claude/figma-sources.json` - Figma files cache (discoveredPeople section)
 - `.claude/slack-channels.json` - Channel cache
+- `.claude/asana-sources.json` - Asana workspace cache
 
 ## Discoverable Identifiers
 
@@ -24,10 +25,12 @@ Cache discovered identifiers during skill execution for future use.
 | `humaansEmployeeId` | people.json | HR lookups in /sync-people |
 | `slackUserId` | people.json | User resolution in /slack-read |
 | `slackDmChannelId` | people.json | DM operations |
+| `asanaUserId` | people.json | Asana user resolution in /sync-asana, /find-context, /team-status |
 | Linear team IDs | linear-cache.json | First Linear API call |
 | Linear project IDs | linear-cache.json | Project lookups |
 | Channel IDs | slack-channels.json | Channel operations |
 | Figma file owners | figma-sources.json | Figma link extraction |
+| Asana team/project GIDs | asana-sources.json | Asana workspace discovery |
 
 ## Algorithm
 
@@ -81,6 +84,9 @@ IF updating githubUsername:
 
 IF updating linearUserId:
   → Add to indices.byLinearUserId (if index exists)
+
+IF updating asanaUserId:
+  → Add to indices.byAsanaUserId
 ```
 
 ## Example: Discovering GitHub Username
@@ -154,3 +160,4 @@ IF external:
 | `/find-context` | Various identifiers |
 | `/sync-people` | All identifiers (primary refresh) |
 | `/sync-figma` | Figma file owners |
+| `/sync-asana` | asanaUserId, Asana team/project GIDs |

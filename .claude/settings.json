@@ -21,6 +21,7 @@
     "staleLinearDays": 1,
     "staleSlackChannelsDays": 30,
     "staleFigmaDays": 90,
+    "staleAsanaDays": 1,
     "staleContextItemDays": 7
   },
 
@@ -48,7 +49,8 @@
     "orient": {
       "checkPeopleCache": true,
       "checkLinearCache": true,
-      "checkFigmaCache": true
+      "checkFigmaCache": true,
+      "checkAsanaCache": true
     },
     "slackRead": {
       "maxAgeDays": 30,

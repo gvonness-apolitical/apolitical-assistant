@@ -26,6 +26,7 @@ When `--quick` flag is provided:
    - `linear-cache.json` - Sprint structure and progress
    - `context/YYYY-MM-DD/` - Today's context (incidents, blockers)
    - `figma-sources.json` - Recent design activity
+   - `asana-sources.json` - Cross-functional Asana tasks
 3. Note in output: "Quick mode - cached data (may be stale)"
 
 Use quick mode when:
@@ -96,6 +97,12 @@ Use local context to supplement API calls and provide historical context.
    - Active design work by category matching team (e.g., "engineering" for Platform)
    - Files owned by team members (cross-reference with people.json)
 
+8. **Asana** (load from `.claude/asana-sources.json`):
+   - Cross-functional tasks assigned to team members (use `asanaUserId` from people.json)
+   - Goal progress relevant to the team
+   - Priority projects involving team members
+   - Frame as "cross-functional work" — distinct from Linear sprint work
+
 ## Output Structure
 
 ### [Team Name] Status - [Date]
@@ -125,6 +132,11 @@ Tickets and PRs completed this week
 ### Active Design Work
 Recent Figma files shared by or relevant to the team:
 | File | Owner | Last Shared | Category |
+
+### Cross-Functional Work (Asana)
+Tasks assigned to team members in Asana (company-wide projects):
+| Task | Assignee | Project | Due Date | Status |
+- Goal progress relevant to the team
 
 ### Health Indicators
 - Cycle time trend

@@ -281,6 +281,40 @@ Find docs where you've been tagged for comments or suggestions.
   Items:
   - [Doc/Sheet/Slide] [title]: [action needed]
 
+Proceeding to Source: Asana
+```
+
+### Source 6: Asana
+
+**Wait for Source 5 checkpoint before starting this source.**
+
+Find Asana tasks assigned to you (cross-functional, company-wide work).
+
+1. **Load config**: Read `.claude/asana-sources.json`
+   - If missing or `lastUpdated` is null, skip this source
+   - Get `me.gid` for task lookups
+   - Get `filters.taskMaxAgeDays` for age filtering (default: 30)
+2. **Search assigned tasks**: Use `asana_search_tasks` with:
+   - `assignee.any` = your Asana GID
+   - `completed` = false (incomplete only)
+   - `modified_at.after` = today minus `taskMaxAgeDays`
+3. **Filter results**:
+   - **Exclude** tasks in sections named "On Hold", "Paused", or "Blocked" (these are tracked separately in /whats-blocking)
+   - **Exclude** tasks in projects matching `filters.excludeProjects`
+   - **Apply age filter**: Skip tasks not modified within `taskMaxAgeDays`
+4. **Linear dedup**: For each Asana task, check if its title closely matches any Linear ticket already found in Sources 1-5. If so, skip the Asana task and log: `⊘ Skipped (Linear duplicate): [title]`. Linear is the engineering source of truth.
+5. **Categorize**:
+   - Open (no due date or future due date)
+   - Overdue (due date has passed)
+6. **Compact**: Extract only task name, project, and due date.
+
+```
+✓ CHECKPOINT: Source complete - Asana
+  Items found: [N] | Open: [N] | Overdue: [N] | Linear dupes skipped: [N]
+
+  Items:
+  - [Asana] [project]: [task name] (open/overdue)
+
 All sources complete. Proceeding to Deduplication.
 ```
 
@@ -354,6 +388,7 @@ Assign priority to each item based on these rules (in order):
 - **Email**: Exec sender = P1, team sender = P2, external = P3
 - **Canvases**: Overdue = P1, Open = P2, Paused/Blocked = P3
 - **Notion/Docs**: Unresolved comment = P2, shared doc = P3
+- **Asana**: Overdue = P1, open with due date this week = P2, open no due date = P3
 
 ## Automatic Task Creation
 
@@ -526,7 +561,7 @@ After all sources scanned, deduplicated, and tasks created, display:
 # Update Todos Complete - YYYY-MM-DD
 
 ## Sources Scanned
-✓ Canvases   ✓ Slack   ✓ Email   ✓ Notion   ✓ Google
+✓ Canvases   ✓ Slack   ✓ Email   ✓ Notion   ✓ Google   ✓ Asana
 
 ## Key Results
 - **Total items found**: [N]
@@ -544,6 +579,7 @@ After all sources scanned, deduplicated, and tasks created, display:
 - Email: [N]
 - Notion: [N]
 - Google Docs: [N]
+- Asana: [N]
 
 ## Recommended Order
 Start with task #1 and work down. P1 items should be addressed today.
@@ -573,7 +609,7 @@ When `/update-todos --resume` is run:
 
 | Flag | Sources Scanned | Use Case |
 |------|-----------------|----------|
-| (none) | All 5 | Full scan |
+| (none) | All 6 | Full scan |
 | `--quick` | Canvases, Slack | Fast scan |
 | `--source canvases` | Canvases only | Targeted |
 | `--source slack` | Slack only | Targeted |
@@ -588,6 +624,7 @@ When `/update-todos --resume` is run:
 | 3. Email | ✓ | - |
 | 4. Notion | ✓ | - |
 | 5. Google Workspace | ✓ | - |
+| 6. Asana | ✓ | - |
 
 ## Notes
 

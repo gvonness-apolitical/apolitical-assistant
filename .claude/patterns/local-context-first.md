@@ -20,6 +20,7 @@ Check cached and local context files before making API calls to reduce latency a
 - `.claude/linear-cache.json` - Linear structure cache
 - `.claude/slack-channels.json` - Channel cache
 - `.claude/figma-sources.json` - Figma files cache
+- `.claude/asana-sources.json` - Asana workspace cache
 
 ## Algorithm
 
@@ -84,6 +85,7 @@ ELSE:
 | linear-cache.json | 1 day | Refresh teams/cycles |
 | slack-channels.json | 30 days | Refresh channel list |
 | figma-sources.json | 90 days | Run /sync-figma |
+| asana-sources.json | 1 day (projects), 7 days (goals/teams) | Run /sync-asana |
 | Daily context | Same day | Always current |
 
 ## Example

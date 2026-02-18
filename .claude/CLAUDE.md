@@ -58,6 +58,14 @@ You have access to the following integrations through MCP servers:
 - Get variable definitions
 - Access FigJam boards
 
+### Asana (company-wide task management)
+- View tasks assigned to team members (read-only)
+- Search tasks across the organisation
+- View project structures and team membership
+- Track goal progress and portfolio status
+- **Priority sources**: Goals, Portfolios, Active Projects (see Priority Asana Sources below)
+- **Note**: Asana is the company-wide task manager. Engineering-specific work lives in Linear. Frame Asana data as "cross-functional" to avoid confusion.
+
 ## Available Skills
 
 Use `/[skill-name]` to invoke these workflows:
@@ -75,6 +83,7 @@ Use `/[skill-name]` to invoke these workflows:
 - `/sync-linear` - Refresh Linear structure cache (teams, projects, cycles, statuses)
 - `/sync-slack` - Refresh Slack channels cache (IDs, names, categories)
 - `/sync-figma` - Verify and maintain Figma sources cache (discover new links, cleanup stale entries)
+- `/sync-asana` - Refresh Asana workspace structure cache (teams, projects, goals, portfolios)
 - `/catchup [days]` - Rebuild context for days you were away (vacation, absence)
 
 ### Meetings
@@ -444,11 +453,13 @@ Once resolved, use the person's cached identifiers:
 - `githubUsername` → GitHub PR/issue searches
 - `linearUserId` → Linear ticket operations
 - `humaansEmployeeId` → Humaans lookups
+- `asanaUserId` → Asana task lookups (cross-functional work)
 
 ### Progressive Discovery
 Some identifiers are discovered during skill execution:
 - `githubUsername`: Found during `/team-status`, `/whats-blocking` (PR lookups)
 - `linearUserId`: Found during `/create-ticket`, `/team-status` (assignee resolution)
+- `asanaUserId`: Found during `/sync-asana`, `/find-context`, `/team-status` (Asana user lookups)
 
 **When you discover a new identifier, update people.json** to cache it for future use.
 
@@ -574,6 +585,47 @@ When you need Figma context:
 2. Look up by category (`indices.byCategory`) or owner (`indices.byOwnerSlackId`)
 3. Use file URLs to fetch screenshots or metadata via Figma MCP tools
 
+## Priority Asana Sources
+
+Asana is the company-wide task management tool — all teams use it for cross-functional work. Engineering-specific work lives in Linear. Configuration is stored in `.claude/asana-sources.json`.
+
+### Data Sources
+
+| Source | Use For |
+|--------|---------|
+| **Goals** | Strategic objectives, OKRs, company-wide targets |
+| **Portfolios** | Programme-level groupings of projects |
+| **Active Projects** | Cross-functional projects across the organisation |
+
+### Integration with Skills
+
+Skills that gather Asana context should:
+
+1. **Load config**: Read `.claude/asana-sources.json` at the start
+2. **Check priority items first**: Use `sources.*.priority` arrays for targeted access
+3. **Frame as cross-functional**: Asana data is company-wide, not engineering-specific
+4. **Deduplicate against Linear**: When the same work appears in both, Linear takes precedence
+
+### Skills Using Asana Sources
+
+| Skill | Sources Checked | When |
+|-------|-----------------|------|
+| `/update-todos` | Assigned tasks | Source 6: incomplete tasks assigned to you |
+| `/find-context` | All three | Person/project/topic lookups |
+| `/team-status` | Projects, Goals | Cross-functional work for team members |
+| `/orient` | Assigned tasks | Work in Progress section |
+| `/whats-blocking` | Assigned tasks | Overdue/blocked cross-functional tasks |
+| `/prep-meeting` | Projects, Goals | Shared work with attendees |
+| `/weekly-review` | Tasks, Goals | Completed work during the week |
+| `/executive-report` | Goals, Portfolios | Goal progress, portfolio status |
+| `/mbr` | Goals, Projects | Monthly goal progress, cross-functional completions |
+
+### Search Patterns
+
+**For Goals**: "goal", "OKR", "objective", "key result", "target"
+**For Portfolios**: "portfolio", "programme", "initiative"
+**For Projects**: "project", "workstream", "campaign"
+
 ## Core Patterns
 
 Reusable patterns in `.claude/patterns/` reduce duplication across skills and ensure consistent behavior.
@@ -645,6 +697,7 @@ This shows what would be processed without making any changes.
 | `slack-channels.json` | Channel IDs, names, categories | `/sync-slack` | 30 days |
 | `notion-cache.json` | Page IDs, schemas | Progressive | On access |
 | `figma-sources.json` | Figma files and metadata | `/sync-figma` | 90 days |
+| `asana-sources.json` | Asana workspace structure | `/sync-asana` | 1 day |
 
 ### Cache Freshness Checks
 

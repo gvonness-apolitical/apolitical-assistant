@@ -6,7 +6,8 @@
     "displayName": "Greg von Ness",
     "slackUserId": "U08EWPC9AP9",
     "slackDmChannelId": null,
-    "humaansEmployeeId": null
+    "humaansEmployeeId": null,
+    "asanaUserId": null
   },
   "people": {
     "joel.patrick@apolitical.co": {
@@ -17,7 +18,8 @@
         "slackDmChannelId": "D08FQJLTBPF",
         "githubUsername": null,
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": null,
@@ -35,7 +37,8 @@
         "slackDmChannelId": "D09G7378JPR",
         "githubUsername": "pshatwell-apolitical",
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": "Data",
@@ -54,7 +57,8 @@
         "slackDmChannelId": "D08GZVDMG81",
         "githubUsername": "reveleigh-apolitical",
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": "Engineering",
@@ -73,7 +77,8 @@
         "slackDmChannelId": "D08HZGW1DFX",
         "githubUsername": "kidris-apolitical",
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": "Engineering",
@@ -92,7 +97,8 @@
         "slackDmChannelId": "D09KYGBU5FW",
         "githubUsername": "cyang-apolitical",
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": "Engineering",
@@ -111,7 +117,8 @@
         "slackDmChannelId": "D08G544NWGL",
         "githubUsername": "dharries-apolitical",
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": "Engineering",
@@ -130,7 +137,8 @@
         "slackDmChannelId": "D08FU78CKT9",
         "githubUsername": "ckiller-apolitical",
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": "Engineering",
@@ -149,7 +157,8 @@
         "slackDmChannelId": "D08JNFURRC3",
         "githubUsername": null,
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": null,
@@ -167,7 +176,8 @@
         "slackDmChannelId": "D08LQQ1QJGM",
         "githubUsername": null,
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": null,
@@ -185,7 +195,8 @@
         "slackDmChannelId": "D0A7WTSR1ME",
         "githubUsername": "bsorgdrager-apolitical",
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": "Engineering",
@@ -204,7 +215,8 @@
         "slackDmChannelId": "D09EAG8454N",
         "githubUsername": null,
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": null,
@@ -222,7 +234,8 @@
         "slackDmChannelId": "D08H4SS7WH3",
         "githubUsername": "rjukna-apolitical",
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": "Engineering",
@@ -241,7 +254,8 @@
         "slackDmChannelId": null,
         "githubUsername": null,
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": null,
@@ -259,7 +273,8 @@
         "slackDmChannelId": "D08HH9BEJSZ",
         "githubUsername": "achauhan-apolitical",
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": "Engineering",
@@ -278,7 +293,8 @@
         "slackDmChannelId": "D09DDLT0Z8C",
         "githubUsername": "kseth-apolitical",
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": "Engineering",
@@ -297,7 +313,8 @@
         "slackDmChannelId": "D09S9BYD9JQ",
         "githubUsername": "sbalogun-apolitical",
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": "Engineering",
@@ -316,7 +333,8 @@
         "slackDmChannelId": null,
         "githubUsername": "fgbajabiamila-apolitical",
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": "Engineering",
@@ -335,7 +353,8 @@
         "slackDmChannelId": "D0A266QBPU2",
         "githubUsername": "raltieri-apolitical",
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": "Engineering",
@@ -354,7 +373,8 @@
         "slackDmChannelId": "D08S06UBYC9",
         "githubUsername": "bhidalgo-apolitical",
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": "Engineering",
@@ -373,7 +393,8 @@
         "slackDmChannelId": "D099RU5HW81",
         "githubUsername": "plam-apolitical",
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": "Engineering",
@@ -392,7 +413,8 @@
         "slackDmChannelId": "D09FE0EAE7M",
         "githubUsername": "rho-apolitical",
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": "Engineering",
@@ -411,7 +433,8 @@
         "slackDmChannelId": "D08GH9FGXT2",
         "githubUsername": "rrozza-apolitical",
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": "Engineering",
@@ -430,7 +453,8 @@
         "slackDmChannelId": "D08JZ2ETGDV",
         "githubUsername": null,
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": null,
@@ -448,7 +472,8 @@
         "slackDmChannelId": "D08GD5934R3",
         "githubUsername": "lmaglio-apolitical",
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": "Engineering",
@@ -467,7 +492,8 @@
         "slackDmChannelId": "D08FNBWS83Y",
         "githubUsername": null,
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": "People",
@@ -485,7 +511,8 @@
         "slackDmChannelId": "D08G2SG5010",
         "githubUsername": null,
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": "Commercial",
@@ -503,7 +530,8 @@
         "slackDmChannelId": null,
         "githubUsername": "dburns-apolitical",
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": "Engineering",
@@ -522,7 +550,8 @@
         "slackDmChannelId": null,
         "githubUsername": "dgaulton-apolitical",
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": "Engineering",
@@ -541,7 +570,8 @@
         "slackDmChannelId": null,
         "githubUsername": "oadebayo-apolitical",
         "linearUserId": null,
-        "humaansEmployeeId": null
+        "humaansEmployeeId": null,
+        "asanaUserId": null
       },
       "metadata": {
         "team": "Engineering",
@@ -633,6 +663,7 @@
       "oadebayo-apolitical": "onuchukwu.adebayo@apolitical.co"
     },
     "byLinearUserId": {},
+    "byAsanaUserId": {},
     "byTeam": {
       "Engineering": [
         "romilly.eveleigh@apolitical.co",

@@ -102,6 +102,11 @@ Proceeding to Step 3: Gather External Context
    - **PRDs**: If meeting involves product/feature discussions
    - **Product Roadmap**: If meeting is about planning or priorities
 7. **Notion General**: Other docs involving attendees
+8. **Asana** (load from `.claude/asana-sources.json`):
+   - Tasks shared with or assigned to attendees
+   - Relevant Asana projects or goals involving attendees
+   - Use `asanaUserId` from people.json for lookups
+   - Frame as "cross-functional work" — distinct from Linear engineering tasks
 
 ```
 ✓ CHECKPOINT: Step 3 complete - Gather External Context

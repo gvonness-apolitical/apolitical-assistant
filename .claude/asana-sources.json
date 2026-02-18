@@ -1,0 +1,54 @@
+{
+  "description": "Asana workspace structure and priority sources. Hybrid config: caches workspace structure AND marks priority items for targeted skill access. Populated by /sync-asana.",
+  "lastUpdated": null,
+  "workspace": {
+    "gid": null,
+    "name": null
+  },
+  "me": {
+    "gid": null,
+    "email": "greg.vonness@apolitical.co"
+  },
+  "teams": {},
+  "sources": {
+    "goals": {
+      "name": "Company Goals",
+      "description": "Strategic goals and OKRs tracked in Asana",
+      "items": {},
+      "priority": [],
+      "useFor": ["executive-report", "mbr", "team-status", "find-context"],
+      "searchPatterns": ["goal", "OKR", "objective", "key result", "target"]
+    },
+    "portfolios": {
+      "name": "Portfolios",
+      "description": "Portfolio groupings of projects across the organisation",
+      "items": {},
+      "priority": [],
+      "useFor": ["executive-report", "mbr", "team-status"],
+      "searchPatterns": ["portfolio", "programme", "initiative"]
+    },
+    "projects": {
+      "name": "Active Projects",
+      "description": "Cross-functional projects tracked in Asana (not engineering-specific — those are in Linear)",
+      "items": {},
+      "priority": [],
+      "useFor": ["find-context", "team-status", "update-todos", "whats-blocking", "prep-meeting"],
+      "searchPatterns": ["project", "workstream", "campaign"]
+    }
+  },
+  "indices": {
+    "teamByName": {},
+    "projectByName": {},
+    "projectByTeam": {}
+  },
+  "filters": {
+    "excludeProjects": [],
+    "excludeTeams": [],
+    "taskMaxAgeDays": 30
+  },
+  "usage": {
+    "search_priority": "When gathering Asana context, check priority items first (sources.*.priority arrays), then search broadly when needed. Asana is the company-wide task manager — frame results as cross-functional, not engineering-specific.",
+    "skill_integration": "Skills should load this config and query relevant sources based on context type (strategic goals -> goals, cross-functional work -> projects, organisational view -> portfolios).",
+    "linear_dedup": "When the same work appears in both Linear and Asana, Linear takes precedence for engineering work. Asana tasks whose titles closely match a Linear ticket should be noted but not duplicated."
+  }
+}
