@@ -39,6 +39,19 @@ If interrupted: Resume retries incomplete sources, skips completed ones.
 **Progress tracking:** Append to `context/YYYY-MM-DD/index.md`
 **Resume with:** `/executive-report --resume`
 
+## MANDATORY: Required Tools Per Step
+
+| Step | Required Tools | Can Skip |
+|------|---------------|----------|
+| 1. Parse Date Range | (computation only) | Never |
+| 2. Gather Data | github, linear, slack_search, gmail_search, incidentio_list_incidents, humaans, figma | Individual sources on failure |
+| 3. Read Context Files | Read ×N (weekly reviews, MBRs, daily context) | Never |
+| 4. Synthesize | (computation only) | Never |
+| 5. Generate Report | Write (report file) | Never |
+| 6. Save & Update Index | Write, Edit (daily index) | Never |
+
+Each checkpoint must include `Tools:` line with actual tools called and counts.
+
 ## Core Patterns Used
 
 - [Checkpointing](../patterns/checkpointing.md) - Progress tracking and resume

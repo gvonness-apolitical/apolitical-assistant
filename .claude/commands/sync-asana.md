@@ -9,6 +9,21 @@ Initialize or refresh the Asana workspace structure cache for cross-functional t
 - `/sync-asana --projects` - Refresh projects only
 - `/sync-asana --priority` - Interactive selection of priority items
 
+## MANDATORY: Required Tools Per Step
+
+| Step | Required Tools | Can Skip |
+|------|---------------|----------|
+| 1. Discover Workspace | asana_list_workspaces | Never |
+| 2. Discover Teams | asana_get_teams_for_workspace | Never |
+| 3. Discover Projects | asana_get_projects_for_workspace | Never |
+| 4. Discover Goals | asana_get_goals | If unavailable |
+| 5. Discover Portfolios | asana_get_portfolios | If unavailable |
+| 6. Match People | asana_get_workspace_users, Read (people.json) | Never |
+| 7. Priority Selection | (interactive, computation) | If using defaults |
+| 8. Save | Write (asana-sources.json) | Never |
+
+Each checkpoint must include `Tools:` line with actual tools called and counts.
+
 ## Core Patterns Used
 
 - [Error Handling](../patterns/error-handling.md) - Graceful degradation if Asana unavailable

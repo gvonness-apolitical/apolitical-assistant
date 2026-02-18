@@ -36,6 +36,22 @@ Proceeding to Meeting 3/5: Samuel 1:1
 **Progress tracking:** Append to `context/YYYY-MM-DD/index.md`
 **Resume with:** `/process-gemini-notes --resume`
 
+## MANDATORY: Fetch and Process Each Note
+
+Processing Gemini notes means calling these tools for EACH meeting note:
+
+1. `gmail_search` — find unread emails from gemini-notes@google.com
+2. `gmail_get_message` — read each email
+3. `docs_get_content` — fetch the linked Google Doc
+4. Extract action items and key decisions
+5. Write summary file to `meetings/output/[type]/`
+6. `gmail_archive` — archive the processed email
+
+**Per-meeting checkpoint must cite:** `Tools: gmail_get_message ×1, docs_get_content ×1`
+**Must NOT:** "10 Gemini notes found, deferred" without actually processing or explicitly using ⊘ skip marker
+
+If deferring the entire skill: output `⊘ CHECKPOINT: Step 5 skipped - Gemini Notes (deferred — run /process-gemini-notes)` with the reason. Do not pretend the step was completed.
+
 ## Core Patterns Used
 
 - [Checkpointing](../patterns/checkpointing.md) - Progress tracking and resume capability

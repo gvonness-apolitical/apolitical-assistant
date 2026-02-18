@@ -23,6 +23,26 @@ Sequence is global across all priorities. Tasks without this format are **wrong*
 
 This applies regardless of whether this skill is invoked standalone or as part of `/begin-day`.
 
+## MANDATORY: Create Tasks During Execution
+
+Tasks MUST be created via TaskCreate as part of this skill's execution — not listed in prose for later.
+
+After deduplication, for each action item:
+1. Assign priority (P0/P1/P2/P3) and sequence number
+2. Call TaskCreate immediately with `P{n}.{m}: {description}` as subject
+3. Include source context in the task description
+4. Reference task IDs in the checkpoint output
+
+**WRONG:** "Found 12 items. Here's the list: ..." (no TaskCreate calls)
+**RIGHT:** "Found 12 items. Created tasks #8-#19. Tools: TaskCreate ×12"
+
+**Final verification:** Before outputting the final checkpoint, call TaskList and verify:
+- All new tasks have `P{n}.{m}:` prefixes
+- No tasks have plain-text subjects
+- Fix any that don't conform before completing
+
+The skill is NOT complete until: `Tools: TaskCreate ×N, TaskList ×1` appears in the final checkpoint.
+
 ## Context Window Management (CRITICAL)
 
 This skill makes many API calls that return large payloads. Without careful management, raw results will fill the context window before processing completes — causing the skill to fail mid-run.

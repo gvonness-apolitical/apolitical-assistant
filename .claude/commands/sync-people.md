@@ -25,6 +25,20 @@ Proceeding to Step N+1: [next step name]
 **Progress tracking:** Append to `context/YYYY-MM-DD/index.md`
 **Resume with:** `/sync-people --resume`
 
+## MANDATORY: Required Tools Per Step
+
+| Step | Required Tools | Can Skip |
+|------|---------------|----------|
+| 1. Load Cache | Read (people.json) | Never |
+| 2. Fetch Humaans | humaans_list_employees, humaans_get_org_chart | If Humaans unavailable |
+| 3. Fetch Slack | slack_list_users | If Slack unavailable |
+| 4. Merge & Deduplicate | (computation only) | Never |
+| 5. Build Indices | (computation only) | Never |
+| 6. Discover IDs | Various (progressive) | If no new people |
+| 7. Save | Write (people.json) | Never |
+
+Each checkpoint must include `Tools:` line with actual tools called and counts.
+
 ## Core Patterns Used
 
 - [Checkpointing](../patterns/checkpointing.md) - Progress tracking and resume

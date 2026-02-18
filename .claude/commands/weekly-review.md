@@ -42,6 +42,21 @@ If interrupted: Resume retries incomplete sources, skips completed ones.
 **Progress tracking:** Append to `context/YYYY-MM-DD/index.md`
 **Resume with:** `/weekly-review --resume`
 
+## MANDATORY: Required Tools Per Step
+
+| Step | Required Tools | Can Skip |
+|------|---------------|----------|
+| 1. Determine Week Range | (computation only) | Never |
+| 2. Read Daily Context | Read ×5 (daily index files) | Never |
+| 3. Gather Additional Data | calendar_list_events, github (list_commits/list_pull_requests), linear (list_issues), slack_search, gmail_search, incidentio_list_incidents, humaans_list_time_off | Individual sources on failure |
+| 4. Synthesize Themes | (computation only) | Never |
+| 5. Draft Review | Write (review file) | Never |
+| 6. Cross-Reference | notion-search (RFCs, PRDs) | If no Notion items |
+| 7. Retrospective | (computation only) | Never |
+| 8. Save & Update Index | Write, Edit (daily index) | Never |
+
+Each checkpoint must include `Tools:` line with actual tools called and counts.
+
 ## Core Patterns Used
 
 - [Checkpointing](../patterns/checkpointing.md) - Progress tracking and resume

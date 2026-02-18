@@ -32,6 +32,20 @@ Proceeding to Step N+1: [next step name]
 **Progress tracking:** State saved to `context/YYYY-MM-DD/mbr-state.json`
 **Resume with:** `/mbr --resume`
 
+## MANDATORY: Required Tools Per Step
+
+| Step | Required Tools | Can Skip |
+|------|---------------|----------|
+| 1. Parse Month | (computation only) | Never |
+| 2. Load Previous MBR | Read (previous MBR file) | First MBR |
+| 3. Read Dev Analytics | docs_get_content (analytics doc) | If unavailable |
+| 4. Read Repo Context | Read ×N (weekly reviews, EODs) | Never |
+| 5. Gather External | linear, github, slack_search, incidentio, humaans, notion-search | Individual sources |
+| 6. Auto-Suggest Exceptions | (computation only) | Never |
+| 7-12. Analysis through Save | Various (computation, Write, docs_create) | Per step |
+
+Each checkpoint must include `Tools:` line with actual tools called and counts.
+
 ### State File Structure
 
 ```json

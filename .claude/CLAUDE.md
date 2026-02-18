@@ -138,39 +138,38 @@ The handoff document bridges sessions when work is interrupted mid-task (e.g., M
 
 ## Guidelines
 
+### Checkpoint Discipline (MANDATORY — READ FIRST)
+
+When executing multi-step skills, every checkpoint MUST include:
+
+1. **Tool audit** — list the MCP tools called during this step with counts (e.g., `Tools: gmail_search ×1, gmail_trash ×1`)
+2. **Real metrics** — counts from actual execution, not estimates or summaries
+3. **Task IDs** — if the step found action items, tasks must be created (via TaskCreate with `P{n}.{m}:` format) before the checkpoint
+
+A checkpoint without a tool audit is invalid. If you cannot list the tools you called, you haven't done the step.
+
+**Structural rules:**
+- Complete one step fully before starting the next — do not batch
+- Each step does its own API calls — don't reuse data from a previous step unless the skill explicitly says to
+- Steps can only be skipped with ⊘ marker + mode flag (--quick, --focus). Never skip silently.
+- Tasks use `P{n}.{m}: description` format. Always.
+- After task-creating skills, call TaskList to verify all tasks have P{n}.{m}: prefixes
+
+**Anti-patterns (from real failures):**
+- ✗ "Step 4: Email Triage — all noise, moving on" → didn't fetch emails or apply rules
+- ✗ Steps 4-7 batched into a single paragraph → skipped execution of 3 steps
+- ✗ "Found 12 items: [list in prose]" → never called TaskCreate
+- ✗ "10 emails checked" → only fetched 10 of 39, didn't use maxResults:50
+- ✗ "7 DMs — 2 action items from Jess and Dom" → paraphrased orient, didn't call slack_read_dm
+
+See [checkpointing.md](patterns/checkpointing.md) for full enforcement rules, required tool tables, and the anti-pattern gallery.
+
 ### Communication Style
 - Be concise and direct
 - Prioritize actionable information
 - Use bullet points for clarity
 - Highlight urgent items prominently
 - Provide context when needed
-
-### Checkpoint Discipline (MANDATORY)
-
-When executing multi-step skills (`/begin-day`, `/update-todos`, `/triage-inbox`, `/slack-read`, `/process-gemini-notes`, etc.):
-
-1. **Output each checkpoint marker explicitly** before proceeding to the next step/source
-2. **Do not summarize or combine steps** — complete one, output the marker, then proceed
-3. **Follow the skill's checkpoint format exactly** as written in the skill file
-4. **Create tasks automatically** when a skill specifies task creation (e.g., `/update-todos` creates tasks after deduplication)
-
-If you catch yourself skipping ahead or summarizing multiple steps together, **stop and output the missed checkpoints**.
-
-**Why this matters:**
-- Checkpoints enable resume capability if a session is interrupted
-- They provide visibility into progress for long-running workflows
-- They ensure no steps are accidentally skipped
-- Task creation keeps the task list current
-
-**Example checkpoint output:**
-```
-✓ CHECKPOINT: Step 3 complete - Email Triage
-  Processed: 30 | Trashed: 10 | Archived: 5 | Kept: 15
-
-Proceeding to Step 4: Process Gemini Notes
-```
-
-This is mandatory, not optional. Rushing through skills without checkpoints defeats their purpose.
 
 ### Privacy & Security
 - Never share personal information externally
