@@ -24,6 +24,7 @@ When `--quick` flag is provided:
    - `linear-cache.json` - Sprint/project structure
    - `slack-channels.json` - Channel priorities
    - `figma-sources.json` - Recent Figma activity
+   - `asana-sources.json` - Asana workspace structure
    - `context/YYYY-MM-DD/` - Today's accumulated context
 3. Note in output: "Quick mode - using cached data only"
 4. Complete in <2 seconds
@@ -55,6 +56,14 @@ Before gathering context, check `.claude/people.json`:
 People cache is 12 days old. Consider running `/sync-people --refresh` to update.
 ```
 
+### Asana Cache Freshness
+
+Also check `.claude/asana-sources.json`:
+
+1. **Check `lastUpdated`**: Compare to today
+2. **If null** (never synced): Suggest running `/sync-asana`
+3. **If > 1 day old**: Suggest refreshing: `Asana cache is X days old. Run /sync-asana to refresh?`
+
 ## Context Gathering
 
 ### Calendar
@@ -75,6 +84,9 @@ People cache is 12 days old. Consider running `/sync-people --refresh` to update
 - Linear tickets assigned or in progress
 - Open PRs awaiting review
 - PRs you've authored awaiting merge
+- Asana tasks assigned to you (cross-functional work)
+  - Load from `.claude/asana-sources.json` if cache is fresh
+  - Otherwise query `asana_search_tasks` with your GID, incomplete only
 
 ### Issues & Blockers
 - Active incidents from incident.io

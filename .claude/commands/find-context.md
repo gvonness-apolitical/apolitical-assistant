@@ -27,6 +27,7 @@ When `--quick` flag is provided:
    - `context/eod-*.md` - Recent EOD summaries
    - `figma-sources.json` - Figma files cache
    - `linear-cache.json` - Project/team structure
+   - `asana-sources.json` - Asana workspace structure
 3. Note in output: "Quick mode - local data only. Run without --quick for comprehensive search."
 
 Use quick mode when:
@@ -53,6 +54,7 @@ Once a person is resolved, use their cached identifiers:
 - `humaansEmployeeId` → for Humaans lookups
 - `githubUsername` → for GitHub PR/issue searches (if populated)
 - `linearUserId` → for Linear ticket searches (if populated)
+- `asanaUserId` → for Asana task searches (if populated)
 
 ### Cache Updates
 If you discover a new identifier during search (e.g., GitHub username from a PR):
@@ -92,6 +94,11 @@ First resolve the person using people.json (see Lookup Algorithm above). Then se
 9. **Figma**: Design files they own or contributed to
    - Check `.claude/figma-sources.json` → `indices.byOwnerSlackId[slackUserId]`
    - Include recently shared files where they're a contributor
+10. **Asana**: Cross-functional tasks and projects (use `asanaUserId` if cached)
+    - Load `.claude/asana-sources.json`
+    - Search tasks assigned to them (`asana_search_tasks` with assignee)
+    - Check priority projects for their involvement
+    - Frame as "cross-functional work" (distinct from Linear engineering tasks)
 
 **If person not in cache**: Search Humaans/Slack by name, then add them to people.json.
 
@@ -116,6 +123,11 @@ Search across:
 5. **Slack**: Project channels, recent discussions
 6. **Incidents**: Related incidents
 7. **Figma**: Related design files
+8. **Asana**: Cross-functional projects and goals
+   - Load `.claude/asana-sources.json`
+   - Check priority projects matching the query
+   - Search Asana projects by name (`asana_typeahead_search`)
+   - Check goal progress related to the project
    - Search `.claude/figma-sources.json` by category matching project type
    - Search file names/descriptions for project keywords
    - Check files shared in project-related channels
@@ -141,6 +153,9 @@ Search across all systems for keyword/phrase:
 5. **Linear**: Tickets and projects
 6. **GitHub**: Issues, PRs, code
 7. **Figma**: Design files related to topic
+8. **Asana**: Cross-functional tasks and goals related to topic
+   - Search via `asana_typeahead_search` for the topic
+   - Check priority goals and projects for relevance
    - Search `.claude/figma-sources.json` file names and descriptions
    - Match topic keywords against category, sharedIn channels
    - If design-related topic, fetch screenshot via Figma API for visual context

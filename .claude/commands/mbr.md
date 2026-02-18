@@ -188,6 +188,7 @@ Sources:
 - [ ] GitHub - (pending)
 - [ ] Slack - (pending)
 - [ ] Notion - (pending)
+- [ ] Asana - (pending)
 
 If interrupted: Resume retries incomplete sources, skips completed ones.
 ```
@@ -235,9 +236,16 @@ If interrupted: Resume retries incomplete sources, skips completed ones.
 - Cross-functional coordination threads
 - **Mark source complete in state**
 
+#### Asana (`.claude/asana-sources.json`)
+- Goal progress for the month
+- Cross-functional project completions involving engineering team members
+- Portfolio status changes
+- Frame as "cross-functional contributions" — distinct from Linear engineering delivery
+- **Mark source complete in state**
+
 ```
 ✓ CHECKPOINT: Step 5 complete - Gather External Context
-  Sources: 7/7 complete | OKR: [N] initiatives | Incidents: [N] | Team changes: [N]
+  Sources: 8/8 complete | OKR: [N] initiatives | Incidents: [N] | Team changes: [N]
 
 Proceeding to Step 6: Auto-Suggest Exceptions
 ```

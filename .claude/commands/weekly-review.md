@@ -107,10 +107,15 @@ Track each source as it completes:
    - Load `.claude/figma-sources.json`
    - Filter files with `lastShared` within the week
    - Group by category and owner
+9. **Asana**: Cross-functional work during the week
+   - Load `.claude/asana-sources.json`
+   - Tasks completed or modified during the week (use `asana_search_tasks`)
+   - Goal progress updates
+   - Frame as "cross-functional completions" — distinct from Linear engineering work
 
 ```
 ✓ CHECKPOINT: Step 3 complete - Gather Additional Data
-  Calendar: [N] | GitHub: [N] | Linear: [N] | Slack: [N] | Email: [N] | Incidents: [N] | Figma: [N]
+  Calendar: [N] | GitHub: [N] | Linear: [N] | Slack: [N] | Email: [N] | Incidents: [N] | Figma: [N] | Asana: [N]
 
 Proceeding to Step 4: Generate Review
 ```
@@ -138,6 +143,12 @@ By category: 1:1s, planning, reviews, external, other
 Figma files shared this week:
 | File | Owner | Category | Channel |
 - Note any major design work or updates
+
+### Cross-Functional Work (Asana)
+Asana tasks completed or progressed this week:
+| Task | Project | Status | Completed |
+- Goal progress updates
+- Note any cross-functional milestones
 
 ### Team Activity
 - Who was out and when

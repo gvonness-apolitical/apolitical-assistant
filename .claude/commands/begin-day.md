@@ -43,6 +43,12 @@ Check `.claude/people.json` last modified date:
 - **If >7 days old**: Prompt "People cache is X days old. Run /sync-people? [y/N]"
 - Cache refresh is optional but recommended for accurate lookups
 
+### 1b. Asana Cache Freshness
+
+Check `.claude/asana-sources.json`:
+- **If `lastUpdated` is null**: Suggest "Asana cache not initialized. Run /sync-asana? [y/N]"
+- **If >1 day old**: Suggest "Asana cache is X days old. Run /sync-asana? [y/N]"
+
 ### 2. Late Start Detection
 
 Check current time:
@@ -72,13 +78,29 @@ Check `context/YYYY-MM-DD/index.md` for existing "Begin Day" section:
 
 Execute these steps **in order**. Do not skip ahead.
 
-### Step 1: Previous EOD Catchup
+### Step 1: Previous Session Context
 
-Read the most recent end-of-day summary to establish context from the previous working day and detect any gaps in coverage.
+Link up to the previous session using Causantic memory, then read the EOD file for structured carry-forward items.
+
+#### 1a. Causantic Session Recall
+
+Use Causantic to reconstruct context from the most recent session in this project. This provides richer, narrative context than EOD files alone — including decisions made, problems encountered, and work in progress.
+
+1. **Recall previous session**: Use `causantic-recall` with query "last session summary" (or `causantic-resume` if available)
+2. **Extract key context**:
+   - What was being worked on
+   - Decisions made or deferred
+   - Problems encountered and their resolution status
+   - Anything explicitly flagged for follow-up
+3. **If Causantic unavailable**: Note "Memory unavailable — falling back to EOD files only" and continue to 1b
+
+#### 1b. Previous EOD Catchup
+
+Read the most recent end-of-day summary to supplement the Causantic context with structured carry-forward items.
 
 1. **Find the most recent EOD**: Search backwards from yesterday for `context/eod-YYYY-MM-DD.md`
    - Check yesterday first, then go back up to 10 days
-2. **If found**, read and present:
+2. **If found**, read and extract:
    - **Date**: When the EOD was generated
    - **Completed**: What was accomplished that day
    - **In Progress**: Items still in flight
@@ -97,12 +119,21 @@ Read the most recent end-of-day summary to establish context from the previous w
      ```
      - If yes: Run `/catchup` for the gap period, then continue begin-day from Step 2
      - If no: Continue with warning noted (carry-forward items may be stale)
-4. **Surface carry-forward items** as starting context for today's prioritisation
-5. **If no EOD found** (within 10 days): Display note — "No recent EOD found. Starting with fresh context."
+4. **If no EOD found** (within 10 days): Note — "No recent EOD found."
+
+#### 1c. Merge and Present
+
+Combine Causantic memory and EOD file into a unified previous-session summary:
+
+1. **Deduplicate**: Items that appear in both sources should appear once, with the richer description
+2. **Surface carry-forward items** as starting context for today's prioritisation
+3. **Present briefly**: Show a concise summary — not the raw memory dump. Focus on what's actionable today.
+
+If only one source was available (Causantic or EOD), use that alone without noting the gap.
 
 ```
-✓ CHECKPOINT: Step 1 complete - Previous EOD Catchup
-  Last EOD: YYYY-MM-DD | Gap: [N days / normal] | Carry-forward: X items
+✓ CHECKPOINT: Step 1 complete - Previous Session Context
+  Memory: [available/unavailable] | Last EOD: YYYY-MM-DD | Gap: [N days / normal] | Carry-forward: X items
 
 Proceeding to Step 2: Session Handoff
 ```
@@ -323,9 +354,9 @@ After ALL 9 steps complete (or explicitly skipped), display:
 # Begin Day Complete - 2026-01-29
 
 ## Steps Completed
-✓ 1. EOD Catchup  ✓ 2. Handoff      ✓ 3. Orient
-✓ 4. Email Triage ✓ 5. Gemini Notes ✓ 6. Slack Read
-✓ 7. Update Todos ✓ 8. Briefing     ✓ 9. Standup Prep
+✓ 1. Session Context  ✓ 2. Handoff      ✓ 3. Orient
+✓ 4. Email Triage     ✓ 5. Gemini Notes ✓ 6. Slack Read
+✓ 7. Update Todos     ✓ 8. Briefing     ✓ 9. Standup Prep
 
 ## First Meeting
 Data standup in 47 minutes (09:30)
@@ -362,7 +393,9 @@ Ready for the day!
 
 ---
 
-## Step 1: Previous EOD Catchup
+## Step 1: Previous Session Context
+- **Memory**: [available/unavailable]
+- **Last session**: [summary from Causantic]
 - **Last EOD**: YYYY-MM-DD
 - **Gap**: Normal (weekend) / X working days missed
 - **Carry-forward**: X items
@@ -487,6 +520,7 @@ After completing all steps, update `context/YYYY-MM-DD/index.md`:
 ## Begin Day (HH:MM)
 - **Mode**: [Normal / Late start / Weekend / Catch-up]
 - **Steps completed**: 1, 2, 3, 4, 5, 6, 7, 8, 9
+- **Memory recall**: [available — summary / unavailable]
 - **Previous EOD**: [date] ([N] carry-forward items / not found)
 - **Gap detected**: [None / N working days — catchup run/skipped]
 - **Handoff**: [Processed / None]
@@ -545,7 +579,7 @@ When `--resume` is used:
 
 | Step | Default | --quick | --focus | Weekend |
 |------|:-------:|:-------:|:-------:|:-------:|
-| 1. EOD Catchup | ✓ | ✓ | ✓ | ✓ |
+| 1. Session Context | ✓ | ✓ | ✓ | ✓ |
 | 2. Handoff | ✓ | ✓ | ✓ | - |
 | 3. Orient | ✓ | ✓ | ✓ | ✓ |
 | 4. Email Triage | ✓ | - | - | - |
@@ -574,7 +608,7 @@ When `--resume` is used:
 
 ### Step Order Rationale
 
-1. **EOD Catchup** - Establish context from where you left off, detect missed days
+1. **Session Context** - Causantic recall + EOD files to establish context from where you left off, detect missed days
 2. **Handoff** - Resume interrupted work
 3. **Orient** - Get the lay of the land (counts, not details)
 4. **Email Triage** - Clear inbox noise, surface urgent items

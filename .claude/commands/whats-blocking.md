@@ -60,7 +60,12 @@ Use local context first, then supplement with fresh Linear/GitHub/Slack API call
    - Check if design work is pending for blocked tickets
    - Look for recent design files in project channels that might indicate work in progress
    - Note if design decisions are needed
-5. **Dependencies**: External blockers (vendor, other team, decision needed, design)
+5. **Asana** (load from `.claude/asana-sources.json`):
+   - Cross-functional tasks that are overdue or blocked for the person/project
+   - Use `asana_search_tasks` with assignee and `completed=false`
+   - Check for tasks past due date or in "Blocked"/"Waiting" sections
+   - Frame as "cross-functional blockers" — distinct from Linear engineering blockers
+6. **Dependencies**: External blockers (vendor, other team, decision needed, design)
 
 ## Output
 

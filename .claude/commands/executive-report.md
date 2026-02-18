@@ -116,9 +116,15 @@ Read Gemini auto-notes from `121/` directory for the period:
 - Group by category (product, engineering, marketing)
 - Note significant design work (user flows, new features, system diagrams)
 
+#### Asana (`.claude/asana-sources.json`)
+- Goal progress during the reporting period
+- Portfolio status and project completions
+- Cross-functional tasks completed by engineering team members
+- Frame as "cross-functional contributions" — distinct from Linear engineering delivery
+
 ```
 ✓ CHECKPOINT: Step 2 complete - Gather Data from Sources
-  GitHub: [N] PRs | Linear: [N] tickets | Slack: [N] threads | Email: [N] | Meetings: [N] | Figma: [N]
+  GitHub: [N] PRs | Linear: [N] tickets | Slack: [N] threads | Email: [N] | Meetings: [N] | Figma: [N] | Asana: [N]
 
 Proceeding to Step 3: Analyze & Categorize
 ```
