@@ -35,6 +35,18 @@ Proceeding to Step N+1: [next step name]
 **Progress tracking:** Append to `context/YYYY-MM-DD/index.md`
 **Resume with:** `/slack-read --resume`
 
+## MANDATORY: Read Channels, Don't Paraphrase
+
+Slack read means calling `slack_read_channel` and `slack_read_dm` for each source — not summarising what you remember from orient.
+
+**Each DM/channel checkpoint must cite:** `Tools: slack_read_dm ×N` or `Tools: slack_read_channel ×N`
+**Each checkpoint must include:** message count, action items found, tasks created (with IDs)
+
+If `/orient` was run earlier in this session, you still read the channels. Orient provides counts; slack-read processes the content.
+
+**WRONG:** "7 DMs checked — 2 action items from Jess and Dom" (paraphrased from orient)
+**RIGHT:** slack_read_dm ×7 → extract action items → TaskCreate ×2 → checkpoint: "DMs: 7 | Action items: 2 | Tasks: #8, #12 | Tools: slack_read_dm ×7, TaskCreate ×2"
+
 ## Core Patterns Used
 
 - [Checkpointing](../patterns/checkpointing.md) - Progress tracking and resume capability

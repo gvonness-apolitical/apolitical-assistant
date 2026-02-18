@@ -37,6 +37,29 @@ Proceeding to Step N+1: [next step name]
 **Progress tracking:** Stored in `.claude/email-rules.json` (triage state section)
 **Resume with:** `/triage-inbox --resume`
 
+## MANDATORY: Execute Triage Actions
+
+Email triage requires calling these tools — categorising in your head doesn't count:
+
+1. `gmail_search` with maxResults: 50 — fetch ALL unread, not just 10
+2. Read `.claude/email-rules.json` — load and apply every rule
+3. `gmail_trash` — actually delete matched emails (not "would delete")
+4. `gmail_archive` — actually archive matched emails
+5. `TaskCreate` — create tasks for emails requiring response (with `P{n}.{m}:` prefix)
+
+**Enforcement:** Your final checkpoint MUST include:
+```
+Tools: gmail_search ×1, gmail_trash ×1, gmail_archive ×1, TaskCreate ×N
+Metrics: Processed: N | Trashed: N | Archived: N | Respond: N
+```
+
+If Trashed and Archived are both 0 and you processed >5 emails, something is wrong — rules should match.
+
+**Final verification:** Call TaskList to verify all triage-created tasks have `P{n}.{m}:` prefixes.
+
+**WRONG:** "10 emails, all noise — archived mentally"
+**RIGHT:** gmail_trash([16 IDs]) → gmail_archive([6 IDs]) → TaskCreate ×2 → "Trashed: 16 | Archived: 6 | Tasks: #18, #19"
+
 ## Core Patterns Used
 
 - [Checkpointing](../patterns/checkpointing.md) - Progress tracking and resume capability

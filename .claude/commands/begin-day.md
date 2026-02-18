@@ -33,6 +33,32 @@ Proceeding to Step N+1: [next step name]
 
 **Do not generate the final briefing until all prior steps are complete or explicitly skipped.**
 
+## MANDATORY: Required Tools Per Step
+
+Each step below lists required MCP tool calls. Your checkpoint MUST cite these tools with call counts.
+If a tool isn't called, the step isn't done. Period.
+
+| Step | Required Tools | Cannot Skip Unless |
+|------|---------------|-------------------|
+| 1. Session Context | causantic_recall OR Read (EOD file) | Never |
+| 2. Handoff | Read (handoff file) or Glob (check existence) | No handoff file |
+| 3. Orient | calendar_list_events, gmail_search, slack_list_dms/slack_read_dm, incidentio_list_incidents, humaans_list_time_off | Never |
+| 4. Email Triage | gmail_search(maxResults:50), gmail_trash, gmail_archive | --quick or --focus |
+| 5. Gemini Notes | gmail_search(gemini-notes), docs_get_content, gmail_archive | --quick or --focus, or 0 unread |
+| 6. Slack Read | slack_read_channel ×N (per channel), slack_read_dm ×N (per DM) | --quick or --focus |
+| 7. Update Todos | slack_get_canvas ×N (per canvas), notion-search, docs_get_comments, TaskCreate ×N | --focus |
+| 8. Briefing | Write (briefing file) | Never |
+| 9. Standup Prep | Read (calendar from step 3) | No standup scheduled |
+
+**Embedded skill enforcement:** Steps 4, 5, 6, and 7 embed other skills (triage-inbox, process-gemini-notes, slack-read, update-todos). When running these steps within begin-day, the full enforcement rules from each sub-skill apply — including their MANDATORY execution sections, tool requirements, and task creation mandates. Do NOT produce a weaker version of these steps just because they're running inside begin-day.
+
+If running in late-start/catching-up mode:
+- You may SUGGEST `--quick` to the user. You may NOT unilaterally skip steps.
+- If the user doesn't specify `--quick`, execute all steps fully.
+
+**WRONG:** "Step 4: Email Triage — 10 emails, all noise. Moving on."
+**RIGHT:** gmail_search(maxResults:50) → load email-rules.json → apply rules → gmail_trash([ids]) → gmail_archive([ids]) → checkpoint with metrics and tool audit
+
 ## Pre-Flight Checks
 
 Before starting the workflow, perform these checks:

@@ -36,6 +36,21 @@ Proceeding to Day 2026-01-29
 **Progress tracking:** State saved to `context/catchup-YYYY-MM-DD-state.json`
 **Resume with:** `/catchup --resume`
 
+## MANDATORY: Required Tools Per Step
+
+| Step | Required Tools (per day) | Can Skip |
+|------|--------------------------|----------|
+| 1. Determine Date Range | (computation only) | Never |
+| 2. Load Known Context | Read ×N (context files, EODs) | Never |
+| Per-day: Calendar | calendar_list_events | Never |
+| Per-day: Email | gmail_search | Never |
+| Per-day: Slack | slack_search | Never |
+| Per-day: Linear | linear list_issues | Never |
+| Per-day: GitHub | github list_commits/list_pull_requests | Never |
+| Per-day: Incidents | incidentio_list_incidents | Never |
+
+Each checkpoint must include `Tools:` line with actual tools called and counts.
+
 ### State File Structure
 
 ```json

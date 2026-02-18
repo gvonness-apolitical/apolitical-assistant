@@ -8,6 +8,17 @@ Initialize or refresh the Linear structure cache for faster ticket operations.
 - `/sync-linear --teams` - Refresh teams only
 - `/sync-linear --cycles` - Refresh current/upcoming cycles only
 
+## MANDATORY: Required Tools Per Step
+
+| Step | Required Tools | Can Skip |
+|------|---------------|----------|
+| 1. Load Existing Data | Read (linear-cache.json) | Never |
+| 2. Gather Fresh Data | linear list_teams, list_projects, list_cycles, list_issue_statuses, list_issue_labels | Individual sources on failure |
+| 3. Build Indices | (computation only) | Never |
+| 4. Save | Write (linear-cache.json) | Never |
+
+Each checkpoint must include `Tools:` line with actual tools called and counts.
+
 ## Core Patterns Used
 
 - [Error Handling](../patterns/error-handling.md) - Graceful degradation if Linear unavailable

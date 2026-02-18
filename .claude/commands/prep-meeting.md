@@ -25,6 +25,19 @@ Proceeding to Step N+1: [next step name]
 **Progress tracking:** Append to `context/YYYY-MM-DD/index.md`
 **Resume with:** `/prep-meeting --resume`
 
+## MANDATORY: Required Tools Per Step
+
+| Step | Required Tools | Can Skip |
+|------|---------------|----------|
+| 1. Identify Meeting | calendar_list_events, Read (people.json) | Never |
+| 2. Check Daily Context | Read ×N (context files) | Never |
+| 3. Gather Attendee Context | slack_read_dm, slack_read_channel, gmail_search, linear list_issues | Per source on failure |
+| 4. Check Notion | notion-search (RFCs, PRDs) | If no Notion context |
+| 5. Check Canvas | slack_get_canvas (if 1:1 with canvas) | If no canvas configured |
+| 6. Generate Prep | Write (meeting prep file) | Never |
+
+Each checkpoint must include `Tools:` line with actual tools called and counts.
+
 ## Core Patterns Used
 
 - [Checkpointing](../patterns/checkpointing.md) - Progress tracking and resume

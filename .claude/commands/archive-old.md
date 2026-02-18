@@ -27,6 +27,20 @@ Proceeding to Step N+1: [next step name]
 **Progress tracking:** Append to `context/YYYY-MM-DD/index.md`
 **Resume with:** `/archive-old --resume`
 
+## MANDATORY: Required Tools Per Step
+
+| Step | Required Tools | Can Skip |
+|------|---------------|----------|
+| 1. Scan Artifacts | Glob ×N (per directory) | Never |
+| 2. Categorize | (computation only) | Never |
+| 3. Preview | (output only) | Never |
+| 4. Archive (DESTRUCTIVE) | Bash (tar, mv) | --dry-run |
+| 5. Cleanup (DESTRUCTIVE) | Bash (rm) | --dry-run |
+| 6. Update Index | Write (archive/index.md) | Never |
+| 7. Summary | (output only) | Never |
+
+Each checkpoint must include `Tools:` line with actual tools called and counts.
+
 ## Core Patterns Used
 
 - [Checkpointing](../patterns/checkpointing.md) - Progress tracking and resume

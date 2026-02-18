@@ -10,6 +10,63 @@ Checkpoint discipline for multi-step skills to enable progress tracking, resume 
 - Skills involving parallel API calls to multiple sources
 - Long-running operations that may be interrupted
 
+## Enforcement Rules
+
+These rules make faked or skipped checkpoints structurally detectable. Every checkpoint is an audit trail of actual execution.
+
+### Rule 1: Tool Call Audit
+
+Every checkpoint marker MUST include a `Tools:` line listing the MCP tools actually called during that step, with call counts for multi-source steps. A checkpoint without tool calls listed is invalid (unless the step is purely computational, like deduplication or file writing).
+
+Format:
+```
+✓ CHECKPOINT: Step 4 complete - Email Triage
+  Processed: 39 | Trashed: 20 | Archived: 11 | Respond: 2
+  Tools: gmail_search ×1, gmail_trash ×1, gmail_archive ×1
+```
+
+For multi-source steps:
+```
+✓ CHECKPOINT: Step 6 complete - Slack Read
+  DMs: 7 read | Channels: 3 read | Action items: 2
+  Tools: slack_read_dm ×7, slack_read_channel ×3
+```
+
+If you cannot list tools with counts, you haven't done the step.
+
+### Rule 2: Execute, Don't Summarise
+
+Each step must involve actual tool calls. A step that says "fetch emails" means calling `gmail_search` — not reviewing emails you saw in a previous step. A step that says "read channels" means calling `slack_read_channel` — not paraphrasing the orient snapshot. Each step does its own work.
+
+### Rule 3: Metrics Are Mandatory
+
+Every checkpoint must include counts/metrics from actual execution. Valid: `Items: 0`. Invalid: `Nothing found` without having checked. Invalid: `All noise` without having applied rules.
+
+### Rule 4: Task Creation Before Checkpoint
+
+If a step discovers action items, create tasks (with `P{n}.{m}:` format) via TaskCreate BEFORE outputting the checkpoint. The checkpoint references the task IDs. The step is not complete until the tasks exist.
+
+### Rule 5: No Silent Skips
+
+A step can only be skipped with the `⊘` marker AND a mode flag that justifies skipping (e.g., `--quick`, `--focus`). You cannot skip a step just because you think it won't find anything. If the mode requires it, execute it.
+
+### Rule 6: Post-Skill TaskList Verification
+
+For skills that create tasks (update-todos, triage-inbox, begin-day), the final checkpoint MUST include a TaskList call verifying all created tasks have `P{n}.{m}:` prefixes. If any don't, fix them before completing the skill.
+
+### Anti-Pattern Gallery
+
+Real failures observed in practice — these are WRONG and must not be repeated:
+
+| Anti-Pattern | What Happened | Correct Behaviour |
+|---|---|---|
+| "10 emails, all noise" | Eyeballed 10 of 39 emails, didn't load rules or execute trash/archive | Fetch 50, apply rules, call gmail_trash + gmail_archive, report metrics |
+| "Steps 4-7 complete" in one block | Batched 4 steps, skipped actual execution of 3 of them | Complete one step, output checkpoint with tool audit, then start next |
+| "Found 12 items: [list]" | Listed items in prose, never called TaskCreate | Call TaskCreate for each item with P{n}.{m}: prefix before checkpoint |
+| "All meetings done, moving on" | Summarised calendar from memory without calling calendar API | Call calendar_list_events, report actual meeting data |
+| "7 DMs — 2 action items" | Paraphrased orient snapshot, didn't call slack_read_dm | Call slack_read_dm ×7, extract action items from actual messages |
+| Tasks without P-prefix | Created "Respond to Jess Sansom" | Must be "P1.1: Respond to Jess Sansom" |
+
 ## Files Involved
 
 - `context/YYYY-MM-DD/index.md` - Daily context index for progress tracking

@@ -27,6 +27,18 @@ Proceeding to Step N+1: [next step name]
 **Progress tracking:** Append to `context/YYYY-MM-DD/index.md`
 **Resume with:** `/sync-figma --resume`
 
+## MANDATORY: Required Tools Per Step
+
+| Step | Required Tools | Can Skip |
+|------|---------------|----------|
+| 1. Load Cache | Read (figma-sources.json) | Never |
+| 2. Verify Existing | figma get_metadata ×N | If no existing entries |
+| 3. Discover New | slack_search (Figma URLs) | If skip discovery |
+| 4. Cleanup Stale | (computation + Write) | --dry-run |
+| 5. Save | Write (figma-sources.json) | Never |
+
+Each checkpoint must include `Tools:` line with actual tools called and counts.
+
 ## Core Patterns Used
 
 - [Checkpointing](../patterns/checkpointing.md) - Progress tracking and resume
