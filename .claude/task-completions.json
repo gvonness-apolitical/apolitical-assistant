@@ -100,6 +100,38 @@
       "source": "investigation",
       "status": "completed",
       "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-19",
+      "subject": "Write Futura scope impact analysis document",
+      "keywords": ["futura", "scope", "impact", "analysis", "document"],
+      "source": "investigation",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-19",
+      "subject": "Prepare 1:1 talking points for Joel",
+      "keywords": ["joel", "121", "talking", "points", "restructure"],
+      "source": "meeting-prep",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-19",
+      "subject": "Write AI product portfolio analysis",
+      "keywords": ["product", "portfolio", "analysis", "futura", "arc", "navigator", "policy-nova"],
+      "source": "investigation",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-19",
+      "subject": "Write target engineering org structure",
+      "keywords": ["org", "structure", "squads", "hiring", "management", "engineering"],
+      "source": "investigation",
+      "status": "completed",
+      "completedVia": "claude"
     }
   ]
 }
