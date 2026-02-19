@@ -16,5 +16,6 @@ reviews/
 work/
 
 # git-crypt encrypted files
+.claude/dossiers.json
 .claude/email-rules.json
 .claude/meeting-config.json

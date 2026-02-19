@@ -609,6 +609,32 @@ Include in summary:
 Updated in `.claude/figma-sources.json`
 ```
 
+## Dossier Update Prompts
+
+After processing DM exchanges, offer dossier updates for notable interactions:
+
+1. **Check for significant exchanges**: After reading each DM conversation, assess whether it contained:
+   - Notable communication patterns (how they handled disagreement, delivered news, made requests)
+   - Relationship dynamics worth capturing
+   - Behavioural observations relevant to future interactions
+   - Coaching-relevant interactions (for direct reports)
+
+2. **If significant**: Check whether the person has a dossier in `.claude/dossiers.json`
+   - **If dossier exists**: Offer update prompt:
+     ```
+     Notable exchange with [person] about [topic]. Update dossier? [Add note / Skip]
+     ```
+   - If user provides a note, save as a new `notes` entry with `context: "slack exchange"` and today's date
+   - Update `lastUpdated` on the entry
+
+3. **Light touch**: Don't auto-update. Only prompt when the exchange is genuinely notable. Routine messages don't warrant prompts.
+
+4. **Include in summary**: Note any dossier updates in the final summary:
+   ```
+   ## Dossier Updates
+   - [Person]: Added note about [topic]
+   ```
+
 ## Notes
 
 - DMs are always highest priority - don't miss personal messages
@@ -619,3 +645,4 @@ Updated in `.claude/figma-sources.json`
 - Run regularly to stay on top of Slack (e.g., start of day, after meetings)
 - Daily context index accumulates Slack summaries throughout the day
 - **Figma links are automatically extracted and persisted to figma-sources.json**
+- **Dossier update prompts are offered after notable DM exchanges**

@@ -43,6 +43,7 @@ Each checkpoint must include `Tools:` line with actual tools called and counts.
 - [Checkpointing](../patterns/checkpointing.md) - Progress tracking and resume
 - [Person Resolution](../patterns/person-resolution.md) - Resolve attendees to identifiers
 - [Local Context First](../patterns/local-context-first.md) - Check caches before API calls
+- [Dossier Context](../patterns/dossier-context.md) - Load attendee profiles, playbooks, and dynamics
 - [Figma Extraction](../patterns/figma-extraction.md) - Extract Figma links from channels
 - [Daily Index Update](../patterns/daily-index-update.md) - Log meeting prep activity
 - [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
@@ -102,6 +103,23 @@ Proceeding to Step 3: Gather External Context
 ```
 
 ### Step 3: Gather External Context
+
+### Dossier Context
+
+Before gathering external context, load dossiers for all attendees:
+
+1. **Load dossiers**: Read `.claude/dossiers.json`
+2. **For each attendee** (resolved in Step 1):
+   - Look up dossier by email
+   - If found, extract profile, playbook, and relevant dynamics
+3. **For multi-person meetings**: Check `dynamics` entries between pairs of attendees — surface any relevant interpersonal dynamics
+4. **For 1:1 meetings (detected in Step 1)**:
+   - **Pre-1:1 prompt**: Before showing dossier context, ask: "Any observations to add from your last interaction with [person]? [Add note / Skip]"
+   - If the user provides an observation, save it as a new `notes` entry in the attendee's dossier
+   - For **direct report** 1:1s: surface `coaching.currentThemes` and recent `coaching.feedbackLog` entries
+5. **Include in prep output**: Add an "Attendee Dossier Context" section (see Output below)
+
+If no dossiers exist for attendees, skip silently — dossier context is additive, never blocking.
 
 ### Standard Context (All Meetings)
 
@@ -320,6 +338,15 @@ Create a meeting prep note with:
 - What's this meeting about
 - Who's attending and their roles
 - Any relevant background
+
+### Attendee Dossier Context (if dossiers exist)
+For each attendee with a dossier:
+- **Communication style**: How they prefer to communicate
+- **Key sensitivities**: Topics to handle carefully
+- **Effective frames**: What works with this person
+- **Avoid**: Approaches that trigger defensiveness
+- **Dynamics** (multi-person meetings): Notable dynamics between attendees
+- **Coaching themes** (DR 1:1s): Current development areas and recent feedback
 
 ### Channel Activity (if mapped)
 - Summary of discussions since last meeting

@@ -114,6 +114,12 @@ Use `/[skill-name]` to invoke these workflows:
 - `/review-rfc [notion-url]` - Comprehensive RFC review with comments (supports quick/standard/deep)
 - `/review-doc [doc-url]` - Review Google Docs/Slides from non-technical stakeholders
 
+### People & Relationships
+- `/dossier [person]` - View professional dossier (communication style, playbook, coaching)
+- `/dossier [person] --update` - Add notes or update profile fields
+- `/dossier --populate` - Initial population (seed from artifacts, then guided)
+- `/dossier --review` - Review and refresh stale dossiers (>30 days)
+
 ### Thinking & Documentation
 - `/rubberduck [topic]` - Capture a thinking session (strategy, design, problem-solving) as a documented artifact
 - `/save-artifact` - Save conversation output to appropriate location with templates
@@ -495,6 +501,60 @@ If a person is not in the cache:
 2. Add them to people.json with discovered info
 3. Continue with the original operation
 
+## Professional Dossier System
+
+The dossier system (`.claude/dossiers.json`) captures qualitative, manually-curated profiles of key people — communication style, sensitivities, motivations, playbook, and coaching context.
+
+### Purpose
+
+- **Coaching direct reports** — knowing what motivates someone, where their ego sits, what they respond well to
+- **Difficult conversations** — understanding defensive patterns, what evidence they respect, how they process disagreement
+- **Meeting prep** — quickly recalling relationship dynamics, recent friction, shared context
+- **Drafting responses** — matching tone and approach to the individual
+
+### Data File
+
+`.claude/dossiers.json` contains:
+- **version**: Schema version
+- **lastUpdated**: Last modification date
+- **dossiers**: Keyed by email (same as people.json), each containing:
+  - `profile` — communication style, decision making, motivations, sensitivities, strengths, growth areas, working relationship
+  - `playbook` — effective frames, avoid patterns, known triggers
+  - `dynamics` — relationships between people (not just Greg↔Person)
+  - `coaching` — current themes and feedback log (direct reports only)
+  - `notes` — append-only timeline of observations
+
+### Separation from people.json
+
+Dossiers are separate from `people.json` because:
+- people.json is a system identifier cache with API-driven refresh; dossiers are qualitative and manually curated
+- Dossiers contain sensitive subjective assessments — separate file limits blast radius
+- Different update cadence: people.json refreshes from APIs; dossiers update from conversation patterns
+
+### Encryption
+
+`.claude/dossiers.json` is encrypted via git-crypt (configured in `.gitattributes`).
+
+### Integration with Skills
+
+| Skill | Dossier Usage |
+|-------|---------------|
+| `/respond-to` | Load recipient's communication style and playbook for drafting |
+| `/draft-email` | Load recipient's communication style and playbook for drafting |
+| `/prep-meeting` | Load all attendee dossiers, surface dynamics, pre-1:1 prompt, coaching themes for DRs |
+| `/rubberduck` | Load stakeholder dossiers when mentioned in session |
+| `/slack-read` | Offer dossier update prompts after notable DM exchanges |
+| `/begin-day` | Check for stale dossiers (>60 days) for today's meeting attendees |
+| `/dossier` | Direct dossier management (view, update, populate, review) |
+
+### Dossier Context Pattern
+
+Skills use the [Dossier Context](patterns/dossier-context.md) pattern to load dossier data. Missing dossiers never block a skill — context is additive.
+
+### Causantic Integration
+
+Dossier updates emit brief summaries so Causantic hooks capture them as memory events, enabling cross-session recall of how understanding of a person has evolved.
+
 ## Priority Notion Sources
 
 Three key Notion databases should be checked **first** when gathering context. Configuration is stored in `.claude/notion-sources.json`.
@@ -656,6 +716,7 @@ Reusable patterns in `.claude/patterns/` reduce duplication across skills and en
 | Pattern | Purpose | Skills Using |
 |---------|---------|--------------|
 | [person-resolution](patterns/person-resolution.md) | Resolve names to system IDs | 12+ |
+| [dossier-context](patterns/dossier-context.md) | Load person profiles and playbooks | 7 |
 | [local-context-first](patterns/local-context-first.md) | Check cache before API calls | 7+ |
 | [figma-extraction](patterns/figma-extraction.md) | Extract Figma links from text | 3 |
 | [frontmatter](patterns/frontmatter.md) | YAML metadata for artifacts | All |
@@ -719,6 +780,7 @@ This shows what would be processed without making any changes.
 | `notion-cache.json` | Page IDs, schemas | Progressive | On access |
 | `figma-sources.json` | Figma files and metadata | `/sync-figma` | 90 days |
 | `asana-sources.json` | Asana workspace structure | `/sync-asana` | 1 day |
+| `dossiers.json` | Professional dossiers | `/dossier --review` | 30 days per entry |
 
 ### Cache Freshness Checks
 
@@ -746,8 +808,8 @@ Consolidated settings in `.claude/settings.json`:
 
 Sensitive files are encrypted using git-crypt. The following directories are encrypted:
 
-| Directory | Content |
-|-----------|---------|
+| Directory / File | Content |
+|------------------|---------|
 | `context/` | Daily context, session notes, todos |
 | `briefings/` | Daily briefings |
 | `work/` | Ad-hoc work products |
@@ -756,6 +818,9 @@ Sensitive files are encrypted using git-crypt. The following directories are enc
 | `rubberduck/` | Thinking sessions |
 | `meetings/` | Meeting prep and notes |
 | `121/` | 1:1 meeting archives |
+| `.claude/dossiers.json` | Professional dossiers (sensitive) |
+| `.claude/email-rules.json` | Email triage rules |
+| `.claude/meeting-config.json` | Meeting channel mappings |
 
 ### Setup
 
