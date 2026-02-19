@@ -34,11 +34,10 @@ Use the [Person Resolution](person-resolution.md) pattern to resolve the person'
 Depending on the skill's needs, extract different sections:
 
 **For drafting responses** (`/respond-to`, `/draft-email`):
-- `profile.communicationStyle` - How they prefer to communicate
-- `profile.sensitivities` - Topics to handle carefully
-- `playbook.effectiveFrames` - Framing strategies that work
-- `playbook.avoidPatterns` - Approaches to avoid
-- Last 3 entries from `notes` for recent context
+- Load the **self dossier** (relationship: "self") — use `profile.communicationStyle` to match Greg's voice and tone when drafting
+- Load the **recipient's dossier** — use their `profile.communicationStyle`, `profile.sensitivities`, `playbook.effectiveFrames`, and `playbook.avoidPatterns` to tailor the message to how they receive information
+- Last 3 entries from recipient's `notes` for recent context
+- When both dossiers exist, the draft should sound like Greg (self) while being framed for the recipient
 
 **For meeting prep** (`/prep-meeting`):
 - Full `profile` section

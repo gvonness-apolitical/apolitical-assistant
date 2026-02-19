@@ -27,7 +27,7 @@ Dossiers are stored in `.claude/dossiers.json`, keyed by email (same as people.j
   "dossiers": {
     "person@apolitical.co": {
       "displayName": "Person Name",
-      "relationship": "direct-report | peer | manager | exec | external",
+      "relationship": "self | direct-report | peer | manager | exec | external",
       "profile": {
         "communicationStyle": "Free text",
         "decisionMaking": "Free text",
@@ -281,5 +281,6 @@ This enables:
 - Missing dossiers never block other skills
 - `coaching` section is only relevant for direct reports — omit for others
 - `dynamics` tracks Person↔Person relationships, not just Greg↔Person
+- `self` relationship type is for the user's own dossier — skills use it to match voice and communication style when drafting on behalf of the user
 - `notes` is append-only — observations build a timeline
 - No retention/pruning on notes — these are evergreen observations
