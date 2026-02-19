@@ -45,3 +45,4 @@ rubberduck/**/* filter=git-crypt diff=git-crypt -text
 # Claude config files with sensitive data
 .claude/meeting-config.json filter=git-crypt diff=git-crypt -text
 .claude/email-rules.json filter=git-crypt diff=git-crypt -text
+.claude/dossiers.json filter=git-crypt diff=git-crypt -text

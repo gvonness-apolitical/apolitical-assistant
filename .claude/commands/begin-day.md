@@ -330,14 +330,22 @@ Generate the daily briefing. **Only run after all prior steps are complete.**
    - Context to remember
    - Follow-ups needed
 2. **Gather context** from previous steps (already collected)
-3. **Generate briefing** with:
+3. **Stale dossier check**: Load `.claude/dossiers.json` and check dossiers for today's meeting attendees:
+   - For each attendee with a dossier where `lastUpdated` is >60 days ago:
+     ```
+     Dossier for [person] is stale (last updated [date]). Consider refreshing before [meeting name].
+     ```
+   - For DR 1:1s with stale dossiers: additionally note coaching themes that may need review
+   - Include stale dossier warnings in the briefing output
+4. **Generate briefing** with:
    - Today's meetings table
    - P1 - Action Today
    - P2 - This Week
    - FYI - Monitor
-4. **Save to**: `briefings/YYYY-MM-DD.md`
-5. **Update daily context index**
-6. **Update progress**: Mark Step 8 complete in daily context
+   - Stale dossier warnings (if any)
+5. **Save to**: `briefings/YYYY-MM-DD.md`
+6. **Update daily context index**
+7. **Update progress**: Mark Step 8 complete in daily context
 
 ```
 ✓ CHECKPOINT: Step 8 complete - Morning Briefing

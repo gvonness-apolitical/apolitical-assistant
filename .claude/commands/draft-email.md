@@ -6,12 +6,18 @@ Help draft an email response with appropriate context.
 - `/draft-email [message-id]` - draft reply to specific email
 - `/draft-email` - then describe the email/context
 
+## Core Patterns Used
+
+- [Person Resolution](../patterns/person-resolution.md) - Resolve recipient
+- [Dossier Context](../patterns/dossier-context.md) - Load communication profile and playbook
+
 ## Process
 
 1. **Get context**: If message ID provided, fetch the full email thread
 2. **Understand intent**: What response is needed? (confirm, decline, provide info, escalate)
-3. **Gather background**: Check for related Slack/Linear/GitHub context if relevant
-4. **Draft response**: Match tone and formality of the sender
+3. **Load dossier**: Resolve the recipient to an email, look up their dossier in `.claude/dossiers.json`. If found, use communication style, sensitivities, and playbook to inform the draft. If not found, proceed normally.
+4. **Gather background**: Check for related Slack/Linear/GitHub context if relevant
+5. **Draft response**: Match tone and formality of the sender, informed by dossier context
 
 ## Output
 
@@ -22,10 +28,14 @@ Provide:
 
 ## Tone Guidelines
 
+Default tone by audience (override with dossier context when available):
+
 - **Internal (Apolitical)**: Friendly, direct, use first names
 - **External (partners/vendors)**: Professional but warm
 - **Exec team**: Concise, action-oriented
 - **Engineering**: Technical detail welcome, be specific
+
+**Dossier-informed tone**: If the recipient has a dossier, their `communicationStyle` and `playbook.effectiveFrames` take precedence over these defaults. For example, if the dossier says they prefer detailed reasoning over concise directives, adjust accordingly.
 
 ## Templates
 

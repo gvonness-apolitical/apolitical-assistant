@@ -8,13 +8,33 @@ Draft a response to an email, Slack message, PR comment, or Linear ticket.
 - `/respond-to [PR URL]` - draft PR review or comment
 - `/respond-to [Linear ticket ID]` - draft ticket comment
 
+## Core Patterns Used
+
+- [Person Resolution](../patterns/person-resolution.md) - Resolve message author
+- [Dossier Context](../patterns/dossier-context.md) - Load communication profile and playbook
+
 ## Process
 
 ### 1. Gather Context
 - Fetch the full thread/conversation
 - Identify participants and their roles
+- **Load dossier** for the primary recipient (see Dossier Context below)
 - Check for related items (linked tickets, docs, previous discussions)
 - Review recent interactions with the person
+
+### Dossier Context
+
+Before drafting, load the recipient's dossier using the [Dossier Context](../patterns/dossier-context.md) pattern:
+
+1. Resolve the recipient to an email via person-resolution
+2. Look up their dossier in `.claude/dossiers.json`
+3. If found, use when drafting:
+   - **Communication style** — match their preferred tone and approach
+   - **Sensitivities** — avoid triggering defensive patterns
+   - **Effective frames** — use framing strategies that land well with this person
+   - **Avoid patterns** — steer clear of approaches that cause disengagement
+   - **Recent notes** — incorporate recent context about the relationship
+4. If no dossier exists, proceed normally without dossier context
 
 ### 2. Understand the Ask
 - What is being asked or discussed?
@@ -30,6 +50,11 @@ If needed, search for:
 - Company policies or guidelines
 
 ### 4. Draft Response
+
+**Dossier-informed drafting**: If dossier context was loaded, frame the response accordingly. For example:
+- If the person responds well to data-driven arguments, lead with evidence
+- If the person is sensitive about autonomy, frame suggestions as options rather than directives
+- If the person prefers direct communication, skip preamble and get to the point
 
 **For Email**:
 - Match the formality level of the sender

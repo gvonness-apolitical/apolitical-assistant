@@ -105,6 +105,24 @@ When saving a rubberduck session:
 /rubberduck --save "AI Squad Reporting Lines Decision"
 ```
 
+## Dossier Context
+
+When stakeholders are mentioned in the session (either in the topic or tagged in frontmatter):
+
+1. **Load dossiers**: Read `.claude/dossiers.json`
+2. **For each stakeholder**: Look up dossier by email (resolve name via person-resolution pattern)
+3. **If dossier found**, load to inform the thinking session:
+   - **Profile** — communication style, motivations, sensitivities, strengths
+   - **Playbook** — effective frames, avoid patterns, known triggers
+   - **Dynamics** — relationships between stakeholders (especially useful for multi-stakeholder strategy)
+   - **Recent notes** — recent observations that may be relevant
+4. **Use during session**: Dossier context helps frame strategic analysis. For example, when exploring how to approach a difficult conversation, the person's sensitivities and effective frames directly inform the framing.
+5. **If no dossier exists**: Proceed without — dossier context is additive, never blocking.
+
+### Core Patterns Used
+
+- [Dossier Context](../patterns/dossier-context.md) - Load stakeholder profiles and playbooks
+
 ## Notes
 - The skill captures conversation context from the current session
 - Be explicit about decisions vs open questions
@@ -113,3 +131,4 @@ When saving a rubberduck session:
 - Sessions can be referenced in future `/find-context` searches
 - All rubberduck files include YAML frontmatter for searchability
 - Files are encrypted via git-crypt (may contain sensitive strategy)
+- **Stakeholder dossiers are loaded when available** to inform strategic framing
