@@ -75,6 +75,24 @@ After generating EOD, update `context/YYYY-MM-DD/index.md`:
 - **Key decisions**: [list]
 ```
 
+## Update Completion Log
+
+Append today's completed tasks to the persistent completion log. This is the **fallback** recording mechanism — the primary path is inline recording when tasks are marked complete during the session. EOD catches anything missed.
+
+1. **Read current task list**: Use `TaskList` to get all tasks
+2. **Filter completed tasks**: Extract tasks with status `completed`
+3. **Read existing log**: Load `.claude/task-completions.json` (create with `{"retentionDays": 30, "lastPruned": "YYYY-MM-DD", "completions": []}` if missing)
+4. **Prune old entries**: Remove completions older than `retentionDays`
+5. **Append new completions**: For each completed task not already in the log:
+   - Extract `subject` (strip `P{n}.{m}: ` prefix for matching)
+   - Generate `keywords` (lowercase significant words from subject, excluding stop words)
+   - Set `source` from task description if available (e.g., "slack:channel-name", "gmail", "canvas:name")
+   - Set `sourceId` if an exact identifier is available (Slack ts, email message ID)
+   - Set `completedVia` to "claude"
+   - Set `date` to today's date
+6. **Write updated log**: Save to `.claude/task-completions.json`
+7. **Update `lastPruned`**: Set to today's date
+
 ## Commit Context Files
 
 After all context files are written, commit them to preserve under git-crypt:

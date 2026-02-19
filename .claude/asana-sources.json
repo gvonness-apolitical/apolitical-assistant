@@ -1,20 +1,217 @@
 {
   "description": "Asana workspace structure and priority sources. Hybrid config: caches workspace structure AND marks priority items for targeted skill access. Populated by /sync-asana.",
-  "lastUpdated": null,
+  "lastUpdated": "2026-02-18T11:30:00Z",
   "workspace": {
-    "gid": null,
-    "name": null
+    "gid": "54982618788923",
+    "name": "apolitical.co"
   },
   "me": {
-    "gid": null,
+    "gid": "1213324833961689",
     "email": "greg.vonness@apolitical.co"
   },
-  "teams": {},
+  "teams": {
+    "1201603317778575": {
+      "name": "Articles"
+    },
+    "1200205977735539": {
+      "name": "Avengers"
+    },
+    "1207007495851488": {
+      "name": "Becci"
+    },
+    "1202613806800356": {
+      "name": "Comms & Marketing"
+    },
+    "1206982736340644": {
+      "name": "Communities"
+    },
+    "1202547874949184": {
+      "name": "Community Engagement and Growth Team"
+    },
+    "1203013977628498": {
+      "name": "Community Support"
+    },
+    "1200248593167335": {
+      "name": "Content"
+    },
+    "1202715401892081": {
+      "name": "Course creation"
+    },
+    "1200203814007217": {
+      "name": "Courses"
+    },
+    "1200181608204378": {
+      "name": "Customer Success"
+    },
+    "1200181608204380": {
+      "name": "Data and Engineering"
+    },
+    "1209270847291272": {
+      "name": "Evaluation"
+    },
+    "1206139192423737": {
+      "name": "Events at Apolitical"
+    },
+    "1205549031420400": {
+      "name": "Free Content Planning"
+    },
+    "1200181608204374": {
+      "name": "Growth"
+    },
+    "1203313521133495": {
+      "name": "Joel Patrick's First Team"
+    },
+    "1206270627627058": {
+      "name": "L&D Leads Newsletter"
+    },
+    "1200098793691515": {
+      "name": "Operations"
+    },
+    "1203639710945352": {
+      "name": "People Ops"
+    },
+    "1200182866521300": {
+      "name": "Product"
+    },
+    "1200220227261264": {
+      "name": "Sales"
+    },
+    "1203283783507589": {
+      "name": "Team of the Year 2022"
+    },
+    "1200900159730169": {
+      "name": "User lists"
+    },
+    "1211920859305993": {
+      "name": "User Research"
+    },
+    "1200372118953660": {
+      "name": "UX/UI Design"
+    },
+    "1202153856609679": {
+      "name": "Visual Design 2023"
+    }
+  },
   "sources": {
     "goals": {
       "name": "Company Goals",
       "description": "Strategic goals and OKRs tracked in Asana",
-      "items": {},
+      "items": {
+        "1201756549617439": {
+          "name": "O1: Grow the network of community members to build a moat against competition",
+          "owner": "Ilana Munckton",
+          "status": "yellow",
+          "dueOn": null
+        },
+        "1201756549617466": {
+          "name": "O2: Increase engagement with a product that helps public servants find the knowledge, connections, and skills they need",
+          "owner": "Ilana Munckton",
+          "status": null,
+          "dueOn": null
+        },
+        "1201756549689659": {
+          "name": "O3: Establish Apolitical as a clear and compelling value proposition for enterprise customers",
+          "owner": "Ilana Munckton",
+          "status": null,
+          "dueOn": null
+        },
+        "1201756549689666": {
+          "name": "O4: Create an empowering working environment that unleashes the potential of our people",
+          "owner": "Ilana Munckton",
+          "status": null,
+          "dueOn": null
+        },
+        "1201756549617440": {
+          "name": "KR1: No. of community members joining Apolitical grows, from 153k to 167k",
+          "owner": "Ilana Munckton",
+          "status": "yellow",
+          "dueOn": null
+        },
+        "1201756549617442": {
+          "name": "KR2: No. of community members joining from informal learning grows",
+          "owner": "Ilana Munckton",
+          "status": "green",
+          "dueOn": null
+        },
+        "1201756549617444": {
+          "name": "KR3: No. of community members joining from formal learning grows, from 8,200 to 8,750",
+          "owner": "Ilana Munckton",
+          "status": "red",
+          "dueOn": null
+        },
+        "1201756549617467": {
+          "name": "KR1: Increase MAUs from X to 15%",
+          "owner": "Ilana Munckton",
+          "status": "red",
+          "dueOn": null
+        },
+        "1201756549617469": {
+          "name": "KR2: No. of content interactions with informal learning grows",
+          "owner": "Nic Yeeles",
+          "status": null,
+          "dueOn": null
+        },
+        "1201756549617471": {
+          "name": "KR3: % completion rate of formal learning grows",
+          "owner": "Nigel Smith",
+          "status": null,
+          "dueOn": null
+        },
+        "1201756549617473": {
+          "name": "KR4: X% satisfaction with formal learning experiences (NPS)",
+          "owner": "Nigel Smith",
+          "status": null,
+          "dueOn": null
+        },
+        "1201756549617475": {
+          "name": "KR5: X% general community member satisfaction",
+          "owner": "Nic Yeeles",
+          "status": null,
+          "dueOn": null
+        },
+        "1201756549689660": {
+          "name": "KR1: Improve end to end platform experience for enterprise customers",
+          "owner": "Pooja Warier Hamilton",
+          "status": null,
+          "dueOn": null
+        },
+        "1201756549689662": {
+          "name": "KR2: Booked revenue of 500K (base) and 750K (stretch)",
+          "owner": "Pooja Warier Hamilton",
+          "status": null,
+          "dueOn": null
+        },
+        "1201756549689664": {
+          "name": "KR3: Maintain high NPS from enterprise customers (80% retention)",
+          "owner": "Pooja Warier Hamilton",
+          "status": null,
+          "dueOn": null
+        },
+        "1201756549689667": {
+          "name": "KR1: Increase platform performance / velocity",
+          "owner": "Tom Dignan",
+          "status": null,
+          "dueOn": null
+        },
+        "1201756549689669": {
+          "name": "KR2: Employee satisfaction survey score of X",
+          "owner": "Joseph Buckley",
+          "status": null,
+          "dueOn": null
+        },
+        "1201756549689671": {
+          "name": "KR3: Improved financial planning and reporting",
+          "owner": "Joseph Buckley",
+          "status": null,
+          "dueOn": null
+        },
+        "1201756549689673": {
+          "name": "KR4: Recover data visibility on community engagement",
+          "owner": "Nic Yeeles",
+          "status": null,
+          "dueOn": null
+        }
+      },
       "priority": [],
       "useFor": ["executive-report", "mbr", "team-status", "find-context"],
       "searchPatterns": ["goal", "OKR", "objective", "key result", "target"]
@@ -29,17 +226,2422 @@
     },
     "projects": {
       "name": "Active Projects",
-      "description": "Cross-functional projects tracked in Asana (not engineering-specific — those are in Linear)",
-      "items": {},
-      "priority": [],
+      "description": "Cross-functional projects tracked in Asana (not engineering-specific - those are in Linear)",
+      "items": {
+        "1200245675200277": {
+          "name": "Marketing automation tool",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1200248593167370": {
+          "name": "Engagement data deep dive",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1200340771779964": {
+          "name": "Gates Learning Group",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1200414163345645": {
+          "name": "Recruiting",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1200429706935598": {
+          "name": "Feature requests",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1200579553975358": {
+          "name": "User permissions and profile visibility",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1200579553975367": {
+          "name": "Improve release process to reduce bugs",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1200808292007755": {
+          "name": "Course bug log",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1201424341493234": {
+          "name": "Nic's Onboarding Checklist",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1201424341493236": {
+          "name": "Ibrahim's Onboarding Checklist",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1201614271132624": {
+          "name": "Tom's Onboarding Checklist",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1201814932613119": {
+          "name": "Ala's Onboarding Checklist",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1201899968992456": {
+          "name": "Enterprise Onboarding",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1202081169714719": {
+          "name": "Q2 Workshops User Research",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1202081169714742": {
+          "name": "Fortnightly workshops check-in",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1202081169714755": {
+          "name": "Speaker Comms",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1202107444264952": {
+          "name": "Data Conference",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1202220360276894": {
+          "name": "Content Strategy Initiative",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1202473420442756": {
+          "name": "Sophie - Onboarding Checklist",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1202473420442797": {
+          "name": "Jessica - Onboarding Checklist",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1202476157912947": {
+          "name": "Government Digital Excellence Programme",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1203066507837048": {
+          "name": "Initiative 1: Deliver a collateral kitbag for Partnerships",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1203066507837063": {
+          "name": "4.7 Launch refreshed Climate Top 100 People List",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1203066507837117": {
+          "name": "Increase community engagement and build the Apolitical brand on social media channels",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1203066507837121": {
+          "name": "Increase community engagement and build the Apolitical brand on social media channels",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1203066507837184": {
+          "name": "Launch Apolitical's YouTube channel",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1203428929441135": {
+          "name": "Policy 100 list",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1203657455508725": {
+          "name": "Write like Apolitical",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1203774582412140": {
+          "name": "Community Support / Partnerships",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1204314933705257": {
+          "name": "Q2 Tasks 2023",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1204321035286260": {
+          "name": "Daily briefing",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1204563485618502": {
+          "name": "Course Audit",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1204571664086552": {
+          "name": "Social Media Requests 2025",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1204590258480338": {
+          "name": "Civil Service Live",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1204594168783742": {
+          "name": "Content Operations Weekly",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1204698689036346": {
+          "name": "DEP Curriculum Planning",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1205001330608880": {
+          "name": "Q3 Tasks 2023",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1205040598391461": {
+          "name": "Top 100 Innovations in Government Communications",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1205117135103699": {
+          "name": "Canada BD",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1205117135103720": {
+          "name": "Insights",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1205117135556209": {
+          "name": "General BD",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1205139917532221": {
+          "name": "Government AI Campus",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1205144823667462": {
+          "name": "Train the Trainer for Green Skills in Brazil",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1205212165621523": {
+          "name": "ENAP visit",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1205868432391048": {
+          "name": "GCC Learning Hub Refresh + Partner Engagement",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1205940090338187": {
+          "name": "Microsoft | Gen AI report",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1205956643565840": {
+          "name": "Canada Scorm packages",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1206050285709686": {
+          "name": "The Apolitical View",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1206407378082952": {
+          "name": "ThoughtSpot data improvements - Jan 2024",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1206535678627884": {
+          "name": "Onboarding, removal and duplication requests",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1206829302017874": {
+          "name": "Communities actions",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1207377398803514": {
+          "name": "1. GAIC milestones/progress tracker",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1207679350440623": {
+          "name": "Stanford course launch",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1208165916210968": {
+          "name": "Estonia: AI course development",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1208165916211072": {
+          "name": "Estonia: Data-driven governance course development",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1208165916211163": {
+          "name": "Estonia: Cybersecurity course development",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1208579275631276": {
+          "name": "9. GAIC Leadership Briefings",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1209160916624510": {
+          "name": "GECC | WRI | Valuing Nature",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1209224988954954": {
+          "name": "Delivery Tracker",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1209329103045024": {
+          "name": "0.GAIC general",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1209431132926741": {
+          "name": "Cross-Company User Interview Project Tracker",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1209667417907300": {
+          "name": "New Community Submissions",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1209704647366307": {
+          "name": "User Registrations",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1209988169121096": {
+          "name": "Course Video Planning",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1210109028564065": {
+          "name": "WIP Sustainable Finance Cohort | Template",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1210436325502895": {
+          "name": "CBF - 2025",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1210730878271117": {
+          "name": "Nature Finance Action Group: Milestones",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1210799614242520": {
+          "name": "Community Management",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1211100613602441": {
+          "name": "[IGOT] Digital Fundamentals for Government",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1211839165399434": {
+          "name": "[WIP] Data and Reporting Requests",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1212457270944250": {
+          "name": "Sustainable Finance | Jan 2026 | Cohort 17",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1212457270944324": {
+          "name": "Tess Handover | Dec 17 - Jan 15",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1212855917344118": {
+          "name": "AI 100 Interviews",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1212937336625033": {
+          "name": "Q1, 2026 | Segmentation/New Member Journeys",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1212937336625049": {
+          "name": "Q1, 2026 | Navigator Design",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1212937336625057": {
+          "name": "Q1 2026 | UX Research for Events on Platform",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1212937336625083": {
+          "name": "Q1 2026 | Upgrade platform usability",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1213180984444913": {
+          "name": "Bid Plan - FCDO Economics for Foreign Policy",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1203066507837041": {
+          "name": "Q4 - Will Spurr",
+          "teamGid": "1202613806800356",
+          "teamName": "Comms & Marketing"
+        },
+        "1203657455508718": {
+          "name": "Q1 2023 - Will",
+          "teamGid": "1202613806800356",
+          "teamName": "Comms & Marketing"
+        },
+        "1204595235020764": {
+          "name": "Democracy & Public Service 2024",
+          "teamGid": "1202613806800356",
+          "teamName": "Comms & Marketing"
+        },
+        "1205142632661930": {
+          "name": "Design&Delivery #6_ January 2024",
+          "teamGid": "1202613806800356",
+          "teamName": "Comms & Marketing"
+        },
+        "1205449362852349": {
+          "name": "Global Government Green Skills Survey",
+          "teamGid": "1202613806800356",
+          "teamName": "Comms & Marketing"
+        },
+        "1207011328250591": {
+          "name": "Systems Thinking in Government community",
+          "teamGid": "1206982736340644",
+          "teamName": "Communities"
+        },
+        "1207034415123617": {
+          "name": "FCDO ECE Cohort Community",
+          "teamGid": "1206982736340644",
+          "teamName": "Communities"
+        },
+        "1207034422152596": {
+          "name": "Net Zero Community",
+          "teamGid": "1206982736340644",
+          "teamName": "Communities"
+        },
+        "1207034422152609": {
+          "name": "Design Thinking in Government",
+          "teamGid": "1206982736340644",
+          "teamName": "Communities"
+        },
+        "1207131294329539": {
+          "name": "Women in Government Community",
+          "teamGid": "1206982736340644",
+          "teamName": "Communities"
+        },
+        "1207229442407044": {
+          "name": "Citizen Engagement and Technology",
+          "teamGid": "1206982736340644",
+          "teamName": "Communities"
+        },
+        "1207468393149323": {
+          "name": "Open Data Community",
+          "teamGid": "1206982736340644",
+          "teamName": "Communities"
+        },
+        "1207468395300433": {
+          "name": "LGBTQIA+ Community",
+          "teamGid": "1206982736340644",
+          "teamName": "Communities"
+        },
+        "1207811906137097": {
+          "name": "Futures Community",
+          "teamGid": "1206982736340644",
+          "teamName": "Communities"
+        },
+        "1208029935931791": {
+          "name": "Political Leadership",
+          "teamGid": "1206982736340644",
+          "teamName": "Communities"
+        },
+        "1208029935931797": {
+          "name": "Carbon Neutral Cities",
+          "teamGid": "1206982736340644",
+          "teamName": "Communities"
+        },
+        "1208112856143855": {
+          "name": "Community Engagement Standup",
+          "teamGid": "1206982736340644",
+          "teamName": "Communities"
+        },
+        "1208116773645778": {
+          "name": "Life in Government community",
+          "teamGid": "1206982736340644",
+          "teamName": "Communities"
+        },
+        "1209606389708726": {
+          "name": "Communities Feature Name",
+          "teamGid": "1206982736340644",
+          "teamName": "Communities"
+        },
+        "1210648655467751": {
+          "name": "GCX AMA with Siim",
+          "teamGid": "1206982736340644",
+          "teamName": "Communities"
+        },
+        "1210786779338395": {
+          "name": "Communities Team",
+          "teamGid": "1206982736340644",
+          "teamName": "Communities"
+        },
+        "1211950687502941": {
+          "name": "Comment-for-Content",
+          "teamGid": "1206982736340644",
+          "teamName": "Communities"
+        },
+        "1201685366154293": {
+          "name": "Live event planning",
+          "teamGid": "1202547874949184",
+          "teamName": "Community Engagement and Growth Team"
+        },
+        "1202597452884823": {
+          "name": "Content Style Guide Initiative",
+          "teamGid": "1202547874949184",
+          "teamName": "Community Engagement and Growth Team"
+        },
+        "1202656913333016": {
+          "name": "Derek's Q3 OKRs",
+          "teamGid": "1202547874949184",
+          "teamName": "Community Engagement and Growth Team"
+        },
+        "1204321035286252": {
+          "name": "Q3, 2023 - Will",
+          "teamGid": "1202547874949184",
+          "teamName": "Community Engagement and Growth Team"
+        },
+        "1205137333243069": {
+          "name": "Q3, 2023 - Will",
+          "teamGid": "1202547874949184",
+          "teamName": "Community Engagement and Growth Team"
+        },
+        "1201380755495784": {
+          "name": "Community Support",
+          "teamGid": "1203013977628498",
+          "teamName": "Community Support"
+        },
+        "1203055148470284": {
+          "name": "(INACTIVE) Timeline for all courses/workshops/bootcamps/launches",
+          "teamGid": "1203013977628498",
+          "teamName": "Community Support"
+        },
+        "1203283870762552": {
+          "name": "Jessameliarob check ins",
+          "teamGid": "1203013977628498",
+          "teamName": "Community Support"
+        },
+        "1200248593167344": {
+          "name": "UGC",
+          "teamGid": "1200248593167335",
+          "teamName": "Content"
+        },
+        "1200446686817042": {
+          "name": "Team priorities",
+          "teamGid": "1200248593167335",
+          "teamName": "Content"
+        },
+        "1201620859520394": {
+          "name": "To do - Lowell",
+          "teamGid": "1200248593167335",
+          "teamName": "Content"
+        },
+        "1201623978259131": {
+          "name": "Informal Learning",
+          "teamGid": "1200248593167335",
+          "teamName": "Content"
+        },
+        "1200232066166202": {
+          "name": "[RETIRED] Promotion Planning Board",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1200810683571081": {
+          "name": "Learning User Research Strategy",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1200826836315286": {
+          "name": "Learning team dashboard",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1201646345995357": {
+          "name": "Apolitical | Centring Equity in Climate Action",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1201759291614804": {
+          "name": "Course creation | Team meeting agenda",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1201926206171326": {
+          "name": "Ops set up Government Campus and Curriculum",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1202932913877836": {
+          "name": "Email | tasks",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1203086418937825": {
+          "name": "RMI | Decarbonising buildings",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1203435356584216": {
+          "name": "Apolitical | Climate Communications",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1204458804893038": {
+          "name": "Free Course Creation Template",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1204474744463332": {
+          "name": "Free Course | How to Build Your Career in the UK Civil Service",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1204474744592552": {
+          "name": "Free Course | VAW Data",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1204474744592651": {
+          "name": "Free Course | Digital Mindsets 2",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1204475070519506": {
+          "name": "Free Course | Stakeholder Engagement",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1204480343813122": {
+          "name": "DEP MDA Scoping",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1204570035846353": {
+          "name": "Tester",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1204642759296374": {
+          "name": "Evaluation | Equity emerging markets",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1204730528768218": {
+          "name": "Free Course | Inclusive public service",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1204730529879377": {
+          "name": "Free Course | Intro to people management",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1204730529879430": {
+          "name": "Free Course | Breaking down silos",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1204730529879483": {
+          "name": "Free Course | Difficult conversations",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1204763389147317": {
+          "name": "Free Course | Digital Mindsets 1: Revamp & Relaunch",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1204767925032051": {
+          "name": "Evaluation | Net zero emerging markets",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1205009301105378": {
+          "name": "AI Campus Free Course | AI basics",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1205100582562543": {
+          "name": "TMAX deadlines",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1205386416429304": {
+          "name": "DEP Data: Course evaluation",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1205396408218061": {
+          "name": "Strategic Thinking: Course evaluation",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1205401073708087": {
+          "name": "Free Course | Negotiation skills",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1205401074261269": {
+          "name": "Free Course | Resilience",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1205401074261314": {
+          "name": "Free Course | Interviews",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1205764432488491": {
+          "name": "Free Course | How to be Digital in the Canadian Public Service - Revamp",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1205794584874206": {
+          "name": "DEP | AI",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1205987143161481": {
+          "name": "Free Course | Goal-setting",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1206108334390334": {
+          "name": "Free course | Intro to data",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1206261418431320": {
+          "name": "Free Course | Presentation Skills Revamp",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1206261418656382": {
+          "name": "Free Course | Community of Practice",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1206269179880791": {
+          "name": "Research: AI Centre of Excellence",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1206300178876243": {
+          "name": "FCDO Evaluation | Net Zero",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1206345981370062": {
+          "name": "Free Course | How to Learn",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1206838821165807": {
+          "name": "Climate Comms | Train the Trainer",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1207563743882204": {
+          "name": "Courses | GAIC Pre-analysis",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1208194793529404": {
+          "name": "Refresh | Advance Your Writing in Government",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1208401684736553": {
+          "name": "Translation management",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1208583806960693": {
+          "name": "Free Course | FYN | Canada onboarding",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1209363459723494": {
+          "name": "Course Migration",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1209377474936768": {
+          "name": "COP Presidency Toolkit",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1209880777909656": {
+          "name": "Stanford | AI and Climate: Trade-offs and Transformation",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1210957804223889": {
+          "name": "[REFRESH] Foundations of Delivery",
+          "teamGid": "1200203814007217",
+          "teamName": "Courses"
+        },
+        "1200252715933155": {
+          "name": "Other team projects",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1200252715933239": {
+          "name": "Western Cape",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1200255659013234": {
+          "name": "Department for Education - Written Communication Skills",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1200297221247461": {
+          "name": "P3S",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1201064020139538": {
+          "name": "ENAP Brazil",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1201135704098815": {
+          "name": "Delivery Associates",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1201193693921099": {
+          "name": "AWS Institute",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1201297917916086": {
+          "name": "Oxford Net Zero",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1201399732885253": {
+          "name": "UAE GCC Country Roadmap 2023",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1201491503989809": {
+          "name": "Top 100/75/50 List Template",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1201674407905148": {
+          "name": "Percy Hobart Fellowship",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1201875394623176": {
+          "name": "Georgetown University | Digital Fundamentals for Government",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1201977155281042": {
+          "name": "Internal Team Co-ord",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1202554639965532": {
+          "name": "Writing Well in Government - GSCU",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1202652075555093": {
+          "name": "Define and meet partner north star metrics",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1202676645360058": {
+          "name": "Strengthen cross-team collaboration",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1202846362209983": {
+          "name": "Government Climate Campus",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1202847775460329": {
+          "name": "MDA Sprint 2",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1202891337272539": {
+          "name": "Template | Non-partner course",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1202891337272608": {
+          "name": "MDA | Data-driven government",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1202932913877774": {
+          "name": "MDA | Digital government",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1203046505311809": {
+          "name": "Partnerships Team Biweekly",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1203135943220163": {
+          "name": "Partner Onboarding Pack",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1203176105454636": {
+          "name": "The Fundamentals of digital transformation",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1203268141457384": {
+          "name": "Apolitical | The Fundamentals of Digital Transformation",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1203284588546232": {
+          "name": "Government Campus - OTS -Cohort Bookings 2025",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1203301670581920": {
+          "name": "HTEs Account Management Template",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1203467199729714": {
+          "name": "Associate Partners Tracker",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1203490224721204": {
+          "name": "Customer Success Weekly",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1203756075644166": {
+          "name": "Course Account Management Template",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1203902666791929": {
+          "name": "DEP | User-centred design",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1203983922210945": {
+          "name": "UAE | Reaching Net Zero",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1203984811489807": {
+          "name": "Initiative 3.2.6: Create a standard partner dashboard",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1204225079979008": {
+          "name": "Policy Profession Unit (PPU)",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1204380160000592": {
+          "name": "GCC free | Indigenous reconciliation",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1204449224233792": {
+          "name": "Artha Global | Green Growth",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1204488245773596": {
+          "name": "Tester | Awareness course",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1204529528342326": {
+          "name": "Master: Delivery dates",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1204545531444971": {
+          "name": "WRI | Natural Capital for Sustainable Development",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1204636599458135": {
+          "name": "Train the trainer",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1204675054703579": {
+          "name": "Centre for Net Zero | Resilience and Energy Independence",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1204801288324985": {
+          "name": "WRI | Nature-Based Solutions",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1204801288325221": {
+          "name": "Centre for Net Zero | Energy Transition",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1205040598392518": {
+          "name": "OECD pilot",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1205126514860944": {
+          "name": "Climate and Health",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1205134318630494": {
+          "name": "Evaluation | Presenting data",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1205170397107618": {
+          "name": "Evaluation | DEP Sprint 2",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1205661032052853": {
+          "name": "Reporting Calendar",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1205727842071028": {
+          "name": "DBT Business Engagement Event Series",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1205916298747265": {
+          "name": "FCDO Design and Delivery (Partnerships)",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1205939402462811": {
+          "name": "Partner NPS",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1205939941147410": {
+          "name": "FCDO | Climate Diplomacy",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1205948442677411": {
+          "name": "FCDO | Critical Minerals",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1205948444843749": {
+          "name": "FCDO | Climate Adaptation & Resilience",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1205961172389502": {
+          "name": "DEP Release 1 2023-2025 (Internal)",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1206271216076366": {
+          "name": "Apolitical | Efficiency through Digital",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1206308960943461": {
+          "name": "Abishek | Duplicate of Course Account Management Template",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1206331085163449": {
+          "name": "Trial",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1206382271867549": {
+          "name": "Course Asana | Template",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1206391276973454": {
+          "name": "100x Impact Accelerator",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1206426923624209": {
+          "name": "P3SA + FCDO | Climate & Finance",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1206514416150661": {
+          "name": "Stanford | AI Fundamentals",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1206537365927841": {
+          "name": "AI in Health - Health Canada",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1206657860113960": {
+          "name": "DEP - Defra",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1206966396570987": {
+          "name": "Apolitical | Change Management",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1207298797333667": {
+          "name": "MMA | Intro to COP (Global version)",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1207323911843039": {
+          "name": "Campus | GCC Pre-analysis",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1207371334533892": {
+          "name": "User research | Pre-analysis",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1207420746551644": {
+          "name": "GCC: 3Ci",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1207786995622888": {
+          "name": "Cross-Team Course Refresh Template",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1207856702945329": {
+          "name": "Abu Dhabi DGE - GCX",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1207972378078370": {
+          "name": "GCC | SC | Climate Leadership Through Systems Change",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1208014336415099": {
+          "name": "GCC | CRT | Transport",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1208165916211019": {
+          "name": "Estonia: Management of user-centric services",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1208264762172822": {
+          "name": "GAIC | AI and the future of healthcare systems | Bocconi",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1208489746166856": {
+          "name": "MMA | Intro to COP (Brasilian version)",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1208509918104132": {
+          "name": "LGA: Unlocking Digital Excellence",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1208536154518626": {
+          "name": "Public Sector Strategy Network (PSSN)",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1208557448117354": {
+          "name": "Monitoring and Evaluation Ticket Hub",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1208648444650292": {
+          "name": "ETC | Quantum",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1208832894509861": {
+          "name": "CEQ | Sustainability",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1209023161190521": {
+          "name": "Missions | Dan Honig",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1209023161190611": {
+          "name": "GECC | Talanoa | NDC Design and Implementation",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1209106690971911": {
+          "name": "Quadrature Climate Foundation",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1209150481103904": {
+          "name": "GECC | UCT | Human Rights for Climate-Resilient Governance",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1209165223231869": {
+          "name": "UNDP Kenya Retrospective",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1209179873120039": {
+          "name": "GAIC | AI Leadership in Government",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1209303418177416": {
+          "name": "UNDP | Systems Thinking",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1209307896163407": {
+          "name": "BEF 2.0: Project Delivery",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1209330395016080": {
+          "name": "OGP | Introduction to Open Government (IOG)",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1209464556120165": {
+          "name": "Ukraine CDTO 12-month programme",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1209465215436671": {
+          "name": "IADB Tracker",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1209639783810645": {
+          "name": "New Course Asana Test | Template",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1209656923504479": {
+          "name": "DO NOT CLONE NEW [CAMPUS] Template",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1209844674106583": {
+          "name": "GECC | C40 | Climate Budgeting",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1210047823070449": {
+          "name": "Stanford - Partnerships",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1210360344921763": {
+          "name": "[COMPLETE] DEP 2.0 Migration and Relaunch",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1210509065558312": {
+          "name": "[FREE COURSE] Neurodiversity in Public Service",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1210540786946718": {
+          "name": "[GECC] From Vision to Impact: Climate Budgeting for Leaders",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1210540786946725": {
+          "name": "[GAIC] Smarter Procurement with AI",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1210540791218785": {
+          "name": "[GAIC] Effective Prompt Engineering for Public Servants",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1210541263867331": {
+          "name": "[GECC] Why Climate is Everyone's Job Across the Western Cape",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1210557238497982": {
+          "name": "[FREE COURSE TRANSLATION] How to be Digital in the Canadian Public Service",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1210618354462096": {
+          "name": "Wellcome | Embedding Health in Climate Negotiations",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1210637279639441": {
+          "name": "Conversation Starter Toolkits",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1210698536679065": {
+          "name": "[ACADEMY] Leading Change: Scotland's Path to Public Service Reform",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1210715344903534": {
+          "name": "DO NOT CLONE [IGOT] Template",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1210740822912750": {
+          "name": "[ON HOLD] OTS Evaluation: Boost Your Productivity",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1210756367252798": {
+          "name": "GECC Homepage Refresh 2.0",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1210786517252666": {
+          "name": "IDB Review and Relaunch | Sep 2025",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1210823498440276": {
+          "name": "[FREE COURSE] The Product Mindset",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1210845432727752": {
+          "name": "[FREE COURSE] An Introduction to Futures and Foresight",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1210939744763443": {
+          "name": "Sustainable Finance | Course Refresh",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1210963647171665": {
+          "name": "[UK GOV SCS] One Big Thing",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1210977624470068": {
+          "name": "[COURSES WORKSHOP]",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1211020843332207": {
+          "name": "[GECC] Business and Nature: Dependencies, Risks and Opportunities",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1212113938046465": {
+          "name": "IPBES-12 Academy",
+          "teamGid": "1200181608204378",
+          "teamName": "Customer Success"
+        },
+        "1209389623974757": {
+          "name": "Evaluation Traffic System",
+          "teamGid": "1209270847291272",
+          "teamName": "Evaluation"
+        },
+        "1206991182414282": {
+          "name": "Weekly Event Tasks",
+          "teamGid": "1206139192423737",
+          "teamName": "Events at Apolitical"
+        },
+        "1210001275806190": {
+          "name": "Apolitical Day 2025",
+          "teamGid": "1206139192423737",
+          "teamName": "Events at Apolitical"
+        },
+        "1210437210874560": {
+          "name": "How to Be an Impeccable Conversationalist",
+          "teamGid": "1206139192423737",
+          "teamName": "Events at Apolitical"
+        },
+        "1210776995189266": {
+          "name": "AI in the Planetary Crisis @ ENAP Innovation Week",
+          "teamGid": "1206139192423737",
+          "teamName": "Events at Apolitical"
+        },
+        "1210823997041449": {
+          "name": "Nature Leaders Roundtable 1 (Integrating Nature)",
+          "teamGid": "1206139192423737",
+          "teamName": "Events at Apolitical"
+        },
+        "1210827335105594": {
+          "name": "Nature Leaders Roundtable 2 (Terrestrial investment)",
+          "teamGid": "1206139192423737",
+          "teamName": "Events at Apolitical"
+        },
+        "1212202613166968": {
+          "name": "WIP (IN PERSON EVENTS) - Roundtable/bespoke Gathering",
+          "teamGid": "1206139192423737",
+          "teamName": "Events at Apolitical"
+        },
+        "1212457986255255": {
+          "name": "HMRC Civil Service Leaders Workshop | 10-02-26",
+          "teamGid": "1206139192423737",
+          "teamName": "Events at Apolitical"
+        },
+        "1205549031420408": {
+          "name": "Campaigns and Commissioning",
+          "teamGid": "1205549031420400",
+          "teamName": "Free Content Planning"
+        },
+        "1205549031420415": {
+          "name": "The Weekly Briefing",
+          "teamGid": "1205549031420400",
+          "teamName": "Free Content Planning"
+        },
+        "1206646825879748": {
+          "name": "L&D Lead Newsletter",
+          "teamGid": "1205549031420400",
+          "teamName": "Free Content Planning"
+        },
+        "1201756549689692": {
+          "name": "Community Engagement Ideas",
+          "teamGid": "1200181608204374",
+          "teamName": "Growth"
+        },
+        "1204283177226421": {
+          "name": "Email issue log",
+          "teamGid": "1200181608204374",
+          "teamName": "Growth"
+        },
+        "1207644472008895": {
+          "name": "DEP Experience Response Team",
+          "teamGid": "1200181608204374",
+          "teamName": "Growth"
+        },
+        "1207644472008936": {
+          "name": "Climate Frontline",
+          "teamGid": "1200181608204374",
+          "teamName": "Growth"
+        },
+        "1207921386181850": {
+          "name": "GCC 2.0 User Journey Mapping",
+          "teamGid": "1200181608204374",
+          "teamName": "Growth"
+        },
+        "1207982877491556": {
+          "name": "Self-publication",
+          "teamGid": "1200181608204374",
+          "teamName": "Growth"
+        },
+        "1208343745252852": {
+          "name": "Ilana's Holiday Handover",
+          "teamGid": "1200181608204374",
+          "teamName": "Growth"
+        },
+        "1209718852702551": {
+          "name": "The Gov AI Prompt",
+          "teamGid": "1200181608204374",
+          "teamName": "Growth"
+        },
+        "1210948378249826": {
+          "name": "GAIC - Awareness Level Video Ads",
+          "teamGid": "1200181608204374",
+          "teamName": "Growth"
+        },
+        "1211100210609548": {
+          "name": "Platform Carousel Editorialisation Requests",
+          "teamGid": "1200181608204374",
+          "teamName": "Growth"
+        },
+        "1211103804608969": {
+          "name": "Membership Criteria Clarification",
+          "teamGid": "1200181608204374",
+          "teamName": "Growth"
+        },
+        "1212877566765743": {
+          "name": "500K members in 170+ countries on Apolitical",
+          "teamGid": "1200181608204374",
+          "teamName": "Growth"
+        },
+        "1206270627627065": {
+          "name": "L&D Leads Newsletter January",
+          "teamGid": "1206270627627058",
+          "teamName": "L&D Leads Newsletter"
+        },
+        "1201861726767286": {
+          "name": "Build Social Learning Platform",
+          "teamGid": "1200182866521300",
+          "teamName": "Product"
+        },
+        "1210172874792405": {
+          "name": "Futura",
+          "teamGid": "1200182866521300",
+          "teamName": "Product"
+        },
+        "1202544025534061": {
+          "name": "Other Q2 2023 initiatives",
+          "teamGid": "1200220227261264",
+          "teamName": "Sales"
+        },
+        "1202544025534080": {
+          "name": "Finalise reup and referral strategy",
+          "teamGid": "1200220227261264",
+          "teamName": "Sales"
+        },
+        "1202544025534085": {
+          "name": "Update pricing and prospectus online",
+          "teamGid": "1200220227261264",
+          "teamName": "Sales"
+        },
+        "1202554610505325": {
+          "name": "UK Government BD Project Planner",
+          "teamGid": "1200220227261264",
+          "teamName": "Sales"
+        },
+        "1202622734069215": {
+          "name": "CANADA - OTS e-learning RFP",
+          "teamGid": "1200220227261264",
+          "teamName": "Sales"
+        },
+        "1202683655478043": {
+          "name": "Retain 80% retention rate",
+          "teamGid": "1200220227261264",
+          "teamName": "Sales"
+        },
+        "1203451867641779": {
+          "name": "BID: UKRI - Environmental Sustainability Learning Package",
+          "teamGid": "1200220227261264",
+          "teamName": "Sales"
+        },
+        "1203451867641791": {
+          "name": "BID - Welsh Government Technical Policy DPS",
+          "teamGid": "1200220227261264",
+          "teamName": "Sales"
+        },
+        "1203771665246150": {
+          "name": "Campus 2025 Pursuit",
+          "teamGid": "1200220227261264",
+          "teamName": "Sales"
+        },
+        "1203874019414371": {
+          "name": "Futures Framework",
+          "teamGid": "1200220227261264",
+          "teamName": "Sales"
+        },
+        "1203985184269904": {
+          "name": "RM6219UK - Dynamic Purchasing Framework",
+          "teamGid": "1200220227261264",
+          "teamName": "Sales"
+        },
+        "1203988115272529": {
+          "name": "FCDO Global Development Framework",
+          "teamGid": "1200220227261264",
+          "teamName": "Sales"
+        },
+        "1204269513717443": {
+          "name": "Scottish Gov - Digital Technology and Cyber Services DPS",
+          "teamGid": "1200220227261264",
+          "teamName": "Sales"
+        },
+        "1204697430722035": {
+          "name": "CASA MEL ITT - BEIS",
+          "teamGid": "1200220227261264",
+          "teamName": "Sales"
+        },
+        "1205656960550560": {
+          "name": "Canada Commercial Off the Shelf Bid 2023",
+          "teamGid": "1200220227261264",
+          "teamName": "Sales"
+        },
+        "1205678439126308": {
+          "name": "International Government visits",
+          "teamGid": "1200220227261264",
+          "teamName": "Sales"
+        },
+        "1205678439721530": {
+          "name": "DEFRA MEL - EY partnership bid",
+          "teamGid": "1200220227261264",
+          "teamName": "Sales"
+        },
+        "1205678439721550": {
+          "name": "LGA Transformation Capability Framework bid",
+          "teamGid": "1200220227261264",
+          "teamName": "Sales"
+        },
+        "1205957183432066": {
+          "name": "Writing of training video scripts on AI for local government",
+          "teamGid": "1200220227261264",
+          "teamName": "Sales"
+        },
+        "1206297546755766": {
+          "name": "TA-10209 PHI: Supporting Digital Transformation of Civil Service",
+          "teamGid": "1200220227261264",
+          "teamName": "Sales"
+        },
+        "1203283783507592": {
+          "name": "TOTY",
+          "teamGid": "1203283783507589",
+          "teamName": "Team of the Year 2022"
+        },
+        "1212870761884222": {
+          "name": "Q1, 2026 | Futura Final Page Validation",
+          "teamGid": "1211920859305993",
+          "teamName": "User Research"
+        },
+        "1212881716716723": {
+          "name": "User research requests",
+          "teamGid": "1211920859305993",
+          "teamName": "User Research"
+        },
+        "1212898962512419": {
+          "name": "Weekly User Research Tasks",
+          "teamGid": "1211920859305993",
+          "teamName": "User Research"
+        },
+        "1212937327293423": {
+          "name": "Q1, 2026 | Public servants have no time to use Apolitical",
+          "teamGid": "1211920859305993",
+          "teamName": "User Research"
+        },
+        "1212937336625025": {
+          "name": "Q1, 2026 | Policy Nova Design",
+          "teamGid": "1211920859305993",
+          "teamName": "User Research"
+        },
+        "1212937336625044": {
+          "name": "Q1, 2026 | Futura Value Proposition Discovery",
+          "teamGid": "1211920859305993",
+          "teamName": "User Research"
+        },
+        "1212966140249919": {
+          "name": "Q1, 2026 | Onboarding Instructions Testing",
+          "teamGid": "1211920859305993",
+          "teamName": "User Research"
+        },
+        "1212971627070612": {
+          "name": "Q1 2026 | Future of AI tools in government",
+          "teamGid": "1211920859305993",
+          "teamName": "User Research"
+        },
+        "1202153856609724": {
+          "name": "Design kanban",
+          "teamGid": "1200372118953660",
+          "teamName": "UX/UI Design"
+        },
+        "1204525178456180": {
+          "name": "Babco old board - do not use",
+          "teamGid": "1202153856609679",
+          "teamName": "Visual Design 2023"
+        }
+      },
+      "priority": [
+        "1210172874792405",
+        "1201861726767286",
+        "1212937336625033",
+        "1212937336625049",
+        "1212937336625057",
+        "1212937336625083",
+        "1212870761884222",
+        "1212937327293423",
+        "1212937336625025",
+        "1212937336625044",
+        "1212966140249919",
+        "1212971627070612",
+        "1209224988954954"
+      ],
       "useFor": ["find-context", "team-status", "update-todos", "whats-blocking", "prep-meeting"],
       "searchPatterns": ["project", "workstream", "campaign"]
     }
   },
   "indices": {
-    "teamByName": {},
-    "projectByName": {},
-    "projectByTeam": {}
+    "teamByName": {
+      "articles": "1201603317778575",
+      "avengers": "1200205977735539",
+      "becci": "1207007495851488",
+      "comms & marketing": "1202613806800356",
+      "communities": "1206982736340644",
+      "community engagement and growth team": "1202547874949184",
+      "community support": "1203013977628498",
+      "content": "1200248593167335",
+      "course creation": "1202715401892081",
+      "courses": "1200203814007217",
+      "customer success": "1200181608204378",
+      "data and engineering": "1200181608204380",
+      "evaluation": "1209270847291272",
+      "events at apolitical": "1206139192423737",
+      "free content planning": "1205549031420400",
+      "growth": "1200181608204374",
+      "joel patrick's first team": "1203313521133495",
+      "l&d leads newsletter": "1206270627627058",
+      "operations": "1200098793691515",
+      "people ops": "1203639710945352",
+      "product": "1200182866521300",
+      "sales": "1200220227261264",
+      "team of the year 2022": "1203283783507589",
+      "user lists": "1200900159730169",
+      "user research": "1211920859305993",
+      "ux/ui design": "1200372118953660",
+      "visual design 2023": "1202153856609679"
+    },
+    "projectByName": {
+      "marketing automation tool": "1200245675200277",
+      "engagement data deep dive": "1200248593167370",
+      "gates learning group": "1200340771779964",
+      "recruiting": "1200414163345645",
+      "feature requests": "1200429706935598",
+      "user permissions and profile visibility": "1200579553975358",
+      "improve release process to reduce bugs": "1200579553975367",
+      "course bug log": "1200808292007755",
+      "nic's onboarding checklist": "1201424341493234",
+      "ibrahim's onboarding checklist": "1201424341493236",
+      "tom's onboarding checklist": "1201614271132624",
+      "ala's onboarding checklist": "1201814932613119",
+      "enterprise onboarding": "1201899968992456",
+      "q2 workshops user research": "1202081169714719",
+      "fortnightly workshops check-in": "1202081169714742",
+      "speaker comms": "1202081169714755",
+      "data conference": "1202107444264952",
+      "content strategy initiative": "1202220360276894",
+      "sophie - onboarding checklist": "1202473420442756",
+      "jessica - onboarding checklist": "1202473420442797",
+      "government digital excellence programme": "1202476157912947",
+      "initiative 1: deliver a collateral kitbag for partnerships": "1203066507837048",
+      "4.7 launch refreshed climate top 100 people list": "1203066507837063",
+      "increase community engagement and build the apolitical brand on social media channels": "1203066507837121",
+      "launch apolitical's youtube channel": "1203066507837184",
+      "policy 100 list": "1203428929441135",
+      "write like apolitical": "1203657455508725",
+      "community support / partnerships": "1203774582412140",
+      "q2 tasks 2023": "1204314933705257",
+      "daily briefing": "1204321035286260",
+      "course audit": "1204563485618502",
+      "social media requests 2025": "1204571664086552",
+      "civil service live": "1204590258480338",
+      "content operations weekly": "1204594168783742",
+      "dep curriculum planning": "1204698689036346",
+      "q3 tasks 2023": "1205001330608880",
+      "top 100 innovations in government communications": "1205040598391461",
+      "canada bd": "1205117135103699",
+      "insights": "1205117135103720",
+      "general bd": "1205117135556209",
+      "government ai campus": "1205139917532221",
+      "train the trainer for green skills in brazil": "1205144823667462",
+      "enap visit": "1205212165621523",
+      "gcc learning hub refresh + partner engagement": "1205868432391048",
+      "microsoft | gen ai report": "1205940090338187",
+      "canada scorm packages": "1205956643565840",
+      "the apolitical view": "1206050285709686",
+      "thoughtspot data improvements - jan 2024": "1206407378082952",
+      "onboarding, removal and duplication requests": "1206535678627884",
+      "communities actions": "1206829302017874",
+      "1. gaic milestones/progress tracker": "1207377398803514",
+      "stanford course launch": "1207679350440623",
+      "estonia: ai course development": "1208165916210968",
+      "estonia: data-driven governance course development": "1208165916211072",
+      "estonia: cybersecurity course development": "1208165916211163",
+      "9. gaic leadership briefings": "1208579275631276",
+      "gecc | wri | valuing nature": "1209160916624510",
+      "delivery tracker": "1209224988954954",
+      "0.gaic general": "1209329103045024",
+      "cross-company user interview project tracker": "1209431132926741",
+      "new community submissions": "1209667417907300",
+      "user registrations": "1209704647366307",
+      "course video planning": "1209988169121096",
+      "wip sustainable finance cohort | template": "1210109028564065",
+      "cbf - 2025": "1210436325502895",
+      "nature finance action group: milestones": "1210730878271117",
+      "community management": "1210799614242520",
+      "[igot] digital fundamentals for government": "1211100613602441",
+      "[wip] data and reporting requests": "1211839165399434",
+      "sustainable finance | jan 2026 | cohort 17": "1212457270944250",
+      "tess handover | dec 17 - jan 15": "1212457270944324",
+      "ai 100 interviews": "1212855917344118",
+      "q1, 2026 | segmentation/new member journeys": "1212937336625033",
+      "q1, 2026 | navigator design": "1212937336625049",
+      "q1 2026 | ux research for events on platform": "1212937336625057",
+      "q1 2026 | upgrade platform usability": "1212937336625083",
+      "bid plan - fcdo economics for foreign policy": "1213180984444913",
+      "q4 - will spurr": "1203066507837041",
+      "q1 2023 - will": "1203657455508718",
+      "democracy & public service 2024": "1204595235020764",
+      "design&delivery #6_ january 2024": "1205142632661930",
+      "global government green skills survey": "1205449362852349",
+      "systems thinking in government community": "1207011328250591",
+      "fcdo ece cohort community": "1207034415123617",
+      "net zero community": "1207034422152596",
+      "design thinking in government": "1207034422152609",
+      "women in government community": "1207131294329539",
+      "citizen engagement and technology": "1207229442407044",
+      "open data community": "1207468393149323",
+      "lgbtqia+ community": "1207468395300433",
+      "futures community": "1207811906137097",
+      "political leadership": "1208029935931791",
+      "carbon neutral cities": "1208029935931797",
+      "community engagement standup": "1208112856143855",
+      "life in government community": "1208116773645778",
+      "communities feature name": "1209606389708726",
+      "gcx ama with siim": "1210648655467751",
+      "communities team": "1210786779338395",
+      "comment-for-content": "1211950687502941",
+      "live event planning": "1201685366154293",
+      "content style guide initiative": "1202597452884823",
+      "derek's q3 okrs": "1202656913333016",
+      "q3, 2023 - will": "1205137333243069",
+      "community support": "1201380755495784",
+      "(inactive) timeline for all courses/workshops/bootcamps/launches": "1203055148470284",
+      "jessameliarob check ins": "1203283870762552",
+      "ugc": "1200248593167344",
+      "team priorities": "1200446686817042",
+      "to do - lowell": "1201620859520394",
+      "informal learning": "1201623978259131",
+      "[retired] promotion planning board": "1200232066166202",
+      "learning user research strategy": "1200810683571081",
+      "learning team dashboard": "1200826836315286",
+      "apolitical | centring equity in climate action": "1201646345995357",
+      "course creation | team meeting agenda": "1201759291614804",
+      "ops set up government campus and curriculum": "1201926206171326",
+      "email | tasks": "1202932913877836",
+      "rmi | decarbonising buildings": "1203086418937825",
+      "apolitical | climate communications": "1203435356584216",
+      "free course creation template": "1204458804893038",
+      "free course | how to build your career in the uk civil service": "1204474744463332",
+      "free course | vaw data": "1204474744592552",
+      "free course | digital mindsets 2": "1204474744592651",
+      "free course | stakeholder engagement": "1204475070519506",
+      "dep mda scoping": "1204480343813122",
+      "tester": "1204570035846353",
+      "evaluation | equity emerging markets": "1204642759296374",
+      "free course | inclusive public service": "1204730528768218",
+      "free course | intro to people management": "1204730529879377",
+      "free course | breaking down silos": "1204730529879430",
+      "free course | difficult conversations": "1204730529879483",
+      "free course | digital mindsets 1: revamp & relaunch": "1204763389147317",
+      "evaluation | net zero emerging markets": "1204767925032051",
+      "ai campus free course | ai basics": "1205009301105378",
+      "tmax deadlines": "1205100582562543",
+      "dep data: course evaluation": "1205386416429304",
+      "strategic thinking: course evaluation": "1205396408218061",
+      "free course | negotiation skills": "1205401073708087",
+      "free course | resilience": "1205401074261269",
+      "free course | interviews": "1205401074261314",
+      "free course | how to be digital in the canadian public service - revamp": "1205764432488491",
+      "dep | ai": "1205794584874206",
+      "free course | goal-setting": "1205987143161481",
+      "free course | intro to data": "1206108334390334",
+      "free course | presentation skills revamp": "1206261418431320",
+      "free course | community of practice": "1206261418656382",
+      "research: ai centre of excellence": "1206269179880791",
+      "fcdo evaluation | net zero": "1206300178876243",
+      "free course | how to learn": "1206345981370062",
+      "climate comms | train the trainer": "1206838821165807",
+      "courses | gaic pre-analysis": "1207563743882204",
+      "refresh | advance your writing in government": "1208194793529404",
+      "translation management": "1208401684736553",
+      "free course | fyn | canada onboarding": "1208583806960693",
+      "course migration": "1209363459723494",
+      "cop presidency toolkit": "1209377474936768",
+      "stanford | ai and climate: trade-offs and transformation": "1209880777909656",
+      "[refresh] foundations of delivery": "1210957804223889",
+      "other team projects": "1200252715933155",
+      "western cape": "1200252715933239",
+      "department for education - written communication skills": "1200255659013234",
+      "p3s": "1200297221247461",
+      "enap brazil": "1201064020139538",
+      "delivery associates": "1201135704098815",
+      "aws institute": "1201193693921099",
+      "oxford net zero": "1201297917916086",
+      "uae gcc country roadmap 2023": "1201399732885253",
+      "top 100/75/50 list template": "1201491503989809",
+      "percy hobart fellowship": "1201674407905148",
+      "georgetown university | digital fundamentals for government": "1201875394623176",
+      "internal team co-ord": "1201977155281042",
+      "writing well in government - gscu": "1202554639965532",
+      "define and meet partner north star metrics": "1202652075555093",
+      "strengthen cross-team collaboration": "1202676645360058",
+      "government climate campus": "1202846362209983",
+      "mda sprint 2": "1202847775460329",
+      "template | non-partner course": "1202891337272539",
+      "mda | data-driven government": "1202891337272608",
+      "mda | digital government": "1202932913877774",
+      "partnerships team biweekly": "1203046505311809",
+      "partner onboarding pack": "1203135943220163",
+      "the fundamentals of digital transformation": "1203176105454636",
+      "apolitical | the fundamentals of digital transformation": "1203268141457384",
+      "government campus - ots -cohort bookings 2025": "1203284588546232",
+      "htes account management template": "1203301670581920",
+      "associate partners tracker": "1203467199729714",
+      "customer success weekly": "1203490224721204",
+      "course account management template": "1203756075644166",
+      "dep | user-centred design": "1203902666791929",
+      "uae | reaching net zero": "1203983922210945",
+      "initiative 3.2.6: create a standard partner dashboard": "1203984811489807",
+      "policy profession unit (ppu)": "1204225079979008",
+      "gcc free | indigenous reconciliation": "1204380160000592",
+      "artha global | green growth": "1204449224233792",
+      "tester | awareness course": "1204488245773596",
+      "master: delivery dates": "1204529528342326",
+      "wri | natural capital for sustainable development": "1204545531444971",
+      "train the trainer": "1204636599458135",
+      "centre for net zero | resilience and energy independence": "1204675054703579",
+      "wri | nature-based solutions": "1204801288324985",
+      "centre for net zero | energy transition": "1204801288325221",
+      "oecd pilot": "1205040598392518",
+      "climate and health": "1205126514860944",
+      "evaluation | presenting data": "1205134318630494",
+      "evaluation | dep sprint 2": "1205170397107618",
+      "reporting calendar": "1205661032052853",
+      "dbt business engagement event series": "1205727842071028",
+      "fcdo design and delivery (partnerships)": "1205916298747265",
+      "partner nps": "1205939402462811",
+      "fcdo | climate diplomacy": "1205939941147410",
+      "fcdo | critical minerals": "1205948442677411",
+      "fcdo | climate adaptation & resilience": "1205948444843749",
+      "dep release 1 2023-2025 (internal)": "1205961172389502",
+      "apolitical | efficiency through digital": "1206271216076366",
+      "abishek | duplicate of course account management template": "1206308960943461",
+      "trial": "1206331085163449",
+      "course asana | template": "1206382271867549",
+      "100x impact accelerator": "1206391276973454",
+      "p3sa + fcdo | climate & finance": "1206426923624209",
+      "stanford | ai fundamentals": "1206514416150661",
+      "ai in health - health canada": "1206537365927841",
+      "dep - defra": "1206657860113960",
+      "apolitical | change management": "1206966396570987",
+      "mma | intro to cop (global version)": "1207298797333667",
+      "campus | gcc pre-analysis": "1207323911843039",
+      "user research | pre-analysis": "1207371334533892",
+      "gcc: 3ci": "1207420746551644",
+      "cross-team course refresh template": "1207786995622888",
+      "abu dhabi dge - gcx": "1207856702945329",
+      "gcc | sc | climate leadership through systems change": "1207972378078370",
+      "gcc | crt | transport": "1208014336415099",
+      "estonia: management of user-centric services": "1208165916211019",
+      "gaic | ai and the future of healthcare systems | bocconi": "1208264762172822",
+      "mma | intro to cop (brasilian version)": "1208489746166856",
+      "lga: unlocking digital excellence": "1208509918104132",
+      "public sector strategy network (pssn)": "1208536154518626",
+      "monitoring and evaluation ticket hub": "1208557448117354",
+      "etc | quantum": "1208648444650292",
+      "ceq | sustainability": "1208832894509861",
+      "missions | dan honig": "1209023161190521",
+      "gecc | talanoa | ndc design and implementation": "1209023161190611",
+      "quadrature climate foundation": "1209106690971911",
+      "gecc | uct | human rights for climate-resilient governance": "1209150481103904",
+      "undp kenya retrospective": "1209165223231869",
+      "gaic | ai leadership in government": "1209179873120039",
+      "undp | systems thinking": "1209303418177416",
+      "bef 2.0: project delivery": "1209307896163407",
+      "ogp | introduction to open government (iog)": "1209330395016080",
+      "ukraine cdto 12-month programme": "1209464556120165",
+      "iadb tracker": "1209465215436671",
+      "new course asana test | template": "1209639783810645",
+      "do not clone new [campus] template": "1209656923504479",
+      "gecc | c40 | climate budgeting": "1209844674106583",
+      "stanford - partnerships": "1210047823070449",
+      "[complete] dep 2.0 migration and relaunch": "1210360344921763",
+      "[free course] neurodiversity in public service": "1210509065558312",
+      "[gecc] from vision to impact: climate budgeting for leaders": "1210540786946718",
+      "[gaic] smarter procurement with ai": "1210540786946725",
+      "[gaic] effective prompt engineering for public servants": "1210540791218785",
+      "[gecc] why climate is everyone's job across the western cape": "1210541263867331",
+      "[free course translation] how to be digital in the canadian public service": "1210557238497982",
+      "wellcome | embedding health in climate negotiations": "1210618354462096",
+      "conversation starter toolkits": "1210637279639441",
+      "[academy] leading change: scotland's path to public service reform": "1210698536679065",
+      "do not clone [igot] template": "1210715344903534",
+      "[on hold] ots evaluation: boost your productivity": "1210740822912750",
+      "gecc homepage refresh 2.0": "1210756367252798",
+      "idb review and relaunch | sep 2025": "1210786517252666",
+      "[free course] the product mindset": "1210823498440276",
+      "[free course] an introduction to futures and foresight": "1210845432727752",
+      "sustainable finance | course refresh": "1210939744763443",
+      "[uk gov scs] one big thing": "1210963647171665",
+      "[courses workshop]": "1210977624470068",
+      "[gecc] business and nature: dependencies, risks and opportunities": "1211020843332207",
+      "ipbes-12 academy": "1212113938046465",
+      "evaluation traffic system": "1209389623974757",
+      "weekly event tasks": "1206991182414282",
+      "apolitical day 2025": "1210001275806190",
+      "how to be an impeccable conversationalist": "1210437210874560",
+      "ai in the planetary crisis @ enap innovation week": "1210776995189266",
+      "nature leaders roundtable 1 (integrating nature)": "1210823997041449",
+      "nature leaders roundtable 2 (terrestrial investment)": "1210827335105594",
+      "wip (in person events) - roundtable/bespoke gathering": "1212202613166968",
+      "hmrc civil service leaders workshop | 10-02-26": "1212457986255255",
+      "campaigns and commissioning": "1205549031420408",
+      "the weekly briefing": "1205549031420415",
+      "l&d lead newsletter": "1206646825879748",
+      "community engagement ideas": "1201756549689692",
+      "email issue log": "1204283177226421",
+      "dep experience response team": "1207644472008895",
+      "climate frontline": "1207644472008936",
+      "gcc 2.0 user journey mapping": "1207921386181850",
+      "self-publication": "1207982877491556",
+      "ilana's holiday handover": "1208343745252852",
+      "the gov ai prompt": "1209718852702551",
+      "gaic - awareness level video ads": "1210948378249826",
+      "platform carousel editorialisation requests": "1211100210609548",
+      "membership criteria clarification": "1211103804608969",
+      "500k members in 170+ countries on apolitical": "1212877566765743",
+      "l&d leads newsletter january": "1206270627627065",
+      "build social learning platform": "1201861726767286",
+      "futura": "1210172874792405",
+      "other q2 2023 initiatives": "1202544025534061",
+      "finalise reup and referral strategy": "1202544025534080",
+      "update pricing and prospectus online": "1202544025534085",
+      "uk government bd project planner": "1202554610505325",
+      "canada - ots e-learning rfp": "1202622734069215",
+      "retain 80% retention rate": "1202683655478043",
+      "bid: ukri - environmental sustainability learning package": "1203451867641779",
+      "bid - welsh government technical policy dps": "1203451867641791",
+      "campus 2025 pursuit": "1203771665246150",
+      "futures framework": "1203874019414371",
+      "rm6219uk - dynamic purchasing framework": "1203985184269904",
+      "fcdo global development framework": "1203988115272529",
+      "scottish gov - digital technology and cyber services dps": "1204269513717443",
+      "casa mel itt - beis": "1204697430722035",
+      "canada commercial off the shelf bid 2023": "1205656960550560",
+      "international government visits": "1205678439126308",
+      "defra mel - ey partnership bid": "1205678439721530",
+      "lga transformation capability framework bid": "1205678439721550",
+      "writing of training video scripts on ai for local government": "1205957183432066",
+      "ta-10209 phi: supporting digital transformation of civil service": "1206297546755766",
+      "toty": "1203283783507592",
+      "q1, 2026 | futura final page validation": "1212870761884222",
+      "user research requests": "1212881716716723",
+      "weekly user research tasks": "1212898962512419",
+      "q1, 2026 | public servants have no time to use apolitical": "1212937327293423",
+      "q1, 2026 | policy nova design": "1212937336625025",
+      "q1, 2026 | futura value proposition discovery": "1212937336625044",
+      "q1, 2026 | onboarding instructions testing": "1212966140249919",
+      "q1 2026 | future of ai tools in government": "1212971627070612",
+      "design kanban": "1202153856609724",
+      "babco old board - do not use": "1204525178456180"
+    },
+    "projectByTeam": {
+      "1200205977735539": [
+        "1200245675200277",
+        "1200248593167370",
+        "1200340771779964",
+        "1200414163345645",
+        "1200429706935598",
+        "1200579553975358",
+        "1200579553975367",
+        "1200808292007755",
+        "1201424341493234",
+        "1201424341493236",
+        "1201614271132624",
+        "1201814932613119",
+        "1201899968992456",
+        "1202081169714719",
+        "1202081169714742",
+        "1202081169714755",
+        "1202107444264952",
+        "1202220360276894",
+        "1202473420442756",
+        "1202473420442797",
+        "1202476157912947",
+        "1203066507837048",
+        "1203066507837063",
+        "1203066507837117",
+        "1203066507837121",
+        "1203066507837184",
+        "1203428929441135",
+        "1203657455508725",
+        "1203774582412140",
+        "1204314933705257",
+        "1204321035286260",
+        "1204563485618502",
+        "1204571664086552",
+        "1204590258480338",
+        "1204594168783742",
+        "1204698689036346",
+        "1205001330608880",
+        "1205040598391461",
+        "1205117135103699",
+        "1205117135103720",
+        "1205117135556209",
+        "1205139917532221",
+        "1205144823667462",
+        "1205212165621523",
+        "1205868432391048",
+        "1205940090338187",
+        "1205956643565840",
+        "1206050285709686",
+        "1206407378082952",
+        "1206535678627884",
+        "1206829302017874",
+        "1207377398803514",
+        "1207679350440623",
+        "1208165916210968",
+        "1208165916211072",
+        "1208165916211163",
+        "1208579275631276",
+        "1209160916624510",
+        "1209224988954954",
+        "1209329103045024",
+        "1209431132926741",
+        "1209667417907300",
+        "1209704647366307",
+        "1209988169121096",
+        "1210109028564065",
+        "1210436325502895",
+        "1210730878271117",
+        "1210799614242520",
+        "1211100613602441",
+        "1211839165399434",
+        "1212457270944250",
+        "1212457270944324",
+        "1212855917344118",
+        "1212937336625033",
+        "1212937336625049",
+        "1212937336625057",
+        "1212937336625083",
+        "1213180984444913"
+      ],
+      "1202613806800356": [
+        "1203066507837041",
+        "1203657455508718",
+        "1204595235020764",
+        "1205142632661930",
+        "1205449362852349"
+      ],
+      "1206982736340644": [
+        "1207011328250591",
+        "1207034415123617",
+        "1207034422152596",
+        "1207034422152609",
+        "1207131294329539",
+        "1207229442407044",
+        "1207468393149323",
+        "1207468395300433",
+        "1207811906137097",
+        "1208029935931791",
+        "1208029935931797",
+        "1208112856143855",
+        "1208116773645778",
+        "1209606389708726",
+        "1210648655467751",
+        "1210786779338395",
+        "1211950687502941"
+      ],
+      "1202547874949184": [
+        "1201685366154293",
+        "1202597452884823",
+        "1202656913333016",
+        "1204321035286252",
+        "1205137333243069"
+      ],
+      "1203013977628498": ["1201380755495784", "1203055148470284", "1203283870762552"],
+      "1200248593167335": [
+        "1200248593167344",
+        "1200446686817042",
+        "1201620859520394",
+        "1201623978259131"
+      ],
+      "1200203814007217": [
+        "1200232066166202",
+        "1200810683571081",
+        "1200826836315286",
+        "1201646345995357",
+        "1201759291614804",
+        "1201926206171326",
+        "1202932913877836",
+        "1203086418937825",
+        "1203435356584216",
+        "1204458804893038",
+        "1204474744463332",
+        "1204474744592552",
+        "1204474744592651",
+        "1204475070519506",
+        "1204480343813122",
+        "1204570035846353",
+        "1204642759296374",
+        "1204730528768218",
+        "1204730529879377",
+        "1204730529879430",
+        "1204730529879483",
+        "1204763389147317",
+        "1204767925032051",
+        "1205009301105378",
+        "1205100582562543",
+        "1205386416429304",
+        "1205396408218061",
+        "1205401073708087",
+        "1205401074261269",
+        "1205401074261314",
+        "1205764432488491",
+        "1205794584874206",
+        "1205987143161481",
+        "1206108334390334",
+        "1206261418431320",
+        "1206261418656382",
+        "1206269179880791",
+        "1206300178876243",
+        "1206345981370062",
+        "1206838821165807",
+        "1207563743882204",
+        "1208194793529404",
+        "1208401684736553",
+        "1208583806960693",
+        "1209363459723494",
+        "1209377474936768",
+        "1209880777909656",
+        "1210957804223889"
+      ],
+      "1200181608204378": [
+        "1200252715933155",
+        "1200252715933239",
+        "1200255659013234",
+        "1200297221247461",
+        "1201064020139538",
+        "1201135704098815",
+        "1201193693921099",
+        "1201297917916086",
+        "1201399732885253",
+        "1201491503989809",
+        "1201674407905148",
+        "1201875394623176",
+        "1201977155281042",
+        "1202554639965532",
+        "1202652075555093",
+        "1202676645360058",
+        "1202846362209983",
+        "1202847775460329",
+        "1202891337272539",
+        "1202891337272608",
+        "1202932913877774",
+        "1203046505311809",
+        "1203135943220163",
+        "1203176105454636",
+        "1203268141457384",
+        "1203284588546232",
+        "1203301670581920",
+        "1203467199729714",
+        "1203490224721204",
+        "1203756075644166",
+        "1203902666791929",
+        "1203983922210945",
+        "1203984811489807",
+        "1204225079979008",
+        "1204380160000592",
+        "1204449224233792",
+        "1204488245773596",
+        "1204529528342326",
+        "1204545531444971",
+        "1204636599458135",
+        "1204675054703579",
+        "1204801288324985",
+        "1204801288325221",
+        "1205040598392518",
+        "1205126514860944",
+        "1205134318630494",
+        "1205170397107618",
+        "1205661032052853",
+        "1205727842071028",
+        "1205916298747265",
+        "1205939402462811",
+        "1205939941147410",
+        "1205948442677411",
+        "1205948444843749",
+        "1205961172389502",
+        "1206271216076366",
+        "1206308960943461",
+        "1206331085163449",
+        "1206382271867549",
+        "1206391276973454",
+        "1206426923624209",
+        "1206514416150661",
+        "1206537365927841",
+        "1206657860113960",
+        "1206966396570987",
+        "1207298797333667",
+        "1207323911843039",
+        "1207371334533892",
+        "1207420746551644",
+        "1207786995622888",
+        "1207856702945329",
+        "1207972378078370",
+        "1208014336415099",
+        "1208165916211019",
+        "1208264762172822",
+        "1208489746166856",
+        "1208509918104132",
+        "1208536154518626",
+        "1208557448117354",
+        "1208648444650292",
+        "1208832894509861",
+        "1209023161190521",
+        "1209023161190611",
+        "1209106690971911",
+        "1209150481103904",
+        "1209165223231869",
+        "1209179873120039",
+        "1209303418177416",
+        "1209307896163407",
+        "1209330395016080",
+        "1209464556120165",
+        "1209465215436671",
+        "1209639783810645",
+        "1209656923504479",
+        "1209844674106583",
+        "1210047823070449",
+        "1210360344921763",
+        "1210509065558312",
+        "1210540786946718",
+        "1210540786946725",
+        "1210540791218785",
+        "1210541263867331",
+        "1210557238497982",
+        "1210618354462096",
+        "1210637279639441",
+        "1210698536679065",
+        "1210715344903534",
+        "1210740822912750",
+        "1210756367252798",
+        "1210786517252666",
+        "1210823498440276",
+        "1210845432727752",
+        "1210939744763443",
+        "1210963647171665",
+        "1210977624470068",
+        "1211020843332207",
+        "1212113938046465"
+      ],
+      "1209270847291272": ["1209389623974757"],
+      "1206139192423737": [
+        "1206991182414282",
+        "1210001275806190",
+        "1210437210874560",
+        "1210776995189266",
+        "1210823997041449",
+        "1210827335105594",
+        "1212202613166968",
+        "1212457986255255"
+      ],
+      "1205549031420400": ["1205549031420408", "1205549031420415", "1206646825879748"],
+      "1200181608204374": [
+        "1201756549689692",
+        "1204283177226421",
+        "1207644472008895",
+        "1207644472008936",
+        "1207921386181850",
+        "1207982877491556",
+        "1208343745252852",
+        "1209718852702551",
+        "1210948378249826",
+        "1211100210609548",
+        "1211103804608969",
+        "1212877566765743"
+      ],
+      "1206270627627058": ["1206270627627065"],
+      "1200182866521300": ["1201861726767286", "1210172874792405"],
+      "1200220227261264": [
+        "1202544025534061",
+        "1202544025534080",
+        "1202544025534085",
+        "1202554610505325",
+        "1202622734069215",
+        "1202683655478043",
+        "1203451867641779",
+        "1203451867641791",
+        "1203771665246150",
+        "1203874019414371",
+        "1203985184269904",
+        "1203988115272529",
+        "1204269513717443",
+        "1204697430722035",
+        "1205656960550560",
+        "1205678439126308",
+        "1205678439721530",
+        "1205678439721550",
+        "1205957183432066",
+        "1206297546755766"
+      ],
+      "1203283783507589": ["1203283783507592"],
+      "1211920859305993": [
+        "1212870761884222",
+        "1212881716716723",
+        "1212898962512419",
+        "1212937327293423",
+        "1212937336625025",
+        "1212937336625044",
+        "1212966140249919",
+        "1212971627070612"
+      ],
+      "1200372118953660": ["1202153856609724"],
+      "1202153856609679": ["1204525178456180"]
+    }
   },
   "filters": {
     "excludeProjects": [],
@@ -47,7 +2649,7 @@
     "taskMaxAgeDays": 30
   },
   "usage": {
-    "search_priority": "When gathering Asana context, check priority items first (sources.*.priority arrays), then search broadly when needed. Asana is the company-wide task manager — frame results as cross-functional, not engineering-specific.",
+    "search_priority": "When gathering Asana context, check priority items first (sources.*.priority arrays), then search broadly when needed. Asana is the company-wide task manager - frame results as cross-functional, not engineering-specific.",
     "skill_integration": "Skills should load this config and query relevant sources based on context type (strategic goals -> goals, cross-functional work -> projects, organisational view -> portfolios).",
     "linear_dedup": "When the same work appears in both Linear and Asana, Linear takes precedence for engineering work. Asana tasks whose titles closely match a Linear ticket should be noted but not duplicated."
   }
