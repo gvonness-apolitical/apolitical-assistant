@@ -110,6 +110,9 @@ Use `/[skill-name]` to invoke these workflows:
 ### Work Management
 - `/create-ticket [description]` - Create Linear ticket (task, spike, or bug) aligned to team norms
 
+### Decision Making
+- `/evaluate [topic]` - Structured decision evaluation with adversarial debate
+
 ### Technical Review
 - `/review-rfc [notion-url]` - Comprehensive RFC review with comments (supports quick/standard/deep)
 - `/review-doc [doc-url]` - Review Google Docs/Slides from non-technical stakeholders
@@ -727,6 +730,7 @@ Reusable patterns in `.claude/patterns/` reduce duplication across skills and en
 | [adversarial-debate](patterns/adversarial-debate.md) | Competitive review via Advocate/Challenger/Judge | review-rfc, mbr, rubberduck, update-todos |
 | [competitive-draft](patterns/competitive-draft.md) | Parallel drafts with different seeds, user selects | respond-to, draft-email, review-doc, summarise |
 | [critique-ratchet](patterns/critique-ratchet.md) | Draft → Critique → Revise improvement pipeline | prep-meeting, executive-report, team-status |
+| [comparative-debate](patterns/comparative-debate.md) | Dual-advocate debate with weighted scorecard | evaluate |
 
 ### Using Patterns
 

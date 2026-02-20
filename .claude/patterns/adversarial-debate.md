@@ -212,6 +212,18 @@ For resolving priority disagreements in `/update-todos`:
 
 Auto-triggers when total action items >= 15 after deduplication. See `commands/update-todos.md` for full prompt templates, Borda scoring, and disagreement output format.
 
+### Comparative Debate (`/evaluate`) — Implemented
+
+For N-way option comparison (vendor selection, architecture decisions, tool choices):
+
+- **Advocate-A** argues FOR Option A with long-term strategic fit lens
+- **Advocate-B** argues FOR Option B with pragmatic near-term execution lens
+- **Judge** produces criterion-by-criterion scores, weighted scorecard, and clear recommendation
+
+Key differences from standard Adversarial Debate: both agents are advocates (not advocate/challenger), output is a scorecard (not binary approve/reject), asymmetric argumentative lenses ensure structural differentiation.
+
+Adversarial is the **default** — `--single` is the escape hatch. See [Comparative Debate](comparative-debate.md) pattern and `commands/evaluate.md` for full details.
+
 ## Skills Using This Pattern
 
 - `/review-rfc` — Advocate argues "approve", Challenger argues "needs rework" (implemented). Judge produces key themes that prioritise the review's Blocking Concerns and Recommendations. Competitive reviews are saved locally to `work/` for Causantic recall.

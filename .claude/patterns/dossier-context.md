@@ -116,4 +116,5 @@ This enables cross-session recall of how understanding of a person has evolved.
 - `/rubberduck` - Full profile and dynamics for strategic thinking
 - `/slack-read` - Dossier update prompts after notable DM exchanges
 - `/begin-day` - Stale dossier check for today's meeting attendees
+- `/evaluate` - Stakeholder decision profiles for advocate context
 - `/dossier` - Direct dossier management

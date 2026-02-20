@@ -546,8 +546,8 @@
       "displayName": "Dom Gaulton",
       "aliases": ["Dom G"],
       "identifiers": {
-        "slackUserId": null,
-        "slackDmChannelId": null,
+        "slackUserId": "U09T58D5K5K",
+        "slackDmChannelId": "D0AF5JLMKT2",
         "githubUsername": "dgaulton-apolitical",
         "linearUserId": null,
         "humaansEmployeeId": null,
@@ -637,7 +637,8 @@
       "U03RQ9S67T7": "amber.keates@apolitical.co",
       "U0143B3HQTB": "renzo.rozza@apolitical.co",
       "U05BBP2MW5B": "annika.chauhan@apolitical.co",
-      "U09RR0S5X5L": "samuel.balogun@apolitical.co"
+      "U09RR0S5X5L": "samuel.balogun@apolitical.co",
+      "U09T58D5K5K": "dom.gaulton@apolitical.co"
     },
     "byGithubUsername": {
       "pshatwell-apolitical": "peter.shatwell@apolitical.co",

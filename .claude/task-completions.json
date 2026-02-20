@@ -154,6 +154,74 @@
       "source": "investigation",
       "status": "completed",
       "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-19",
+      "subject": "Respond to Jess Sansom — AI course assistant data + API questions",
+      "keywords": ["jess", "sansom", "ai", "course", "assistant", "data", "api", "futura"],
+      "source": "slack:dm-jess-sansom",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-19",
+      "subject": "Respond to Dom Gaulton — engineer referral",
+      "keywords": ["dom", "gaulton", "engineer", "referral", "hiring", "lauren"],
+      "source": "slack:dm-dom-gaulton",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-19",
+      "subject": "Yang's DPO role proposal — review and comment",
+      "keywords": ["yang", "dpo", "data", "product", "owner", "role", "proposal", "notion"],
+      "source": "notion:30568a6e-3b92-8068-b3d6-ed482353f620",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-19",
+      "subject": "Review Samuel's GCP Secret Manager RFC",
+      "keywords": ["samuel", "gcp", "secret", "manager", "gsm", "rfc", "self-hosted", "runners"],
+      "source": "slack:team-eng-think-tank",
+      "status": "completed",
+      "reason": "Already reviewed Option A vs B vs C in DM with Samuel (Feb 17). Approved Option A (self-hosted runners) and authorised RFC creation.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-19",
+      "subject": "Vercel — add oadebayo-apolitical to team",
+      "keywords": ["vercel", "oadebayo", "deploy", "team", "access"],
+      "source": "gmail",
+      "status": "dismissed",
+      "reason": "Automated deploy notification, not a direct request. TLs would escalate if it's a blocker — Onu can request access himself if still needed.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-19",
+      "subject": "Review Renzo's SSO RFCs (Deployment + Self-hosted)",
+      "keywords": ["renzo", "sso", "rfc", "deployment", "self-hosted", "kratos", "ory", "authentication"],
+      "source": "notion",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-19",
+      "subject": "SLO alert threshold cleanup",
+      "keywords": ["slo", "alert", "threshold", "burn", "rate", "incident", "khalifa"],
+      "source": "incident.io",
+      "status": "completed",
+      "reason": "Delegated to Khalifa to investigate thresholds and create ticket. No existing ticket found.",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-20",
+      "subject": "Monitor Stream Feeds API usage — projected to exceed limit",
+      "keywords": ["stream", "feeds", "api", "usage", "rate-limiting", "ethiopian", "cohort"],
+      "source": "gmail",
+      "status": "dismissed",
+      "reason": "Known Ethiopian cohort spike. Khalifa already aware. Accepting overages for now.",
+      "completedVia": "direct"
     }
   ]
 }
