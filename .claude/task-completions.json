@@ -200,7 +200,16 @@
     {
       "date": "2026-02-19",
       "subject": "Review Renzo's SSO RFCs (Deployment + Self-hosted)",
-      "keywords": ["renzo", "sso", "rfc", "deployment", "self-hosted", "kratos", "ory", "authentication"],
+      "keywords": [
+        "renzo",
+        "sso",
+        "rfc",
+        "deployment",
+        "self-hosted",
+        "kratos",
+        "ory",
+        "authentication"
+      ],
       "source": "notion",
       "status": "completed",
       "completedVia": "claude"
