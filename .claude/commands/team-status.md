@@ -7,6 +7,8 @@ Get a comprehensive status update on a team or squad.
 - `/team-status [squad/team name]` - status for a specific team
 - `/team-status` - status for engineering (default)
 - `/team-status [squad] --quick` - use cached data only, no API calls
+- `/team-status [squad] --compete` - Force critique ratchet (assessment pressure-tested)
+- `/team-status [squad] --single` - Force single-agent (override auto-triggers)
 
 ## Core Patterns Used
 
@@ -15,6 +17,7 @@ Get a comprehensive status update on a team or squad.
 - [Progressive Discovery](../patterns/progressive-discovery.md) - Cache GitHub/Linear user IDs
 - [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
 - [Rate Limiting](../patterns/rate-limiting.md) - Batch API calls efficiently
+- [Critique Ratchet](../patterns/critique-ratchet.md) - Health assessment and recommendations pressure-tested
 
 ## Quick Mode
 
@@ -103,7 +106,73 @@ Use local context to supplement API calls and provide historical context.
    - Priority projects involving team members
    - Frame as "cross-functional work" — distinct from Linear sprint work
 
+## Critique Ratchet Mode
+
+Before generating output, determine whether to use critique ratchet mode. When active, the draft status report is critiqued and revised — the user receives a better assessment without seeing the intermediate critique. See [Critique Ratchet](../patterns/critique-ratchet.md) for the full pattern.
+
+**Activation:**
+
+| Trigger | Competition? |
+|---------|-------------|
+| `--compete` flag | Always yes |
+| `--single` flag | Always no (overrides auto) |
+| Any blocked ticket count >= 3 | Auto-yes |
+| Burndown assessment is "behind" or "at risk" | Auto-yes |
+| Default (no flag, healthy team) | No — single-agent |
+
+**How it works:** After gathering all data and producing the draft status report, the ratchet runs two sequential Task agents (subagent_type: `general-purpose`). Both agents receive the draft as prompt text. Neither has MCP tool access.
+
+**Critique targets assessment sections only** — Health Indicators, Risks & Blockers, and Recommendations. Factual data (team roster, ticket tables, PR lists) passes through unchanged.
+
+**Critic Prompt:**
+
+```
+Review this team status report and identify exactly 3 weaknesses in the ASSESSMENT
+sections (Health Indicators, Risks & Blockers, Recommendations). Do NOT critique
+factual data tables — only the interpretation, risk assessment, and recommendations.
+
+For each weakness:
+1. Cite specific text from the report
+2. Explain why it's a weakness (missed risk, overly optimistic assessment,
+   recommendation without actionable detail, missing root cause)
+3. Suggest a concrete fix
+
+Do NOT list strengths. Do NOT soften with "this is mostly good but". Your only
+job is to find the 3 biggest problems with the assessment and recommendations.
+
+REPORT TO CRITIQUE:
+[draft_report]
+```
+
+**Reviser Prompt:**
+
+```
+Below is a team status report and 3 critiques of its assessment sections. For each
+critique, either:
+(a) Fix the issue in the revised report, OR
+(b) Write a 1-sentence justification for why the original assessment should stand
+
+Then produce the complete revised report incorporating your fixes. Preserve all
+factual data tables exactly — only revise Health Indicators, Risks & Blockers,
+and Recommendations.
+
+ORIGINAL REPORT:
+[draft_report]
+
+CRITIQUES:
+[critic_output]
+```
+
+**Causantic event:**
+```
+[compete-ratchet: skill=team-status, team=TEAM_NAME, critiques_addressed=N, critiques_justified=N]
+```
+
 ## Output Structure
+
+**If critique ratchet mode is active**: Generate the full status report below, then run the Critique Ratchet pipeline (Critic → Reviser) on the assessment sections before presenting to the user. The user receives the revised version.
+
+**If single-agent mode** (default): Generate the status report directly.
 
 ### [Team Name] Status - [Date]
 

@@ -4,6 +4,7 @@ Capture and document a thinking session - strategy discussions, design decisions
 
 ## Usage
 - `/rubberduck [topic]` - Start a new rubberduck session on a topic
+- `/rubberduck [topic] --challenge` - Start with Devil's Advocate mode (stress-test your thinking)
 - `/rubberduck --save` - Save the current conversation as a documented session
 - `/rubberduck --save [title]` - Save with a specific title
 
@@ -29,6 +30,118 @@ Sessions can vary by **domain** and **scope**:
 - **Operational**: Day-to-day problem solving, immediate issues, quick decisions
 
 The document will be tagged with domain and scope for future searchability.
+
+## Challenge Mode (Devil's Advocate)
+
+When `--challenge` is used, the session runs an [Adversarial Debate](../patterns/adversarial-debate.md) variant to stress-test the user's thinking before documenting conclusions.
+
+**Activation:**
+
+| Trigger | Challenge? |
+|---------|-----------|
+| `--challenge` flag | Yes |
+| Default (no flag) | No — standard rubberduck session |
+
+No auto-triggers — rubberduck topics are too varied. The user opts in when they want their thinking pressure-tested.
+
+### How It Works
+
+**Phase 1: Explore** — Run the rubberduck session normally. Discuss the topic, surface the user's position, reasoning, and key assumptions. Gather dossier context for any stakeholders mentioned.
+
+**Phase 2: Challenge** — Once the user's position is clear (either naturally or when they say "challenge this"), launch three sequential agents:
+
+**Steelman Agent** (parallel, subagent_type: `general-purpose`):
+```
+You are strengthening the following argument to its most compelling form.
+Fill logical gaps, find supporting evidence, anticipate objections and
+pre-empt them, and articulate the strongest version of this position.
+
+Do NOT change the core thesis — strengthen it. If a supporting point is
+weak, replace it with a stronger one that supports the same conclusion.
+
+THE ARGUMENT:
+[user's position and reasoning from the conversation]
+
+STAKEHOLDER CONTEXT:
+[dossier summaries if available]
+```
+
+**Devil's Advocate Agent** (parallel, subagent_type: `general-purpose`, sycophancy-hardened per [Adversarial Debate](../patterns/adversarial-debate.md)):
+```
+You are a rigorous strategic thinker whose job is to find every weakness
+in the following argument. Your reputation depends on finding real problems,
+not performing disagreement.
+
+STRUCTURAL REQUIREMENT: Produce exactly 5 challenges ranked by severity.
+For each:
+- State the assumption being challenged
+- Present the strongest counterargument or contradicting evidence
+- Explain the concrete risk if this assumption is wrong
+
+Do NOT soften with "this is probably fine but" or "minor point". If it's
+a weakness, state it plainly.
+
+THE ARGUMENT:
+[user's position and reasoning from the conversation]
+
+STAKEHOLDER CONTEXT:
+[dossier summaries if available — use to identify political/relational
+risks the argument may be ignoring]
+```
+
+Both agents receive the conversation context and any dossier content as prompt text. They do NOT have MCP tool access.
+
+**Judge Agent** (sequential, after both complete):
+```
+You have a steelmanned argument and a devil's advocate teardown of the
+same position:
+
+STEELMANNED VERSION:
+[steelman_output]
+
+DEVIL'S ADVOCATE CHALLENGES:
+[devils_advocate_output]
+
+Produce the synthesis:
+1. Which parts of the argument survived the devil's advocate intact?
+2. Which challenges exposed genuine weaknesses?
+3. For each challenge: fatal flaw, real concern, or a stretch? Score 1-5.
+4. Did the devil's advocate find substantive issues or just perform
+   disagreement?
+5. What is the revised argument — the original position with its weak
+   points acknowledged or addressed?
+6. What should the user do differently as a result?
+```
+
+After the Judge synthesis, emit a Causantic event:
+```
+[compete-result: skill=rubberduck, topic=TOPIC_SLUG, disagreements=N, resolution=SUMMARY, survived=N/5_challenges]
+```
+
+### Challenge Output Format
+
+The challenge debate replaces the Exploration section in the standard output template:
+
+```markdown
+## Steelman
+[The strongest version of your argument]
+
+---
+
+## Devil's Advocate
+[5 ranked challenges with counterarguments]
+
+---
+
+## Synthesis
+[What survived, what needs work, revised position]
+
+**Survived intact**: [list]
+**Needs strengthening**: [list]
+**Consider abandoning**: [list, if any]
+```
+
+The rest of the template (Thinking About, Context, Conclusions, Open Questions, Actions) still applies — but Conclusions and Actions are informed by the synthesis rather than the raw conversation.
 
 ## Output Structure
 
@@ -122,6 +235,7 @@ When stakeholders are mentioned in the session (either in the topic or tagged in
 ### Core Patterns Used
 
 - [Dossier Context](../patterns/dossier-context.md) - Load stakeholder profiles and playbooks
+- [Adversarial Debate](../patterns/adversarial-debate.md) - Devil's Advocate variant for challenge mode
 
 ## Notes
 - The skill captures conversation context from the current session

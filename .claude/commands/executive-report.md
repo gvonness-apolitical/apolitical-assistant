@@ -6,6 +6,8 @@ Generate an executive summary of engineering activity for a given time period, s
 - `/executive-report [period]` - Generate report for specified period
 - `/executive-report` - Interactive mode (will prompt for date range)
 - `/executive-report --resume` - Resume from last completed step if previous run was interrupted
+- `/executive-report [period] --compete` - Force critique ratchet (synthesis pressure-tested)
+- `/executive-report [period] --single` - Force single-agent (override auto-triggers)
 
 ## Checkpoint Discipline
 
@@ -58,6 +60,7 @@ Each checkpoint must include `Tools:` line with actual tools called and counts.
 - [Local Context First](../patterns/local-context-first.md) - Check existing reviews first
 - [Frontmatter](../patterns/frontmatter.md) - YAML metadata for report
 - [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
+- [Critique Ratchet](../patterns/critique-ratchet.md) - Synthesis sections pressure-tested through critique
 
 ## Arguments
 - `$ARGUMENTS` - Time period (optional). Accepts:
@@ -142,6 +145,66 @@ Read Gemini auto-notes from `121/` directory for the period:
 Proceeding to Step 3: Analyze & Categorize
 ```
 
+### Critique Ratchet Mode
+
+Before generating the report, determine whether to use critique ratchet mode. When active, the draft report (from Steps 3-4) is critiqued and revised before output — the user receives a better report without seeing the intermediate critique. See [Critique Ratchet](../patterns/critique-ratchet.md) for the full pattern.
+
+**Activation:**
+
+| Trigger | Competition? |
+|---------|-------------|
+| `--compete` flag | Always yes |
+| `--single` flag | Always no (overrides auto) |
+| Report covers >2 weeks (14+ days) | Auto-yes |
+| Default (no flag, short period) | No — single-agent |
+
+**How it works:** After Step 4 (Generate Report) produces the draft, the ratchet runs two sequential Task agents (subagent_type: `general-purpose`). Both agents receive the draft as prompt text. Neither has MCP tool access.
+
+**Critique targets synthesis sections only** — Highlights framing, Lowlights framing, Teams & Focus Areas narrative, and Outlook. Factual data (PR counts, ticket numbers, incident details) passes through unchanged.
+
+**Critic Prompt:**
+
+```
+Review this executive report and identify exactly 3 weaknesses in the SYNTHESIS
+sections (Highlights framing, Lowlights framing, Teams & Focus Areas, Outlook).
+Do NOT critique factual data sections — only the framing, emphasis, and narrative.
+
+For each weakness:
+1. Cite specific text from the report
+2. Explain why it's a weakness (wrong emphasis, missing context, unsupported claim,
+   overly optimistic/pessimistic framing, audience mismatch)
+3. Suggest a concrete fix
+
+Do NOT list strengths. Do NOT soften with "this is mostly good but". Your only
+job is to find the 3 biggest problems with how the data is framed and presented.
+
+REPORT TO CRITIQUE:
+[draft_report]
+```
+
+**Reviser Prompt:**
+
+```
+Below is an executive report and 3 critiques of its synthesis sections. For each
+critique, either:
+(a) Fix the issue in the revised report, OR
+(b) Write a 1-sentence justification for why the original framing should stand
+
+Then produce the complete revised report incorporating your fixes. Preserve all
+factual data exactly — only revise framing, emphasis, and narrative.
+
+ORIGINAL REPORT:
+[draft_report]
+
+CRITIQUES:
+[critic_output]
+```
+
+**Causantic event:**
+```
+[compete-ratchet: skill=executive-report, period=PERIOD, critiques_addressed=N, critiques_justified=N]
+```
+
 ### Step 3: Analyze & Categorize
 
 Group findings into:
@@ -174,6 +237,10 @@ Proceeding to Step 4: Generate Report
 ```
 
 ### Step 4: Generate Report
+
+**If critique ratchet mode is active**: Generate the report draft using the format below, then run the Critique Ratchet pipeline (Critic → Reviser) on the synthesis sections before proceeding to Step 5. The user receives the revised version.
+
+**If single-agent mode** (default): Generate the report directly.
 
 Use this format:
 

@@ -8,6 +8,8 @@ Gather action items and requests from all systems where you've been tagged, ment
 - `/update-todos --quick` - Quick scan (canvases and Slack only)
 - `/update-todos --source [source]` - Scan specific source (canvases, slack, email, notion, google)
 - `/update-todos --resume` - Resume from last completed source if previous run was interrupted
+- `/update-todos --compete` - Force priority voting (two agents independently prioritise)
+- `/update-todos --single` - Force single-agent (override auto-triggers)
 
 ## CRITICAL: Task Naming Format
 
@@ -140,6 +142,7 @@ If interrupted: Resume retries incomplete sources, skips completed ones.
 - [Daily Index Update](../patterns/daily-index-update.md) - Update daily context index
 - [Rate Limiting](../patterns/rate-limiting.md) - Batch API calls efficiently
 - [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
+- [Adversarial Debate](../patterns/adversarial-debate.md) - Priority Voting variant for triage disagreement surfacing
 
 ## Sources
 
@@ -408,7 +411,90 @@ Partially addressed:         [N] (tasks created with context)
 New tasks to create:         [N]
 ```
 
+## Priority Voting Mode (Adversarial Debate Variant)
+
+Before assigning priorities, determine whether to use priority voting mode. When active, two agents independently prioritise all action items and disagreements are surfaced for user attention. See [Adversarial Debate](../patterns/adversarial-debate.md) Priority Voting variant.
+
+**Activation:**
+
+| Trigger | Competition? |
+|---------|-------------|
+| `--compete` flag | Always yes |
+| `--single` flag | Always no (overrides auto) |
+| Total action items >= 15 after deduplication | Auto-yes |
+| Default (fewer items, no flag) | No — single-agent |
+
+Auto-triggers when the list is large enough that priority mistakes have real cost — with 15+ items, getting the order wrong means important work gets buried.
+
+**How it works:** After deduplication completes, pass the full list of action items (compact format: source, person, description, age) to two parallel Task agents (subagent_type: `general-purpose`). Neither has MCP tool access — all context is in the prompt.
+
+**Agent A Prompt (Urgency Lens):**
+
+```
+You are a Director of Engineering triaging your todo list. Prioritise based on
+URGENCY — who is waiting, how long they've waited, what breaks if you don't act.
+
+Assign each item a priority (P0/P1/P2/P3) and a 1-sentence justification.
+Use these rules:
+- P0: Active incidents, security, exec requests
+- P1: Direct questions awaiting response, blocking others, same-day deadlines
+- P2: Action items from meetings, reviews needed, delegate tasks
+- P3: FYI items, low-priority reviews, backlog items
+
+ACTION ITEMS TO PRIORITISE:
+[items_list]
+```
+
+**Agent B Prompt (Impact Lens):**
+
+```
+You are a Director of Engineering triaging your todo list. Prioritise based on
+IMPACT — what moves the needle, what has strategic value, what affects team health.
+
+Assign each item a priority (P0/P1/P2/P3) and a 1-sentence justification.
+Use these rules:
+- P0: Active incidents, security, exec requests
+- P1: Strategic blockers, team morale risks, cross-functional commitments
+- P2: Action items with clear deliverables, reviews that unblock others
+- P3: Administrative items, low-leverage tasks, things that can batch
+
+ACTION ITEMS TO PRIORITISE:
+[items_list]
+```
+
+**Resolution (Borda Count):**
+
+After both agents return, combine their rankings:
+1. Convert priorities to scores: P0=4, P1=3, P2=2, P3=1
+2. Sum each item's score across both agents (max 8, min 2)
+3. Sort by combined score (highest first)
+4. **Flag disagreements**: Items where agents disagree by 2+ priority levels (e.g., P1 vs P3) are highlighted with both justifications shown
+
+**Disagreement Output:**
+
+```markdown
+### Priority Disagreements (require your attention)
+
+| # | Item | Agent A | Agent B | Reason |
+|---|------|---------|---------|--------|
+| 1 | [description] | P1 (urgency: someone waiting) | P3 (impact: low leverage) | [key difference] |
+| 2 | [description] | P3 (urgency: no deadline) | P1 (impact: strategic commitment) | [key difference] |
+
+The rest of the items had consistent priority assignments. Disagreements are shown above — please confirm or override before I create tasks.
+```
+
+Use `AskUserQuestion` to let the user confirm or override the flagged items before creating tasks.
+
+**Causantic event:**
+```
+[compete-result: skill=update-todos, variant=priority-voting, items=N, disagreements=N, user_overrides=N]
+```
+
 ## Priority Assignment
+
+**If priority voting mode is active**: Use the Borda count result from the Priority Voting Mode section above. Resolve any user overrides on disagreements. Then proceed to Automatic Task Creation with the confirmed priorities.
+
+**If single-agent mode** (default): Assign priorities using the rules below.
 
 Assign priority to each item based on these rules (in order):
 

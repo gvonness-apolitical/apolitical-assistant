@@ -8,6 +8,8 @@ Prepare for an upcoming meeting by gathering relevant context from all systems i
 - `/prep-meeting [name]` - prep for meeting with specific person
 - `/prep-meeting [meeting title]` - prep for specific meeting
 - `/prep-meeting --resume` - Resume from last completed step if previous run was interrupted
+- `/prep-meeting [name] --compete` - Force critique ratchet (pressure-test talking points)
+- `/prep-meeting [name] --single` - Force single-agent (override auto-triggers)
 
 ## Checkpoint Discipline
 
@@ -47,6 +49,7 @@ Each checkpoint must include `Tools:` line with actual tools called and counts.
 - [Figma Extraction](../patterns/figma-extraction.md) - Extract Figma links from channels
 - [Daily Index Update](../patterns/daily-index-update.md) - Log meeting prep activity
 - [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
+- [Critique Ratchet](../patterns/critique-ratchet.md) - Pressure-test talking points through Draft → Critique → Revise
 
 ## Process
 
@@ -224,7 +227,69 @@ If this is a 1:1 with a configured canvas in `oneOnOnes`:
 Proceeding to Step 5: Generate Prep Document
 ```
 
+### Critique Ratchet Mode
+
+Before generating the prep document, determine whether to use the [Critique Ratchet](../patterns/critique-ratchet.md) pipeline. When active, the Talking Points and suggested questions go through Draft → Critique → Revise to pressure-test them. The ratchet is **invisible** — the user just gets a better prep document.
+
+**Activation:**
+
+| Trigger | Ratchet? |
+|---------|---------|
+| `--compete` flag | Always yes |
+| `--single` flag | Always no (overrides auto) |
+| Meeting title contains exec/leadership keywords | Auto-yes |
+| Default (no flag, no keyword match) | No — single-agent |
+
+**Exec/leadership keywords** (case-insensitive): "exec", "board", "leadership", "management team", "MT meeting", "SLT"
+
+**How it works:** The ratchet targets the **Talking Points** and **suggested questions** sections specifically — factual sections (Context, Channel Activity, Canvas Status) are data and don't benefit from critique.
+
+1. **Draft** (subagent_type: `general-purpose`): Generate the full prep document as normal (Step 5 output). This is the draft.
+2. **Critique** (subagent_type: `general-purpose`, sycophancy-hardened per [Adversarial Debate](../patterns/adversarial-debate.md)):
+   ```
+   Review the Talking Points and suggested questions from this meeting prep.
+   Identify exactly 3 weaknesses. For each:
+   1. Cite the specific talking point or question
+   2. Explain why it's weak (wrong framing for this audience, missing a more
+      important topic, bad sequencing, unsupported assumption, etc.)
+   3. Suggest a concrete replacement or improvement
+
+   Do NOT list strengths. Do NOT soften. Your only job is to find the 3
+   biggest problems with the talking points.
+
+   MEETING CONTEXT:
+   [meeting type, attendees, dossier summaries]
+
+   TALKING POINTS TO CRITIQUE:
+   [draft talking points and questions]
+   ```
+3. **Revise** (subagent_type: `general-purpose`):
+   ```
+   Below are meeting talking points and 3 critiques. For each critique:
+   (a) Fix the issue in the revised talking points, OR
+   (b) Write a 1-sentence justification for why the original should stand
+
+   Then produce the complete revised Talking Points and suggested questions.
+
+   ORIGINAL TALKING POINTS:
+   [draft talking points]
+
+   CRITIQUES:
+   [critic output]
+   ```
+
+All agents receive context as prompt text — they do NOT have MCP tool access.
+
+The revised talking points replace the draft in the final prep document. After completion, emit a Causantic event:
+```
+[compete-ratchet: skill=prep-meeting, meeting=MEETING_NAME, critiques_addressed=N, critiques_justified=N]
+```
+
 ### Step 5: Generate Prep Document
+
+**If critique ratchet is active**: Generate the full prep document first (draft), then run the Talking Points through the Critique → Revise pipeline above. The revised talking points replace the draft in the saved document.
+
+**If single-agent mode** (default): Generate the prep document as normal.
 
 ## Message Filtering
 
