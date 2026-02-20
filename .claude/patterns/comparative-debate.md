@@ -113,10 +113,55 @@ Shared with [Adversarial Debate](adversarial-debate.md). Key adaptations for com
 4. **Closing argument**: Forces commitment — 3-sentence summary of strongest case
 5. **Judge audit**: Explicitly checks for strawmanning and unsupported claims
 
+## Team-Based Execution
+
+When agent team prerequisites are met (see [Team Lifecycle](team-lifecycle.md)), `/evaluate` upgrades from single-shot subagent debate to a 3-round team-based debate with rebuttals.
+
+### 3-Round Protocol
+
+| Round | What Happens | Agent Interaction |
+|-------|-------------|-------------------|
+| 1. Opening Arguments | Both advocates produce arguments (parallel) | Independent — same as subagent mode |
+| 2. Rebuttals | Each advocate receives opponent's opening, attacks 3 weakest claims | Inter-agent via SendMessage — teams required |
+| 3. Judge Synthesis | Separate judge teammate scores all 4 documents | Receives openings + rebuttals |
+
+### Key Differences from Subagent Mode
+
+- **Separate judge agent** (not lead-as-judge): The judge is a dedicated teammate, not the coordinator. This keeps the judge's context clean — it only sees the debate outputs, not the skill orchestration overhead.
+- **Rebuttal round**: The core improvement. Advocates must engage with each other's arguments rather than talking past each other. The judge scores rebuttal effectiveness 1-5 and tracks which claims survived/collapsed.
+- **Richer judge output**: The team-mode judge prompt includes Section 2b (Rebuttal Analysis) that scores each rebuttal and assigns confidence levels based on which claims survived cross-examination.
+
+### Fallback Chain
+
+```
+1. Team-based 3-round debate (default)
+   ↓ (team prerequisites fail OR --quick-debate flag)
+2. Subagent debate (parallel advocates → sequential judge)
+   ↓ (subagent execution fails)
+3. Single-agent scorecard (--single)
+```
+
+`--single` always bypasses both team AND subagent modes.
+
+### Rebuttal Prompt
+
+See `commands/evaluate.md` for the full Rebuttal Prompt template. Key structural requirements:
+- Target exactly 3 claims from opponent's opening
+- Quote the specific claim being attacked
+- Explain why it fails + provide counter-evidence
+- Acknowledge genuinely strong claims rather than attacking everything
+
+### Related Patterns
+
+- [Team Lifecycle](team-lifecycle.md) — prerequisites, team creation, shutdown, cleanup
+- [Cross-Examination](cross-examination.md) — similar targeted evidence challenges (used by other skills)
+
 ## Cost Gating, Evaluation Metrics, Graceful Degradation
 
 See [Adversarial Debate](adversarial-debate.md) — same principles apply. Key difference: adversarial is the **default** for `/evaluate` (the debate IS the skill's value). `--single` is the escape hatch for quick scorecards.
 
+Team mode adds ~50% cost over subagent mode (rebuttal round + separate judge context). The `--quick-debate` flag explicitly opts into subagent mode for cost-sensitive runs.
+
 ## Skills Using This Pattern
 
-- `/evaluate` — Structured decision evaluation (vendor, architecture, tool, strategy). See `commands/evaluate.md`.
+- `/evaluate` — Structured decision evaluation (vendor, architecture, tool, strategy). Default: team-based 3-round debate. Fallback: subagent debate. Escape hatch: `--single`. See `commands/evaluate.md`.
