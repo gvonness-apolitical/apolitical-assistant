@@ -724,6 +724,9 @@ Reusable patterns in `.claude/patterns/` reduce duplication across skills and en
 | [progressive-discovery](patterns/progressive-discovery.md) | Cache discovered IDs | 5+ |
 | [error-handling](patterns/error-handling.md) | Graceful degradation | All |
 | [rate-limiting](patterns/rate-limiting.md) | Batch and throttle API calls | API-heavy |
+| [adversarial-debate](patterns/adversarial-debate.md) | Competitive review via Advocate/Challenger/Judge | review-rfc, mbr, rubberduck, update-todos |
+| [competitive-draft](patterns/competitive-draft.md) | Parallel drafts with different seeds, user selects | respond-to, draft-email, review-doc, summarise |
+| [critique-ratchet](patterns/critique-ratchet.md) | Draft → Critique → Revise improvement pipeline | prep-meeting, executive-report, team-status |
 
 ### Using Patterns
 

@@ -2,11 +2,16 @@
 
 Perform a comprehensive technical review of an RFC in Notion, providing structured feedback as comments.
 
+## Core Patterns Used
+- [Adversarial Debate](../patterns/adversarial-debate.md) - Competitive review mode
+
 ## Usage
 - `/review-rfc [notion-url]` - standard review of the RFC
 - `/review-rfc [notion-url] quick` - high-level structural feedback only
-- `/review-rfc [notion-url] deep` - comprehensive review with code-level suggestions
+- `/review-rfc [notion-url] deep` - comprehensive review with code-level suggestions (auto-enables competitive mode)
 - `/review-rfc [rfc-title]` - search for and review an RFC by title
+- `/review-rfc [notion-url] --compete` - force competitive mode (Advocate vs Challenger)
+- `/review-rfc [notion-url] --single` - force single-agent mode (override auto-enable)
 
 ## Review Depth
 
@@ -15,6 +20,91 @@ Perform a comprehensive technical review of an RFC in Notion, providing structur
 | **quick** | High-level structure, obvious concerns, key questions | ~15 min |
 | **standard** | All evaluation areas, thorough but focused | ~45 min |
 | **deep** | Comprehensive analysis, code examples, alternatives | ~2 hours |
+
+**Note**: `deep` auto-enables competitive mode. Use `--single` to override. `standard --compete` is valid (competitive at standard depth).
+
+---
+
+## Competitive Review Mode
+
+References: [Adversarial Debate](../patterns/adversarial-debate.md) pattern
+
+### Activation
+
+| Trigger | Competition? |
+|---------|-------------|
+| `--compete` flag | Yes |
+| `--single` flag | No (override auto) |
+| `deep` review depth | Auto-yes |
+| RFC tagged "architecture" or "infrastructure" | Auto-yes |
+| RFC author is senior/principal+ | Auto-yes |
+| Default | No (single-agent) |
+
+### How It Works
+
+**Phase 1: Context Gathering** (unchanged)
+Steps 1-4 execute as normal — fetch RFC, architecture context, technical context, industry research. Data collected once, shared with both agents.
+
+**Phase 2: Adversarial Debate**
+
+Launch two parallel Task agents:
+
+**Advocate Agent**: Reviews with a bias toward approval. Presents the strongest case the RFC is well-designed. Must flag genuine blockers but frames them as addressable. Uses the 7 evaluation areas and RFC-type framework.
+
+**Challenger Agent** (sycophancy-hardened): Reviews with a bias toward revision. Identity: senior staff engineer, 50+ RFCs seen fail in production. Must produce exactly 5 concerns ranked by severity, each with:
+- Specific RFC text cited
+- Concrete production risk
+- Specific suggested fix
+
+No softening language. No "minor nitpick" hedging.
+
+Both agents receive identical context: RFC content, architecture docs, related code, related RFCs, industry research.
+
+**Phase 3: Judge Synthesis**
+
+Sequential agent receives both outputs and:
+1. Identifies which Advocate arguments survived the Challenger
+2. Identifies which Challenger concerns the Advocate failed to address
+3. Scores each concern 1-5 (genuine issue vs stretch)
+4. Evaluates whether the Challenger pulled punches
+5. Produces final review in standard output format
+6. Marks agreement zones (high confidence) vs contested zones
+7. Extracts 2-3 **key themes** — specific arguments that survived the debate and should be emphasised in the structured review (Blocking Concerns, Recommendations sections)
+
+### Output Format (Competitive Mode)
+
+When competitive mode is active, the output includes the full debate:
+
+```markdown
+[Standard review header and metadata]
+
+#### Advocate Position
+[Full advocate review]
+
+#### Challenger Position
+[Full challenger review — 5 ranked concerns]
+
+#### Judge Synthesis
+[Analysis of which arguments won]
+
+**Key themes for review:**
+1. [theme — e.g., "identity linking is a schema decision that must precede Phase 1"]
+2. [theme]
+3. [theme]
+
+**Agreement zones** (high confidence): ...
+**Contested zones** (flag for RFC author): ...
+
+[Standard review sections continue: detailed feedback, anti-patterns, etc.]
+```
+
+### Causantic Memory
+
+After each competitive review, emit:
+
+```
+[compete-result: skill=review-rfc, artifact=RFC_TITLE, disagreements=N, resolution=SUMMARY, sided_with=challenger:N/advocate:N]
+```
 
 ---
 
@@ -63,6 +153,54 @@ Focus on:
 - Emerging patterns or technologies worth considering
 - Known pitfalls or anti-patterns to avoid
 - Industry direction and future-proofing considerations
+
+### 5. Evaluate (Single-Agent or Competitive)
+
+**Check competitive mode activation** (see Competitive Review Mode section above):
+- If `--compete` flag, `deep` depth, or auto-trigger matches → run Adversarial Debate
+- If `--single` flag or no trigger → run single-agent evaluation
+
+**Single-agent path**: Evaluate the RFC against all relevant areas from the Evaluation Framework below. Produce the review directly.
+
+**Competitive path**: Follow the Adversarial Debate pattern:
+1. Launch **Advocate** and **Challenger** Task agents in parallel, both receiving identical context from steps 1-4
+2. Wait for both to complete
+3. Launch **Judge** Task agent with both outputs
+4. Format output with full debate transparency (see Competitive Review Mode output format)
+5. Emit Causantic event
+
+### 6. Structure Feedback
+
+Using the evaluation output (from either single-agent or Judge synthesis), structure the feedback according to the Output Format below. If competitive mode was used, the Judge's **key themes** should guide which concerns lead the Blocking Concerns and Recommendations sections — these are the arguments that survived adversarial scrutiny and carry highest confidence.
+
+### 7. Post to Notion
+
+Post the structured review as a comment using `notion-create-comment`.
+
+### 7b. Save Local Copy (Competitive Mode Only)
+
+When competitive mode was active, save the full debate locally to `work/YYYY-MM-DD-rfc-review-[slug].md` for future reference (Causantic recall, revision tracking). The slug is derived from the RFC title (lowercase, hyphens, truncated to ~40 chars).
+
+**Frontmatter:**
+```yaml
+---
+type: work
+subtype: rfc-review
+date: YYYY-MM-DD
+tags: [rfc-review, competitive]
+related:
+  - [notion URL of RFC]
+status: final
+---
+```
+
+**Content:** Standard review header, Advocate position, Challenger position, Judge synthesis with key themes, agreement/contested zones. This mirrors the Notion comment content but includes the full debate context.
+
+This is in addition to the Notion comment — the local copy preserves the adversarial debate for future runs on related RFCs.
+
+### 8. Provide Summary
+
+Confirm the review was posted with a link, key concerns summary, recommended next steps, and offer to discuss.
 
 ---
 

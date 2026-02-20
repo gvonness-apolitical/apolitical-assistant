@@ -6,6 +6,8 @@ Review a Google Doc or Slides presentation, providing feedback through comments.
 - `/review-doc [google-doc-url]` - review a Google Doc
 - `/review-doc [google-slides-url]` - review a Google Slides presentation
 - `/review-doc [title]` - search Drive for a document by title
+- `/review-doc [url/title] --compete` - Force competitive review (two review lenses)
+- `/review-doc [url/title] --single` - Force single-agent (override auto-triggers)
 
 ## Review Focus
 
@@ -31,6 +33,35 @@ Review a Google Doc or Slides presentation, providing feedback through comments.
 - Suggest tighter phrasing
 - Identify sections that could be summarised or cut
 
+## Core Patterns Used
+
+- [Competitive Draft](../patterns/competitive-draft.md) - Parallel reviews with different lenses
+
+## Competitive Draft Mode
+
+Before reviewing, determine whether to use competitive mode. Two agents review the same document through different lenses — one prioritising technical depth, the other prioritising accessibility — and the user selects or merges.
+
+**Activation:**
+
+| Trigger | Competition? |
+|---------|-------------|
+| `--compete` flag | Always yes |
+| `--single` flag | Always no (overrides auto) |
+| Default (no flag) | No — single-agent |
+
+**How it works:** Two parallel Task agents (subagent_type: `general-purpose`) each review the document from a different seed prompt — Technical Depth vs Accessibility (see [Competitive Draft](../patterns/competitive-draft.md) for seed text). Both agents receive identical pre-gathered context as prompt text: the full document content, technical architecture context, and any additional context from Steps 1-4. Agents do NOT have MCP tool access — all context must be passed in the prompt.
+
+The difference is what each agent prioritises:
+- **Seed A (Technical Depth)** flags precision issues, structural gaps, logical inconsistencies, and incorrect technical claims
+- **Seed B (Accessibility)** flags jargon, unclear value propositions, missing audience context, and opportunities for better analogies
+
+After both reviews are returned, present them with a Key Differences comparison and use `AskUserQuestion` with options: **Review A** / **Review B** / **Merge**. If the user selects Merge, ask which elements to take from each review before combining.
+
+After selection, emit a Causantic event:
+```
+[compete-draft: skill=review-doc, seed_a=technical-depth, seed_b=accessibility, user_chose=a|b|merge, context=BRIEF_DESCRIPTION]
+```
+
 ---
 
 ## Process
@@ -49,6 +80,10 @@ Review a Google Doc or Slides presentation, providing feedback through comments.
   - Service inventory
 
 ### 3. Review the Content
+
+**If competitive mode is active**: Follow the Competitive Draft Mode steps above — launch two parallel agents with the document content and technical context, present both reviews, let the user select. Then continue to the Feedback Approach and Output sections with the chosen/merged review.
+
+**If single-agent mode** (default): Review using the guidance below.
 
 **For Google Docs:**
 - Read through section by section
@@ -97,6 +132,31 @@ Feedback is provided as comments, not direct edits (unless specifically requeste
 ---
 
 ## Output Format
+
+### Competitive Output
+
+When competitive mode is active, present both reviews before the user selects:
+
+```markdown
+## Review A — Technical Depth
+[Full review focused on precision, logic, structural gaps]
+
+---
+
+## Review B — Accessibility
+[Full review focused on jargon, audience fit, analogies, clarity]
+
+---
+
+### Key Differences
+- **Focus**: Review A targets [X], Review B targets [Y]
+- **Strongest feedback**: Review A catches [X], Review B catches [Y]
+- **Overlap**: Both flag [shared concerns]
+```
+
+Use `AskUserQuestion` with options: **Review A** / **Review B** / **Merge**.
+
+After selection, present the chosen or merged review in the standard Comment Summary format below.
 
 ### Comment Summary
 After reviewing, provide a summary to the user:

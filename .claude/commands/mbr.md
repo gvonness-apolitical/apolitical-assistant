@@ -7,6 +7,8 @@ Generate the Engineering MBR following Mark Douglas's format: header block, 5-8 
 - `/mbr [month]` - Generate MBR for specified month
 - `/mbr` - Interactive mode (will prompt for month)
 - `/mbr --resume` - Resume from last completed step if previous run was interrupted
+- `/mbr [month] --compete` - Force competitive RAG debate
+- `/mbr [month] --single` - Force single-agent (override auto-triggers)
 
 ## Checkpoint Discipline
 
@@ -94,6 +96,7 @@ Each checkpoint must include `Tools:` line with actual tools called and counts.
 - [Error Handling](../patterns/error-handling.md) - Graceful degradation for API failures
 - [Daily Index Update](../patterns/daily-index-update.md) - Update daily context on completion
 - [Frontmatter](../patterns/frontmatter.md) - YAML metadata for MBR file
+- [Adversarial Debate](../patterns/adversarial-debate.md) - Competitive RAG determination
 
 ## Process
 
@@ -297,7 +300,77 @@ Use AskUserQuestion to let the user accept, reject, or modify the suggested exce
 Proceeding to Step 7: Analyze & Determine RAG
 ```
 
+### Competitive RAG Mode
+
+References: [Adversarial Debate](../patterns/adversarial-debate.md) pattern
+
+#### Activation
+
+| Trigger | Competition? |
+|---------|-------------|
+| `--compete` flag | Always yes |
+| `--single` flag | Always no (override auto) |
+| Previous month's RAG was AMBER or RED | Auto-yes |
+| Multiple DORA level drops in current month | Auto-yes |
+| P0/P1 incident with outstanding follow-ups | Auto-yes |
+| Default | No (single-agent) |
+
+#### How It Works
+
+When competitive mode is active, Step 7 uses an Optimist vs Skeptic debate instead of single-agent analysis:
+
+1. **Optimist Agent** — argues the best-case RAG (GREEN). Presents the strongest case that metrics are healthy, concerns are contained, and trajectory is positive. Must cite specific data.
+2. **Skeptic Agent** (sycophancy-hardened) — argues the worst-case RAG (AMBER/RED). Identity: "You are a board member reviewing engineering performance. Your job is to identify where the narrative is softer than the data warrants." Must assign its own RAG per metric area (DORA, delivery, incidents, OKRs, team) with evidence. Must assign at least one AMBER or RED — an engineering org with zero concerns doesn't exist. Must NOT round up: a metric that is "stable" is not GREEN if it was already underperforming.
+3. **Judge Agent** — receives both positions and produces:
+   - Recommended RAG with 1-sentence rationale
+   - Agreement zones (metrics where both agree)
+   - Contested zones (metrics where they disagree)
+   - 2-3 **key narratives**: specific framings the commentary should incorporate (e.g., "lead time increase is structural, not a blip" or "incident follow-up rate is the real concern despite GREEN DORA")
+
+Both agents receive identical data from Steps 1-6. The disagreement is editorial — same quantitative data, different interpretation.
+
+#### Key Narratives
+
+The Judge's key narratives feed into Step 8 to improve the prose commentary. These are specific arguments that survived the debate and should be emphasised in the writing — the debate improves the prose, not just the traffic light.
+
+#### Output Format (within Step 7)
+
+```markdown
+## RAG Debate
+
+### Optimist Position (argues GREEN)
+[Metric-by-metric assessment with evidence]
+**Proposed RAG**: GREEN
+
+### Skeptic Position (argues AMBER/RED)
+[Metric-by-metric assessment with evidence]
+**Proposed RAG**: AMBER
+
+### Judge Synthesis
+[Which arguments held up, scoring of disagreements]
+**Recommended RAG**: [status] — [1-sentence rationale]
+
+**Key narratives for commentary:**
+1. [narrative 1]
+2. [narrative 2]
+3. [narrative 3]
+
+**Agreement zones**: [metrics where both agree]
+**Contested zones**: [metrics where they disagree]
+
+---
+Accept recommended RAG / Override to [GREEN/AMBER/RED]?
+```
+
+---
+
 ### Step 7: Analyze & Determine RAG (User Confirmation Gate)
+
+**Check competitive mode activation** (see Competitive RAG Mode section above):
+- If `--compete` flag, or any auto-trigger matches → run competitive path
+- If `--single` flag or no trigger → run single-agent path
+
+#### Single-Agent Path
 
 Assess the topline RAG status using weighted signals:
 
@@ -322,16 +395,30 @@ Assess the topline RAG status using weighted signals:
 
 Present the proposed RAG to the user with rationale. Allow override.
 
-**Save state**: Record RAG decision and user confirmation
+#### Competitive Path
+
+Follow the Adversarial Debate pattern with MBR-specific adaptations:
+
+1. Launch **Optimist** and **Skeptic** Task agents in parallel, both receiving identical data from Steps 1-6
+2. Wait for both to complete
+3. Launch **Judge** Task agent with both outputs
+4. Present the full debate to the user (see Competitive RAG Mode output format above)
+5. Judge produces recommended RAG + key narratives for Step 8
+
+Both paths converge at the user confirmation gate. Present the proposed RAG (from single-agent analysis or Judge recommendation) to the user with rationale. Allow override.
+
+**Save state**: Record RAG decision, user confirmation, and (if competitive) key narratives
 
 ```
 ✓ CHECKPOINT: Step 7 complete - Analyze & Determine RAG
-  Proposed RAG: [green/amber/red] | Previous: [status] | User confirmed: [yes/override]
+  Mode: [single-agent/competitive] | Proposed RAG: [green/amber/red] | Previous: [status] | User confirmed: [yes/override]
 
 Proceeding to Step 8: Draft MBR
 ```
 
 ### Step 8: Draft MBR (User Confirmation Gate)
+
+If competitive mode was used in Step 7, incorporate the Judge's **key narratives** into the commentary paragraph. These provide specific framings that the debate surfaced — use them to strengthen the prose. For example, if a key narrative is "lead time increase is structural, not a blip", the commentary should frame lead time that way rather than treating it as a temporary fluctuation.
 
 Compose the MBR following Mark's format exactly:
 
@@ -449,6 +536,13 @@ After the MBR content, include a data sources appendix:
 - Accepted: [count]
 - User-added: [count]
 - Rejected: [count]
+
+### RAG Debate Summary (competitive mode only)
+- **Mode**: Competitive (Optimist vs Skeptic)
+- **Recommended RAG**: [status]
+- **Key narratives**: [list]
+- **Agreement zones**: [list]
+- **Contested zones**: [list]
 ```
 
 ```
