@@ -4,7 +4,8 @@ Capture and document a thinking session - strategy discussions, design decisions
 
 ## Usage
 - `/rubberduck [topic]` - Start a new rubberduck session on a topic
-- `/rubberduck [topic] --challenge` - Start with Devil's Advocate mode (stress-test your thinking)
+- `/rubberduck [topic] --challenge` - Start with Devil's Advocate mode (team-based dialectic, default)
+- `/rubberduck [topic] --challenge --quick` - Devil's Advocate mode (single-shot subagents, no team)
 - `/rubberduck --save` - Save the current conversation as a documented session
 - `/rubberduck --save [title]` - Save with a specific title
 
@@ -33,14 +34,16 @@ The document will be tagged with domain and scope for future searchability.
 
 ## Challenge Mode (Devil's Advocate)
 
-When `--challenge` is used, the session runs an [Adversarial Debate](../patterns/adversarial-debate.md) variant to stress-test the user's thinking before documenting conclusions.
+When `--challenge` is used, the session runs an [Adversarial Debate](../patterns/adversarial-debate.md) variant to stress-test the user's thinking before documenting conclusions. Default uses agent teams for multi-round dialectic with defense and counter-assessment.
 
 **Activation:**
 
-| Trigger | Challenge? |
-|---------|-----------|
-| `--challenge` flag | Yes |
-| Default (no flag) | No — standard rubberduck session |
+| Trigger | Mode |
+|---------|------|
+| `--challenge` flag | Team-based 4-round dialectic (default) |
+| `--challenge --quick` flag | Single-shot subagent (Steelman + DA parallel → Judge sequential) |
+| `--challenge` + team prerequisites fail | Falls back to single-shot subagent |
+| Default (no `--challenge`) | No challenge — standard rubberduck session |
 
 No auto-triggers — rubberduck topics are too varied. The user opts in when they want their thinking pressure-tested.
 
@@ -48,7 +51,13 @@ No auto-triggers — rubberduck topics are too varied. The user opts in when the
 
 **Phase 1: Explore** — Run the rubberduck session normally. Discuss the topic, surface the user's position, reasoning, and key assumptions. Gather dossier context for any stakeholders mentioned.
 
-**Phase 2: Challenge** — Once the user's position is clear (either naturally or when they say "challenge this"), launch three sequential agents:
+**Phase 2: Challenge** — Once the user's position is clear (either naturally or when they say "challenge this"), execute one of the two paths below.
+
+---
+
+### Path A: `--challenge --quick` OR Team Prerequisites Fail (Single-Shot Subagents)
+
+Current behavior — three sequential/parallel agents without inter-agent communication.
 
 **Steelman Agent** (parallel, subagent_type: `general-purpose`):
 ```
@@ -113,14 +122,143 @@ Produce the synthesis:
 6. What should the user do differently as a result?
 ```
 
-After the Judge synthesis, emit a Causantic event:
+---
+
+### Path B: `--challenge` Default (Team-Based 4-Round Dialectic)
+
+Uses Claude Code agent teams for multi-round interaction where the Steelman and Devil's Advocate respond to each other. Follow the [Team Lifecycle](../patterns/team-lifecycle.md) pattern.
+
+**Prerequisites Check:**
 ```
-[compete-result: skill=rubberduck, topic=TOPIC_SLUG, disagreements=N, resolution=SUMMARY, survived=N/5_challenges]
+1. Check env var CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
+2. Read settings.json → agentTeams.enabled
+3. Confirm not already in a team context
+→ If ANY fails: fall back to Path A
 ```
+
+**Team Setup:**
+```
+TeamCreate:
+  team_name: "rubberduck-challenge-{timestamp}"
+  description: "Rubberduck challenge: {TOPIC}"
+```
+
+**Round 1 — Steelman (Sequential):**
+
+Spawn `steelman` teammate to strengthen the user's argument:
+
+```
+Task:
+  team_name: "rubberduck-challenge-{timestamp}"
+  name: "steelman"
+  subagent_type: "general-purpose"
+  prompt: [Steelman Prompt — same as Path A]
+```
+
+Wait for completion. The strengthened argument becomes the target for the Devil's Advocate.
+
+**Round 2 — Devil's Advocate Challenges (Sequential):**
+
+Spawn `devils-advocate` teammate. Send the steelmanned argument (not the raw user argument):
+
+```
+Task:
+  team_name: "rubberduck-challenge-{timestamp}"
+  name: "devils-advocate"
+  subagent_type: "general-purpose"
+  prompt: [Devil's Advocate Prompt — same as Path A, but uses steelmanned argument as THE ARGUMENT]
+```
+
+Wait for completion. The DA produces 5 ranked challenges against the strongest version of the argument.
+
+**Round 3 — Steelman Defense (Sequential, NEW):**
+
+Send the DA's 5 challenges to the Steelman via SendMessage:
+
+```
+SendMessage:
+  type: "message"
+  recipient: "steelman"
+  content: |
+    The Devil's Advocate has produced 5 challenges to your strengthened argument:
+
+    [devils_advocate_output]
+
+    For each challenge, you MUST either:
+    (a) CONCEDE AND REVISE: If the challenge is valid, acknowledge it and revise
+        the relevant part of the argument. Show the before/after.
+    (b) DEFEND WITH EVIDENCE: If the challenge misses the mark, provide specific
+        evidence or reasoning that addresses it. "I disagree" is not a defense.
+
+    Conceding a valid challenge and revising strengthens the overall argument.
+    Defending every point weakens all of them.
+
+    Produce your defense/revision for all 5 challenges.
+  summary: "Round 3: Defend or revise against 5 challenges"
+```
+
+Wait for response.
+
+**Round 4 — Devil's Advocate Counter-Assessment (Sequential, NEW):**
+
+Send the Steelman's defenses to the DA via SendMessage:
+
+```
+SendMessage:
+  type: "message"
+  recipient: "devils-advocate"
+  content: |
+    The Steelman has responded to your 5 challenges:
+
+    [steelman_defense_output]
+
+    For each defense/revision, assess:
+
+    1. If they CONCEDED and REVISED: Is the revised argument actually stronger,
+       or did the revision introduce new weaknesses? Does the revision address
+       the root concern or just rephrase it?
+
+    2. If they DEFENDED: Was the defense substantive (new evidence, specific
+       reasoning) or deflection (restating the original position)? Rate each
+       defense: ADDRESSED / PARTIALLY ADDRESSED / DEFLECTED.
+
+    Produce a verdict for each challenge.
+  summary: "Round 4: Assess steelman defenses"
+```
+
+Wait for response.
+
+**Lead Synthesis:**
+
+The lead (coordinator) synthesises all 4 rounds. Lead-as-judge is appropriate here — lighter synthesis than `/evaluate`.
+
+```
+Synthesis from full dialectic:
+- Round 1: Steelmanned argument
+- Round 2: 5 challenges from Devil's Advocate
+- Round 3: Steelman defense/revision for each challenge
+- Round 4: DA assessment of each defense
+
+Produce:
+1. Defense & Counter-Assessment table (see output format below)
+2. Overall verdict: What is the revised argument after the dialectic?
+3. Categories: Survived intact / Revised and strengthened / Needs further work / Consider abandoning
+```
+
+**Shutdown & Cleanup:**
+```
+try:
+  [Rounds 1-4 + synthesis above]
+finally:
+  SendMessage shutdown_request to steelman, devils-advocate
+  TeamDelete "rubberduck-challenge-{timestamp}"
+```
+
+---
 
 ### Challenge Output Format
 
-The challenge debate replaces the Exploration section in the standard output template:
+**Path A (single-shot)** uses the existing format:
 
 ```markdown
 ## Steelman
@@ -141,7 +279,53 @@ The challenge debate replaces the Exploration section in the standard output tem
 **Consider abandoning**: [list, if any]
 ```
 
+**Path B (team dialectic)** uses an expanded format with the defense/assessment exchange:
+
+```markdown
+## Steelman
+[The strongest version of your argument — Round 1]
+
+---
+
+## Devil's Advocate Challenges
+[5 ranked challenges — Round 2]
+
+---
+
+## Defense & Counter-Assessment
+
+| # | Challenge | Steelman Defense | DA Assessment | Verdict |
+|---|-----------|-----------------|---------------|---------|
+| 1 | [challenge summary] | [defense/revision summary] | [assessment] | Addressed / Partially / Deflected |
+| 2 | ... | ... | ... | ... |
+| 3 | ... | ... | ... | ... |
+| 4 | ... | ... | ... | ... |
+| 5 | ... | ... | ... | ... |
+
+---
+
+## Synthesis
+
+### Survived Intact
+[Parts of the argument that withstood all challenges]
+
+### Revised and Strengthened
+[Parts that were validly challenged, revised, and are now stronger]
+
+### Needs Further Work
+[Parts where the defense was partial or the revision introduced new issues]
+
+### Consider Abandoning
+[Parts where the challenge was devastating and no adequate defense was offered — if any]
+```
+
 The rest of the template (Thinking About, Context, Conclusions, Open Questions, Actions) still applies — but Conclusions and Actions are informed by the synthesis rather than the raw conversation.
+
+### Causantic Event
+
+```
+[compete-result: skill=rubberduck, topic=TOPIC_SLUG, mode=team-dialectic|subagent, rounds=N, challenges_addressed=N/5, challenges_deflected=N/5]
+```
 
 ## Output Structure
 
@@ -236,6 +420,7 @@ When stakeholders are mentioned in the session (either in the topic or tagged in
 
 - [Dossier Context](../patterns/dossier-context.md) - Load stakeholder profiles and playbooks
 - [Adversarial Debate](../patterns/adversarial-debate.md) - Devil's Advocate variant for challenge mode
+- [Team Lifecycle](../patterns/team-lifecycle.md) - Agent team setup, coordination, and cleanup (challenge mode)
 
 ## Notes
 - The skill captures conversation context from the current session

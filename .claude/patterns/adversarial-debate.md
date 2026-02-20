@@ -212,9 +212,61 @@ For resolving priority disagreements in `/update-todos`:
 
 Auto-triggers when total action items >= 15 after deduplication. See `commands/update-todos.md` for full prompt templates, Borda scoring, and disagreement output format.
 
+### Comparative Debate (`/evaluate`) — Implemented
+
+For N-way option comparison (vendor selection, architecture decisions, tool choices):
+
+- **Advocate-A** argues FOR Option A with long-term strategic fit lens
+- **Advocate-B** argues FOR Option B with pragmatic near-term execution lens
+- **Judge** produces criterion-by-criterion scores, weighted scorecard, and clear recommendation
+
+Key differences from standard Adversarial Debate: both agents are advocates (not advocate/challenger), output is a scorecard (not binary approve/reject), asymmetric argumentative lenses ensure structural differentiation.
+
+Adversarial is the **default** — `--single` is the escape hatch. See [Comparative Debate](comparative-debate.md) pattern and `commands/evaluate.md` for full details.
+
+## Team-Based Execution
+
+When Claude Code agent teams are available (see [Team Lifecycle](team-lifecycle.md)), skills using this pattern can upgrade from single-shot subagent debate to multi-round interaction where agents respond to each other's output.
+
+### Upgrade Path
+
+| Skill | Subagent Behavior | Team Behavior | Judge Architecture |
+|-------|-------------------|---------------|-------------------|
+| `/evaluate` | 2 parallel advocates → 1 judge | 3-round: opening → rebuttal → judge | Separate judge teammate |
+| `/review-rfc deep` | Advocate + Challenger → Judge | 3 specialised reviewers → cross-reference → judge | Separate judge teammate |
+| `/rubberduck --challenge` | Steelman + DA parallel → Judge | 4-round: steelman → challenges → defense → assessment | Lead-as-judge |
+| `/mbr --compete` | Optimist + Skeptic → Judge | 3-round: positions → cross-examination → synthesis | Lead-as-judge |
+
+### Lead-as-Judge vs Separate Judge
+
+| Approach | When | Why |
+|----------|------|-----|
+| **Separate judge teammate** | `/evaluate`, `/review-rfc` | Complex synthesis requiring clean context — judge shouldn't see orchestration overhead |
+| **Lead-as-judge** | `/rubberduck`, `/mbr` | Lighter synthesis, fewer competing positions — lead already has full context |
+
+### Fallback Chain
+
+Every team-using skill implements this cascade:
+
+```
+1. Team-based multi-round execution (default when prerequisites met)
+   ↓ (team prerequisites fail)
+2. Subagent execution (existing single-shot patterns)
+   ↓ (subagent execution fails)
+3. Single-agent execution
+```
+
+`--single` always bypasses both team AND subagent modes, going straight to single-agent.
+
+### Related Patterns
+
+- [Team Lifecycle](team-lifecycle.md) — prerequisites, team creation, round orchestration, shutdown, cleanup
+- [Cross-Examination](cross-examination.md) — targeted evidence challenges used by `/mbr` and `/review-rfc`
+- [Comparative Debate](comparative-debate.md) — variant with rebuttal round used by `/evaluate`
+
 ## Skills Using This Pattern
 
-- `/review-rfc` — Advocate argues "approve", Challenger argues "needs rework" (implemented). Judge produces key themes that prioritise the review's Blocking Concerns and Recommendations. Competitive reviews are saved locally to `work/` for Causantic recall.
-- `/mbr` — Optimist argues GREEN, Skeptic argues AMBER/RED for RAG status (implemented). Judge produces key narratives that feed into the MBR commentary prose. Debate summary persisted in the local copy's Data Sources appendix.
-- `/rubberduck` — Devil's Advocate variant for strategic thinking (implemented). Steelman + Devil's Advocate + Judge. No auto-triggers — user opts in with `--challenge`. Dossier context informs both agents when stakeholders are mentioned.
-- `/update-todos` — Priority Voting variant for action item triage (implemented). Urgency vs Impact lenses with Borda count resolution. Auto-triggers when >= 15 items after dedup. Disagreements (2+ level gap) surfaced via AskUserQuestion.
+- `/review-rfc` — Advocate argues "approve", Challenger argues "needs rework" (implemented). `deep` mode upgrades to specialised team (security/architecture/operations reviewers) with cross-reference round. Judge produces key themes that prioritise the review's Blocking Concerns and Recommendations. Competitive reviews are saved locally to `work/` for Causantic recall.
+- `/mbr` — Optimist argues GREEN, Skeptic argues AMBER/RED for RAG status (implemented). Team mode adds cross-examination round where lead produces targeted questions per agent. Judge/lead produces key narratives that feed into the MBR commentary prose. Debate summary persisted in the local copy's Data Sources appendix.
+- `/rubberduck` — Devil's Advocate variant for strategic thinking (implemented). Team mode: 4-round dialectic (steelman → challenges → defense → counter-assessment). Subagent mode: Steelman + DA parallel → Judge. No auto-triggers — user opts in with `--challenge`. Dossier context informs both agents when stakeholders are mentioned.
+- `/update-todos` — Priority Voting variant for action item triage (implemented). Urgency vs Impact lenses with Borda count resolution. Auto-triggers when >= 15 items after dedup. Disagreements (2+ level gap) surfaced via AskUserQuestion. **Not upgraded to teams** — marginal improvement doesn't justify overhead.

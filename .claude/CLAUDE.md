@@ -110,9 +110,15 @@ Use `/[skill-name]` to invoke these workflows:
 ### Work Management
 - `/create-ticket [description]` - Create Linear ticket (task, spike, or bug) aligned to team norms
 
+### Decision Making
+- `/evaluate [topic]` - Structured decision evaluation with adversarial debate
+
 ### Technical Review
 - `/review-rfc [notion-url]` - Comprehensive RFC review with comments (supports quick/standard/deep)
 - `/review-doc [doc-url]` - Review Google Docs/Slides from non-technical stakeholders
+
+### Strategy
+- `/war-game [scenario]` - Multi-agent scenario planning with dossier-driven stakeholder simulation
 
 ### People & Relationships
 - `/dossier [person]` - View professional dossier (communication style, playbook, coaching)
@@ -727,6 +733,9 @@ Reusable patterns in `.claude/patterns/` reduce duplication across skills and en
 | [adversarial-debate](patterns/adversarial-debate.md) | Competitive review via Advocate/Challenger/Judge | review-rfc, mbr, rubberduck, update-todos |
 | [competitive-draft](patterns/competitive-draft.md) | Parallel drafts with different seeds, user selects | respond-to, draft-email, review-doc, summarise |
 | [critique-ratchet](patterns/critique-ratchet.md) | Draft → Critique → Revise improvement pipeline | prep-meeting, executive-report, team-status |
+| [comparative-debate](patterns/comparative-debate.md) | Dual-advocate debate with weighted scorecard | evaluate |
+| [team-lifecycle](patterns/team-lifecycle.md) | Agent team setup, coordination, and cleanup | evaluate, rubberduck, mbr, review-rfc, war-game |
+| [cross-examination](patterns/cross-examination.md) | Targeted evidence challenges after analysis | mbr, review-rfc, war-game |
 
 ### Using Patterns
 
@@ -739,6 +748,47 @@ Skills reference patterns at the top of their file:
 ```
 
 Patterns contain step-by-step algorithms, examples, and the list of files involved.
+
+## Agent Teams
+
+Some skills use Claude Code agent teams for multi-round debates where agents respond to each other's output. This is an **experimental** feature that requires explicit opt-in.
+
+### Prerequisites
+
+Both conditions must be met:
+1. Environment variable: `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`
+2. Settings flag: `.claude/settings.json > agentTeams.enabled = true`
+
+If prerequisites are not met, skills automatically fall back to subagent (single-shot) execution.
+
+### Skills Using Teams
+
+| Skill | Team Behavior | Fallback |
+|-------|-------------|----------|
+| `/evaluate` | 3-round debate: opening → rebuttal → judge | Subagent debate (`--quick-debate`) |
+| `/rubberduck --challenge` | 4-round dialectic: steelman → challenges → defense → assessment | Subagent (steelman + DA → judge) |
+| `/mbr --compete` | Cross-examination after initial Optimist/Skeptic positions | Subagent debate |
+| `/review-rfc deep` | 3 specialised reviewers (security/architecture/operations) with cross-reference | Adversarial debate (advocate/challenger) |
+| `/war-game` | Multi-stakeholder scenario planning (always requires teams) | No fallback — errors if teams disabled |
+
+### Constraints
+
+- **One team per session** — teams cannot nest
+- **`--single` always works** — bypasses both team AND subagent modes
+- **Experimental** — double-gated behind env var and settings flag
+- **Cleanup is mandatory** — TeamDelete runs in a finally block to prevent orphaned teams
+
+### Configuration
+
+```json
+"agentTeams": {
+  "enabled": false,
+  "maxRoundsDefault": 3,
+  "shutdownTimeoutMs": 30000
+}
+```
+
+See [Team Lifecycle](patterns/team-lifecycle.md) pattern for full protocol.
 
 ## Skill Modes
 

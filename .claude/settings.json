@@ -68,5 +68,11 @@
     "defaultArtifactDirectory": "work",
     "includeSourceLinks": true,
     "includeTimestamps": true
+  },
+
+  "agentTeams": {
+    "enabled": false,
+    "maxRoundsDefault": 3,
+    "shutdownTimeoutMs": 30000
   }
 }

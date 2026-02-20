@@ -97,6 +97,8 @@ Each checkpoint must include `Tools:` line with actual tools called and counts.
 - [Daily Index Update](../patterns/daily-index-update.md) - Update daily context on completion
 - [Frontmatter](../patterns/frontmatter.md) - YAML metadata for MBR file
 - [Adversarial Debate](../patterns/adversarial-debate.md) - Competitive RAG determination
+- [Team Lifecycle](../patterns/team-lifecycle.md) - Agent team setup, coordination, and cleanup
+- [Cross-Examination](../patterns/cross-examination.md) - Targeted evidence challenges after initial positions
 
 ## Process
 
@@ -317,7 +319,9 @@ References: [Adversarial Debate](../patterns/adversarial-debate.md) pattern
 
 #### How It Works
 
-When competitive mode is active, Step 7 uses an Optimist vs Skeptic debate instead of single-agent analysis:
+When competitive mode is active, Step 7 uses an Optimist vs Skeptic debate. Default uses agent teams for cross-examination; falls back to subagent debate if team prerequisites fail.
+
+**Subagent Path** (`--compete` + team prerequisites fail):
 
 1. **Optimist Agent** — argues the best-case RAG (GREEN). Presents the strongest case that metrics are healthy, concerns are contained, and trajectory is positive. Must cite specific data.
 2. **Skeptic Agent** (sycophancy-hardened) — argues the worst-case RAG (AMBER/RED). Identity: "You are a board member reviewing engineering performance. Your job is to identify where the narrative is softer than the data warrants." Must assign its own RAG per metric area (DORA, delivery, incidents, OKRs, team) with evidence. Must assign at least one AMBER or RED — an engineering org with zero concerns doesn't exist. Must NOT round up: a metric that is "stable" is not GREEN if it was already underperforming.
@@ -325,9 +329,31 @@ When competitive mode is active, Step 7 uses an Optimist vs Skeptic debate inste
    - Recommended RAG with 1-sentence rationale
    - Agreement zones (metrics where both agree)
    - Contested zones (metrics where they disagree)
-   - 2-3 **key narratives**: specific framings the commentary should incorporate (e.g., "lead time increase is structural, not a blip" or "incident follow-up rate is the real concern despite GREEN DORA")
+   - 2-3 **key narratives**: specific framings the commentary should incorporate
 
-Both agents receive identical data from Steps 1-6. The disagreement is editorial — same quantitative data, different interpretation.
+**Team Path** (`--compete` + team prerequisites met, default when competitive mode active):
+
+Follow [Team Lifecycle](../patterns/team-lifecycle.md) and [Cross-Examination](../patterns/cross-examination.md) patterns.
+
+1. **Prerequisites Check**: env var + settings + not nested → if fails, use subagent path
+2. **TeamCreate**: `mbr-compete-{timestamp}`
+3. **Round 1 — Initial Positions (Parallel)**: Spawn `optimist` and `skeptic` as teammates. Same prompts as subagent path. Wait for both to complete.
+4. **Round 2 — Cross-Examination (Lead-as-Examiner, NEW)**: Lead reads both positions and produces 2-3 targeted questions per agent using the [Cross-Examination](../patterns/cross-examination.md) pattern. Each question must cite a specific claim and identify the evidentiary gap. Examples:
+   - "You rated velocity AMBER but only cited one sprint — the 3-sprint trend shows recovery. How does this affect your rating?"
+   - "You cited GREEN DORA but the director report shows lead time dropped a DORA level this month. How do you reconcile this?"
+   - "Your incident assessment ignores 2 outstanding follow-ups past deadline. What's the impact if these remain unresolved?"
+
+   Send questions to each agent via SendMessage. Both respond in parallel. Responses must defend with evidence or concede.
+
+5. **Round 3 — Lead Synthesis**: Lead synthesises with the full cross-examination record (lead-as-judge — appropriate for lighter MBR synthesis). Produces:
+   - Recommended RAG with 1-sentence rationale
+   - Agreement zones (metrics where both agents agree)
+   - Contested zones (metrics where they disagree)
+   - 2-3 **key narratives**: specific framings the commentary should incorporate
+   - **Cross-examination transcript summary**: questions asked, responses, which claims survived
+6. **Shutdown & Cleanup**: Shutdown teammates, TeamDelete
+
+Both paths (subagent and team) receive identical data from Steps 1-6. The disagreement is editorial — same quantitative data, different interpretation.
 
 #### Key Narratives
 
@@ -397,13 +423,19 @@ Present the proposed RAG to the user with rationale. Allow override.
 
 #### Competitive Path
 
-Follow the Adversarial Debate pattern with MBR-specific adaptations:
+Follow the Competitive RAG Mode section above. If team prerequisites are met, use the team path (3 rounds with cross-examination). If not, use the subagent path (parallel agents → sequential judge).
 
-1. Launch **Optimist** and **Skeptic** Task agents in parallel, both receiving identical data from Steps 1-6
+**Team path summary:**
+1. TeamCreate → Spawn Optimist + Skeptic (parallel)
+2. Cross-examination: Lead produces targeted questions, agents respond (parallel)
+3. Lead synthesises with full cross-examination record
+4. Shutdown + TeamDelete
+
+**Subagent path summary:**
+1. Launch Optimist + Skeptic Task agents in parallel
 2. Wait for both to complete
-3. Launch **Judge** Task agent with both outputs
-4. Present the full debate to the user (see Competitive RAG Mode output format above)
-5. Judge produces recommended RAG + key narratives for Step 8
+3. Launch Judge Task agent with both outputs
+4. Present the full debate to the user
 
 Both paths converge at the user confirmation gate. Present the proposed RAG (from single-agent analysis or Judge recommendation) to the user with rationale. Allow override.
 
@@ -538,11 +570,14 @@ After the MBR content, include a data sources appendix:
 - Rejected: [count]
 
 ### RAG Debate Summary (competitive mode only)
-- **Mode**: Competitive (Optimist vs Skeptic)
+- **Mode**: [team (with cross-examination) / subagent]
+- **Rounds**: [N]
 - **Recommended RAG**: [status]
 - **Key narratives**: [list]
 - **Agreement zones**: [list]
 - **Contested zones**: [list]
+- **Cross-examination questions**: [N] (team mode only)
+- **Claims conceded during cross-examination**: [N] (team mode only)
 ```
 
 ```
