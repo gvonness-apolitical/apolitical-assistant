@@ -20,7 +20,6 @@ export {
   createErrorResponse,
   createTextResponse,
   createImageResponse,
-  withErrorHandling,
   RawResponse,
 } from './response.js';
 
