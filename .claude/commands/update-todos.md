@@ -660,7 +660,7 @@ Optionally track last run time in `.claude/todo-config.json`:
 
 ## Update Daily Context
 
-After scanning, update `context/daily/YYYY-MM-DD.md`:
+After scanning, update `context/YYYY-MM-DD/index.md`:
 
 ```markdown
 ## Action Items (HH:MM)

@@ -15,6 +15,7 @@ Draft a response to an email, Slack message, PR comment, or Linear ticket.
 - [Person Resolution](../patterns/person-resolution.md) - Resolve message author
 - [Dossier Context](../patterns/dossier-context.md) - Load communication profile and playbook
 - [Competitive Draft](../patterns/competitive-draft.md) - Parallel drafts with tone variants
+- [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
 
 ## Process
 

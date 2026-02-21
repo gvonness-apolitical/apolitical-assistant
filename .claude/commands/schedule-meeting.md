@@ -7,6 +7,11 @@ Intelligently schedule a meeting by finding optimal times and booking rooms.
 - `/schedule-meeting [attendees] [topic] [duration]` - specify duration (default 30min)
 - `/schedule-meeting [attendees] [topic] [duration] [in-office]` - book room if in-office
 
+## Core Patterns Used
+
+- [Person Resolution](../patterns/person-resolution.md) - Resolve attendee names to emails
+- [Error Handling](../patterns/error-handling.md) - Handle calendar API issues
+
 ## Process
 
 ### 1. Parse Requirements

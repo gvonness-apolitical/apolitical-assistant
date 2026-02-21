@@ -13,6 +13,7 @@ View, update, and manage professional dossiers — structured profiles capturing
 
 - [Person Resolution](../patterns/person-resolution.md) - Resolve names to email keys
 - [Dossier Context](../patterns/dossier-context.md) - Load and format dossier data
+- [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
 
 ## Data Store
 

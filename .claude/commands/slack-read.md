@@ -56,6 +56,10 @@ If `/orient` was run earlier in this session, you still read the channels. Orien
 - [Rate Limiting](../patterns/rate-limiting.md) - Batch channel reads efficiently
 - [Error Handling](../patterns/error-handling.md) - Handle Slack API issues
 
+## Context Window Management
+
+Process channels sequentially. After each batch of 5 channels, compact results into checkpoint format before proceeding. For channels with >50 messages, summarize into structured items before moving to next channel. Do not carry raw message payloads across channel boundaries — extract action items and discard the rest.
+
 ## Purpose
 
 Kill the Slack notification count while ensuring nothing important is missed:

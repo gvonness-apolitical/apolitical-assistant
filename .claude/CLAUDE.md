@@ -736,6 +736,7 @@ Reusable patterns in `.claude/patterns/` reduce duplication across skills and en
 | [comparative-debate](patterns/comparative-debate.md) | Dual-advocate debate with weighted scorecard | evaluate |
 | [team-lifecycle](patterns/team-lifecycle.md) | Agent team setup, coordination, and cleanup | evaluate, rubberduck, mbr, review-rfc, war-game |
 | [cross-examination](patterns/cross-examination.md) | Targeted evidence challenges after analysis | mbr, review-rfc, war-game |
+| [skill-structure](patterns/skill-structure.md) | Three-tier skill maturity (Heavy/Medium/Light) | Reference for all skills |
 
 ### Using Patterns
 

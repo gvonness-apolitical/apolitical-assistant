@@ -5,6 +5,7 @@ Wrap up the day with a summary and handoff notes.
 ## Usage
 
 - `/end-of-day` - generate EOD summary
+- `/end-of-day --quick` - use daily context only, skip fresh API calls
 
 ## Core Patterns Used
 
@@ -12,6 +13,22 @@ Wrap up the day with a summary and handoff notes.
 - [Daily Index Update](../patterns/daily-index-update.md) - Update daily context index
 - [Frontmatter](../patterns/frontmatter.md) - YAML metadata for EOD file
 - [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
+
+## MANDATORY: Required Tool Calls
+
+This skill must make the following API calls. Do not paraphrase cached data as a substitute.
+
+| Section | Required Tools | Can Skip |
+|---------|---------------|----------|
+| Read Daily Context | Read ×N (context/YYYY-MM-DD/index.md, briefings/YYYY-MM-DD.md, session.md) | Never |
+| Calendar | calendar_list_events (meetings that happened today) | --quick |
+| Linear | list_issues (completed/updated today) | --quick |
+| GitHub | list_pull_requests (merged/reviewed today) | --quick |
+| Completion Log | TaskList, Read + Write (task-completions.json) | Never |
+
+**Completion log enforcement:** Call `TaskList`. For each completed task, append to `.claude/task-completions.json`. This is not optional — the log prevents `/update-todos` from resurfacing completed items.
+
+After completing the skill, include a tool audit: `Tools: [tool] ×[N], ...`
 
 ## Read Daily Context
 

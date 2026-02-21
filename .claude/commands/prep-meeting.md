@@ -37,8 +37,11 @@ Proceeding to Step N+1: [next step name]
 | 4. Check Notion | notion-search (RFCs, PRDs) | If no Notion context |
 | 5. Check Canvas | slack_get_canvas (if 1:1 with canvas) | If no canvas configured |
 | 6. Generate Prep | Write (meeting prep file) | Never |
+| 7. Update Config | Write (meeting-config.json: set lastPrepDate) | Never |
 
 Each checkpoint must include `Tools:` line with actual tools called and counts.
+
+**lastPrepDate enforcement:** After generating the prep document, update `lastPrepDate` in `.claude/meeting-config.json` for the relevant channel or 1:1 entry. Verify `lastPrepDate` is non-null in the final checkpoint. If still null, the step is incomplete.
 
 ## Core Patterns Used
 
@@ -80,11 +83,11 @@ Proceeding to Step 2: Check Daily Context
 
 Before making API calls, check local context files:
 
-1. **Today's daily context**: `context/daily/YYYY-MM-DD.md`
+1. **Today's daily context**: `context/YYYY-MM-DD/index.md`
    - Slack summaries with attendee mentions
    - Email threads with attendees
    - Action items involving attendees
-2. **Session context**: `context/YYYY-MM-DD-session.md`
+2. **Session context**: `context/YYYY-MM-DD/session.md`
    - Notes about this person/meeting from earlier today
    - Salary/HR information (for 1:1s)
 3. **Yesterday's EOD**: `context/eod-YYYY-MM-DD.md`

@@ -14,6 +14,25 @@ Gather context at the start of a session to be effective as an assistant.
 - [Daily Index Update](../patterns/daily-index-update.md) - Update daily context index
 - [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
 
+## MANDATORY: Required Tool Calls
+
+This skill must make the following API calls. Do not paraphrase cached data as a substitute.
+
+| Section | Required Tools | Can Skip |
+|---------|---------------|----------|
+| Calendar | calendar_list_events | --quick |
+| Email | gmail_search (maxResults:50) | --quick |
+| Slack DMs | slack_list_dms, slack_read_dm (priority DMs) | --quick |
+| Slack Channels | slack_read_channel (priority channels from channels-config.json) | --quick |
+| Linear | list_issues (assigned/in-progress) | --quick |
+| Incidents | incidentio_list_incidents | --quick |
+| Team OOO | humaans_list_time_off | --quick |
+| Asana | asana_search_tasks (if cache > 1 day stale) | --quick or fresh cache |
+
+When skipping a section in quick mode, mark it: `⊘ Skipped (--quick)`
+
+After completing the skill, include a tool audit: `Tools: [tool] ×[N], ...`
+
 ## Quick Mode
 
 When `--quick` flag is provided:

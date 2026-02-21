@@ -16,6 +16,40 @@ Search across all systems to gather context on a person, project, or topic.
 - [Progressive Discovery](../patterns/progressive-discovery.md) - Cache newly discovered IDs
 - [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
 
+## MANDATORY: Required Tool Calls
+
+This skill must make the following API calls based on query type. Do not paraphrase cached data as a substitute.
+
+**For a Person:**
+
+| Section | Required Tools | Can Skip |
+|---------|---------------|----------|
+| HR | humaans_get_employee | --quick |
+| Slack | slack_read_dm (via slackDmChannelId), slack_search | --quick |
+| Email | gmail_search | --quick |
+| Linear | list_issues (assigned to person) | --quick |
+| GitHub | search_code / list_pull_requests | --quick |
+
+**For a Project:**
+
+| Section | Required Tools | Can Skip |
+|---------|---------------|----------|
+| Linear | list_issues (project tickets) | --quick |
+| Notion | notion-search (RFCs, PRDs) | --quick |
+| Slack | slack_search | --quick |
+| GitHub | list_pull_requests | --quick |
+
+**For a Topic:**
+
+| Section | Required Tools | Can Skip |
+|---------|---------------|----------|
+| Slack | slack_search | --quick |
+| Notion | notion-search (priority sources first) | --quick |
+| Email | gmail_search | --quick |
+| Linear | list_issues | --quick |
+
+After completing the skill, include a tool audit: `Tools: [tool] ×[N], ...`
+
 ## Quick Mode
 
 When `--quick` flag is provided:
@@ -75,7 +109,7 @@ Before making API calls, check local context files for relevant information:
    - Notes and decisions from today
 3. **Yesterday's EOD**: `context/eod-YYYY-MM-DD.md`
    - Carry-forward items mentioning them
-4. **Recent orient files**: `context/orient-*.md` (last 3 days)
+4. **Recent orient files**: `context/YYYY-MM-DD/orient-HHMM.md` (last 3 days)
 
 If context is found locally, include it first, then supplement with fresh API calls as needed.
 
