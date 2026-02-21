@@ -71,7 +71,7 @@
   },
 
   "agentTeams": {
-    "enabled": false,
+    "enabled": true,
     "maxRoundsDefault": 3,
     "shutdownTimeoutMs": 30000
   }
