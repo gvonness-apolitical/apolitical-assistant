@@ -53,8 +53,8 @@ export function buildRecurrenceRules(
 ): string[] | undefined {
   if (!recurrence) return undefined;
 
-  // If already an array of strings, return as-is
-  if (Array.isArray(recurrence) && typeof recurrence[0] === 'string') {
+  // If already an array of strings (or empty array), return as-is
+  if (Array.isArray(recurrence)) {
     return recurrence as string[];
   }
 

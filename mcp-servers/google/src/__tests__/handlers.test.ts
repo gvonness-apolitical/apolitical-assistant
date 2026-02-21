@@ -11,11 +11,16 @@ import {
   handleDriveSearch,
   handleDriveExport,
   handleDocsGetContent,
+  handleDocsGetComments,
+  handleDocsCreate,
+  handleDocsUpdate,
   handleSheetsGetValues,
   handleSheetsCreate,
   handleSheetsUpdateValues,
   handleSlidesGetPresentation,
   handleSlidesGetThumbnail,
+  handleSlidesCreate,
+  handleSlidesAddSlide,
 } from '../handlers/index.js';
 
 // Create a mock GoogleAuth for testing
@@ -427,6 +432,283 @@ describe('Docs Handlers', () => {
       expect(result.content).toContain('Second paragraph');
     });
   });
+
+  describe('handleDocsGetComments', () => {
+    it('should return formatted comments with author and replies', async () => {
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          comments: [
+            {
+              id: 'comment1',
+              content: 'This needs revision',
+              author: { displayName: 'Alice', emailAddress: 'alice@test.com' },
+              createdTime: '2024-01-15T10:00:00Z',
+              resolved: false,
+              replies: [
+                {
+                  content: 'Agreed, will fix',
+                  author: { displayName: 'Bob', emailAddress: 'bob@test.com' },
+                  createdTime: '2024-01-15T11:00:00Z',
+                },
+              ],
+            },
+          ],
+        })
+      );
+
+      const result = (await handleDocsGetComments(
+        { documentId: 'doc123', includeResolved: false },
+        auth
+      )) as {
+        documentId: string;
+        commentCount: number;
+        comments: Array<{
+          id: string;
+          content: string;
+          author: string;
+          authorEmail: string;
+          resolved: boolean;
+          replies: Array<{ content: string; author: string }>;
+        }>;
+      };
+
+      expect(result.documentId).toBe('doc123');
+      expect(result.commentCount).toBe(1);
+      expect(result.comments).toHaveLength(1);
+      expect(result.comments[0]?.content).toBe('This needs revision');
+      expect(result.comments[0]?.author).toBe('Alice');
+      expect(result.comments[0]?.authorEmail).toBe('alice@test.com');
+      expect(result.comments[0]?.replies).toHaveLength(1);
+      expect(result.comments[0]?.replies[0]?.content).toBe('Agreed, will fix');
+      expect(result.comments[0]?.replies[0]?.author).toBe('Bob');
+    });
+
+    it('should filter resolved comments when includeResolved is false', async () => {
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          comments: [
+            {
+              id: 'c1',
+              content: 'Open comment',
+              author: { displayName: 'Alice' },
+              createdTime: '2024-01-15T10:00:00Z',
+              resolved: false,
+            },
+            {
+              id: 'c2',
+              content: 'Resolved comment',
+              author: { displayName: 'Bob' },
+              createdTime: '2024-01-14T10:00:00Z',
+              resolved: true,
+            },
+          ],
+        })
+      );
+
+      const result = (await handleDocsGetComments(
+        { documentId: 'doc123', includeResolved: false },
+        auth
+      )) as {
+        commentCount: number;
+        comments: Array<{ id: string; resolved: boolean }>;
+      };
+
+      expect(result.commentCount).toBe(1);
+      expect(result.comments).toHaveLength(1);
+      expect(result.comments[0]?.id).toBe('c1');
+    });
+
+    it('should include resolved comments when includeResolved is true', async () => {
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          comments: [
+            {
+              id: 'c1',
+              content: 'Open comment',
+              author: { displayName: 'Alice' },
+              createdTime: '2024-01-15T10:00:00Z',
+              resolved: false,
+            },
+            {
+              id: 'c2',
+              content: 'Resolved comment',
+              author: { displayName: 'Bob' },
+              createdTime: '2024-01-14T10:00:00Z',
+              resolved: true,
+            },
+          ],
+        })
+      );
+
+      const result = (await handleDocsGetComments(
+        { documentId: 'doc123', includeResolved: true },
+        auth
+      )) as {
+        commentCount: number;
+        comments: Array<{ id: string }>;
+      };
+
+      expect(result.commentCount).toBe(2);
+      expect(result.comments).toHaveLength(2);
+    });
+
+    it('should handle API error', async () => {
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({}, false, 403));
+
+      await expect(
+        handleDocsGetComments({ documentId: 'bad-id', includeResolved: false }, auth)
+      ).rejects.toThrow('Drive API error: 403');
+    });
+  });
+
+  describe('handleDocsCreate', () => {
+    it('should create doc with title only (no content)', async () => {
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          documentId: 'new-doc-123',
+          title: 'My New Doc',
+        })
+      );
+
+      const result = (await handleDocsCreate({ title: 'My New Doc' }, auth)) as {
+        documentId: string;
+        title: string;
+        url: string;
+      };
+
+      expect(result.documentId).toBe('new-doc-123');
+      expect(result.title).toBe('My New Doc');
+      expect(result.url).toBe('https://docs.google.com/document/d/new-doc-123/edit');
+
+      // Only one fetch call (create), no batchUpdate
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('should create doc with markdown content (calls create + batchUpdate)', async () => {
+      // First call: create the document
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          documentId: 'new-doc-456',
+          title: 'Doc With Content',
+        })
+      );
+
+      // Second call: batchUpdate with parsed markdown content
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({}));
+
+      const result = (await handleDocsCreate(
+        { title: 'Doc With Content', content: '# Heading\n\nSome body text' },
+        auth
+      )) as {
+        documentId: string;
+        title: string;
+        url: string;
+      };
+
+      expect(result.documentId).toBe('new-doc-456');
+      expect(result.title).toBe('Doc With Content');
+      expect(result.url).toBe('https://docs.google.com/document/d/new-doc-456/edit');
+
+      // Two fetch calls: create + batchUpdate
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+
+      // Verify the batchUpdate URL
+      const batchUpdateCall = fetchMock.mock.calls[1]![0] as string;
+      expect(batchUpdateCall).toContain('new-doc-456:batchUpdate');
+    });
+
+    it('should handle create API error', async () => {
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({}, false, 500));
+
+      await expect(handleDocsCreate({ title: 'Fail Doc' }, auth)).rejects.toThrow(
+        'Docs API error creating document: 500'
+      );
+    });
+  });
+
+  describe('handleDocsUpdate', () => {
+    it('should replace content (GET existing, delete range, insert)', async () => {
+      // First call: GET the existing document
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          title: 'Existing Doc',
+          body: { content: [{ endIndex: 50 }] },
+        })
+      );
+
+      // Second call: batchUpdate (delete + insert)
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({}));
+
+      const result = (await handleDocsUpdate(
+        { documentId: 'doc-789', content: 'New content here', append: false },
+        auth
+      )) as {
+        documentId: string;
+        title: string;
+        url: string;
+        action: string;
+      };
+
+      expect(result.documentId).toBe('doc-789');
+      expect(result.title).toBe('Existing Doc');
+      expect(result.action).toBe('replaced');
+      expect(result.url).toBe('https://docs.google.com/document/d/doc-789/edit');
+
+      // Verify the batchUpdate body contains a deleteContentRange request
+      const batchUpdateArgs = fetchMock.mock.calls[1]!;
+      const body = JSON.parse(batchUpdateArgs[1]?.body as string);
+      const deleteRequest = body.requests.find(
+        (r: Record<string, unknown>) => r.deleteContentRange
+      );
+      expect(deleteRequest).toBeDefined();
+      expect(
+        (deleteRequest.deleteContentRange as { range: { startIndex: number; endIndex: number } })
+          .range.startIndex
+      ).toBe(1);
+      expect(
+        (deleteRequest.deleteContentRange as { range: { startIndex: number; endIndex: number } })
+          .range.endIndex
+      ).toBe(49);
+    });
+
+    it('should append content (GET existing, insert at end, no delete)', async () => {
+      // First call: GET the existing document
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          title: 'Existing Doc',
+          body: { content: [{ endIndex: 50 }] },
+        })
+      );
+
+      // Second call: batchUpdate (insert only, no delete)
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({}));
+
+      const result = (await handleDocsUpdate(
+        { documentId: 'doc-789', content: 'Appended content', append: true },
+        auth
+      )) as {
+        action: string;
+      };
+
+      expect(result.action).toBe('appended');
+
+      // Verify the batchUpdate body does NOT contain a deleteContentRange request
+      const batchUpdateArgs = fetchMock.mock.calls[1]!;
+      const body = JSON.parse(batchUpdateArgs[1]?.body as string);
+      const deleteRequest = body.requests.find(
+        (r: Record<string, unknown>) => r.deleteContentRange
+      );
+      expect(deleteRequest).toBeUndefined();
+    });
+
+    it('should handle GET API error', async () => {
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({}, false, 404));
+
+      await expect(
+        handleDocsUpdate({ documentId: 'bad-id', content: 'test', append: false }, auth)
+      ).rejects.toThrow('Docs API error fetching document: 404');
+    });
+  });
 });
 
 describe('Sheets Handlers', () => {
@@ -701,6 +983,169 @@ describe('Slides Handlers', () => {
           auth
         )
       ).rejects.toThrow('Failed to download thumbnail: 500');
+    });
+  });
+
+  describe('handleSlidesCreate', () => {
+    it('should create presentation with title only', async () => {
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          presentationId: 'pres-new-1',
+          title: 'My Presentation',
+          slides: [{ objectId: 'default-slide' }],
+        })
+      );
+
+      const result = (await handleSlidesCreate({ title: 'My Presentation' }, auth)) as {
+        presentationId: string;
+        title: string;
+        url: string;
+        slideCount: number;
+      };
+
+      expect(result.presentationId).toBe('pres-new-1');
+      expect(result.title).toBe('My Presentation');
+      expect(result.url).toBe('https://docs.google.com/presentation/d/pres-new-1/edit');
+      expect(result.slideCount).toBe(1);
+
+      // Only one fetch call (create), no batchUpdate since no slides provided
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('should create presentation with slides including title, body, and bullet points', async () => {
+      // First call: create the presentation
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          presentationId: 'pres-new-2',
+          title: 'Full Presentation',
+          slides: [{ objectId: 'default-slide' }],
+        })
+      );
+
+      // Second call: batchUpdate to add slides
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({}));
+
+      const result = (await handleSlidesCreate(
+        {
+          title: 'Full Presentation',
+          slides: [
+            {
+              title: 'Introduction',
+              body: '- Point one\n- Point two\n- Point three',
+              layout: 'TITLE_AND_BODY',
+            },
+            {
+              title: 'Summary',
+              body: 'Final thoughts on the topic',
+              layout: 'TITLE_AND_BODY',
+            },
+          ],
+        },
+        auth
+      )) as {
+        presentationId: string;
+        title: string;
+        slideCount: number;
+      };
+
+      expect(result.presentationId).toBe('pres-new-2');
+      expect(result.title).toBe('Full Presentation');
+      expect(result.slideCount).toBe(2);
+
+      // Two fetch calls: create + batchUpdate
+      expect(fetchMock).toHaveBeenCalledTimes(2);
+
+      // Verify the batchUpdate URL
+      const batchUpdateCall = fetchMock.mock.calls[1]![0] as string;
+      expect(batchUpdateCall).toContain('pres-new-2:batchUpdate');
+
+      // Verify the batchUpdate body contains deleteObject (for default slide) and createSlide requests
+      const body = JSON.parse(fetchMock.mock.calls[1]![1]?.body as string);
+      const deleteRequest = body.requests.find((r: Record<string, unknown>) => r.deleteObject);
+      expect(deleteRequest).toBeDefined();
+      const createSlideRequests = body.requests.filter(
+        (r: Record<string, unknown>) => r.createSlide
+      );
+      expect(createSlideRequests).toHaveLength(2);
+    });
+
+    it('should handle API error', async () => {
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({}, false, 403));
+
+      await expect(handleSlidesCreate({ title: 'Fail Presentation' }, auth)).rejects.toThrow(
+        'Slides API error creating presentation: 403'
+      );
+    });
+  });
+
+  describe('handleSlidesAddSlide', () => {
+    it('should add slide with title and body', async () => {
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({}));
+
+      const result = (await handleSlidesAddSlide(
+        {
+          presentationId: 'pres-existing',
+          title: 'New Slide Title',
+          body: 'Slide body content',
+          layout: 'TITLE_AND_BODY',
+        },
+        auth
+      )) as {
+        presentationId: string;
+        slideId: string;
+        url: string;
+      };
+
+      expect(result.presentationId).toBe('pres-existing');
+      expect(result.slideId).toBeDefined();
+      expect(result.url).toBe('https://docs.google.com/presentation/d/pres-existing/edit');
+
+      // Verify the batchUpdate body contains createSlide and insertText requests
+      const body = JSON.parse(fetchMock.mock.calls[0]![1]?.body as string);
+      const createSlide = body.requests.find((r: Record<string, unknown>) => r.createSlide);
+      expect(createSlide).toBeDefined();
+      const insertTexts = body.requests.filter((r: Record<string, unknown>) => r.insertText);
+      expect(insertTexts.length).toBeGreaterThanOrEqual(2); // title + body
+    });
+
+    it('should add slide at specific insertion index', async () => {
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({}));
+
+      const result = (await handleSlidesAddSlide(
+        {
+          presentationId: 'pres-existing',
+          title: 'Inserted Slide',
+          layout: 'TITLE_AND_BODY',
+          insertionIndex: 2,
+        },
+        auth
+      )) as {
+        presentationId: string;
+        slideId: string;
+      };
+
+      expect(result.presentationId).toBe('pres-existing');
+      expect(result.slideId).toBeDefined();
+
+      // Verify the createSlide request includes insertionIndex
+      const body = JSON.parse(fetchMock.mock.calls[0]![1]?.body as string);
+      const createSlide = body.requests.find((r: Record<string, unknown>) => r.createSlide);
+      expect((createSlide.createSlide as { insertionIndex: number }).insertionIndex).toBe(2);
+    });
+
+    it('should handle API error', async () => {
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({}, false, 500));
+
+      await expect(
+        handleSlidesAddSlide(
+          {
+            presentationId: 'pres-bad',
+            title: 'Fail Slide',
+            layout: 'TITLE_AND_BODY',
+          },
+          auth
+        )
+      ).rejects.toThrow('Slides API error adding slide: 500');
     });
   });
 });

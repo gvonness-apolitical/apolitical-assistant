@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "lastUpdated": "2026-01-30T19:10:00Z",
+  "lastUpdated": "2026-02-21T17:00:00Z",
   "description": "Cached Linear structure to reduce API calls. Run /sync-linear to populate.",
   "teams": {
     "c96481ee-5e8b-4622-961a-b3502a1e8644": {
@@ -32,120 +32,299 @@
       "name": "Data",
       "key": "DAT",
       "icon": ":chart_with_upwards_trend:"
+    },
+    "09e41d73-8891-4deb-b6a8-822b8ba9b076": {
+      "name": "Design",
+      "key": "DES",
+      "icon": "DesignTools"
     }
   },
   "projects": {
+    "ee56dd75-d878-4dab-b9f1-9f8549a7d317": {
+      "name": "Policy Nova Phase 3: Modelling & Experimentation",
+      "status": "Backlog"
+    },
+    "867c3423-3560-4b55-b2e4-af432224a2b4": {
+      "name": "Policy Nova Phase 2: Synthesis & Visualisation",
+      "status": "Backlog"
+    },
+    "38cc350e-824e-425b-b6b2-2b7b0e361d7a": {
+      "name": "AI Moderation / Deletion Updates",
+      "status": "Backlog"
+    },
+    "4bd0b80f-a294-45a7-93ce-638382cacabc": {
+      "name": "VTS Admin Dashboard (Separately Hosted)",
+      "status": "Backlog"
+    },
+    "c529c288-d684-4394-83f8-b541d578756c": {
+      "name": "Workforce Insights on Platform",
+      "status": "Backlog"
+    },
+    "048e7d3d-0aa7-4899-b81a-4a753e2114b2": {
+      "name": "Futura Onboarding Experience",
+      "status": "Backlog"
+    },
+    "4ccaa940-cbcf-434e-bf3d-88fa7c915648": {
+      "name": "Module on Logged-in Homepage",
+      "status": "Backlog"
+    },
+    "a0767e1d-355c-484e-b050-5da0ee61d24c": { "name": "Learning Track Page", "status": "Backlog" },
+    "7b60f80f-b29c-4dc4-a684-71e44f4c2ee0": {
+      "name": "Futura On-Platform UX",
+      "status": "Backlog"
+    },
+    "0e7ee606-6af0-4b4a-af48-23734ce498e3": {
+      "name": "Consensus API Integration — Policy Modeller",
+      "status": "Planned"
+    },
+    "aa1f4be4-09de-41c3-bf4f-ba5130cf1234": {
+      "name": "Showing task > value module",
+      "status": "Planned"
+    },
+    "b917e9dc-cd16-4bf5-830d-dc2fbc4b6820": { "name": "Open Data Registry", "status": "Backlog" },
+    "25aa1956-866a-4275-a5a5-054ee6f570ca": {
+      "name": "Nova — Moon shot modelling",
+      "status": "Planned"
+    },
+    "fd5795b5-8d65-40e4-9247-8a42aa39d0cc": {
+      "name": "Get Futura Survey Ready for Ukraine Pilot",
+      "status": "In Progress"
+    },
+    "637489a4-6777-4500-8182-a87e92d3c842": { "name": "Nova Research UI", "status": "Planned" },
+    "5748d37d-de65-4384-b18c-98ccb05f9da5": {
+      "name": "Graded Assessments — Course Module",
+      "status": "Paused"
+    },
+    "173f09c5-805c-4a4c-b18b-420f2ac22816": {
+      "name": "Workforce Planning Dashboards & Admin Access",
+      "status": "Paused"
+    },
+    "ad262409-8a9a-4f64-93ef-0f991644f793": {
+      "name": "Logged-in Homepage with Learning Curriculum",
+      "status": "Paused"
+    },
+    "b5f62df1-4bb2-4a39-bf52-5d418a0f301f": {
+      "name": "Navigator Landing Page",
+      "status": "Planned"
+    },
+    "d945dcc9-253e-4cd5-8fc9-c0b96a83c02d": { "name": "Article Likes", "status": "Planned" },
+    "7570726c-a989-443b-868c-568662819484": {
+      "name": "Incorporate New Data Sources into Policy Nova Research Tool",
+      "status": "Planned"
+    },
+    "1169b092-18c3-4a88-a493-1411f7a5acf8": { "name": "Enterprise", "status": "Backlog" },
+    "7f5f521b-7256-48d7-83e8-dfb6c3a99a3e": { "name": "Platform", "status": "Backlog" },
+    "8e36d0de-d2f0-49f6-b69d-75d39774e368": { "name": "AI Tools", "status": "Backlog" },
+    "1ffc4a7c-6199-42da-a25b-a3ca27fff193": { "name": "Futura", "status": "Backlog" },
+    "fbdc7b4c-b588-4547-8a1b-9f06ae26b152": { "name": "AI Navigator", "status": "Backlog" },
+    "c9f813a0-9372-4f92-ad21-3245d9bee6f9": { "name": "5. SSO", "status": "Planned" },
+    "f52b75c1-78d6-4502-8916-3333308b61ef": {
+      "name": "AI Tool Exploration — Understanding work better",
+      "status": "Backlog"
+    },
+    "2ef4fc8d-7a26-4f9f-bc13-b67bd842f034": {
+      "name": "2. Customisable Cohort Onboarding Experience",
+      "status": "In Progress"
+    },
+    "d182ef38-cd96-4250-a8d1-aef5fe30e5c5": { "name": "DGE Deployment", "status": "Backlog" },
+    "c43b7162-0804-4670-8756-02d769a8d09c": {
+      "name": "Futura — Individual Results page",
+      "status": "Planned"
+    },
+    "e1d09eee-0834-4ef0-95b4-4983a3dae35d": {
+      "name": "Policy Nova Research Improvements through validation",
+      "status": "In Progress"
+    },
+    "a528a6da-1291-4f90-a4c3-ba78ee565933": {
+      "name": "1. OpenFGA: Restricted",
+      "status": "In Progress"
+    },
+    "eb575e58-f2df-4c82-b634-19274f95fdba": {
+      "name": "Experiment w/ modelling in PolMol",
+      "status": "In Progress"
+    },
+    "4a286b2b-dead-4aab-ab01-ca98b1c16ba6": {
+      "name": "Redesign articles page for navigator contract",
+      "status": "Planned"
+    },
+    "26b44c81-27d1-4576-8427-0d45edffbb6c": {
+      "name": "Enterprise workforce insights Pilot",
+      "status": "Completed"
+    },
+    "342b3ba6-961d-4f18-9c82-5650797c02ad": {
+      "name": "Quizzes & Surveys — Course Module",
+      "status": "In Progress"
+    },
+    "6a39768e-7a00-40b4-b99c-8fa385cf8f19": {
+      "name": "Scenario-Based Learning — Chat Module",
+      "status": "In Progress"
+    },
+    "f708eab9-277f-4548-a9f2-06368bb9c598": {
+      "name": "New O*Net task survey on platform",
+      "status": "In Progress"
+    },
+    "adf7d55a-06a2-4812-9e8d-ccbc4d73d246": {
+      "name": "Azure minimum viable env",
+      "status": "In Progress"
+    },
+    "bbf74f12-6d50-4620-9172-a80c861d0bf1": {
+      "name": "Unified lesson page",
+      "status": "In Progress"
+    },
+    "c64d3917-74cf-4fbf-8063-04a18c8f4389": { "name": "Ethiopia Prep", "status": "Completed" },
     "33f9f6c9-8691-44c2-863c-385c89fa07fd": {
       "name": "Quick Wins: Discussions",
-      "status": "Planned"
+      "status": "Completed"
     },
-    "c64d3917-74cf-4fbf-8063-04a18c8f4389": {
-      "name": "2. Ethiopia Prep",
-      "status": "Planned"
+    "251b334a-c43e-4107-ba2f-581ff1dc5cf5": {
+      "name": "Futura Navigation Pages",
+      "status": "Backlog"
     },
-    "033f037d-ada6-4fc0-8546-c4b2f7680655": {
-      "name": "Emails Workflows (Academies)",
+    "11eec94a-6951-46f0-9c87-656132448096": {
+      "name": "Performance Optimisation",
+      "status": "Backlog"
+    },
+    "767af8a3-b92d-44a2-9348-7fc06df24b91": { "name": "Cohorting Emails", "status": "Backlog" },
+    "dae9ffd7-988c-418a-a5f8-4076d196e0b6": { "name": "Server Side Tracking", "status": "Backlog" },
+    "99b93631-5065-4875-8705-8513eef8fa16": { "name": "WIP: Orgs", "status": "Paused" },
+    "a5a1db01-7001-4c89-8882-793bcbc45778": {
+      "name": "3. Quick Wins: Cohorting",
+      "status": "In Progress"
+    },
+    "ae52d2b3-92b3-41b5-931c-1a11e8aad837": {
+      "name": "4. Quick Wins: Academies",
+      "status": "In Progress"
+    },
+    "8808f050-458f-47f3-a58b-c28098042626": {
+      "name": "Contentful integration into futura-ui",
+      "status": "Completed"
+    },
+    "7806c4dc-8d97-4f2c-a11a-4e9a3f690bc5": {
+      "name": "Article Comment Migration",
+      "status": "In Progress"
+    },
+    "79ba4877-6a36-4a10-ae78-98405fb69274": {
+      "name": "Partner scaling (Rwanda etc)",
       "status": "Completed"
     },
     "5d6f9f02-ff3f-48ff-b1dc-907cc51f79fa": {
       "name": "Text to speech on lessons",
       "status": "In Progress"
     },
-    "bd25df37-aed1-4299-92a4-1b1abcc9c525": {
-      "name": "Contextualising ai feedback Scenarios w/ Futura Data",
-      "status": "In Progress"
-    },
-    "e7fe5a54-67f8-42f9-b849-c098aac3d21b": {
-      "name": "Bughunt",
-      "status": "In Progress"
-    },
     "0200c6dc-a922-4097-838b-c8effa13375a": {
-      "name": "1. Cohorts Removal Functionality",
-      "status": "In Progress"
-    },
-    "ed73b641-b2a8-4807-9032-dec7c1b714e0": {
-      "name": "OpenFGA on Communities",
+      "name": "Cohorts Removal Functionality",
       "status": "Completed"
     },
-    "b733ae6a-2a3e-4e1e-8de9-0f2d342a09e8": {
-      "name": "Access Expiration",
+    "bc37aea8-b0ad-4c54-8fb0-ee876e189647": {
+      "name": "Build Jurisdictional Scanning Agent",
       "status": "Completed"
     },
-    "ae52d2b3-92b3-41b5-931c-1a11e8aad837": {
-      "name": "Quick Wins: Academies",
-      "status": "In Progress"
+    "033f037d-ada6-4fc0-8546-c4b2f7680655": {
+      "name": "Emails Workflows (Academies)",
+      "status": "Completed"
     },
-    "a5a1db01-7001-4c89-8882-793bcbc45778": {
-      "name": "Quick Wins: Cohorting",
-      "status": "In Progress"
-    },
-    "79ba4877-6a36-4a10-ae78-98405fb69274": {
-      "name": "Partner scaling (Rwanda etc)",
-      "status": "In Progress"
-    },
-    "c00b2019-7fe9-44b0-a173-3db7e6321e1c": {
-      "name": "UI Migration",
+    "49fa4a43-d3ef-4760-9245-2c0732294ba4": {
+      "name": "AI-generated curriculums",
       "status": "In Progress"
     },
     "44a8a341-19e4-46ba-a9a3-d5df03630288": {
       "name": "Building out deep-research agents within the PIM",
-      "status": "In Progress"
+      "status": "Completed"
+    },
+    "8c66370d-50d7-487a-9fc7-602501b749a0": { "name": "API Migration", "status": "Backlog" },
+    "dbb116ad-3eed-4699-96df-b052676f1095": {
+      "name": "Implementing Event Streaming",
+      "status": "Backlog"
+    },
+    "cc85e217-4907-4575-9000-4cab23286082": { "name": "Search Revamp", "status": "Backlog" },
+    "ca9b5eb1-89a1-405c-8443-eac0c9a54811": {
+      "name": "Intelligent User Segmentation",
+      "status": "Backlog"
+    },
+    "641b6a22-10af-4806-80d5-88cf1f52557a": { "name": "Drive Data Quality", "status": "Backlog" },
+    "a007b8d4-1feb-49ce-a206-91288f2c7c38": {
+      "name": "Productionise Email Automations pipeline",
+      "status": "Backlog"
+    },
+    "d1115892-6638-4fb0-aadf-ac6bc78a7aa1": { "name": "Create futura-api", "status": "Completed" },
+    "83571114-74f7-45b9-ad41-0eb71587a0f6": { "name": "PIM Scaffolding", "status": "Completed" },
+    "25ce9bab-9cc6-4d62-a32a-ccf16dda4552": {
+      "name": "Security Enhancements",
+      "status": "Backlog"
+    },
+    "a5eaeec6-804a-4a3a-a68e-ea1c67cca9bb": {
+      "name": "AI Feedback Module for Courses",
+      "status": "Completed"
+    },
+    "ed73b641-b2a8-4807-9032-dec7c1b714e0": {
+      "name": "OpenFGA: Communities",
+      "status": "Completed"
+    },
+    "b733ae6a-2a3e-4e1e-8de9-0f2d342a09e8": { "name": "Access Expiration", "status": "Completed" },
+    "bd25df37-aed1-4299-92a4-1b1abcc9c525": {
+      "name": "Contextualising ai feedback Scenarios w/ Futura Data",
+      "status": "Completed"
+    },
+    "ba046b68-d836-406f-be89-689b0b26dbb2": {
+      "name": "Automated Test Failure fixing",
+      "status": "Backlog"
+    },
+    "465d97b3-e5ea-4c3c-9647-f12c7cb1d269": { "name": "OpenFGA: Courses", "status": "Completed" },
+    "d22de67e-267a-496b-86f9-c5811418dfd6": { "name": "Certificates", "status": "Completed" },
+    "e7fe5a54-67f8-42f9-b849-c098aac3d21b": { "name": "Bughunt", "status": "Backlog" },
+    "72cff799-79b2-4e78-94d6-ae088a33dc68": { "name": "Envs provisioning", "status": "Completed" },
+    "80ce1ee3-9843-4d69-bcdb-b031e0303371": { "name": "Cloud DNS [WIP]", "status": "Backlog" },
+    "42e80784-7491-4b65-a74c-ba2aca8e5da1": {
+      "name": "Iterate Observability [WIP]",
+      "status": "Backlog"
+    },
+    "c00b2019-7fe9-44b0-a173-3db7e6321e1c": { "name": "UI Migration", "status": "In Progress" },
+    "877749a2-c2d7-4e36-a606-6dddcfa19376": { "name": "Infra Maintenance", "status": "Backlog" },
+    "2915cedb-ff89-4f42-ba9c-21867fcb9a03": { "name": "Improve DX", "status": "Backlog" },
+    "39c87433-993d-4096-9de1-e79ae08c373a": {
+      "name": "[TO BE DEPRECATED] Hydra",
+      "status": "Backlog"
     }
   },
   "cycles": {
     "current": {
       "c96481ee-5e8b-4622-961a-b3502a1e8644": {
-        "id": "5ead8bda-e20d-4a38-b646-cde347a9ed79",
-        "title": "Platform 7",
-        "number": 7,
-        "startsAt": "2026-01-19",
-        "endsAt": "2026-02-02",
-        "progress": {
-          "completed": 12,
-          "total": 44
-        }
+        "id": "d59a72d2-2829-4981-81b9-c19b24ce8c17",
+        "title": "Platform 9",
+        "number": 9,
+        "startsAt": "2026-02-16",
+        "endsAt": "2026-03-02",
+        "progress": { "completed": 10, "total": 40 }
       },
       "e3a47de3-09a2-4306-b13f-f133c308aaab": {
-        "id": "277f89bd-f53a-4bd0-9758-ea063ffbe1ec",
-        "title": "AI 6",
-        "number": 6,
-        "startsAt": "2026-01-19",
-        "endsAt": "2026-02-02",
-        "progress": {
-          "completed": 23,
-          "total": 37
-        }
+        "id": "82913335-1899-41a1-944f-f7865bf305fb",
+        "title": "AI 8",
+        "number": 8,
+        "startsAt": "2026-02-16",
+        "endsAt": "2026-03-02",
+        "progress": { "completed": 10, "total": 25 }
       },
       "af99ba78-20d8-4e31-93b9-f73dceac6aa3": {
-        "id": "7402fad8-a24d-4127-ba79-d265e3397c4d",
-        "number": 5,
-        "startsAt": "2026-01-19",
-        "endsAt": "2026-02-02",
-        "progress": {
-          "completed": 15,
-          "total": 24
-        }
+        "id": "feaa5602-4ef9-4201-92e7-5e01490c10c8",
+        "number": 7,
+        "startsAt": "2026-02-16",
+        "endsAt": "2026-03-02",
+        "progress": { "completed": 19, "total": 30 }
       },
       "d065a65a-73cc-4043-a45f-a82f02471c5f": {
-        "id": "3dfb0fd4-34f6-4ae0-960a-4b3c6d24e13f",
-        "number": 6,
-        "startsAt": "2026-01-19",
-        "endsAt": "2026-02-02",
-        "progress": {
-          "completed": 26,
-          "total": 49
-        }
+        "id": "2ffc02a9-ca9c-4d4e-9da3-1c7f3b5d5404",
+        "number": 8,
+        "startsAt": "2026-02-16",
+        "endsAt": "2026-03-02",
+        "progress": { "completed": 38, "total": 64 }
       },
       "31a0e6e6-b43e-4549-94a6-0ab61b8edf27": {
-        "id": "54be308e-991a-4304-b9e5-b8e69d3d7f65",
-        "title": "Data 6",
-        "number": 6,
-        "startsAt": "2026-01-19",
-        "endsAt": "2026-02-02",
-        "progress": {
-          "completed": 1,
-          "total": 11
-        }
+        "id": "463d55b0-ff68-4b12-becd-2da75fa5b62e",
+        "title": "Data 8",
+        "number": 8,
+        "startsAt": "2026-02-16",
+        "endsAt": "2026-03-02",
+        "progress": { "completed": 1, "total": 10 }
       }
     },
     "upcoming": []
@@ -204,21 +383,171 @@
       { "id": "4fce7d36-0397-47c4-8abf-05991f70f85d", "name": "In Review", "type": "started" },
       { "id": "d360e896-a973-464c-9ac9-6995a28fe9c6", "name": "Done", "type": "completed" },
       { "id": "78668edd-02e2-4eee-8d83-e74eeb49e4a5", "name": "Canceled", "type": "canceled" }
+    ],
+    "09e41d73-8891-4deb-b6a8-822b8ba9b076": [
+      { "id": "4bc046dc-0a28-4966-a67c-1e7c88441d6a", "name": "Backlog", "type": "backlog" },
+      { "id": "cb043e5d-57b9-4abf-bb9e-8a91b8d6814b", "name": "Todo", "type": "unstarted" },
+      { "id": "69348468-a243-4958-93cc-90772af8641c", "name": "In Progress", "type": "started" },
+      { "id": "7e9de869-5bad-4d51-9ce7-69cff48bb233", "name": "In Review", "type": "started" },
+      { "id": "cf3a21cd-83d6-4203-9a8d-045b0b3a0b58", "name": "Done", "type": "completed" },
+      { "id": "afc14445-bdd1-4b99-903d-c203d67dbf4d", "name": "Canceled", "type": "canceled" },
+      { "id": "33c30525-a046-4289-9d0d-f1ebb4a97af9", "name": "Duplicate", "type": "canceled" }
     ]
   },
   "labels": {
-    "25de1f1f-e394-49a0-a6a5-8f8677eefb68": { "name": "type: bug", "color": "#ee0701" },
-    "5f35c6a0-99f1-4aef-966e-24edb8bfbb62": { "name": "type: spike", "color": "#7f8c8d" },
-    "a0ee102c-0e1d-4cd9-818e-99832594dff4": { "name": "type: enhancement", "color": "#428bca" },
-    "e709e517-ab65-42c7-b6a2-f15e85b3df36": { "name": "type: maintenance", "color": "#ed9121" },
-    "704e19ac-bf93-4a71-83f8-e8e2c76c9cfa": { "name": "squads: platform", "color": "#1D76DB" },
-    "380e4a2b-8212-4f9a-b8cf-a1e079498031": { "name": "squads: ai", "color": "#dddd37" },
-    "0dc75727-1865-4a39-be06-0577fbcc18c2": { "name": "squad: enterprise", "color": "#4e1893" },
+    "9ab0a0fa-dfc0-4648-9c93-f0f6ec986bdc": { "name": "accessibility", "color": "#ededed" },
+    "76fe7f36-42bf-44ac-af01-f08a1afcc7c9": { "name": "squad: platform", "color": "#ededed" },
+    "692a8a7a-6afa-4793-af66-9c1a39567f4f": { "name": "tool: thoughtspot", "color": "#2b010d" },
+    "4d3e283d-3685-4a76-9323-f3871e9c68b0": { "name": "stack: automation", "color": "#6699cc" },
+    "7ad13d00-3fb6-4e42-8bf8-d4adb631caa3": { "name": "type: data governance", "color": "#e5bc82" },
+    "b29e01b6-b9fc-4083-b8fb-bb80afc15160": { "name": "tool: airflow", "color": "#6699cc" },
+    "abc7b920-31af-4798-bc09-871df775f70f": { "name": "squads: ai", "color": "#ededed" },
+    "a77087c4-af3c-40f4-9104-d6aacf806c09": { "name": "stack: full-stack", "color": "#ededed" },
+    "96d27456-9e07-4d13-9f43-760393039e71": { "name": "task", "color": "#ededed" },
     "347efc23-924c-46ea-b291-bb3c4fcffce3": { "name": "squads: learning", "color": "#38d028" },
-    "dfb08512-f7e6-4deb-82cf-e8133c23bd31": { "name": "bug severity: 1", "color": "#cc0a00" },
+    "0dc75727-1865-4a39-be06-0577fbcc18c2": { "name": "squad: enterprise", "color": "#4e1893" },
+    "0c86d21c-6f3c-4076-abe3-cc0bacc4715b": { "name": "enhancement", "color": "#ededed" },
+    "c990617a-3bbe-4044-811a-4fe1f1835765": { "name": "type: quick win", "color": "#ededed" },
+    "8c9b46ef-174e-4421-97e2-73ca35b595df": {
+      "name": "stack: customer support",
+      "color": "#16fde4"
+    },
+    "723d8f72-7206-4ed3-987f-037a9da7e7f5": {
+      "name": "system: policy-modeller",
+      "color": "#aaaaaa"
+    },
+    "69980033-c3f4-42ce-9801-d859f2ab964b": { "name": "type: migration", "color": "#ededed" },
+    "53d4a482-88b2-4546-aaea-efa363faaba7": { "name": "squads: network", "color": "#55371c" },
+    "2d681986-c724-4392-92a0-fdc857dafbf0": { "name": "system: notifications", "color": "#ededed" },
+    "1da844ea-1abd-480e-95b4-0873f286aeb3": { "name": "system: admin portal", "color": "#e99695" },
+    "d5aea88c-3694-49d2-bdc5-f701a0576e63": { "name": "stack: security", "color": "#ededed" },
+    "8462e624-eae7-4a47-8421-129b9d0cbb00": { "name": "type: spike", "color": "#ededed" },
+    "40ff6080-7daf-466b-9bcd-70fa4c361927": { "name": "type: re-do/design", "color": "#ededed" },
+    "25086df7-1a33-4f6a-9e75-b1aa9e08df5b": { "name": "priority: urgent", "color": "#780534" },
+    "e1890dc0-9a33-4aaa-8d4d-2489ac83452e": { "name": "tool: cloudflare", "color": "#36454f" },
+    "c6e77d48-ab23-4269-95f3-428d6761e19b": {
+      "name": "subsystem: permissions",
+      "color": "#1b454e"
+    },
+    "bb5351ec-8d57-4c00-b2f6-6f7aacc70afe": { "name": "risk: high", "color": "#e40733" },
+    "b6a4ae89-96f8-45b3-99ed-ef8dfd2cf7e0": { "name": "type: new feature", "color": "#ededed" },
+    "7ae07c63-e7d2-4600-a793-568497c72a16": {
+      "name": "system: bulk enrolment",
+      "color": "#ededed"
+    },
+    "0647286d-e9f8-4bff-9446-60dfdc9652ed": { "name": "type: security", "color": "#ededed" },
+    "e709e517-ab65-42c7-b6a2-f15e85b3df36": { "name": "type: maintenance", "color": "#ed9121" },
+    "c21c25d6-9cdc-46fd-89b6-daf777d03130": { "name": "system: login", "color": "#ededed" },
+    "53c1adc6-605a-4279-bdc1-733e87d18c52": { "name": "system: communities", "color": "#ededed" },
+    "04db631b-be15-4174-9dcd-3558b125782f": {
+      "name": "process: scope increase",
+      "color": "#ededed"
+    },
+    "d0410acc-24f1-48d2-ad2a-4588cde3a48b": { "name": "system: academies", "color": "#CCABCF" },
+    "b0403684-6949-4d65-887f-49b5b4c0de6e": { "name": "tool: contentful-app", "color": "#ed9121" },
+    "5f68e3db-ae34-42ca-8194-10b8db445128": { "name": "system: multilingual", "color": "#dc7c3c" },
+    "038e7821-54b5-47e1-9de8-68c6395ddfeb": { "name": "system: futura", "color": "#5c8748" },
+    "da12ac92-ad67-49a1-925c-f619e3df3bfe": { "name": "stack: analytics eng", "color": "#3cb371" },
+    "c476f911-1b08-4bf4-9950-67cf8989970b": { "name": "stack: devops", "color": "#673ab7" },
+    "1ed5429a-9c6c-4a1b-a21c-180c9e0a1117": { "name": "system: onboarding", "color": "#ededed" },
+    "fb0293e2-ffd5-46bc-ad53-b0b4291cb730": { "name": "type: documentation", "color": "#887e93" },
+    "aa99314e-2db1-4260-af9d-eeda0ddfb1e6": { "name": "tool: suprsend", "color": "#5B1F60" },
+    "7b220c9e-2d7d-478c-89ed-daf586cbe7b3": { "name": "system: events", "color": "#ed9121" },
+    "ebe41383-7d62-4981-9454-7b4f2f55acef": { "name": "tool: rudderstack", "color": "#fbca04" },
+    "d89c1f56-f8de-484a-8752-966130cbc71a": { "name": "system: translations", "color": "#34495e" },
+    "a152e087-25e8-4bf2-a541-e315e9066970": { "name": "stack: performance", "color": "#ffecdb" },
+    "8f2da4b9-0f1c-4051-969b-611c31352416": {
+      "name": "subsystem: lang switcher",
+      "color": "#0C02F2"
+    },
+    "32ec29b7-1b70-4162-a53e-e44e111aa3b9": { "name": "type: learning day", "color": "#a295d6" },
+    "55bb6676-1393-4aba-9b5e-79dbedf4dccf": { "name": "tool: stream", "color": "#6699cc" },
+    "39494eba-89ea-4cab-b699-ea870810909b": { "name": "squads: pegasus", "color": "#05CC8A" },
+    "1dfb1522-e7b5-46cf-88f3-aca6660ec946": { "name": "process: pair on this", "color": "#3cd899" },
+    "872dadfb-6a20-4cdc-bc4f-35b80dc2a702": { "name": "squads: aquila", "color": "#D4C5F9" },
+    "704e19ac-bf93-4a71-83f8-e8e2c76c9cfa": { "name": "squads: platform", "color": "#1D76DB" },
+    "0dc0cc54-a87e-45a1-a256-eadda0e6689e": { "name": "squads: crux", "color": "#005F6A" },
+    "8715bace-68b2-4715-8ab4-b20afd2ccea5": { "name": "process: injection", "color": "#f0a9dd" },
+    "c73ad28a-ee0f-4a25-8576-0acb093e94eb": {
+      "name": "modules: component library",
+      "color": "#9ebde8"
+    },
+    "711c51cf-b034-4c0a-98a5-b0416fe476e2": { "name": "stack: seo", "color": "#415bbb" },
+    "6e3a1e4e-ebaf-4b5e-ba88-a2a053026fe8": { "name": "risk: low", "color": "#44bb93" },
+    "663c8754-7ddc-48bd-b5e2-836a103baede": { "name": "OKR: Q1", "color": "#fda507" },
+    "29438027-dfb3-4af0-9869-c105df3c9e83": { "name": "subsystem: signup", "color": "#ae324b" },
+    "0635a68f-7664-4ea2-8093-64d3da3633e7": { "name": "system: learning hub", "color": "#e6e6fa" },
+    "ef421c68-8001-457e-92bc-08fd7b47cafe": { "name": "type: pre-release", "color": "#93a31d" },
+    "e41b5d77-b11c-4018-baf9-985fa01f0041": { "name": "system: reg/auth", "color": "#ad4363" },
+    "b8ea6a12-ff8a-4358-bcea-325a55d8214a": { "name": "priority: high", "color": "#fd8262" },
+    "abfe8a05-e3a1-4f24-86b5-d423652aee40": { "name": "stack: infra-as-code", "color": "#f7e7ce" },
+    "5542e24f-ec83-41a9-9ddc-1c302319288e": { "name": "system: load balancer", "color": "#36454f" },
+    "325e89ef-4955-408d-b7f1-4c505509f235": { "name": "subsystem: onboarding", "color": "#537e81" },
+    "2d082660-e7ca-4ed1-8eaf-c1c5345642a2": { "name": "system: pages", "color": "#00b3bf" },
+    "17fa3b9b-e4cb-41e2-9166-3612b79c52b1": { "name": "type: migration", "color": "#106b9b" },
+    "e07f1c79-b0d7-42fa-94a9-2383d425763a": { "name": "tool: hubspot", "color": "#ff7a59" },
+    "ca06af3e-c71d-4cd5-ae2f-25815416a07c": { "name": "process: injection", "color": "#f0a9dd" },
+    "a8ebe62d-1c35-4f40-ab5c-4f72fe4a9203": { "name": "system: sitemap", "color": "#6699cc" },
+    "719e9d82-e21f-4583-871b-16867285c179": { "name": "system: search", "color": "#3cb371" },
+    "1f4ae3eb-2582-42a9-bc1e-dcbdef835973": { "name": "OKR: Q4", "color": "#cb5c0d" },
+    "c3ac23b9-8e37-4774-b8f2-b1a6539b8648": { "name": "stack: infrastructure", "color": "#000000" },
+    "87fc0709-552a-4ea8-9b63-e50c2a93932c": { "name": "system: ci-cd", "color": "#808080" },
+    "6e5c6527-bc3e-4103-ab04-0d55f5ba8c40": { "name": "stack: security", "color": "#ff69b4" },
+    "7833af9a-72bd-434c-8199-0b0509d728d3": { "name": "subsystem: cookies", "color": "#f7e7ce" },
     "4a2ee7f6-33cd-4210-b674-aece47a055c6": { "name": "bug severity: 2", "color": "#fc0c00" },
+    "3f93543c-7650-43e5-9c28-7acf321af997": { "name": "system: connections", "color": "#267196" },
+    "f60a128b-efaa-447a-b367-31514b53b7dc": { "name": "stack: accessibility", "color": "#e5e64b" },
+    "e17c4feb-2620-466c-8547-1feabd55e9f4": { "name": "type: tech debt", "color": "#b57730" },
+    "cbbcc93e-58d8-4be6-8ec0-24e1f18b87a8": { "name": "tool: auth0", "color": "#c39953" },
+    "aa2da34e-9753-47c7-8f51-0e03a0fd6869": { "name": "stack: ui/ux", "color": "#6b3ecd" },
+    "9b252084-a7ec-4369-8809-46e1a320b212": { "name": "priority: medium", "color": "#fdc462" },
+    "6bd5214e-80ce-403d-8053-7ee3c2e1d48c": { "name": "system: profiles", "color": "#cd5b45" },
+    "2c3767f7-5d79-440c-b140-ecb26dac3d59": { "name": "subsystem: login", "color": "#de6581" },
+    "25de1f1f-e394-49a0-a6a5-8f8677eefb68": { "name": "type: bug", "color": "#ee0701" },
+    "fe24e780-4473-4a07-b3c1-9d45f82260e0": { "name": "bug severity: 4", "color": "#ff675f" },
+    "f15676dc-4c16-4884-af5a-7837746fbba2": { "name": "sign-off: prod", "color": "#6699cc" },
+    "eeec61bc-6ec8-4f5d-80c5-125e0af94b55": { "name": "type: quick win", "color": "#5453fa" },
+    "eb9c02ed-0517-453f-8d69-401f47f84560": { "name": "system: communities", "color": "#ed9121" },
+    "e64511f3-2def-4c7f-9f79-31b2f672f142": { "name": "stack: full-stack", "color": "#8fbc8f" },
+    "dfb08512-f7e6-4deb-82cf-e8133c23bd31": { "name": "bug severity: 1", "color": "#cc0a00" },
+    "dca0049e-92c9-4b20-973c-49f82f6247d4": { "name": "stack: frontend", "color": "#04345f" },
+    "a6711418-be11-4713-a904-feecdf03cfab": { "name": "Migrated", "color": "#4EA7FC" },
+    "a4b3fa4d-94cf-45ef-96cf-364b9ef5c927": { "name": "type: i18n", "color": "#068343" },
     "a25fb554-21d1-454f-a379-173495e96726": { "name": "bug severity: 3", "color": "#ff392e" },
-    "fe24e780-4473-4a07-b3c1-9d45f82260e0": { "name": "bug severity: 4", "color": "#ff675f" }
+    "9e1fc81c-5d39-4bc6-8636-afb9dbf8a56a": {
+      "name": "system: solution articles",
+      "color": "#9400d3"
+    },
+    "89020af6-581f-40d9-a215-a054e196e407": { "name": "OKR: Q2", "color": "#ef820d" },
+    "88007c38-de06-4daa-8927-90b2f879c5f2": { "name": "priority: low", "color": "#d2d462" },
+    "872e57ed-22db-41a9-8bd1-794de2ce57f8": {
+      "name": "stack: data engineering",
+      "color": "#000000"
+    },
+    "85244c0e-56ae-468d-8d3b-d855df39ff04": { "name": "system: monitoring", "color": "#c39953" },
+    "740e0265-8954-4207-a693-00dc6e98e55f": { "name": "tool: contentful", "color": "#f05a65" },
+    "57f3b16d-5bbb-4617-9c6f-cd8392b26f33": {
+      "name": "modules: component library",
+      "color": "#9ebde8"
+    },
+    "50ce27bd-5fd4-4080-a24c-3005857b22e3": { "name": "tool: cypress", "color": "#ed9121" },
+    "44aa0590-7596-4803-aed4-f7ac10615ca8": { "name": "sign-off: devs", "color": "#8fbc8f" },
+    "424ef061-81c6-4398-8bb2-0abb51c2f15e": { "name": "tool: cloud-functions", "color": "#330066" },
+    "3f10d69c-765b-48f2-a033-f5bdcf2324e9": { "name": "Epic", "color": "#8228c7" },
+    "3cf30852-af42-4daf-ad2a-706781e60cc5": {
+      "name": "system: bulk enrolment",
+      "color": "#6699cc"
+    },
+    "2dd41ae8-5f31-49d4-9bc2-881c1037abc5": { "name": "system: courses", "color": "#e41e4e" },
+    "2cefdffd-e379-4b32-a939-4b9d3c93d1d6": { "name": "carried over: x1", "color": "#774d87" },
+    "1e0cfb62-9a14-4da2-b4ff-7b926c94c2b3": {
+      "name": "process: scope increase",
+      "color": "#02222b"
+    },
+    "1bc988b7-cbb6-47b5-97c5-1b919680582f": { "name": "stack: backend", "color": "#0dcde1" },
+    "05d4d715-d06c-4f9f-843e-f6ab94cc5ad5": { "name": "OKR: Q3", "color": "#fd6a02" },
+    "3bb6e92a-2eeb-40d0-b8f9-74c3100046d4": { "name": "Improvement", "color": "#4EA7FC" },
+    "380e4a2b-8212-4f9a-b8cf-a1e079498031": { "name": "squads: ai", "color": "#dddd37" }
   },
   "indices": {
     "teamByKey": {
@@ -227,7 +556,8 @@
       "ENT": "af99ba78-20d8-4e31-93b9-f73dceac6aa3",
       "APO": "be1c5e07-95c0-4012-9d5b-228a156f5de1",
       "AIL": "d065a65a-73cc-4043-a45f-a82f02471c5f",
-      "DAT": "31a0e6e6-b43e-4549-94a6-0ab61b8edf27"
+      "DAT": "31a0e6e6-b43e-4549-94a6-0ab61b8edf27",
+      "DES": "09e41d73-8891-4deb-b6a8-822b8ba9b076"
     },
     "teamByName": {
       "platform": "c96481ee-5e8b-4622-961a-b3502a1e8644",
@@ -235,35 +565,203 @@
       "enterprise": "af99ba78-20d8-4e31-93b9-f73dceac6aa3",
       "apolitical": "be1c5e07-95c0-4012-9d5b-228a156f5de1",
       "ai learning": "d065a65a-73cc-4043-a45f-a82f02471c5f",
-      "data": "31a0e6e6-b43e-4549-94a6-0ab61b8edf27"
+      "data": "31a0e6e6-b43e-4549-94a6-0ab61b8edf27",
+      "design": "09e41d73-8891-4deb-b6a8-822b8ba9b076"
     },
     "projectByName": {
-      "quick wins: discussions": "33f9f6c9-8691-44c2-863c-385c89fa07fd",
+      "policy nova phase 3: modelling & experimentation": "ee56dd75-d878-4dab-b9f1-9f8549a7d317",
+      "policy nova phase 2: synthesis & visualisation": "867c3423-3560-4b55-b2e4-af432224a2b4",
+      "ai moderation / deletion updates": "38cc350e-824e-425b-b6b2-2b7b0e361d7a",
+      "vts admin dashboard (separately hosted)": "4bd0b80f-a294-45a7-93ce-638382cacabc",
+      "workforce insights on platform": "c529c288-d684-4394-83f8-b541d578756c",
+      "futura onboarding experience": "048e7d3d-0aa7-4899-b81a-4a753e2114b2",
+      "module on logged-in homepage": "4ccaa940-cbcf-434e-bf3d-88fa7c915648",
+      "learning track page": "a0767e1d-355c-484e-b050-5da0ee61d24c",
+      "futura on-platform ux": "7b60f80f-b29c-4dc4-a684-71e44f4c2ee0",
+      "consensus api integration": "0e7ee606-6af0-4b4a-af48-23734ce498e3",
+      "showing task > value module": "aa1f4be4-09de-41c3-bf4f-ba5130cf1234",
+      "open data registry": "b917e9dc-cd16-4bf5-830d-dc2fbc4b6820",
+      "nova — moon shot modelling": "25aa1956-866a-4275-a5a5-054ee6f570ca",
+      "get futura survey ready for ukraine pilot": "fd5795b5-8d65-40e4-9247-8a42aa39d0cc",
+      "nova research ui": "637489a4-6777-4500-8182-a87e92d3c842",
+      "graded assessments": "5748d37d-de65-4384-b18c-98ccb05f9da5",
+      "workforce planning dashboards": "173f09c5-805c-4a4c-b18b-420f2ac22816",
+      "logged-in homepage with learning curriculum": "ad262409-8a9a-4f64-93ef-0f991644f793",
+      "navigator landing page": "b5f62df1-4bb2-4a39-bf52-5d418a0f301f",
+      "article likes": "d945dcc9-253e-4cd5-8fc9-c0b96a83c02d",
+      "incorporate new data sources into policy nova": "7570726c-a989-443b-868c-568662819484",
+      "enterprise": "1169b092-18c3-4a88-a493-1411f7a5acf8",
+      "platform": "7f5f521b-7256-48d7-83e8-dfb6c3a99a3e",
+      "ai tools": "8e36d0de-d2f0-49f6-b69d-75d39774e368",
+      "futura": "1ffc4a7c-6199-42da-a25b-a3ca27fff193",
+      "ai navigator": "fbdc7b4c-b588-4547-8a1b-9f06ae26b152",
+      "5. sso": "c9f813a0-9372-4f92-ad21-3245d9bee6f9",
+      "ai tool exploration": "f52b75c1-78d6-4502-8916-3333308b61ef",
+      "2. customisable cohort onboarding experience": "2ef4fc8d-7a26-4f9f-bc13-b67bd842f034",
+      "dge deployment": "d182ef38-cd96-4250-a8d1-aef5fe30e5c5",
+      "futura — individual results page": "c43b7162-0804-4670-8756-02d769a8d09c",
+      "policy nova research improvements": "e1d09eee-0834-4ef0-95b4-4983a3dae35d",
+      "1. openfga: restricted": "a528a6da-1291-4f90-a4c3-ba78ee565933",
+      "experiment w/ modelling in polmol": "eb575e58-f2df-4c82-b634-19274f95fdba",
+      "redesign articles page": "4a286b2b-dead-4aab-ab01-ca98b1c16ba6",
+      "enterprise workforce insights pilot": "26b44c81-27d1-4576-8427-0d45edffbb6c",
+      "quizzes & surveys": "342b3ba6-961d-4f18-9c82-5650797c02ad",
+      "scenario-based learning": "6a39768e-7a00-40b4-b99c-8fa385cf8f19",
+      "new o*net task survey on platform": "f708eab9-277f-4548-a9f2-06368bb9c598",
+      "azure minimum viable env": "adf7d55a-06a2-4812-9e8d-ccbc4d73d246",
+      "unified lesson page": "bbf74f12-6d50-4620-9172-a80c861d0bf1",
       "ethiopia prep": "c64d3917-74cf-4fbf-8063-04a18c8f4389",
-      "emails workflows": "033f037d-ada6-4fc0-8546-c4b2f7680655",
-      "text to speech": "5d6f9f02-ff3f-48ff-b1dc-907cc51f79fa",
-      "bughunt": "e7fe5a54-67f8-42f9-b849-c098aac3d21b",
-      "cohorts removal": "0200c6dc-a922-4097-838b-c8effa13375a",
-      "openfga communities": "ed73b641-b2a8-4807-9032-dec7c1b714e0",
-      "access expiration": "b733ae6a-2a3e-4e1e-8de9-0f2d342a09e8",
-      "quick wins: academies": "ae52d2b3-92b3-41b5-931c-1a11e8aad837",
-      "quick wins: cohorting": "a5a1db01-7001-4c89-8882-793bcbc45778",
+      "quick wins: discussions": "33f9f6c9-8691-44c2-863c-385c89fa07fd",
+      "futura navigation pages": "251b334a-c43e-4107-ba2f-581ff1dc5cf5",
+      "performance optimisation": "11eec94a-6951-46f0-9c87-656132448096",
+      "cohorting emails": "767af8a3-b92d-44a2-9348-7fc06df24b91",
+      "server side tracking": "dae9ffd7-988c-418a-a5f8-4076d196e0b6",
+      "wip: orgs": "99b93631-5065-4875-8705-8513eef8fa16",
+      "3. quick wins: cohorting": "a5a1db01-7001-4c89-8882-793bcbc45778",
+      "4. quick wins: academies": "ae52d2b3-92b3-41b5-931c-1a11e8aad837",
+      "contentful integration into futura-ui": "8808f050-458f-47f3-a58b-c28098042626",
+      "article comment migration": "7806c4dc-8d97-4f2c-a11a-4e9a3f690bc5",
       "partner scaling": "79ba4877-6a36-4a10-ae78-98405fb69274",
-      "ui migration": "c00b2019-7fe9-44b0-a173-3db7e6321e1c"
+      "text to speech on lessons": "5d6f9f02-ff3f-48ff-b1dc-907cc51f79fa",
+      "cohorts removal functionality": "0200c6dc-a922-4097-838b-c8effa13375a",
+      "build jurisdictional scanning agent": "bc37aea8-b0ad-4c54-8fb0-ee876e189647",
+      "emails workflows (academies)": "033f037d-ada6-4fc0-8546-c4b2f7680655",
+      "ai-generated curriculums": "49fa4a43-d3ef-4760-9245-2c0732294ba4",
+      "building out deep-research agents within the pim": "44a8a341-19e4-46ba-a9a3-d5df03630288",
+      "api migration": "8c66370d-50d7-487a-9fc7-602501b749a0",
+      "implementing event streaming": "dbb116ad-3eed-4699-96df-b052676f1095",
+      "search revamp": "cc85e217-4907-4575-9000-4cab23286082",
+      "intelligent user segmentation": "ca9b5eb1-89a1-405c-8443-eac0c9a54811",
+      "drive data quality": "641b6a22-10af-4806-80d5-88cf1f52557a",
+      "productionise email automations pipeline": "a007b8d4-1feb-49ce-a206-91288f2c7c38",
+      "create futura-api": "d1115892-6638-4fb0-aadf-ac6bc78a7aa1",
+      "pim scaffolding": "83571114-74f7-45b9-ad41-0eb71587a0f6",
+      "security enhancements": "25ce9bab-9cc6-4d62-a32a-ccf16dda4552",
+      "ai feedback module for courses": "a5eaeec6-804a-4a3a-a68e-ea1c67cca9bb",
+      "openfga: communities": "ed73b641-b2a8-4807-9032-dec7c1b714e0",
+      "access expiration": "b733ae6a-2a3e-4e1e-8de9-0f2d342a09e8",
+      "contextualising ai feedback scenarios": "bd25df37-aed1-4299-92a4-1b1abcc9c525",
+      "automated test failure fixing": "ba046b68-d836-406f-be89-689b0b26dbb2",
+      "openfga: courses": "465d97b3-e5ea-4c3c-9647-f12c7cb1d269",
+      "certificates": "d22de67e-267a-496b-86f9-c5811418dfd6",
+      "bughunt": "e7fe5a54-67f8-42f9-b849-c098aac3d21b",
+      "envs provisioning": "72cff799-79b2-4e78-94d6-ae088a33dc68",
+      "cloud dns": "80ce1ee3-9843-4d69-bcdb-b031e0303371",
+      "iterate observability": "42e80784-7491-4b65-a74c-ba2aca8e5da1",
+      "ui migration": "c00b2019-7fe9-44b0-a173-3db7e6321e1c",
+      "infra maintenance": "877749a2-c2d7-4e36-a606-6dddcfa19376",
+      "improve dx": "2915cedb-ff89-4f42-ba9c-21867fcb9a03",
+      "hydra": "39c87433-993d-4096-9de1-e79ae08c373a"
     },
     "labelByName": {
-      "type: bug": "25de1f1f-e394-49a0-a6a5-8f8677eefb68",
-      "type: spike": "5f35c6a0-99f1-4aef-966e-24edb8bfbb62",
-      "type: enhancement": "a0ee102c-0e1d-4cd9-818e-99832594dff4",
-      "type: maintenance": "e709e517-ab65-42c7-b6a2-f15e85b3df36",
-      "squads: platform": "704e19ac-bf93-4a71-83f8-e8e2c76c9cfa",
-      "squads: ai": "380e4a2b-8212-4f9a-b8cf-a1e079498031",
-      "squad: enterprise": "0dc75727-1865-4a39-be06-0577fbcc18c2",
+      "accessibility": "9ab0a0fa-dfc0-4648-9c93-f0f6ec986bdc",
+      "squad: platform": "76fe7f36-42bf-44ac-af01-f08a1afcc7c9",
+      "tool: thoughtspot": "692a8a7a-6afa-4793-af66-9c1a39567f4f",
+      "stack: automation": "4d3e283d-3685-4a76-9323-f3871e9c68b0",
+      "type: data governance": "7ad13d00-3fb6-4e42-8bf8-d4adb631caa3",
+      "tool: airflow": "b29e01b6-b9fc-4083-b8fb-bb80afc15160",
+      "squads: ai": "abc7b920-31af-4798-bc09-871df775f70f",
+      "stack: full-stack": "a77087c4-af3c-40f4-9104-d6aacf806c09",
+      "task": "96d27456-9e07-4d13-9f43-760393039e71",
       "squads: learning": "347efc23-924c-46ea-b291-bb3c4fcffce3",
-      "bug severity: 1": "dfb08512-f7e6-4deb-82cf-e8133c23bd31",
+      "squad: enterprise": "0dc75727-1865-4a39-be06-0577fbcc18c2",
+      "enhancement": "0c86d21c-6f3c-4076-abe3-cc0bacc4715b",
+      "type: quick win": "c990617a-3bbe-4044-811a-4fe1f1835765",
+      "stack: customer support": "8c9b46ef-174e-4421-97e2-73ca35b595df",
+      "system: policy-modeller": "723d8f72-7206-4ed3-987f-037a9da7e7f5",
+      "type: migration": "69980033-c3f4-42ce-9801-d859f2ab964b",
+      "squads: network": "53d4a482-88b2-4546-aaea-efa363faaba7",
+      "system: notifications": "2d681986-c724-4392-92a0-fdc857dafbf0",
+      "system: admin portal": "1da844ea-1abd-480e-95b4-0873f286aeb3",
+      "stack: security": "d5aea88c-3694-49d2-bdc5-f701a0576e63",
+      "type: spike": "8462e624-eae7-4a47-8421-129b9d0cbb00",
+      "type: re-do/design": "40ff6080-7daf-466b-9bcd-70fa4c361927",
+      "priority: urgent": "25086df7-1a33-4f6a-9e75-b1aa9e08df5b",
+      "tool: cloudflare": "e1890dc0-9a33-4aaa-8d4d-2489ac83452e",
+      "subsystem: permissions": "c6e77d48-ab23-4269-95f3-428d6761e19b",
+      "risk: high": "bb5351ec-8d57-4c00-b2f6-6f7aacc70afe",
+      "type: new feature": "b6a4ae89-96f8-45b3-99ed-ef8dfd2cf7e0",
+      "system: bulk enrolment": "7ae07c63-e7d2-4600-a793-568497c72a16",
+      "type: security": "0647286d-e9f8-4bff-9446-60dfdc9652ed",
+      "type: maintenance": "e709e517-ab65-42c7-b6a2-f15e85b3df36",
+      "system: login": "c21c25d6-9cdc-46fd-89b6-daf777d03130",
+      "system: communities": "53c1adc6-605a-4279-bdc1-733e87d18c52",
+      "process: scope increase": "04db631b-be15-4174-9dcd-3558b125782f",
+      "system: academies": "d0410acc-24f1-48d2-ad2a-4588cde3a48b",
+      "tool: contentful-app": "b0403684-6949-4d65-887f-49b5b4c0de6e",
+      "system: multilingual": "5f68e3db-ae34-42ca-8194-10b8db445128",
+      "system: futura": "038e7821-54b5-47e1-9de8-68c6395ddfeb",
+      "stack: analytics eng": "da12ac92-ad67-49a1-925c-f619e3df3bfe",
+      "stack: devops": "c476f911-1b08-4bf4-9950-67cf8989970b",
+      "system: onboarding": "1ed5429a-9c6c-4a1b-a21c-180c9e0a1117",
+      "type: documentation": "fb0293e2-ffd5-46bc-ad53-b0b4291cb730",
+      "tool: suprsend": "aa99314e-2db1-4260-af9d-eeda0ddfb1e6",
+      "system: events": "7b220c9e-2d7d-478c-89ed-daf586cbe7b3",
+      "tool: rudderstack": "ebe41383-7d62-4981-9454-7b4f2f55acef",
+      "system: translations": "d89c1f56-f8de-484a-8752-966130cbc71a",
+      "stack: performance": "a152e087-25e8-4bf2-a541-e315e9066970",
+      "subsystem: lang switcher": "8f2da4b9-0f1c-4051-969b-611c31352416",
+      "type: learning day": "32ec29b7-1b70-4162-a53e-e44e111aa3b9",
+      "tool: stream": "55bb6676-1393-4aba-9b5e-79dbedf4dccf",
+      "squads: pegasus": "39494eba-89ea-4cab-b699-ea870810909b",
+      "process: pair on this": "1dfb1522-e7b5-46cf-88f3-aca6660ec946",
+      "squads: aquila": "872dadfb-6a20-4cdc-bc4f-35b80dc2a702",
+      "squads: platform": "704e19ac-bf93-4a71-83f8-e8e2c76c9cfa",
+      "squads: crux": "0dc0cc54-a87e-45a1-a256-eadda0e6689e",
+      "process: injection": "8715bace-68b2-4715-8ab4-b20afd2ccea5",
+      "modules: component library": "c73ad28a-ee0f-4a25-8576-0acb093e94eb",
+      "stack: seo": "711c51cf-b034-4c0a-98a5-b0416fe476e2",
+      "risk: low": "6e3a1e4e-ebaf-4b5e-ba88-a2a053026fe8",
+      "okr: q1": "663c8754-7ddc-48bd-b5e2-836a103baede",
+      "subsystem: signup": "29438027-dfb3-4af0-9869-c105df3c9e83",
+      "system: learning hub": "0635a68f-7664-4ea2-8093-64d3da3633e7",
+      "type: pre-release": "ef421c68-8001-457e-92bc-08fd7b47cafe",
+      "system: reg/auth": "e41b5d77-b11c-4018-baf9-985fa01f0041",
+      "priority: high": "b8ea6a12-ff8a-4358-bcea-325a55d8214a",
+      "stack: infra-as-code": "abfe8a05-e3a1-4f24-86b5-d423652aee40",
+      "system: load balancer": "5542e24f-ec83-41a9-9ddc-1c302319288e",
+      "subsystem: onboarding": "325e89ef-4955-408d-b7f1-4c505509f235",
+      "system: pages": "2d082660-e7ca-4ed1-8eaf-c1c5345642a2",
+      "tool: hubspot": "e07f1c79-b0d7-42fa-94a9-2383d425763a",
+      "system: sitemap": "a8ebe62d-1c35-4f40-ab5c-4f72fe4a9203",
+      "system: search": "719e9d82-e21f-4583-871b-16867285c179",
+      "okr: q4": "1f4ae3eb-2582-42a9-bc1e-dcbdef835973",
+      "stack: infrastructure": "c3ac23b9-8e37-4774-b8f2-b1a6539b8648",
+      "system: ci-cd": "87fc0709-552a-4ea8-9b63-e50c2a93932c",
+      "subsystem: cookies": "7833af9a-72bd-434c-8199-0b0509d728d3",
       "bug severity: 2": "4a2ee7f6-33cd-4210-b674-aece47a055c6",
+      "system: connections": "3f93543c-7650-43e5-9c28-7acf321af997",
+      "stack: accessibility": "f60a128b-efaa-447a-b367-31514b53b7dc",
+      "type: tech debt": "e17c4feb-2620-466c-8547-1feabd55e9f4",
+      "tool: auth0": "cbbcc93e-58d8-4be6-8ec0-24e1f18b87a8",
+      "stack: ui/ux": "aa2da34e-9753-47c7-8f51-0e03a0fd6869",
+      "priority: medium": "9b252084-a7ec-4369-8809-46e1a320b212",
+      "system: profiles": "6bd5214e-80ce-403d-8053-7ee3c2e1d48c",
+      "subsystem: login": "2c3767f7-5d79-440c-b140-ecb26dac3d59",
+      "type: bug": "25de1f1f-e394-49a0-a6a5-8f8677eefb68",
+      "bug severity: 4": "fe24e780-4473-4a07-b3c1-9d45f82260e0",
+      "sign-off: prod": "f15676dc-4c16-4884-af5a-7837746fbba2",
+      "type: quick win": "eeec61bc-6ec8-4f5d-80c5-125e0af94b55",
+      "bug severity: 1": "dfb08512-f7e6-4deb-82cf-e8133c23bd31",
+      "stack: frontend": "dca0049e-92c9-4b20-973c-49f82f6247d4",
+      "migrated": "a6711418-be11-4713-a904-feecdf03cfab",
+      "type: i18n": "a4b3fa4d-94cf-45ef-96cf-364b9ef5c927",
       "bug severity: 3": "a25fb554-21d1-454f-a379-173495e96726",
-      "bug severity: 4": "fe24e780-4473-4a07-b3c1-9d45f82260e0"
+      "system: solution articles": "9e1fc81c-5d39-4bc6-8636-afb9dbf8a56a",
+      "okr: q2": "89020af6-581f-40d9-a215-a054e196e407",
+      "priority: low": "88007c38-de06-4daa-8927-90b2f879c5f2",
+      "stack: data engineering": "872e57ed-22db-41a9-8bd1-794de2ce57f8",
+      "system: monitoring": "85244c0e-56ae-468d-8d3b-d855df39ff04",
+      "tool: contentful": "740e0265-8954-4207-a693-00dc6e98e55f",
+      "tool: cypress": "50ce27bd-5fd4-4080-a24c-3005857b22e3",
+      "sign-off: devs": "44aa0590-7596-4803-aed4-f7ac10615ca8",
+      "tool: cloud-functions": "424ef061-81c6-4398-8bb2-0abb51c2f15e",
+      "epic": "3f10d69c-765b-48f2-a033-f5bdcf2324e9",
+      "system: courses": "2dd41ae8-5f31-49d4-9bc2-881c1037abc5",
+      "carried over: x1": "2cefdffd-e379-4b32-a939-4b9d3c93d1d6",
+      "stack: backend": "1bc988b7-cbb6-47b5-97c5-1b919680582f",
+      "okr: q3": "05d4d715-d06c-4f9f-843e-f6ab94cc5ad5",
+      "improvement": "3bb6e92a-2eeb-40d0-b8f9-74c3100046d4"
     }
   }
 }

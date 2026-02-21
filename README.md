@@ -90,7 +90,7 @@ Use `/[skill-name]` in Claude Code to invoke workflows:
 apolitical-assistant/
 ├── .claude/
 │   ├── CLAUDE.md              # Assistant instructions and guidelines
-│   ├── commands/              # Skill definitions (15 skills)
+│   ├── commands/              # Skill definitions (40 skills)
 │   └── settings.local.json    # Local MCP permissions
 ├── mcp-servers/
 │   ├── google/                # Gmail, Calendar, Drive, Docs, Sheets, Slides

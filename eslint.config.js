@@ -24,5 +24,13 @@ export default tseslint.config(
       '@typescript-eslint/explicit-module-boundary-types': 'off',
       'no-console': ['warn', { allow: ['warn', 'error'] }],
     },
+  },
+  {
+    files: ['scripts/**/*.ts', 'mcp-servers/google/scripts/**/*.ts'],
+    rules: { 'no-console': 'off' },
+  },
+  {
+    files: ['mcp-servers/shared/src/server-factory.ts'],
+    rules: { 'no-console': 'off' },
   }
 );
