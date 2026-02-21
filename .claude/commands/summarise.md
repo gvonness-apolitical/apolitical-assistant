@@ -11,6 +11,7 @@ Summarise a thread, document, or conversation.
 ## Core Patterns Used
 
 - [Competitive Draft](../patterns/competitive-draft.md) - Parallel summaries with different depth/brevity seeds
+- [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
 
 ## Competitive Draft Mode
 

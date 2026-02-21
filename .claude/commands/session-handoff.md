@@ -5,6 +5,11 @@ Create a temporary context document to pass state to the next session when endin
 ## Usage
 - `/session-handoff` - Create handoff document for next session
 
+## Core Patterns Used
+
+- [Frontmatter](../patterns/frontmatter.md) - YAML metadata for handoff file
+- [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
+
 ## When to Use
 
 Use this when:

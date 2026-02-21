@@ -15,6 +15,23 @@ Generate a daily briefing to start the day.
 - [Frontmatter](../patterns/frontmatter.md) - YAML metadata for briefing file
 - [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
 
+## MANDATORY: Required Tool Calls
+
+This skill must make the following API calls. Do not paraphrase cached data as a substitute.
+
+| Section | Required Tools | Can Skip |
+|---------|---------------|----------|
+| Calendar | calendar_list_events | --quick |
+| Email | gmail_search (maxResults:50) | --quick |
+| Slack | slack_read_channel (priority channels), slack_list_dms | --quick |
+| Linear | list_issues (assigned, blocked, due soon) | --quick |
+| Incidents | incidentio_list_incidents | --quick |
+| Team OOO | humaans_list_time_off | --quick |
+
+When skipping a section in quick mode, mark it: `⊘ Skipped (--quick)`
+
+After completing the skill, include a tool audit: `Tools: [tool] ×[N], ...`
+
 ## Quick Mode
 
 When `--quick` flag is provided:

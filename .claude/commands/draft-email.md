@@ -13,6 +13,7 @@ Help draft an email response with appropriate context.
 - [Person Resolution](../patterns/person-resolution.md) - Resolve recipient
 - [Dossier Context](../patterns/dossier-context.md) - Load communication profile and playbook
 - [Competitive Draft](../patterns/competitive-draft.md) - Parallel drafts with tone variants
+- [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
 
 ## Process
 

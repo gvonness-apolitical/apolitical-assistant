@@ -6,6 +6,12 @@ Create structured meeting notes with technical context.
 - `/meeting-notes [gemini-doc-id]` - process Gemini auto-notes into structured format
 - `/meeting-notes [meeting-name]` - create notes for a meeting (will search for Gemini notes)
 
+## Core Patterns Used
+
+- [Person Resolution](../patterns/person-resolution.md) - Resolve attendee names
+- [Frontmatter](../patterns/frontmatter.md) - YAML metadata for notes file
+- [Error Handling](../patterns/error-handling.md) - Handle API issues
+
 ## Process
 
 1. **Get raw notes**: Fetch Gemini meeting notes from Google Docs

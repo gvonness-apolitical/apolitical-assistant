@@ -19,6 +19,21 @@ Get a comprehensive status update on a team or squad.
 - [Rate Limiting](../patterns/rate-limiting.md) - Batch API calls efficiently
 - [Critique Ratchet](../patterns/critique-ratchet.md) - Health assessment and recommendations pressure-tested
 
+## MANDATORY: Required Tool Calls
+
+This skill must make the following API calls. Do not paraphrase cached data as a substitute.
+
+| Section | Required Tools | Can Skip |
+|---------|---------------|----------|
+| Linear Sprint | list_issues (sprint/blocked/in-progress/done) | --quick |
+| GitHub PRs | list_pull_requests (open, stale reviews) | --quick |
+| Team OOO | humaans_list_time_off | --quick |
+| Incidents | incidentio_list_incidents | --quick |
+| Slack | slack_read_channel (team channel) | --quick |
+| Asana | asana_search_tasks (cross-functional for team members) | --quick |
+
+After completing the skill, include a tool audit: `Tools: [tool] ×[N], ...`
+
 ## Quick Mode
 
 When `--quick` flag is provided:
@@ -50,11 +65,11 @@ Use `.claude/people.json` to resolve team members:
 
 Before making API calls, check local context files:
 
-1. **Today's daily context**: `context/daily/YYYY-MM-DD.md`
+1. **Today's daily context**: `context/YYYY-MM-DD/index.md`
    - Who's out (from orient/morning-briefing)
    - Active incidents
    - Recent Slack activity summaries
-2. **Today's morning briefing**: `morning-briefing/YYYY-MM-DD.md`
+2. **Today's morning briefing**: `briefings/YYYY-MM-DD.md`
    - Team availability
    - P1 items affecting team
 3. **Recent EODs**: `context/eod-*.md` (last 3 days)

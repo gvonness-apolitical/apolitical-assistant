@@ -6,6 +6,7 @@ Quick check on what's blocking a person or project.
 
 - `/whats-blocking [person]` - what's blocking this person
 - `/whats-blocking [project/squad]` - what's blocking this team/project
+- `/whats-blocking [query] --quick` - use cached data only, no API calls
 
 ## Core Patterns Used
 
@@ -13,6 +14,30 @@ Quick check on what's blocking a person or project.
 - [Local Context First](../patterns/local-context-first.md) - Check caches before API calls
 - [Progressive Discovery](../patterns/progressive-discovery.md) - Cache discovered GitHub/Linear IDs
 - [Error Handling](../patterns/error-handling.md) - Handle unavailable integrations
+
+## MANDATORY: Required Tool Calls
+
+This skill must make the following API calls based on query type. Do not paraphrase cached data as a substitute.
+
+**For a Person:**
+
+| Section | Required Tools | Can Skip |
+|---------|---------------|----------|
+| Linear | list_issues (blocked/waiting, assigned to person) | Never |
+| GitHub | list_pull_requests (awaiting review, requested changes) | Never |
+| Slack | slack_search (blocker mentions) | Never |
+| Calendar | calendar_list_events (check if OOO or in meetings) | Never |
+
+**For a Project/Squad:**
+
+| Section | Required Tools | Can Skip |
+|---------|---------------|----------|
+| Linear | list_issues (blocked tickets in project) | Never |
+| GitHub | list_pull_requests (stale reviews, failing CI) | Never |
+| Notion | notion-search (RFCs in Draft/In Review) | If no Notion context |
+| Asana | asana_search_tasks (overdue/blocked cross-functional) | If no Asana context |
+
+After completing the skill, include a tool audit: `Tools: [tool] ×[N], ...`
 
 ## Person Resolution
 
@@ -25,19 +50,31 @@ When checking blockers for a person, use `.claude/people.json`:
    - `slackUserId` → search Slack for blocker mentions
 3. **Progressive discovery**: If you discover a GitHub/Linear ID during lookup, update people.json
 
+## Quick Mode
+
+When `--quick` flag is provided:
+
+1. Skip all MCP/API calls
+2. Use only cached data:
+   - `context/YYYY-MM-DD/index.md` - Today's accumulated context (blockers mentioned)
+   - `linear-cache.json` - Sprint structure and blocked tickets
+   - `people.json` - Person identifiers
+   - `context/eod-*.md` - Recent EOD summaries with carry-forward blockers
+3. Note in output: "Quick mode - cached data only (may not reflect latest state)"
+
 ## Check Daily Context First
 
 Before making API calls, check local context files:
 
-1. **Today's daily context**: `context/daily/YYYY-MM-DD.md`
+1. **Today's daily context**: `context/YYYY-MM-DD/index.md`
    - Action items mentioning blockers
    - Slack summaries with blocker keywords
-2. **Recent session context**: `context/YYYY-MM-DD-session.md`
+2. **Recent session context**: `context/YYYY-MM-DD/session.md`
    - Notes about blockers discussed today
 3. **Recent EODs**: `context/eod-*.md` (last 3 days)
    - Blocked items from previous days
    - Carry-forward blockers
-4. **Recent Slack reads**: `context/*-slack-read.md`
+4. **Recent Slack reads**: `context/YYYY-MM-DD/slack-HHMM.md`
    - Messages flagging blockers
 
 Use local context first, then supplement with fresh Linear/GitHub/Slack API calls.

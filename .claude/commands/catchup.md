@@ -79,6 +79,10 @@ Each checkpoint must include `Tools:` line with actual tools called and counts.
 }
 ```
 
+## Context Window Management
+
+After completing each day's data gathering, compact all raw API responses into the context file structure before proceeding to the next day. Do not carry raw API data from one day into the next — extract structured summaries and discard the rest. This prevents context window overflow when processing multi-day ranges.
+
 ## Core Patterns Used
 
 - [Checkpointing](../patterns/checkpointing.md) - State file and resume capability

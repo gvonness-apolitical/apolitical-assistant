@@ -60,6 +60,10 @@ If Trashed and Archived are both 0 and you processed >5 emails, something is wro
 **WRONG:** "10 emails, all noise — archived mentally"
 **RIGHT:** gmail_trash([16 IDs]) → gmail_archive([6 IDs]) → TaskCreate ×2 → "Trashed: 16 | Archived: 6 | Tasks: #18, #19"
 
+## Context Window Management
+
+When processing >30 emails, batch in groups of 15. After each batch: apply rules, execute trash/archive, checkpoint with metrics, then proceed. Do not carry full email bodies across batch boundaries — extract subject, sender, category, and action needed, then discard the raw content.
+
 ## Core Patterns Used
 
 - [Checkpointing](../patterns/checkpointing.md) - Progress tracking and resume capability
