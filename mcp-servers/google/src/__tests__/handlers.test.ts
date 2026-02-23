@@ -21,6 +21,10 @@ import {
   handleSlidesGetThumbnail,
   handleSlidesCreate,
   handleSlidesAddSlide,
+  handleFormsCreate,
+  handleFormsUpdate,
+  handleFormsGet,
+  handleFormsListResponses,
 } from '../handlers/index.js';
 
 // Create a mock GoogleAuth for testing
@@ -1146,6 +1150,196 @@ describe('Slides Handlers', () => {
           auth
         )
       ).rejects.toThrow('Slides API error adding slide: 500');
+    });
+  });
+});
+
+describe('Forms Handlers', () => {
+  let fetchMock: ReturnType<typeof vi.fn>;
+  let auth: GoogleAuth;
+
+  beforeEach(() => {
+    fetchMock = vi.fn();
+    auth = createMockAuth(fetchMock as typeof fetch);
+  });
+
+  describe('handleFormsCreate', () => {
+    it('should create a form and return IDs and URLs', async () => {
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          formId: 'form-123',
+          responderUri: 'https://docs.google.com/forms/d/e/abc/viewform',
+          info: { title: 'Survey', documentTitle: 'Survey' },
+        })
+      );
+
+      const result = (await handleFormsCreate({ title: 'Survey' }, auth)) as {
+        formId: string;
+        responderUri: string;
+        editUri: string;
+      };
+
+      expect(result.formId).toBe('form-123');
+      expect(result.responderUri).toBe('https://docs.google.com/forms/d/e/abc/viewform');
+      expect(result.editUri).toBe('https://docs.google.com/forms/d/form-123/edit');
+
+      const callArgs = fetchMock.mock.calls[0]!;
+      const body = JSON.parse(callArgs[1]?.body as string);
+      expect(body.info.title).toBe('Survey');
+      expect(body.info.documentTitle).toBe('Survey');
+    });
+
+    it('should handle API errors', async () => {
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({}, false, 403));
+
+      await expect(handleFormsCreate({ title: 'Fail Form' }, auth)).rejects.toThrow(
+        'Forms API error creating form: 403'
+      );
+    });
+  });
+
+  describe('handleFormsUpdate', () => {
+    it('should send batch update requests', async () => {
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          replies: [{ createItem: { itemId: 'item-1' } }],
+        })
+      );
+
+      const result = await handleFormsUpdate(
+        {
+          formId: 'form-123',
+          requests: [
+            {
+              createItem: {
+                item: {
+                  title: 'What is your name?',
+                  questionItem: {
+                    question: {
+                      required: true,
+                      textQuestion: { paragraph: false },
+                    },
+                  },
+                },
+                location: { index: 0 },
+              },
+            },
+          ],
+        },
+        auth
+      );
+
+      expect(result).toEqual({ replies: [{ createItem: { itemId: 'item-1' } }] });
+
+      const url = fetchMock.mock.calls[0]![0] as string;
+      expect(url).toContain('form-123:batchUpdate');
+    });
+
+    it('should handle API errors', async () => {
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({}, false, 400));
+
+      await expect(handleFormsUpdate({ formId: 'form-bad', requests: [] }, auth)).rejects.toThrow(
+        'Forms API error updating form: 400'
+      );
+    });
+  });
+
+  describe('handleFormsGet', () => {
+    it('should return form metadata and items', async () => {
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          formId: 'form-123',
+          info: { title: 'My Survey' },
+          items: [
+            {
+              itemId: 'item-1',
+              title: 'Your name?',
+              questionItem: { question: { textQuestion: {} } },
+            },
+          ],
+        })
+      );
+
+      const result = (await handleFormsGet({ formId: 'form-123' }, auth)) as {
+        formId: string;
+        info: { title: string };
+        items: Array<{ itemId: string; title: string }>;
+      };
+
+      expect(result.formId).toBe('form-123');
+      expect(result.info.title).toBe('My Survey');
+      expect(result.items).toHaveLength(1);
+      expect(result.items[0]?.title).toBe('Your name?');
+    });
+
+    it('should handle API errors', async () => {
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({}, false, 404));
+
+      await expect(handleFormsGet({ formId: 'bad-id' }, auth)).rejects.toThrow(
+        'Forms API error getting form: 404'
+      );
+    });
+  });
+
+  describe('handleFormsListResponses', () => {
+    it('should return form responses', async () => {
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          responses: [
+            {
+              responseId: 'resp-1',
+              createTime: '2026-02-20T10:00:00Z',
+              answers: {
+                'item-1': { textAnswers: { answers: [{ value: 'Alice' }] } },
+              },
+            },
+          ],
+        })
+      );
+
+      const result = (await handleFormsListResponses({ formId: 'form-123' }, auth)) as {
+        responses: Array<{
+          responseId: string;
+          answers: Record<string, unknown>;
+        }>;
+      };
+
+      expect(result.responses).toHaveLength(1);
+      expect(result.responses[0]?.responseId).toBe('resp-1');
+    });
+
+    it('should return empty when no responses', async () => {
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({}));
+
+      const result = (await handleFormsListResponses({ formId: 'form-empty' }, auth)) as Record<
+        string,
+        unknown
+      >;
+
+      expect(result).toEqual({});
+    });
+
+    it('should pass pagination params', async () => {
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({ responses: [], nextPageToken: 'token-2' })
+      );
+
+      await handleFormsListResponses(
+        { formId: 'form-123', pageSize: 10, pageToken: 'token-1' },
+        auth
+      );
+
+      const url = fetchMock.mock.calls[0]![0] as string;
+      expect(url).toContain('pageSize=10');
+      expect(url).toContain('pageToken=token-1');
+    });
+
+    it('should handle API errors', async () => {
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({}, false, 500));
+
+      await expect(handleFormsListResponses({ formId: 'form-bad' }, auth)).rejects.toThrow(
+        'Forms API error listing responses: 500'
+      );
     });
   });
 });

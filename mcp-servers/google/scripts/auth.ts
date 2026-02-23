@@ -25,9 +25,7 @@ const REDIRECT_URI = `http://127.0.0.1:${REDIRECT_PORT}`;
 // Scopes for the MCP server (must match Google Cloud Console OAuth consent screen)
 const SCOPES = [
   // Gmail
-  'https://www.googleapis.com/auth/gmail.modify', // Read, compose, send emails
-  'https://www.googleapis.com/auth/gmail.compose', // Manage drafts and send emails
-  'https://www.googleapis.com/auth/gmail.send', // Send email on your behalf
+  'https://www.googleapis.com/auth/gmail.modify', // Read, compose, draft emails
   // Calendar
   'https://www.googleapis.com/auth/calendar', // Full calendar access
   'https://www.googleapis.com/auth/calendar.events', // View and edit events
@@ -38,6 +36,9 @@ const SCOPES = [
   'https://www.googleapis.com/auth/documents', // Create, edit, delete docs
   'https://www.googleapis.com/auth/spreadsheets', // Create, edit, delete sheets
   'https://www.googleapis.com/auth/presentations', // Create, edit, delete slides
+  // Forms
+  'https://www.googleapis.com/auth/forms.body', // Create and edit forms
+  'https://www.googleapis.com/auth/forms.responses.readonly', // Read form responses
 ];
 
 if (!CLIENT_ID || !CLIENT_SECRET) {
