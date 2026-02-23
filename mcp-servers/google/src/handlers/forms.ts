@@ -14,9 +14,7 @@ export const FormsCreateSchema = z.object({
 
 const ChoiceQuestionSchema = z.object({
   type: z.enum(['RADIO', 'CHECKBOX', 'DROP_DOWN']).describe('The type of choice question'),
-  options: z
-    .array(z.object({ value: z.string() }))
-    .describe('The available choices'),
+  options: z.array(z.object({ value: z.string() })).describe('The available choices'),
   shuffle: z.boolean().optional().describe('Whether to shuffle the option order'),
 });
 
@@ -67,14 +65,8 @@ export const FormsGetSchema = z.object({
 
 export const FormsListResponsesSchema = z.object({
   formId: z.string().describe('The form ID to get responses for'),
-  pageSize: z
-    .number()
-    .optional()
-    .describe('Maximum number of responses to return (default 50)'),
-  pageToken: z
-    .string()
-    .optional()
-    .describe('Token for fetching the next page of responses'),
+  pageSize: z.number().optional().describe('Maximum number of responses to return (default 50)'),
+  pageToken: z.string().optional().describe('Token for fetching the next page of responses'),
 });
 
 // ==================== HANDLER FUNCTIONS ====================

@@ -1238,9 +1238,9 @@ describe('Forms Handlers', () => {
     it('should handle API errors', async () => {
       fetchMock.mockResolvedValueOnce(mockJsonResponse({}, false, 400));
 
-      await expect(
-        handleFormsUpdate({ formId: 'form-bad', requests: [] }, auth)
-      ).rejects.toThrow('Forms API error updating form: 400');
+      await expect(handleFormsUpdate({ formId: 'form-bad', requests: [] }, auth)).rejects.toThrow(
+        'Forms API error updating form: 400'
+      );
     });
   });
 
@@ -1337,9 +1337,9 @@ describe('Forms Handlers', () => {
     it('should handle API errors', async () => {
       fetchMock.mockResolvedValueOnce(mockJsonResponse({}, false, 500));
 
-      await expect(
-        handleFormsListResponses({ formId: 'form-bad' }, auth)
-      ).rejects.toThrow('Forms API error listing responses: 500');
+      await expect(handleFormsListResponses({ formId: 'form-bad' }, auth)).rejects.toThrow(
+        'Forms API error listing responses: 500'
+      );
     });
   });
 });
