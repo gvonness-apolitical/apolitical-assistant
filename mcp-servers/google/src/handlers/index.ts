@@ -8,6 +8,7 @@ import { driveDefs } from './drive.js';
 import { docsDefs } from './docs.js';
 import { sheetsDefs } from './sheets.js';
 import { slidesDefs } from './slides.js';
+import { formsDefs } from './forms.js';
 
 // Re-export all schemas and handlers for testing
 export {
@@ -18,7 +19,6 @@ export {
   GmailTrashSchema,
   GmailDeleteSchema,
   GmailArchiveSchema,
-  GmailSendMessageSchema,
   GmailCreateDraftSchema,
   GmailGetAttachmentsSchema,
   // Gmail handlers
@@ -28,7 +28,6 @@ export {
   handleGmailTrash,
   handleGmailDelete,
   handleGmailArchive,
-  handleGmailSendMessage,
   handleGmailCreateDraft,
   handleGmailGetAttachments,
 } from './gmail.js';
@@ -103,6 +102,19 @@ export {
   handleSlidesGetThumbnail,
 } from './slides.js';
 
+export {
+  // Forms schemas
+  FormsCreateSchema,
+  FormsUpdateSchema,
+  FormsGetSchema,
+  FormsListResponsesSchema,
+  // Forms handlers
+  handleFormsCreate,
+  handleFormsUpdate,
+  handleFormsGet,
+  handleFormsListResponses,
+} from './forms.js';
+
 // Combine all tools from handler bundles
 export const allTools: Tool[] = [
   ...gmailTools,
@@ -111,6 +123,7 @@ export const allTools: Tool[] = [
   ...docsDefs.tools,
   ...sheetsDefs.tools,
   ...slidesDefs.tools,
+  ...formsDefs.tools,
 ];
 
 // Combine all handler registries from bundles
@@ -124,4 +137,5 @@ export const handlerRegistry: Record<
   ...docsDefs.handlers,
   ...sheetsDefs.handlers,
   ...slidesDefs.handlers,
+  ...formsDefs.handlers,
 };

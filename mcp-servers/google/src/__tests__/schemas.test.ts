@@ -8,7 +8,6 @@ import {
   GmailTrashSchema,
   GmailDeleteSchema,
   GmailArchiveSchema,
-  GmailSendMessageSchema,
   GmailCreateDraftSchema,
   GmailGetAttachmentsSchema,
   // Calendar schemas
@@ -105,48 +104,6 @@ describe('Gmail Schemas', () => {
     it('should validate with messageIds array', () => {
       const result = GmailArchiveSchema.parse({ messageIds: ['msg1', 'msg2', 'msg3'] });
       expect(result.messageIds).toHaveLength(3);
-    });
-  });
-
-  describe('GmailSendMessageSchema', () => {
-    it('should validate with required fields', () => {
-      const result = GmailSendMessageSchema.parse({
-        to: ['recipient@example.com'],
-        subject: 'Test Subject',
-        body: 'Test body content',
-      });
-      expect(result.to).toEqual(['recipient@example.com']);
-      expect(result.subject).toBe('Test Subject');
-      expect(result.body).toBe('Test body content');
-    });
-
-    it('should accept optional cc and bcc', () => {
-      const result = GmailSendMessageSchema.parse({
-        to: ['to@example.com'],
-        subject: 'Test',
-        body: 'Body',
-        cc: ['cc@example.com'],
-        bcc: ['bcc@example.com'],
-      });
-      expect(result.cc).toEqual(['cc@example.com']);
-      expect(result.bcc).toEqual(['bcc@example.com']);
-    });
-
-    it('should accept reply fields', () => {
-      const result = GmailSendMessageSchema.parse({
-        to: ['to@example.com'],
-        subject: 'Re: Test',
-        body: 'Reply body',
-        replyToMessageId: '<original-msg-id>',
-        threadId: 'thread123',
-      });
-      expect(result.replyToMessageId).toBe('<original-msg-id>');
-      expect(result.threadId).toBe('thread123');
-    });
-
-    it('should reject missing required fields', () => {
-      expect(() => GmailSendMessageSchema.parse({ to: ['a@b.com'] })).toThrow(ZodError);
-      expect(() => GmailSendMessageSchema.parse({ subject: 'Test' })).toThrow(ZodError);
     });
   });
 

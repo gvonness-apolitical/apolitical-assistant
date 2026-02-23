@@ -3,7 +3,7 @@
  *
  * This file re-exports all Gmail functionality from the focused modules:
  * - gmail-read.ts: Search, get message, list labels, get attachments
- * - gmail-write.ts: Send message, create draft
+ * - gmail-write.ts: Create draft
  * - gmail-manage.ts: Trash, delete, archive
  */
 
@@ -24,9 +24,7 @@ export {
 } from './gmail-read.js';
 
 export {
-  GmailSendMessageSchema,
   GmailCreateDraftSchema,
-  handleGmailSendMessage,
   handleGmailCreateDraft,
   gmailWriteDefs,
 } from './gmail-write.js';
