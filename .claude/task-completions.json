@@ -231,6 +231,252 @@
       "status": "dismissed",
       "reason": "Known Ethiopian cohort spike. Khalifa already aware. Accepting overages for now.",
       "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-23",
+      "subject": "Respond to Joel on restructure — review diagram, articulate Option 2 rationale",
+      "keywords": ["joel", "restructure", "diagram", "option", "rationale", "squads"],
+      "source": "slack:dm-joel",
+      "status": "completed",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-23",
+      "subject": "Respond to security disclosure inquiry (Sohail Ahmed)",
+      "keywords": ["sohail", "ahmed", "security", "disclosure", "vulnerability", "bug bounty"],
+      "source": "gmail",
+      "sourceId": "19c88bdcd6cc9df2",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-23",
+      "subject": "Respond to Mark Douglas Google Doc mention (MBR/OKR)",
+      "keywords": ["mark", "douglas", "mbr", "okr", "operational", "pulse", "engineering", "commentary"],
+      "source": "google-docs:1B1llZ_zQvd7o0jgnfwlzyU-HNY4JpTU4whDIGgIbx_U",
+      "sourceId": "19c7bec6a877a638",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-23",
+      "subject": "Renew GitHub PAT Iksium CI/CD — expires in 7 days",
+      "keywords": ["github", "pat", "iksium", "ci", "cd", "token"],
+      "source": "gmail",
+      "status": "dismissed",
+      "reason": "Token was never used. Deleted instead of renewed.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-23",
+      "subject": "Review Vanta follow-up emails (GRC context)",
+      "keywords": ["vanta", "grc", "compliance", "iso", "soc2", "pricing", "jack murphy", "amber"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-23",
+      "subject": "AI office hours + DPO doc + meeting survey",
+      "keywords": ["ai", "office hours", "dpo", "meeting", "survey", "data analytics", "google forms"],
+      "source": "meeting-action:data-analytics-insights-monthly",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-24",
+      "subject": "Review recruiter referral (Karvan Patel, Arrows Group)",
+      "keywords": ["karvan", "patel", "arrows", "group", "recruiter", "cold", "outreach"],
+      "source": "gmail",
+      "status": "dismissed",
+      "reason": "Cold recruiter outreach — no response policy. Not hiring for this profile.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-24",
+      "subject": "Follow up with Joseph Buckley — Oscar Camplin DevOps outcome",
+      "keywords": ["joseph", "buckley", "oscar", "camplin", "devops", "referral", "lauren", "adam", "parr"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-23",
+      "subject": "Forward Lauren's survey to engineering reports",
+      "keywords": ["lauren", "survey", "engineering", "reports", "forward"],
+      "source": "carry-forward",
+      "status": "dismissed",
+      "reason": "Cannot locate the original survey after extensive search. Neither user nor assistant can identify what it was. If important, would have resurfaced.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-24",
+      "subject": "Respond to Joel — data hire update DM",
+      "keywords": ["joel", "data", "hire", "update", "exec", "committee", "dm"],
+      "source": "slack:dm-joel",
+      "status": "completed",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-25",
+      "subject": "Respond to Lily Fox — catch-up scheduling",
+      "keywords": ["lily", "fox", "catch-up", "scheduling", "engineering", "product", "dynamic"],
+      "source": "slack:dm-lily-fox",
+      "status": "dismissed",
+      "reason": "Already responded yesterday (offered Friday/VC). Ball in her court. Will re-engage after all-hands if she reaches out.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-25",
+      "subject": "Revolut People competency matrix review",
+      "keywords": ["revolut", "people", "competency", "matrix", "review", "onboarding"],
+      "source": "carry-forward",
+      "status": "dismissed",
+      "reason": "Matrices thoroughly iterated. Multiple engineers asked to review and feedback. No action until feedback received.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-25",
+      "subject": "Clarify Pexip account activation",
+      "keywords": ["pexip", "account", "activation", "suspicious", "email"],
+      "source": "gmail",
+      "status": "completed",
+      "reason": "DM'd Amber and Mark Douglas to verify legitimacy. Awaiting response.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-25",
+      "subject": "Fix Vercel deploy access for Dom Harries",
+      "keywords": ["vercel", "deploy", "dom", "harries", "access", "team"],
+      "source": "gmail",
+      "status": "dismissed",
+      "reason": "Archived email. Engineering team will handle directly.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-25",
+      "subject": "Vercel lowellbw deploy failure",
+      "keywords": ["vercel", "lowell", "weisbord", "deploy", "access"],
+      "source": "gmail",
+      "status": "dismissed",
+      "reason": "Archived email. Engineering team will handle directly.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-25",
+      "subject": "Forward Lauren's survey to engineering reports",
+      "keywords": ["lauren", "survey", "engineering", "reports", "polly", "engagement"],
+      "source": "slack:priv-managers",
+      "sourceId": "1771521940.416039",
+      "status": "dismissed",
+      "reason": "Polly poll already closed. Deadline was midday Fri Feb 21 — already passed.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-25",
+      "subject": "Respond to Joel — board slides metrics question",
+      "keywords": ["joel", "board", "slides", "metrics", "60%", "ticket", "throughput"],
+      "source": "slack:dm-joel",
+      "status": "completed",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-25",
+      "subject": "Review Joel's Product org update Feb 26 doc",
+      "keywords": ["joel", "product", "org", "update", "restructure", "squads", "futura", "r&d"],
+      "source": "google-docs:1Zz2OsoRyyIrc2nQf4EXSUtn1XjXDTyBmtCLHUyVnSHk",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-25",
+      "subject": "Write MBR engineering commentary",
+      "keywords": ["mbr", "okr", "engineering", "commentary", "rag", "february", "velocity", "futura"],
+      "source": "google-docs:1B1llZ_zQvd7o0jgnfwlzyU-HNY4JpTU4whDIGgIbx_U",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-25",
+      "subject": "Board slides content",
+      "keywords": ["board", "slides", "deck", "march", "engineering", "rag"],
+      "source": "google-slides:1Ds3i8CTw_eHQHJ3RGYdgGY5Sl5NZ0gF-RxAY2NGtqsU",
+      "status": "completed",
+      "reason": "Joel filled out engineering content. Reviewed deck — no dedicated engineering section to complete. VP Eng typo flagged for 1:1.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-25",
+      "subject": "Review Drata GRC proposal",
+      "keywords": ["drata", "grc", "compliance", "iso", "vanta", "amber", "samuel", "byron"],
+      "source": "gmail",
+      "sourceId": "19c89edc92e7c4cd",
+      "status": "completed",
+      "reason": "Already sent Drata vs Vanta assessment on Slack. Amber driving next steps — technical deep-dive booked for March 2.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-25",
+      "subject": "Adjust Peter 1:1 calendar to fortnightly half-hour",
+      "keywords": ["peter", "shatwell", "1:1", "calendar", "fortnightly", "half-hour"],
+      "source": "meeting-action:peter-1:1",
+      "status": "completed",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-25",
+      "subject": "GCP Gemini 3 migration plan",
+      "keywords": ["gcp", "gemini", "vertex", "migration", "khalifa", "renzo", "dom", "charles"],
+      "source": "gmail",
+      "sourceId": "19c8cf9103eb7077",
+      "status": "completed",
+      "reason": "Forwarded to Khalifa, Renzo, Dom H., and Charles with action items. June 1 deadline, March 6 immediate access risk.",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-25",
+      "subject": "Respond to Lauren Benson-Armer — anniversary stay interview",
+      "keywords": ["lauren", "benson-armer", "anniversary", "stay", "interview", "people"],
+      "source": "gmail",
+      "sourceId": "19c8f6e6a7815ac1",
+      "status": "completed",
+      "reason": "Booked a slot with Lauren directly.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-25",
+      "subject": "Review Joel's Platform team update presentation",
+      "keywords": ["joel", "platform", "team", "update", "presentation", "slides"],
+      "source": "google-slides:1RvMm2Vpr_YuRm8e8mGMI1v7nmUerhDipOoA7pA2Hl0I",
+      "status": "dismissed",
+      "reason": "Single draft slide with placeholder text and duplicates. Not worth investing time until Joel asks for review.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-25",
+      "subject": "Respond to Lily Fox — All Hands engineering content",
+      "keywords": ["lily", "fox", "all hands", "engineering", "content", "highlights", "challenges"],
+      "source": "slack:priv-management-team",
+      "sourceId": "1771342093.867099",
+      "status": "completed",
+      "reason": "Already responded Monday with detailed engineering highlights and three challenges.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-25",
+      "subject": "Respond to Samuel — GSM stakeholder call + security roadmap",
+      "keywords": ["samuel", "gsm", "secret manager", "demo", "wednesday", "security", "roadmap", "control plane", "rfc"],
+      "source": "slack:dm-samuel-balogun",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-25",
+      "subject": "Talk to Tanya about flagging revamped data request intake process at all-hands",
+      "keywords": ["tanya", "data", "request", "intake", "process", "all-hands"],
+      "source": "slack:dm-tanya-riordan",
+      "status": "completed",
+      "completedVia": "direct"
     }
   ]
 }
