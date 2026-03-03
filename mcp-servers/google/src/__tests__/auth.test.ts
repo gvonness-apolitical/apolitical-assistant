@@ -5,7 +5,6 @@ import {
   AccessDeniedError,
   AccessControlConfig,
   extractResourceId,
-  loadAccessControlConfig,
 } from '../auth.js';
 
 describe('GoogleAuth', () => {
