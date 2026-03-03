@@ -1,0 +1,11 @@
+{
+  "enabled": true,
+  "blockedFolders": [
+    {
+      "id": "1-gbg-MoAZvRk1O1l4u4ET3psXIXV34p9",
+      "name": "UK2504 - Learning Framework 2.0",
+      "reason": "Commercial bid documents — restricted from LLM access"
+    }
+  ],
+  "blockedFiles": []
+}
