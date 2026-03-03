@@ -252,7 +252,16 @@
     {
       "date": "2026-02-23",
       "subject": "Respond to Mark Douglas Google Doc mention (MBR/OKR)",
-      "keywords": ["mark", "douglas", "mbr", "okr", "operational", "pulse", "engineering", "commentary"],
+      "keywords": [
+        "mark",
+        "douglas",
+        "mbr",
+        "okr",
+        "operational",
+        "pulse",
+        "engineering",
+        "commentary"
+      ],
       "source": "google-docs:1B1llZ_zQvd7o0jgnfwlzyU-HNY4JpTU4whDIGgIbx_U",
       "sourceId": "19c7bec6a877a638",
       "status": "completed",
@@ -278,7 +287,15 @@
     {
       "date": "2026-02-23",
       "subject": "AI office hours + DPO doc + meeting survey",
-      "keywords": ["ai", "office hours", "dpo", "meeting", "survey", "data analytics", "google forms"],
+      "keywords": [
+        "ai",
+        "office hours",
+        "dpo",
+        "meeting",
+        "survey",
+        "data analytics",
+        "google forms"
+      ],
       "source": "meeting-action:data-analytics-insights-monthly",
       "status": "completed",
       "completedVia": "claude"
@@ -295,7 +312,17 @@
     {
       "date": "2026-02-24",
       "subject": "Follow up with Joseph Buckley — Oscar Camplin DevOps outcome",
-      "keywords": ["joseph", "buckley", "oscar", "camplin", "devops", "referral", "lauren", "adam", "parr"],
+      "keywords": [
+        "joseph",
+        "buckley",
+        "oscar",
+        "camplin",
+        "devops",
+        "referral",
+        "lauren",
+        "adam",
+        "parr"
+      ],
       "source": "gmail",
       "status": "completed",
       "completedVia": "direct"
@@ -391,7 +418,16 @@
     {
       "date": "2026-02-25",
       "subject": "Write MBR engineering commentary",
-      "keywords": ["mbr", "okr", "engineering", "commentary", "rag", "february", "velocity", "futura"],
+      "keywords": [
+        "mbr",
+        "okr",
+        "engineering",
+        "commentary",
+        "rag",
+        "february",
+        "velocity",
+        "futura"
+      ],
       "source": "google-docs:1B1llZ_zQvd7o0jgnfwlzyU-HNY4JpTU4whDIGgIbx_U",
       "status": "completed",
       "completedVia": "claude"
@@ -455,7 +491,15 @@
     {
       "date": "2026-02-25",
       "subject": "Respond to Lily Fox — All Hands engineering content",
-      "keywords": ["lily", "fox", "all hands", "engineering", "content", "highlights", "challenges"],
+      "keywords": [
+        "lily",
+        "fox",
+        "all hands",
+        "engineering",
+        "content",
+        "highlights",
+        "challenges"
+      ],
       "source": "slack:priv-management-team",
       "sourceId": "1771342093.867099",
       "status": "completed",
@@ -465,7 +509,17 @@
     {
       "date": "2026-02-25",
       "subject": "Respond to Samuel — GSM stakeholder call + security roadmap",
-      "keywords": ["samuel", "gsm", "secret manager", "demo", "wednesday", "security", "roadmap", "control plane", "rfc"],
+      "keywords": [
+        "samuel",
+        "gsm",
+        "secret manager",
+        "demo",
+        "wednesday",
+        "security",
+        "roadmap",
+        "control plane",
+        "rfc"
+      ],
       "source": "slack:dm-samuel-balogun",
       "status": "completed",
       "completedVia": "claude"
@@ -476,6 +530,160 @@
       "keywords": ["tanya", "data", "request", "intake", "process", "all-hands"],
       "source": "slack:dm-tanya-riordan",
       "status": "completed",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-26",
+      "subject": "Kabir probation decision",
+      "keywords": ["kabir", "probation", "decision", "annika", "charles", "passing"],
+      "source": "carry-forward",
+      "status": "completed",
+      "reason": "Verbal input given to Annika. She and Charles aligned on passing. Caveat: maintain Feb delivery numbers (Jan was low). Annika confident.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-02-26",
+      "subject": "Review Samuel's GKE Control Plane Hardening RFC",
+      "keywords": [
+        "samuel",
+        "gke",
+        "control plane",
+        "hardening",
+        "rfc",
+        "infrastructure",
+        "security",
+        "arc",
+        "argocd"
+      ],
+      "source": "notion:30f68a6e3b9280858025c924094efa5e",
+      "status": "completed",
+      "reason": "Adversarial review (Advocate/Challenger/Judge). Verdict: REQUEST CHANGES — 3 blockers (ArgoCD evaluation, phase resequencing, DinD resolution). Posted to Notion as comment. Local copy at work/2026-02-26-rfc-review-gke-control-plane-hardening.md.",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-02-26",
+      "subject": "Vote on GSD award",
+      "keywords": ["gsd", "award", "vote", "tanya", "priv-management-team"],
+      "source": "slack:priv-management-team",
+      "sourceId": "1772016987.193229",
+      "status": "completed",
+      "reason": "Voted for Tanya (blue square emoji reaction).",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-03-03",
+      "subject": "Resolve 15:00 triple conflict",
+      "keywords": ["calendar", "conflict", "renzo", "robbie", "probation", "reschedule"],
+      "source": "calendar",
+      "status": "completed",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-03",
+      "subject": "Prepare for Kabir probation review",
+      "keywords": ["kabir", "probation", "review", "annika"],
+      "source": "calendar",
+      "status": "dismissed",
+      "reason": "Annika is Kabir's line manager — she'll handle the probation review directly.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-03",
+      "subject": "Sign Docusign training attestation",
+      "keywords": ["docusign", "attestation", "training", "compliance", "risk"],
+      "source": "gmail",
+      "sourceId": "19caf7f97e91596f",
+      "status": "completed",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-03",
+      "subject": "Respond to Amber — GitHub/Claude Code integration question",
+      "keywords": ["amber", "github", "claude", "code", "integration", "read-only"],
+      "source": "slack:dm-amber-keates",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-03-03",
+      "subject": "Respond to Lauren — Senior Eng Manager JD approval status",
+      "keywords": [
+        "lauren",
+        "senior",
+        "engineering",
+        "manager",
+        "jd",
+        "applied",
+        "approval",
+        "joel"
+      ],
+      "source": "slack:dm-lauren-benson-armer",
+      "status": "completed",
+      "reason": "DM'd Joel to ask for approval. Will respond to Lauren once Joel confirms.",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-03-03",
+      "subject": "Respond to Khalifa — sync with Chelsea follow-up",
+      "keywords": ["khalifa", "chelsea", "borja", "london", "devops", "roadmap", "renzo"],
+      "source": "slack:dm-khalifa-idris",
+      "status": "completed",
+      "reason": "DM'd Chelsea about Borja's London visit week of Mar 23. Replied to Khalifa's thread confirming.",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-03-03",
+      "subject": "Respond to Lily Fox — marketing/comms team restructure",
+      "keywords": ["lily", "fox", "marketing", "comms", "restructure", "jvo", "jesse", "tom"],
+      "source": "slack:dm-lily-fox",
+      "status": "completed",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-03",
+      "subject": "GCP Gemini 3 Pro Preview migration — delegate to team",
+      "keywords": ["gcp", "gemini", "vertex", "migration", "think-tank", "dom"],
+      "source": "gmail",
+      "status": "completed",
+      "reason": "Posted @here in think-tank channel. Will also discuss with Dom in 11:00 1:1.",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-03-03",
+      "subject": "GCP BigQuery Gemini opt-out — confirm and disable",
+      "keywords": ["gcp", "bigquery", "gemini", "opt-out", "cloudaicompanion", "amber"],
+      "source": "gmail",
+      "sourceId": "19c6c87e04e14d20",
+      "status": "completed",
+      "reason": "Opt-out email from Feb 10 wasn't actioned. Confirmed Gemini features active in BigQuery console and cloudaicompanion API enabled. Drafted reply to Amber asking to confirm before disabling (data team may use Gemini SQL generation). Email sent by user.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-03",
+      "subject": "Respond to Amber (group) — Drata commercial questions",
+      "keywords": ["amber", "drata", "grc", "commercial", "byron", "samuel"],
+      "source": "slack:C0AD5BJUUCR",
+      "status": "completed",
+      "reason": "Gave thumbs up. Byron and Samuel already approved. Commercial meeting Wednesday.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-03",
+      "subject": "Check Asana overdue task",
+      "keywords": ["asana", "overdue", "placeholder"],
+      "source": "asana",
+      "status": "dismissed",
+      "reason": "Only 3 placeholder tasks (Task 1/2/3) auto-generated during account setup. No real work.",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-03-03",
+      "subject": "Verify GoDaddy SSL auto-renewal",
+      "keywords": ["godaddy", "ssl", "renewal", "certificate"],
+      "source": "gmail",
+      "sourceId": "19caf6cc8f2193f6",
+      "status": "dismissed",
+      "reason": "Addressed to engineering@apolitical.co shared inbox, not personal. Auto-renew confirmed (renewed successfully Mar 2025). Platform team will pick up if action needed.",
       "completedVia": "direct"
     }
   ]
