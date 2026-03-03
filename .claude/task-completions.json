@@ -1,6 +1,6 @@
 {
   "retentionDays": 30,
-  "lastPruned": "2026-02-18",
+  "lastPruned": "2026-03-03",
   "completions": [
     {
       "date": "2026-02-18",
@@ -684,6 +684,24 @@
       "sourceId": "19caf6cc8f2193f6",
       "status": "dismissed",
       "reason": "Addressed to engineering@apolitical.co shared inbox, not personal. Auto-renew confirmed (renewed successfully Mar 2025). Platform team will pick up if action needed.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-03",
+      "subject": "SLO alerting — courses-api outstanding",
+      "keywords": ["slo", "alerting", "courses-api", "khalifa", "robbie"],
+      "source": "incident.io",
+      "status": "dismissed",
+      "reason": "Khalifa and Robbie already investigating. They'll escalate if stuck.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-03",
+      "subject": "Monitor @apolitical/contracts@6.0.0 major version bump",
+      "keywords": ["contracts", "major", "version", "bump", "npm", "package"],
+      "source": "gmail",
+      "status": "dismissed",
+      "reason": "Live since Mar 2 with no reported issues. Team would have escalated if broken.",
       "completedVia": "direct"
     }
   ]
