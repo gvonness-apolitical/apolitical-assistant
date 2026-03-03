@@ -1,11 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { mockJsonResponse } from '@apolitical-assistant/mcp-shared/testing';
-import {
-  GoogleAuth,
-  AccessDeniedError,
-  AccessControlConfig,
-  extractResourceId,
-} from '../auth.js';
+import { GoogleAuth, AccessDeniedError, AccessControlConfig, extractResourceId } from '../auth.js';
 
 describe('GoogleAuth', () => {
   const mockFetch = vi.fn();
@@ -172,28 +167,44 @@ describe('GoogleAuth', () => {
   describe('extractResourceId', () => {
     it('should extract file ID from Drive API URLs', () => {
       expect(extractResourceId('https://www.googleapis.com/drive/v3/files/abc123')).toBe('abc123');
-      expect(extractResourceId('https://www.googleapis.com/drive/v3/files/abc123?fields=parents')).toBe('abc123');
+      expect(
+        extractResourceId('https://www.googleapis.com/drive/v3/files/abc123?fields=parents')
+      ).toBe('abc123');
       expect(extractResourceId('https://www.googleapis.com/drive/v2/files/abc123')).toBe('abc123');
     });
 
     it('should extract document ID from Docs API URLs', () => {
-      expect(extractResourceId('https://docs.googleapis.com/v1/documents/doc-id-123')).toBe('doc-id-123');
-      expect(extractResourceId('https://docs.googleapis.com/v1/documents/doc-id-123?fields=body')).toBe('doc-id-123');
+      expect(extractResourceId('https://docs.googleapis.com/v1/documents/doc-id-123')).toBe(
+        'doc-id-123'
+      );
+      expect(
+        extractResourceId('https://docs.googleapis.com/v1/documents/doc-id-123?fields=body')
+      ).toBe('doc-id-123');
     });
 
     it('should extract spreadsheet ID from Sheets API URLs', () => {
-      expect(extractResourceId('https://sheets.googleapis.com/v4/spreadsheets/sheet-id')).toBe('sheet-id');
-      expect(extractResourceId('https://sheets.googleapis.com/v4/spreadsheets/sheet-id:batchUpdate')).toBe('sheet-id');
+      expect(extractResourceId('https://sheets.googleapis.com/v4/spreadsheets/sheet-id')).toBe(
+        'sheet-id'
+      );
+      expect(
+        extractResourceId('https://sheets.googleapis.com/v4/spreadsheets/sheet-id:batchUpdate')
+      ).toBe('sheet-id');
     });
 
     it('should extract presentation ID from Slides API URLs', () => {
-      expect(extractResourceId('https://slides.googleapis.com/v1/presentations/pres-id')).toBe('pres-id');
-      expect(extractResourceId('https://slides.googleapis.com/v1/presentations/pres-id:batchUpdate')).toBe('pres-id');
+      expect(extractResourceId('https://slides.googleapis.com/v1/presentations/pres-id')).toBe(
+        'pres-id'
+      );
+      expect(
+        extractResourceId('https://slides.googleapis.com/v1/presentations/pres-id:batchUpdate')
+      ).toBe('pres-id');
     });
 
     it('should extract form ID from Forms API URLs', () => {
       expect(extractResourceId('https://forms.googleapis.com/v1/forms/form-id')).toBe('form-id');
-      expect(extractResourceId('https://forms.googleapis.com/v1/forms/form-id?fields=info')).toBe('form-id');
+      expect(extractResourceId('https://forms.googleapis.com/v1/forms/form-id?fields=info')).toBe(
+        'form-id'
+      );
     });
 
     it('should return null for search/list URLs', () => {
@@ -232,9 +243,7 @@ describe('GoogleAuth', () => {
       mockTokenRefresh();
 
       // Parent resolution: file -> blocked-folder -> root (no parents)
-      mockFetch.mockResolvedValueOnce(
-        mockJsonResponse({ parents: ['blocked-folder'] })
-      );
+      mockFetch.mockResolvedValueOnce(mockJsonResponse({ parents: ['blocked-folder'] }));
       mockFetch.mockResolvedValueOnce(
         mockJsonResponse({}) // root — no parents
       );
@@ -259,12 +268,8 @@ describe('GoogleAuth', () => {
       mockTokenRefresh();
 
       // Parent resolution: file -> subfolder -> top-folder -> root
-      mockFetch.mockResolvedValueOnce(
-        mockJsonResponse({ parents: ['subfolder'] })
-      );
-      mockFetch.mockResolvedValueOnce(
-        mockJsonResponse({ parents: ['top-folder'] })
-      );
+      mockFetch.mockResolvedValueOnce(mockJsonResponse({ parents: ['subfolder'] }));
+      mockFetch.mockResolvedValueOnce(mockJsonResponse({ parents: ['top-folder'] }));
       mockFetch.mockResolvedValueOnce(
         mockJsonResponse({}) // root — no parents
       );
@@ -284,17 +289,13 @@ describe('GoogleAuth', () => {
       mockTokenRefresh();
 
       // Parent resolution: file -> safe-folder -> root (no parents)
-      mockFetch.mockResolvedValueOnce(
-        mockJsonResponse({ parents: ['safe-folder'] })
-      );
+      mockFetch.mockResolvedValueOnce(mockJsonResponse({ parents: ['safe-folder'] }));
       mockFetch.mockResolvedValueOnce(
         mockJsonResponse({}) // No parents — root reached
       );
 
       // Actual API response
-      mockFetch.mockResolvedValueOnce(
-        mockJsonResponse({ body: { content: [] } })
-      );
+      mockFetch.mockResolvedValueOnce(mockJsonResponse({ body: { content: [] } }));
 
       const response = await auth.fetch('https://docs.googleapis.com/v1/documents/allowed-doc');
       const data = await response.json();
@@ -335,9 +336,7 @@ describe('GoogleAuth', () => {
       mockTokenRefresh();
 
       // API response (no parent resolution since disabled)
-      mockFetch.mockResolvedValueOnce(
-        mockJsonResponse({ body: { content: [] } })
-      );
+      mockFetch.mockResolvedValueOnce(mockJsonResponse({ body: { content: [] } }));
 
       const response = await auth.fetch('https://docs.googleapis.com/v1/documents/secret-doc');
       const data = await response.json();
@@ -358,25 +357,19 @@ describe('GoogleAuth', () => {
       mockTokenRefresh();
 
       // First fetch: parent resolution — file is in safe-folder -> root
-      mockFetch.mockResolvedValueOnce(
-        mockJsonResponse({ parents: ['safe-folder'] })
-      );
+      mockFetch.mockResolvedValueOnce(mockJsonResponse({ parents: ['safe-folder'] }));
       mockFetch.mockResolvedValueOnce(
         mockJsonResponse({}) // root
       );
 
       // First fetch: actual API call
-      mockFetch.mockResolvedValueOnce(
-        mockJsonResponse({ data: 'first' })
-      );
+      mockFetch.mockResolvedValueOnce(mockJsonResponse({ data: 'first' }));
 
       await auth.fetch('https://docs.googleapis.com/v1/documents/cached-doc');
 
       // Second fetch for the same doc: should NOT resolve parents again
       // Only the actual API call
-      mockFetch.mockResolvedValueOnce(
-        mockJsonResponse({ data: 'second' })
-      );
+      mockFetch.mockResolvedValueOnce(mockJsonResponse({ data: 'second' }));
 
       await auth.fetch('https://docs.googleapis.com/v1/documents/cached-doc');
 
@@ -402,9 +395,7 @@ describe('GoogleAuth', () => {
       } as Response);
 
       // Actual API call proceeds (fail-open for parent resolution errors)
-      mockFetch.mockResolvedValueOnce(
-        mockJsonResponse({ data: 'ok' })
-      );
+      mockFetch.mockResolvedValueOnce(mockJsonResponse({ data: 'ok' }));
 
       const response = await auth.fetch('https://docs.googleapis.com/v1/documents/unknown-doc');
       const data = await response.json();

@@ -70,7 +70,7 @@ export class GoogleAuth {
     clientId: string,
     clientSecret: string,
     refreshToken: string,
-    accessControlConfig?: AccessControlConfig,
+    accessControlConfig?: AccessControlConfig
   ) {
     this.clientId = clientId;
     this.clientSecret = clientSecret;
@@ -182,9 +182,7 @@ export class GoogleAuth {
     }
 
     // Check direct file blocklist
-    const blockedFile = this.accessControlConfig.blockedFiles.find(
-      (f) => f.id === resourceId
-    );
+    const blockedFile = this.accessControlConfig.blockedFiles.find((f) => f.id === resourceId);
     if (blockedFile) {
       throw new AccessDeniedError(
         `Access denied: File "${resourceId}" is directly blocked (${blockedFile.name}: ${blockedFile.reason}). ` +
