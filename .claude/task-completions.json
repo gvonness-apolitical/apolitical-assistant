@@ -703,6 +703,49 @@
       "status": "dismissed",
       "reason": "Live since Mar 2 with no reported issues. Team would have escalated if broken.",
       "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-04",
+      "subject": "Follow up on Sonali competency matrix — acknowledge feedback via Slack DM",
+      "keywords": ["sonali", "competency", "matrix", "feedback", "acknowledge", "slack"],
+      "source": "slack:dm-sonali-singh",
+      "sourceId": "1772541125.244959",
+      "status": "completed",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-04",
+      "subject": "Check if Tanya still needs to chat",
+      "keywords": ["tanya", "chat", "quick call"],
+      "source": "slack:dm-tanya-riordan",
+      "status": "completed",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-04",
+      "subject": "Set up monthly eng management meeting",
+      "keywords": ["monthly", "eng", "management", "meeting", "tech leads", "lauren"],
+      "source": "canvas:think-tank",
+      "status": "completed",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-04",
+      "subject": "GCP credential security best practices review",
+      "keywords": ["gcp", "credential", "security", "best practices", "review"],
+      "source": "carry-forward",
+      "status": "dismissed",
+      "reason": "Vague scope with no clear deliverable. Specific security work (workload identity, GSM) covered by Samuel's roadmap.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-04",
+      "subject": "Respond to Jessica Duval — Pillar 2 modules review + office hours availability",
+      "keywords": ["jessica", "duval", "pillar", "modules", "office hours", "futura", "curriculum"],
+      "source": "slack:dm-jessica-duval",
+      "sourceId": "1772530846.277199",
+      "status": "completed",
+      "completedVia": "direct"
     }
   ]
 }
