@@ -75,7 +75,11 @@ export async function executeBatchOperation(
           const response = await auth.fetch(url, fetchOptions);
 
           if (!response.ok) {
-            return { id: messageId, success: false, error: `HTTP ${response.status}` } as BatchResult;
+            return {
+              id: messageId,
+              success: false,
+              error: `HTTP ${response.status}`,
+            } as BatchResult;
           } else {
             return { id: messageId, success: true } as BatchResult;
           }

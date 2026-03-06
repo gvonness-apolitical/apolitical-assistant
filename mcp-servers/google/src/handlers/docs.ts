@@ -116,9 +116,7 @@ export async function handleDocsGetContent(
         const cells: string[] = [];
         for (const cell of row.tableCells) {
           const cellText = cell.content
-            .map((c) =>
-              c.paragraph?.elements.map((el) => el.textRun?.content || '').join('') || ''
-            )
+            .map((c) => c.paragraph?.elements.map((el) => el.textRun?.content || '').join('') || '')
             .join('')
             .trim();
           cells.push(cellText);
@@ -196,8 +194,8 @@ export async function handleDocsGetContent(
       // Check if ordered list
       const listDef = doc.lists?.[listId];
       const nestingLevel = listDef?.listProperties?.nestingLevels?.[level];
-      const isOrdered = nestingLevel?.glyphType === 'DECIMAL' ||
-                        nestingLevel?.glyphFormat === '%0.';
+      const isOrdered =
+        nestingLevel?.glyphType === 'DECIMAL' || nestingLevel?.glyphFormat === '%0.';
 
       if (isOrdered) {
         if (!listCounters[listId]) listCounters[listId] = [];

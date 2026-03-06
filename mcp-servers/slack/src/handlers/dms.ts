@@ -10,7 +10,9 @@ export const ListDmsSchema = z.object({
     .string()
     .optional()
     .default('im')
-    .describe('Comma-separated conversation types: im (1:1 DMs), mpim (group DMs), or both: im,mpim'),
+    .describe(
+      'Comma-separated conversation types: im (1:1 DMs), mpim (group DMs), or both: im,mpim'
+    ),
 });
 
 export const ReadDmSchema = z.object({

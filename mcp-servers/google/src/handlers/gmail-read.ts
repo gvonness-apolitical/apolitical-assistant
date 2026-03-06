@@ -71,7 +71,11 @@ export async function handleGmailSearch(
     })
   );
 
-  return { messages: messages.filter(Boolean), total: data.messages.length, resultSizeEstimate: data.resultSizeEstimate };
+  return {
+    messages: messages.filter(Boolean),
+    total: data.messages.length,
+    resultSizeEstimate: data.resultSizeEstimate,
+  };
 }
 
 export async function handleGmailGetMessage(

@@ -243,7 +243,11 @@ export async function handleCalendarListEvents(
     meetLink: event.hangoutLink,
     status: event.status,
     organizer: event.organizer
-      ? { email: event.organizer.email, name: event.organizer.displayName, self: event.organizer.self }
+      ? {
+          email: event.organizer.email,
+          name: event.organizer.displayName,
+          self: event.organizer.self,
+        }
       : undefined,
     recurringEventId: event.recurringEventId,
     conferenceEntryPoints: event.conferenceData?.entryPoints?.map((ep) => ({
@@ -547,7 +551,8 @@ export const calendarDefs = defineHandlers<GoogleAuth>()({
     handler: handleCalendarUpdateEvent,
   },
   calendar_delete_event: {
-    description: 'Delete a calendar event. Can optionally send cancellation notifications to attendees.',
+    description:
+      'Delete a calendar event. Can optionally send cancellation notifications to attendees.',
     schema: CalendarDeleteEventSchema,
     handler: handleCalendarDeleteEvent,
   },

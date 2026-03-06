@@ -191,7 +191,8 @@ describe('createBearerClient', () => {
 
 describe('retry behavior', () => {
   it('should retry on 429 status', async () => {
-    const mockFetch = vi.fn()
+    const mockFetch = vi
+      .fn()
       .mockResolvedValueOnce({
         ok: false,
         status: 429,
@@ -217,7 +218,8 @@ describe('retry behavior', () => {
   });
 
   it('should retry on 500 status', async () => {
-    const mockFetch = vi.fn()
+    const mockFetch = vi
+      .fn()
       .mockResolvedValueOnce({
         ok: false,
         status: 500,
@@ -297,7 +299,8 @@ describe('retry behavior', () => {
   });
 
   it('should retry on network errors', async () => {
-    const mockFetch = vi.fn()
+    const mockFetch = vi
+      .fn()
       .mockRejectedValueOnce(new Error('Network error'))
       .mockResolvedValueOnce({
         ok: true,
