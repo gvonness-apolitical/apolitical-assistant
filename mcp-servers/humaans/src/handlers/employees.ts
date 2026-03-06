@@ -47,8 +47,12 @@ interface Employee {
   email: string;
   jobTitle?: string;
   department?: { name: string };
+  team?: { name: string };
   status: string;
   managerId?: string;
+  startDate?: string;
+  probationEndDate?: string;
+  employmentType?: string;
 }
 
 interface TimeOff {
@@ -99,7 +103,21 @@ export async function handleGetEmployee(
   args: z.infer<typeof GetEmployeeSchema>,
   client: HttpClient
 ): Promise<unknown> {
-  return client.get(`/people/${args.employeeId}`);
+  const data = await client.get<Employee>(`/people/${args.employeeId}`);
+
+  return {
+    id: data.id,
+    name: `${data.firstName} ${data.lastName}`,
+    email: data.email,
+    jobTitle: data.jobTitle,
+    department: data.department?.name,
+    team: data.team?.name,
+    status: data.status,
+    managerId: data.managerId,
+    startDate: data.startDate,
+    probationEndDate: data.probationEndDate,
+    employmentType: data.employmentType,
+  };
 }
 
 export async function handleListTimeOff(

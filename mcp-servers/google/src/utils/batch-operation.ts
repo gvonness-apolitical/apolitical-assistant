@@ -54,30 +54,41 @@ export async function executeBatchOperation(
   auth: GoogleAuth
 ): Promise<BatchOperationSummary> {
   const results: BatchResult[] = [];
+  const BATCH_SIZE = 10;
 
-  for (const messageId of messageIds) {
-    try {
-      const url = config.buildUrl(messageId);
-      const fetchOptions: RequestInit = { method: config.method };
+  for (let i = 0; i < messageIds.length; i += BATCH_SIZE) {
+    const batch = messageIds.slice(i, i + BATCH_SIZE);
+    const batchResults = await Promise.all(
+      batch.map(async (messageId) => {
+        try {
+          const url = config.buildUrl(messageId);
+          const fetchOptions: RequestInit = { method: config.method };
 
-      if (config.headers) {
-        fetchOptions.headers = config.headers;
-      }
+          if (config.headers) {
+            fetchOptions.headers = config.headers;
+          }
 
-      if (config.buildBody) {
-        fetchOptions.body = JSON.stringify(config.buildBody(messageId));
-      }
+          if (config.buildBody) {
+            fetchOptions.body = JSON.stringify(config.buildBody(messageId));
+          }
 
-      const response = await auth.fetch(url, fetchOptions);
+          const response = await auth.fetch(url, fetchOptions);
 
-      if (!response.ok) {
-        results.push({ id: messageId, success: false, error: `HTTP ${response.status}` });
-      } else {
-        results.push({ id: messageId, success: true });
-      }
-    } catch (err) {
-      results.push({ id: messageId, success: false, error: String(err) });
-    }
+          if (!response.ok) {
+            return {
+              id: messageId,
+              success: false,
+              error: `HTTP ${response.status}`,
+            } as BatchResult;
+          } else {
+            return { id: messageId, success: true } as BatchResult;
+          }
+        } catch (err) {
+          return { id: messageId, success: false, error: String(err) } as BatchResult;
+        }
+      })
+    );
+    results.push(...batchResults);
   }
 
   return {

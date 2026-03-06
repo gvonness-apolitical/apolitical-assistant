@@ -8,7 +8,9 @@ import {
   GmailTrashSchema,
   GmailDeleteSchema,
   GmailArchiveSchema,
+  GmailMarkReadSchema,
   GmailCreateDraftSchema,
+  GmailSendDraftSchema,
   GmailGetAttachmentsSchema,
   // Calendar schemas
   CalendarListEventsSchema,
@@ -17,6 +19,7 @@ import {
   CalendarGetFreeBusySchema,
   CalendarCreateEventSchema,
   CalendarUpdateEventSchema,
+  CalendarDeleteEventSchema,
   // Calendar helpers
   buildWeeklyRRule,
   buildRecurrenceRules,
@@ -42,7 +45,7 @@ describe('Gmail Schemas', () => {
     it('should validate with required query', () => {
       const result = GmailSearchSchema.parse({ query: 'is:unread' });
       expect(result.query).toBe('is:unread');
-      expect(result.maxResults).toBe(10); // default
+      expect(result.maxResults).toBe(50); // default
     });
 
     it('should accept custom maxResults', () => {
@@ -134,6 +137,33 @@ describe('Gmail Schemas', () => {
     it('should validate with messageId', () => {
       const result = GmailGetAttachmentsSchema.parse({ messageId: 'msg-with-attachments' });
       expect(result.messageId).toBe('msg-with-attachments');
+    });
+  });
+
+  describe('GmailMarkReadSchema', () => {
+    it('should validate with messageIds array', () => {
+      const result = GmailMarkReadSchema.parse({ messageIds: ['msg1', 'msg2'] });
+      expect(result.messageIds).toEqual(['msg1', 'msg2']);
+    });
+
+    it('should accept empty array', () => {
+      const result = GmailMarkReadSchema.parse({ messageIds: [] });
+      expect(result.messageIds).toEqual([]);
+    });
+
+    it('should reject non-array messageIds', () => {
+      expect(() => GmailMarkReadSchema.parse({ messageIds: 'msg1' })).toThrow(ZodError);
+    });
+  });
+
+  describe('GmailSendDraftSchema', () => {
+    it('should validate with required draftId', () => {
+      const result = GmailSendDraftSchema.parse({ draftId: 'draft-123' });
+      expect(result.draftId).toBe('draft-123');
+    });
+
+    it('should reject missing draftId', () => {
+      expect(() => GmailSendDraftSchema.parse({})).toThrow(ZodError);
     });
   });
 });
@@ -292,6 +322,35 @@ describe('Calendar Schemas', () => {
         recurrence: ['RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR'],
       });
       expect(result.recurrence).toEqual(['RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR']);
+    });
+  });
+
+  describe('CalendarDeleteEventSchema', () => {
+    it('should validate with required eventId', () => {
+      const result = CalendarDeleteEventSchema.parse({ eventId: 'event-123' });
+      expect(result.eventId).toBe('event-123');
+      expect(result.calendarId).toBe('primary');
+      expect(result.sendNotifications).toBe(true);
+    });
+
+    it('should accept custom calendarId', () => {
+      const result = CalendarDeleteEventSchema.parse({
+        eventId: 'event-123',
+        calendarId: 'other@calendar.google.com',
+      });
+      expect(result.calendarId).toBe('other@calendar.google.com');
+    });
+
+    it('should accept sendNotifications false', () => {
+      const result = CalendarDeleteEventSchema.parse({
+        eventId: 'event-123',
+        sendNotifications: false,
+      });
+      expect(result.sendNotifications).toBe(false);
+    });
+
+    it('should reject missing eventId', () => {
+      expect(() => CalendarDeleteEventSchema.parse({})).toThrow(ZodError);
     });
   });
 

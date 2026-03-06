@@ -6,7 +6,7 @@ import type { GoogleAuth } from '../auth.js';
 
 export const GmailSearchSchema = z.object({
   query: z.string().describe('Gmail search query (e.g., "is:unread from:boss@company.com")'),
-  maxResults: z.number().optional().default(10).describe('Maximum number of messages to return'),
+  maxResults: z.number().optional().default(50).describe('Maximum number of messages to return'),
 });
 
 export const GmailGetMessageSchema = z.object({
@@ -32,10 +32,13 @@ export async function handleGmailSearch(
   const response = await auth.fetch(url.toString());
   if (!response.ok) throw new Error(`Gmail API error: ${response.status}`);
 
-  const data = (await response.json()) as { messages?: Array<{ id: string; threadId: string }> };
+  const data = (await response.json()) as {
+    messages?: Array<{ id: string; threadId: string }>;
+    resultSizeEstimate?: number;
+  };
 
   if (!data.messages || data.messages.length === 0) {
-    return { messages: [], total: 0 };
+    return { messages: [], total: 0, resultSizeEstimate: data.resultSizeEstimate ?? 0 };
   }
 
   // Fetch details for each message
@@ -68,7 +71,11 @@ export async function handleGmailSearch(
     })
   );
 
-  return { messages: messages.filter(Boolean), total: data.messages.length };
+  return {
+    messages: messages.filter(Boolean),
+    total: data.messages.length,
+    resultSizeEstimate: data.resultSizeEstimate,
+  };
 }
 
 export async function handleGmailGetMessage(

@@ -11,25 +11,41 @@ export class HttpClient {
   private baseUrl: string;
   private defaultHeaders: Record<string, string>;
   private fetchFn: FetchFunction;
+  private maxRetries: number;
+  private baseDelayMs: number;
 
   constructor(
     baseUrl: string,
     options: {
       headers?: Record<string, string>;
       fetch?: FetchFunction;
+      maxRetries?: number;
+      baseDelayMs?: number;
     } = {}
   ) {
     this.baseUrl = baseUrl.replace(/\/$/, ''); // Remove trailing slash
     this.defaultHeaders = options.headers ?? {};
     this.fetchFn = options.fetch ?? fetch;
+    this.maxRetries = options.maxRetries ?? 3;
+    this.baseDelayMs = options.baseDelayMs ?? 1000;
   }
 
   /**
-   * Make an HTTP request
-   * @param endpoint - API endpoint (will be appended to baseUrl)
-   * @param options - Request options
-   * @returns Parsed JSON response
-   * @throws Error if response is not ok
+   * Determine if a response status is retryable
+   */
+  private isRetryableStatus(status: number): boolean {
+    return status === 429 || status >= 500;
+  }
+
+  /**
+   * Sleep for a given number of milliseconds
+   */
+  private sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  /**
+   * Make an HTTP request with retry logic
    */
   async request<T = unknown>(endpoint: string, options: HttpClientOptions = {}): Promise<T> {
     const { method = 'GET', headers = {}, body, params = {} } = options;
@@ -62,18 +78,42 @@ export class HttpClient {
       }
     }
 
-    const response = await this.fetchFn(url.toString(), fetchOptions);
+    let lastError: Error | null = null;
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new HttpError(
-        `HTTP ${response.status}: ${response.statusText}`,
-        response.status,
-        errorText
-      );
+    for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
+      try {
+        const response = await this.fetchFn(url.toString(), fetchOptions);
+
+        if (!response.ok) {
+          if (attempt < this.maxRetries && this.isRetryableStatus(response.status)) {
+            const delay = this.baseDelayMs * Math.pow(2, attempt);
+            await this.sleep(delay);
+            continue;
+          }
+
+          const errorText = await response.text();
+          throw new HttpError(
+            `HTTP ${response.status}: ${response.statusText}`,
+            response.status,
+            errorText
+          );
+        }
+
+        return response.json() as Promise<T>;
+      } catch (err) {
+        if (err instanceof HttpError) {
+          throw err; // Non-retryable HTTP errors (already handled above)
+        }
+        lastError = err as Error;
+        if (attempt < this.maxRetries) {
+          const delay = this.baseDelayMs * Math.pow(2, attempt);
+          await this.sleep(delay);
+          continue;
+        }
+      }
     }
 
-    return response.json() as Promise<T>;
+    throw lastError ?? new Error('Request failed after retries');
   }
 
   /**
@@ -121,6 +161,8 @@ export class HttpClient {
     return new HttpClient(this.baseUrl, {
       headers: { ...this.defaultHeaders, ...headers },
       fetch: this.fetchFn,
+      maxRetries: this.maxRetries,
+      baseDelayMs: this.baseDelayMs,
     });
   }
 }
@@ -144,11 +186,13 @@ export class HttpError extends Error {
  * @param baseUrl - Base URL for the API
  * @param token - Bearer token
  * @param fetchFn - Optional fetch function for testing
+ * @param retryOptions - Optional retry configuration
  */
 export function createBearerClient(
   baseUrl: string,
   token: string,
-  fetchFn?: FetchFunction
+  fetchFn?: FetchFunction,
+  retryOptions?: { maxRetries?: number; baseDelayMs?: number }
 ): HttpClient {
   return new HttpClient(baseUrl, {
     headers: {
@@ -156,5 +200,6 @@ export function createBearerClient(
       'Content-Type': 'application/json',
     },
     fetch: fetchFn,
+    ...retryOptions,
   });
 }

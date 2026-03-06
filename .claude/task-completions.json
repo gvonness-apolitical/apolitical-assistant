@@ -1,6 +1,6 @@
 {
   "retentionDays": 30,
-  "lastPruned": "2026-02-18",
+  "lastPruned": "2026-03-03",
   "completions": [
     {
       "date": "2026-02-18",
@@ -685,6 +685,145 @@
       "status": "dismissed",
       "reason": "Addressed to engineering@apolitical.co shared inbox, not personal. Auto-renew confirmed (renewed successfully Mar 2025). Platform team will pick up if action needed.",
       "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-03",
+      "subject": "SLO alerting — courses-api outstanding",
+      "keywords": ["slo", "alerting", "courses-api", "khalifa", "robbie"],
+      "source": "incident.io",
+      "status": "dismissed",
+      "reason": "Khalifa and Robbie already investigating. They'll escalate if stuck.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-03",
+      "subject": "Monitor @apolitical/contracts@6.0.0 major version bump",
+      "keywords": ["contracts", "major", "version", "bump", "npm", "package"],
+      "source": "gmail",
+      "status": "dismissed",
+      "reason": "Live since Mar 2 with no reported issues. Team would have escalated if broken.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-04",
+      "subject": "Follow up on Sonali competency matrix — acknowledge feedback via Slack DM",
+      "keywords": ["sonali", "competency", "matrix", "feedback", "acknowledge", "slack"],
+      "source": "slack:dm-sonali-singh",
+      "sourceId": "1772541125.244959",
+      "status": "completed",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-04",
+      "subject": "Check if Tanya still needs to chat",
+      "keywords": ["tanya", "chat", "quick call"],
+      "source": "slack:dm-tanya-riordan",
+      "status": "completed",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-04",
+      "subject": "Set up monthly eng management meeting",
+      "keywords": ["monthly", "eng", "management", "meeting", "tech leads", "lauren"],
+      "source": "canvas:think-tank",
+      "status": "completed",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-04",
+      "subject": "GCP credential security best practices review",
+      "keywords": ["gcp", "credential", "security", "best practices", "review"],
+      "source": "carry-forward",
+      "status": "dismissed",
+      "reason": "Vague scope with no clear deliverable. Specific security work (workload identity, GSM) covered by Samuel's roadmap.",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-04",
+      "subject": "Respond to Jessica Duval — Pillar 2 modules review + office hours availability",
+      "keywords": ["jessica", "duval", "pillar", "modules", "office hours", "futura", "curriculum"],
+      "source": "slack:dm-jessica-duval",
+      "sourceId": "1772530846.277199",
+      "status": "completed",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-05",
+      "subject": "Respond to Samuel — acknowledge OOO, reply to 6-point update",
+      "keywords": [
+        "samuel",
+        "ooo",
+        "gsm",
+        "gke",
+        "argocd",
+        "security",
+        "roadmap",
+        "pla-386",
+        "pla-322"
+      ],
+      "source": "slack:dm-samuel-balogun",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-03-05",
+      "subject": "Loop Peter into AISM learning hours",
+      "keywords": ["peter", "aism", "learning", "hours"],
+      "source": "meeting:data-huddle",
+      "status": "completed",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-05",
+      "subject": "Respond to Khalifa — Borja London visit week of Mar 23 / Chelsea sync",
+      "keywords": ["khalifa", "borja", "london", "chelsea", "visit", "devops"],
+      "source": "slack:dm-khalifa-idris",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-03-05",
+      "subject": "Submit Jeremy Boon scorecard on Applied platform",
+      "keywords": ["jeremy", "boon", "scorecard", "applied", "screening"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-05",
+      "subject": "Add engineering contracts to Chelsey's audit sheet",
+      "keywords": ["chelsey", "contracts", "audit", "legal", "register", "vendors"],
+      "source": "slack:priv-management-team",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-03-05",
+      "subject": "Complete quarterly engagement survey",
+      "keywords": ["engagement", "survey", "revolut", "people", "quarterly"],
+      "source": "slack:priv-managers",
+      "status": "completed",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-06",
+      "subject": "Grant cloud SQL client permission for futura-api",
+      "keywords": ["cloud", "sql", "client", "permission", "futura-api", "dom", "renzo"],
+      "source": "slack:team-eng-think-tank",
+      "sourceId": "1772646987.735069",
+      "status": "completed",
+      "reason": "Renzo granted the permission. No action needed from Greg.",
+      "completedVia": "direct"
+    },
+    {
+      "subject": "Review Vanta email — Drata competitor context",
+      "keywords": ["vanta", "drata", "competitor", "email", "amber", "jack", "murphy"],
+      "source": "gmail",
+      "sourceId": null,
+      "status": "dismissed",
+      "reason": "Drata already chosen, commercial meeting done, Amber handling Vanta follow-up",
+      "completedVia": "direct",
+      "date": "2026-03-06"
     }
   ]
 }

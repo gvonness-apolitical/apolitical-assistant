@@ -19,7 +19,7 @@ function mockSlackResponse(data: Record<string, unknown>, ok = true) {
 // Create a mock context
 function createMockContext(): SlackContext {
   return {
-    slackClient: new SlackClient('xoxb-mock-token', mockFetch),
+    slackClient: new SlackClient('xoxb-mock-token', mockFetch, { maxRetries: 0 }),
   };
 }
 
@@ -257,9 +257,10 @@ describe('Slack Handlers', () => {
   });
 
   describe('handleToolCall - slack_get_user', () => {
-    it('should return user details', async () => {
+    it('should return user details with presence', async () => {
       const userId = uniqueUserId();
 
+      // users.info call
       mockFetch.mockResolvedValueOnce(
         mockSlackResponse({
           user: {
@@ -279,6 +280,13 @@ describe('Slack Handlers', () => {
         })
       );
 
+      // users.getPresence call
+      mockFetch.mockResolvedValueOnce(
+        mockSlackResponse({
+          presence: 'active',
+        })
+      );
+
       const result = await handleToolCall('slack_get_user', { userId }, context);
 
       const data = JSON.parse((result.content[0] as { text: string }).text);
@@ -287,6 +295,7 @@ describe('Slack Handlers', () => {
       expect(data.realName).toBe('John Doe');
       expect(data.timezone).toBe('America/New_York');
       expect(data.status).toBe(':coffee: In a meeting');
+      expect(data.presence).toBe('active');
     });
   });
 
@@ -341,7 +350,7 @@ describe('Slack Handlers', () => {
   });
 
   describe('handleToolCall - slack_send_dm', () => {
-    it('should open DM and send message', async () => {
+    it('should open DM and send message with single userId', async () => {
       // Open conversation
       mockFetch.mockResolvedValueOnce(
         mockSlackResponse({
@@ -358,15 +367,48 @@ describe('Slack Handlers', () => {
         })
       );
 
+      const uid = uniqueUserId();
       const result = await handleToolCall(
         'slack_send_dm',
-        { userId: uniqueUserId(), text: 'Hi there!' },
+        { userId: uid, text: 'Hi there!' },
         context
       );
 
       const data = JSON.parse((result.content[0] as { text: string }).text);
       expect(data.success).toBe(true);
       expect(data.channel).toBe('D123');
+      expect(data.userIds).toEqual([uid]);
+    });
+
+    it('should open group DM and send message with array of userIds', async () => {
+      // Open group conversation
+      mockFetch.mockResolvedValueOnce(
+        mockSlackResponse({
+          channel: { id: 'G456' },
+        })
+      );
+
+      // Send message
+      mockFetch.mockResolvedValueOnce(
+        mockSlackResponse({
+          ts: '1234567890.654321',
+          channel: 'G456',
+          message: { text: 'Hey both!' },
+        })
+      );
+
+      const uid1 = uniqueUserId();
+      const uid2 = uniqueUserId();
+      const result = await handleToolCall(
+        'slack_send_dm',
+        { userId: [uid1, uid2], text: 'Hey both!' },
+        context
+      );
+
+      const data = JSON.parse((result.content[0] as { text: string }).text);
+      expect(data.success).toBe(true);
+      expect(data.channel).toBe('G456');
+      expect(data.userIds).toEqual([uid1, uid2]);
     });
   });
 
@@ -436,6 +478,38 @@ describe('Slack Handlers', () => {
       expect(data.channelId).toBe('D456');
       expect(data.messages).toHaveLength(1);
       expect(data.messages[0].text).toBe('Hi there');
+    });
+
+    it('should read group DM messages', async () => {
+      const userId1 = uniqueUserId();
+      const userId2 = uniqueUserId();
+      const messageUserId = uniqueUserId();
+
+      // Open group conversation
+      mockFetch.mockResolvedValueOnce(mockSlackResponse({ channel: { id: 'G789' } }));
+
+      // Get history
+      mockFetch.mockResolvedValueOnce(
+        mockSlackResponse({
+          messages: [{ ts: '123.456', text: 'Group chat message', user: messageUserId }],
+        })
+      );
+
+      // User enrichment
+      mockFetch.mockResolvedValueOnce(
+        mockSlackResponse({ user: { name: 'someone', real_name: 'Someone' } })
+      );
+
+      const result = await handleToolCall(
+        'slack_read_dm',
+        { userId: [userId1, userId2], limit: 20 },
+        context
+      );
+
+      const data = JSON.parse((result.content[0] as { text: string }).text);
+      expect(data.channelId).toBe('G789');
+      expect(data.messages).toHaveLength(1);
+      expect(data.messages[0].text).toBe('Group chat message');
     });
   });
 

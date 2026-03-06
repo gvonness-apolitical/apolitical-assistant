@@ -12,6 +12,10 @@ export const ListIncidentsSchema = z.object({
     .describe('Filter by incident status'),
   severity: z.string().optional().describe('Filter by severity level (e.g., "sev1", "sev2")'),
   limit: z.number().optional().default(25).describe('Maximum number of results'),
+  since: z
+    .string()
+    .optional()
+    .describe('Only return incidents created after this ISO date (e.g., "2026-03-01T00:00:00Z")'),
 });
 
 export const GetIncidentSchema = z.object({
@@ -71,6 +75,11 @@ export async function handleListIncidents(
     incidents = incidents.filter(
       (i) => i.severity?.name?.toLowerCase() === args.severity?.toLowerCase()
     );
+  }
+
+  if (args.since) {
+    const sinceDate = new Date(args.since);
+    incidents = incidents.filter((i) => new Date(i.created_at) >= sinceDate);
   }
 
   return incidents.map((i) => ({

@@ -19,7 +19,9 @@ export {
   GmailTrashSchema,
   GmailDeleteSchema,
   GmailArchiveSchema,
+  GmailMarkReadSchema,
   GmailCreateDraftSchema,
+  GmailSendDraftSchema,
   GmailGetAttachmentsSchema,
   // Gmail handlers
   handleGmailSearch,
@@ -28,7 +30,9 @@ export {
   handleGmailTrash,
   handleGmailDelete,
   handleGmailArchive,
+  handleGmailMarkRead,
   handleGmailCreateDraft,
+  handleGmailSendDraft,
   handleGmailGetAttachments,
 } from './gmail.js';
 
@@ -40,6 +44,7 @@ export {
   CalendarGetFreeBusySchema,
   CalendarCreateEventSchema,
   CalendarUpdateEventSchema,
+  CalendarDeleteEventSchema,
   // Calendar handlers
   handleCalendarListEvents,
   handleCalendarGetEvent,
@@ -47,6 +52,7 @@ export {
   handleCalendarGetFreeBusy,
   handleCalendarCreateEvent,
   handleCalendarUpdateEvent,
+  handleCalendarDeleteEvent,
   // Calendar helpers
   buildWeeklyRRule,
   buildRecurrenceRules,
@@ -69,11 +75,13 @@ export {
   DocsGetCommentsSchema,
   DocsCreateSchema,
   DocsUpdateSchema,
+  DocsAddCommentSchema,
   // Docs handlers
   handleDocsGetContent,
   handleDocsGetComments,
   handleDocsCreate,
   handleDocsUpdate,
+  handleDocsAddComment,
 } from './docs.js';
 
 export {

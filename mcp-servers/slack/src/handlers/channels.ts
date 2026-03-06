@@ -21,6 +21,8 @@ export const ListChannelsSchema = z.object({
 export const ReadChannelSchema = z.object({
   channel: z.string().describe('Channel ID (e.g., C1234567890) or channel name (e.g., #general)'),
   limit: z.number().optional().default(20).describe('Number of messages to retrieve (max 100)'),
+  oldest: z.string().optional().describe('Only return messages after this Unix timestamp'),
+  latest: z.string().optional().describe('Only return messages before this Unix timestamp'),
 });
 
 export const GetChannelInfoSchema = z.object({
@@ -63,10 +65,14 @@ export async function handleReadChannel(
     messages: SlackMessage[];
   }
 
-  const data = await client.call<HistoryResponse>('conversations.history', {
+  const historyParams: Record<string, unknown> = {
     channel: channelId,
     limit: Math.min(args.limit, 100),
-  });
+  };
+  if (args.oldest) historyParams.oldest = args.oldest;
+  if (args.latest) historyParams.latest = args.latest;
+
+  const data = await client.call<HistoryResponse>('conversations.history', historyParams);
 
   const messages = await Promise.all(
     data.messages.map(async (msg) => {

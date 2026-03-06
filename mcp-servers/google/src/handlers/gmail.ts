@@ -23,15 +23,23 @@ export {
   gmailReadDefs,
 } from './gmail-read.js';
 
-export { GmailCreateDraftSchema, handleGmailCreateDraft, gmailWriteDefs } from './gmail-write.js';
+export {
+  GmailCreateDraftSchema,
+  GmailSendDraftSchema,
+  handleGmailCreateDraft,
+  handleGmailSendDraft,
+  gmailWriteDefs,
+} from './gmail-write.js';
 
 export {
   GmailTrashSchema,
   GmailDeleteSchema,
   GmailArchiveSchema,
+  GmailMarkReadSchema,
   handleGmailTrash,
   handleGmailDelete,
   handleGmailArchive,
+  handleGmailMarkRead,
   gmailManageDefs,
 } from './gmail-manage.js';
 

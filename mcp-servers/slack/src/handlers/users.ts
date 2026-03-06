@@ -52,6 +52,26 @@ export async function handleGetUser(
     user: args.userId,
   });
 
+  // Also fetch presence
+  interface PresenceResponse extends SlackResponse {
+    presence: string;
+    online?: boolean;
+    auto_away?: boolean;
+    manual_away?: boolean;
+    connection_count?: number;
+    last_activity?: number;
+  }
+
+  let presence: string | undefined;
+  try {
+    const presenceData = await client.call<PresenceResponse>('users.getPresence', {
+      user: args.userId,
+    });
+    presence = presenceData.presence;
+  } catch {
+    // Presence is best-effort, don't fail if unavailable
+  }
+
   const u = data.user;
   return {
     id: u.id,
@@ -65,6 +85,7 @@ export async function handleGetUser(
       ? `${u.profile.status_emoji || ''} ${u.profile.status_text}`.trim()
       : undefined,
     avatar: u.profile.image_192,
+    presence,
   };
 }
 
