@@ -750,7 +750,17 @@
     {
       "date": "2026-03-05",
       "subject": "Respond to Samuel — acknowledge OOO, reply to 6-point update",
-      "keywords": ["samuel", "ooo", "gsm", "gke", "argocd", "security", "roadmap", "pla-386", "pla-322"],
+      "keywords": [
+        "samuel",
+        "ooo",
+        "gsm",
+        "gke",
+        "argocd",
+        "security",
+        "roadmap",
+        "pla-386",
+        "pla-322"
+      ],
       "source": "slack:dm-samuel-balogun",
       "status": "completed",
       "completedVia": "claude"
@@ -804,6 +814,16 @@
       "status": "completed",
       "reason": "Renzo granted the permission. No action needed from Greg.",
       "completedVia": "direct"
+    },
+    {
+      "subject": "Review Vanta email — Drata competitor context",
+      "keywords": ["vanta", "drata", "competitor", "email", "amber", "jack", "murphy"],
+      "source": "gmail",
+      "sourceId": null,
+      "status": "dismissed",
+      "reason": "Drata already chosen, commercial meeting done, Amber handling Vanta follow-up",
+      "completedVia": "direct",
+      "date": "2026-03-06"
     }
   ]
 }
