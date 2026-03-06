@@ -85,12 +85,30 @@ Use this ID for:
 
 ### Step 1: Gather Unread Messages
 
+**Time-range optimization:**
+Before reading messages, check for the most recent slack-read timestamp:
+1. Read `context/YYYY-MM-DD/index.md` for previous "Slack Summary" entries today
+2. If found, extract the timestamp and convert to Unix epoch for `oldest` parameter
+3. Pass `oldest` to all `slack_read_dm` and `slack_read_channel` calls to skip already-processed messages
+4. If no previous slack-read today, omit `oldest` (read last 30 days as before)
+
+This prevents re-reading messages that were already processed in an earlier slack-read run today.
+
 Collect unread messages from all sources (last 30 days max):
 
-**DMs:**
-- Use `slack_list_dms` to get DM channel list
+**DMs (prioritized):**
+- Use `slack_list_dms` with `types: 'im,mpim'` to include both 1:1 and group DMs
+- Load `.claude/people.json` to identify sender tiers
+- Process DMs in priority order:
+  1. **P0 — Exec tier**: DMs from `senderTiers.exec` in `email-rules.json`
+  2. **P1 — Direct reports**: DMs from people where `isDirectReport: true` in `people.json`
+  3. **P2 — Others**: All remaining DMs
 - For each DM, use `slack_read_dm` to get recent messages
-- Track which have unread messages
+
+**Group DM handling:**
+- For `mpim` (group DM) entries from `slack_list_dms`, read using `slack_read_channel` with the channel ID (not `slack_read_dm`, which expects a userId)
+- Group DMs are identified by their channel ID prefix (typically `G` prefix)
+- Include all group DM participants in the summary
 
 **Public & Private Channels:**
 - **Important:** List private channels separately using `slack_list_channels` with `types='private_channel'` to ensure they're included (default 100-channel limit can exclude them when mixed with public)

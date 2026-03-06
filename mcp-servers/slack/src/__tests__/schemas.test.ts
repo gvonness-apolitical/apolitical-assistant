@@ -64,6 +64,11 @@ describe('Slack Schemas', () => {
       const result = ListChannelsSchema.parse({ limit: 50 });
       expect(result.limit).toBe(50);
     });
+
+    it('should accept cursor parameter', () => {
+      const result = ListChannelsSchema.parse({ cursor: 'dXNlcjpVMEc5V0ZYTlo=' });
+      expect(result.cursor).toBe('dXNlcjpVMEc5V0ZYTlo=');
+    });
   });
 
   describe('ReadChannelSchema', () => {
@@ -147,6 +152,11 @@ describe('Slack Schemas', () => {
     it('should accept both im and mpim types', () => {
       const result = ListDmsSchema.parse({ types: 'im,mpim' });
       expect(result.types).toBe('im,mpim');
+    });
+
+    it('should accept cursor parameter', () => {
+      const result = ListDmsSchema.parse({ cursor: 'dXNlcjpVMEc5V0ZYTlo=' });
+      expect(result.cursor).toBe('dXNlcjpVMEc5V0ZYTlo=');
     });
   });
 

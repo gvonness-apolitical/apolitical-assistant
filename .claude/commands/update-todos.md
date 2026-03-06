@@ -345,13 +345,39 @@ All sources complete. Proceeding to Deduplication.
 
 Before adding items to the todo list, deduplicate against both the current task list and Causantic memory.
 
+### Source ID Deduplication
+
+Each action item gets a stable `sourceId` for precise deduplication across runs:
+
+**Source ID format by source:**
+| Source | Format | Example |
+|--------|--------|---------|
+| Slack DM | `slack:{channel_id}:{message_ts}` | `slack:D0123:1709654321.000100` |
+| Slack channel | `slack:{channel_id}:{message_ts}` | `slack:C0456:1709654322.000200` |
+| Gmail | `gmail:{message_id}` | `gmail:18e1a2b3c4d5e6f7` |
+| Notion | `notion:{block_id}` | `notion:abc123-def456` |
+| Asana | `asana:{task_gid}` | `asana:1234567890` |
+| Canvas | `canvas:{canvas_id}:{section}:{line_number}` | `canvas:F0123:action-items:5` |
+| Google Docs | `gdoc:{doc_id}:{comment_id}` | `gdoc:1abc:xyz789` |
+
+**Dedup algorithm:**
+1. **Exact sourceId match** (primary): Check existing tasks (TaskList) and `task-completions.json` for matching sourceId
+2. **Keyword fallback** (secondary): If no sourceId match, fuzzy-match on subject keywords
+3. **Skip duplicates**: If matched in either pass, skip creating a new task
+
+**Include sourceId in tasks:** When calling TaskCreate, include the sourceId in the task description for future matching:
+```
+Description: "[Original action item text]\n\nSource: slack:D0123:1709654321.000100"
+```
+
 ### Step A: Check Existing Tasks
 
 1. **Check existing tasks**: Use `TaskList` to get current todos
 2. **Match by content**: Fuzzy match task subjects
-3. **Match by source**: Same Slack message ID, email ID, or doc URL
-4. **Skip duplicates**: Don't create duplicate tasks
-5. **Update if changed**: If item exists but details changed, note the update
+3. **Match by sourceId**: Exact match on sourceId in task descriptions
+4. **Match by source**: Same Slack message ID, email ID, or doc URL
+5. **Skip duplicates**: Don't create duplicate tasks
+6. **Update if changed**: If item exists but details changed, note the update
 
 ### Step A.5: Check Completion Log
 

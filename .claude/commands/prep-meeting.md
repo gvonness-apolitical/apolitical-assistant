@@ -164,6 +164,12 @@ If the meeting has a configured channel in `.claude/meeting-config.json`:
    - Otherwise, find last occurrence of this meeting in calendar
    - Fallback: last 30 days
 3. **Gather channel content**:
+   - **Incremental channel reads:**
+     1. Check `lastPrepDate` in `.claude/meeting-config.json` for this meeting/channel
+     2. If `lastPrepDate` exists, pass it as the `oldest` parameter to `slack_read_channel`
+     3. This reads only messages since the last prep, avoiding re-processing old content
+     4. After prep completes, update `lastPrepDate` to current timestamp in meeting-config.json
+     5. If no `lastPrepDate`, fall back to reading last 30 days (existing behavior)
    - Use `slack_read_channel` for recent messages (up to 100)
    - Use `slack_get_bookmarks` for pinned resources
 4. **Read canvas content** (if `canvasId` is configured):
@@ -205,23 +211,37 @@ If this is a 1:1 with a configured canvas in `oneOnOnes`:
 3. **Read canvas content** (if `canvasId` is configured):
    - Use `slack_get_canvas` with the configured `canvasId`
    - Parse sections: Agenda, Action Items (Open/Completed), Notes, Decisions
-4. **Extract my items**:
+4. **Canvas health check**:
+   After loading the canvas content, verify it contains the expected sections:
+   - Agenda
+   - Action Items (Open/Completed subsections)
+   - Notes
+   - Decisions
+
+   If any sections are missing:
+   ```
+   Canvas for [person] is missing sections: [list].
+   Run /tidy-canvas [person] to restructure? [y/N]
+   ```
+   Continue with available sections regardless of answer.
+
+5. **Extract my items**:
    - Find action items assigned to me or tagged with my name
    - Categorize as: open, completed, blocked
-5. **Interactive prompts**:
+6. **Interactive prompts**:
    - Show current agenda items from canvas
    - Ask: "Any new agenda items to add?"
    - Show my open tasks from previous meetings
    - Ask: "Any of these tasks completed?"
    - For significant action items, offer to create Linear tickets
-6. **Update canvas**:
+7. **Update canvas**:
    - Add new agenda items to Agenda section
    - Mark completed tasks (move to Completed section or strikethrough)
-7. **If no canvas configured**:
+8. **If no canvas configured**:
    - Offer to create one using the template
    - Use `settings.canvasTemplate` or `customTemplate` if set
    - If accepted, use `slack_create_canvas` and update config
-8. **Update config**: Set `lastPrepDate` to current time
+9. **Update config**: Set `lastPrepDate` to current time
 
 ```
 ✓ CHECKPOINT: Step 4 complete - Channel/Canvas Context

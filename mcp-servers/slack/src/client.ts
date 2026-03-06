@@ -97,6 +97,15 @@ export class SlackClient {
   }
 
   /**
+   * Pre-populate the channel cache to avoid API calls during resolveChannelId
+   */
+  setChannelCache(entries: Array<{ name: string; id: string }>): void {
+    for (const entry of entries) {
+      this.channelCache.set(entry.name, entry.id);
+    }
+  }
+
+  /**
    * Resolve a channel name or ID to a channel ID
    *
    * @param channel - Channel ID (C...) or name (#channel or channel)

@@ -13,6 +13,10 @@ export const ListDmsSchema = z.object({
     .describe(
       'Comma-separated conversation types: im (1:1 DMs), mpim (group DMs), or both: im,mpim'
     ),
+  cursor: z
+    .string()
+    .optional()
+    .describe('Pagination cursor from previous response for fetching next page'),
 });
 
 export const ReadDmSchema = z.object({
@@ -43,12 +47,16 @@ export async function handleListDms(
 ): Promise<unknown> {
   interface DmListResponse extends SlackResponse {
     channels: Array<{ id: string; user: string }>;
+    response_metadata?: { next_cursor?: string };
   }
 
-  const data = await client.call<DmListResponse>('conversations.list', {
+  const params: Record<string, unknown> = {
     types: args.types,
     limit: args.limit,
-  });
+  };
+  if (args.cursor) params.cursor = args.cursor;
+
+  const data = await client.call<DmListResponse>('conversations.list', params);
 
   const dms = await Promise.all(
     data.channels.map(async (dm) => {
@@ -62,6 +70,10 @@ export async function handleListDms(
     })
   );
 
+  const nextCursor = data.response_metadata?.next_cursor;
+  if (nextCursor) {
+    return { dms, response_metadata: { next_cursor: nextCursor } };
+  }
   return dms;
 }
 

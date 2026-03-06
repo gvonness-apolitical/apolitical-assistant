@@ -109,6 +109,11 @@ Also check `.claude/asana-sources.json`:
 
 ### Issues & Blockers
 - Active incidents from incident.io
+  - **SLO Alert Filtering:** Exclude noise from auto-resolving SLO threshold alerts:
+    - Filter out incidents where the title contains (case-insensitive): "SLO burn", "burn rate", or "SLO"
+    - These are automated threshold alerts that typically self-resolve and create noise in the orient output
+    - If ALL incidents are SLO alerts, report: "Incidents: 0 active (N SLO alerts filtered)"
+  - **Time-range filtering:** Pass `since` parameter (ISO 8601, 7 days ago from now) to `incidentio_list_incidents` to avoid fetching old resolved incidents. This reduces API response size and processing time.
 - Blocked tickets in Linear
 - Outstanding follow-ups from incidents
 

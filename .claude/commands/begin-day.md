@@ -49,6 +49,7 @@ If a tool isn't called, the step isn't done. Period.
 | 7. Update Todos | slack_get_canvas ×N (per canvas), notion-search, docs_get_comments, TaskCreate ×N | --focus |
 | 8. Briefing | Write (briefing file) | Never |
 | 9. Standup Prep | Read (calendar from step 3) | No standup scheduled |
+| 10. Tech News | WebFetch ×4 | --quick or --focus |
 
 **Embedded skill enforcement:** Steps 4, 5, 6, and 7 embed other skills (triage-inbox, process-gemini-notes, slack-read, update-todos). When running these steps within begin-day, the full enforcement rules from each sub-skill apply — including their MANDATORY execution sections, tool requirements, and task creation mandates. Do NOT produce a weaker version of these steps just because they're running inside begin-day.
 
@@ -99,6 +100,43 @@ Check if today is a weekend or known holiday:
 Check `context/YYYY-MM-DD/index.md` for existing "Begin Day" section:
 - **If found with incomplete steps**: Offer to resume from last completed step
 - **If found complete**: Note "Begin day already run at HH:MM. Run again? [y/N]"
+
+### 5. Working Day Gap Detection
+
+Check for multi-day gaps that may need catchup:
+
+1. **Find most recent context directory**: Scan `context/` for the most recent `YYYY-MM-DD/` directory
+2. **Calculate working-day gap**: Count working days (Mon-Fri) between that date and today
+3. **If >1 working day gap** (e.g., today is Wednesday but last context is Monday):
+   ```
+   GAP DETECTED: Last context from [date] ([N] working days ago)
+
+   Consider running /catchup [start-date] [end-date] to rebuild missing context.
+   Continue with begin-day? [y/N]
+   ```
+   - If user chooses catchup: run `/catchup`, then resume begin-day from Step 1
+   - If user continues: proceed with warning noted
+4. **Normal gaps** (1 working day, or weekend): Continue silently
+
+### 6. Cache Auto-Sync
+
+Automatically refresh stale caches before starting the workflow. Only syncs caches that have been initialized (non-null `lastUpdated`).
+
+| Cache | File | Threshold | Sync Command |
+|-------|------|-----------|--------------|
+| People | `people.json` | >7 days | `/sync-people` |
+| Linear | `linear-cache.json` | >1 day | `/sync-linear` |
+| Asana | `asana-sources.json` | >1 day | `/sync-asana` |
+| Slack channels | `slack-channels.json` | >30 days | `/sync-slack` |
+
+1. Check each cache file's `lastUpdated` field
+2. If stale AND initialized (lastUpdated is not null): auto-run the sync
+3. If not initialized (lastUpdated is null): skip silently (user hasn't set up this cache yet)
+4. Report which caches were refreshed:
+   ```
+   Auto-synced: Linear (2 days stale), Asana (3 days stale)
+   Skipped: People (current), Slack channels (current)
+   ```
 
 ## Workflow Steps
 
@@ -378,11 +416,34 @@ Check if a standup meeting is scheduled today:
 ```
 ✓ CHECKPOINT: Step 9 complete - Standup Prep
   [Talking points generated for X / No standup today]
+
+Proceeding to Step 10: Tech News
+```
+
+### Step 10: Tech News
+
+Scan external tech news for items relevant to the engineering leadership role:
+
+1. **Run tech news scan** (equivalent to `/tech-news --quick`):
+   - Fetch Hacker News, TechCrunch, Slashdot, Gizmodo in parallel
+   - Filter for: security, AI/ML, compliance, GovTech, open source, cloud
+   - Classify by priority tier (P0 Security first)
+   - Headlines only (--quick mode for speed within begin-day)
+2. **Output**: Headlines by tier, saved to `context/YYYY-MM-DD/tech-news-HHMM.md`
+3. **Update progress**: Mark Step 10 complete in daily context
+
+Skip if `--quick` or `--focus` flag is used.
+
+```
+✓ CHECKPOINT: Step 10 complete - Tech News
+  Tools: WebFetch ×4
+  Sources: X/4 succeeded | Items: Y relevant | P0 Security: Z items
+
 ```
 
 ## Final Summary
 
-After ALL 9 steps complete (or explicitly skipped), display:
+After ALL 10 steps complete (or explicitly skipped), display:
 
 ```
 # Begin Day Complete - 2026-01-29
@@ -391,6 +452,7 @@ After ALL 9 steps complete (or explicitly skipped), display:
 ✓ 1. Session Context  ✓ 2. Handoff      ✓ 3. Orient
 ✓ 4. Email Triage     ✓ 5. Gemini Notes ✓ 6. Slack Read
 ✓ 7. Update Todos     ✓ 8. Briefing     ✓ 9. Standup Prep
+✓ 10. Tech News
 
 ## First Meeting
 Data standup in 47 minutes (09:30)
@@ -406,6 +468,7 @@ Data standup in 47 minutes (09:30)
 - Emails: 12 processed (2 need response)
 - Gemini notes: 3 processed (2 action items)
 - Team out: Sarah, Mike
+- Tech news: 8 items (2 security)
 
 ## Standup Ready
 Talking points prepared for Data standup (09:30)
@@ -534,6 +597,16 @@ Ready for the day!
 
 ---
 
+## Step 10: Tech News
+- **Sources scanned**: X/4 succeeded
+- **Items found**: Y relevant
+- **P0 Security**: Z items [or "None"]
+- **Top headline**: [Most significant item]
+
+✓ CHECKPOINT: Step 10 complete
+
+---
+
 ## Focus Today (Top 3)
 1. **[Top priority]** - [brief context]
 2. **[Second priority]** - [brief context]
@@ -543,7 +616,7 @@ Ready for the day!
 [Meeting name] in X minutes at HH:MM
 
 ---
-All 9 steps complete. Ready for the day!
+All 10 steps complete. Ready for the day!
 ```
 
 ## Update Daily Context
@@ -553,7 +626,7 @@ After completing all steps, update `context/YYYY-MM-DD/index.md`:
 ```markdown
 ## Begin Day (HH:MM)
 - **Mode**: [Normal / Late start / Weekend / Catch-up]
-- **Steps completed**: 1, 2, 3, 4, 5, 6, 7, 8, 9
+- **Steps completed**: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
 - **Memory recall**: [available — summary / unavailable]
 - **Previous EOD**: [date] ([N] carry-forward items / not found)
 - **Gap detected**: [None / N working days — catchup run/skipped]
@@ -566,6 +639,7 @@ After completing all steps, update `context/YYYY-MM-DD/index.md`:
 - **Todos found**: X new items (after dedup)
 - **Briefing**: Generated
 - **Standup prep**: [Generated for Meeting / N/A]
+- **Tech news**: X items (Y security) / skipped
 - **Focus today**: [Top 3 items listed]
 - **First meeting**: [Meeting] at HH:MM (in X minutes)
 ```
@@ -588,7 +662,7 @@ Progress is tracked in daily context. If begin-day fails:
 Begin Day interrupted at Step 5 (Process Gemini Notes)
 
 Completed: EOD Catchup, Handoff, Orient, Email Triage
-Remaining: Gemini Notes, Slack Read, Update Todos, Briefing, Standup Prep
+Remaining: Gemini Notes, Slack Read, Update Todos, Briefing, Standup Prep, Tech News
 
 Resume with: /begin-day --resume
 ```
@@ -602,26 +676,28 @@ When `--resume` is used:
 
 | Flag | Steps Run | Use Case |
 |------|-----------|----------|
-| (none) | All 9 steps | Normal workday start |
-| `--quick` | 1, 2, 3, 7, 8, 9 | Fast startup, skip triage/gemini/slack |
+| (none) | All 10 steps | Normal workday start |
+| `--quick` | 1, 2, 3, 7, 8, 9 | Fast startup, skip triage/gemini/slack/news |
 | `--focus` | 1, 2, 3, 8 | Deep work day, minimal notifications |
-| `--catch-up N` | All 9 + extended lookback | Return from vacation/absence |
+| `--catch-up N` | All 10 + extended lookback | Return from vacation/absence |
 | `--resume` | Remaining steps | Recovery from failed run |
+| `--no-tech-news` | 1-9 (skip 10) | Normal workflow without tech news scan |
 | Weekend mode | 1, 3, 8 | Weekend check-in |
 
 ### Step Summary by Mode
 
-| Step | Default | --quick | --focus | Weekend |
-|------|:-------:|:-------:|:-------:|:-------:|
-| 1. Session Context | ✓ | ✓ | ✓ | ✓ |
-| 2. Handoff | ✓ | ✓ | ✓ | - |
-| 3. Orient | ✓ | ✓ | ✓ | ✓ |
-| 4. Email Triage | ✓ | - | - | - |
-| 5. Gemini Notes | ✓ | - | - | - |
-| 6. Slack Read | ✓ | - | - | - |
-| 7. Update Todos | ✓ | ✓ | - | - |
-| 8. Briefing | ✓ | ✓ | ✓ | ✓ |
-| 9. Standup Prep | ✓ | ✓ | - | - |
+| Step | Default | --quick | --focus | --no-tech-news | Weekend |
+|------|:-------:|:-------:|:-------:|:--------------:|:-------:|
+| 1. Session Context | ✓ | ✓ | ✓ | ✓ | ✓ |
+| 2. Handoff | ✓ | ✓ | ✓ | ✓ | - |
+| 3. Orient | ✓ | ✓ | ✓ | ✓ | ✓ |
+| 4. Email Triage | ✓ | - | - | ✓ | - |
+| 5. Gemini Notes | ✓ | - | - | ✓ | - |
+| 6. Slack Read | ✓ | - | - | ✓ | - |
+| 7. Update Todos | ✓ | ✓ | - | ✓ | - |
+| 8. Briefing | ✓ | ✓ | ✓ | ✓ | ✓ |
+| 9. Standup Prep | ✓ | ✓ | - | ✓ | - |
+| 10. Tech News | ✓ | - | - | - | - |
 
 ## Notes
 
@@ -640,6 +716,8 @@ When `--resume` is used:
 - "Focus Today" top 3 helps cut through information overload
 - First meeting countdown helps with time awareness
 
+**Parallelization note:** Steps 4 (Email Triage), 5 (Gemini Notes), and 6 (Slack Read) are independent of each other and can be run as parallel subagents for faster execution. Sequential execution remains the default. When running in parallel, each subagent writes its own checkpoint and context file; the main agent waits for all three to complete before proceeding to Step 7.
+
 ### Step Order Rationale
 
 1. **Session Context** - Causantic recall + EOD files to establish context from where you left off, detect missed days
@@ -651,3 +729,4 @@ When `--resume` is used:
 7. **Update Todos** - Now has full context to deduplicate and prioritize
 8. **Briefing** - Synthesize everything into actionable priorities
 9. **Standup Prep** - Ready for first meeting if it's a standup
+10. **Tech News** - External context, placed last so it doesn't delay internal workflow
