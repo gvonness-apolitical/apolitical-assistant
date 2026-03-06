@@ -81,6 +81,32 @@ export async function handleGmailArchive(
   };
 }
 
+export const GmailMarkReadSchema = z.object({
+  messageIds: z.array(z.string()).describe('Array of Gmail message IDs to mark as read'),
+});
+
+export async function handleGmailMarkRead(
+  args: z.infer<typeof GmailMarkReadSchema>,
+  auth: GoogleAuth
+): Promise<unknown> {
+  const result = await executeBatchOperation(
+    args.messageIds,
+    {
+      buildUrl: (id) => `https://gmail.googleapis.com/gmail/v1/users/me/messages/${id}/modify`,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      buildBody: () => ({ removeLabelIds: ['UNREAD'] }),
+    },
+    auth
+  );
+
+  return {
+    markedRead: result.successCount,
+    failed: result.failedCount,
+    details: result.details,
+  };
+}
+
 // ==================== HANDLER BUNDLE ====================
 
 export const gmailManageDefs = defineHandlers<GoogleAuth>()({
@@ -100,5 +126,10 @@ export const gmailManageDefs = defineHandlers<GoogleAuth>()({
       'Archive Gmail messages (remove from inbox but keep in All Mail). Requires gmail.modify scope.',
     schema: GmailArchiveSchema,
     handler: handleGmailArchive,
+  },
+  gmail_mark_read: {
+    description: 'Mark Gmail messages as read (remove UNREAD label). Requires gmail.modify scope.',
+    schema: GmailMarkReadSchema,
+    handler: handleGmailMarkRead,
   },
 });

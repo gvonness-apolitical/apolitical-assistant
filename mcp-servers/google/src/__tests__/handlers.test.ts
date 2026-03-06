@@ -52,7 +52,7 @@ describe('Gmail Handlers', () => {
 
       const result = await handleGmailSearch({ query: 'is:unread', maxResults: 10 }, auth);
 
-      expect(result).toEqual({ messages: [], total: 0 });
+      expect(result).toEqual({ messages: [], total: 0, resultSizeEstimate: 0 });
     });
 
     it('should fetch message details for each result', async () => {

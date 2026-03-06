@@ -189,6 +189,141 @@ describe('createBearerClient', () => {
   });
 });
 
+describe('retry behavior', () => {
+  it('should retry on 429 status', async () => {
+    const mockFetch = vi.fn()
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 429,
+        statusText: 'Too Many Requests',
+        text: () => Promise.resolve('Rate limited'),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve({ data: 'success' }),
+      });
+
+    const client = new HttpClient('https://api.example.com', {
+      fetch: mockFetch,
+      maxRetries: 3,
+      baseDelayMs: 1, // Use 1ms for fast tests
+    });
+
+    const result = await client.get('/endpoint');
+
+    expect(mockFetch).toHaveBeenCalledTimes(2);
+    expect(result).toEqual({ data: 'success' });
+  });
+
+  it('should retry on 500 status', async () => {
+    const mockFetch = vi.fn()
+      .mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        statusText: 'Internal Server Error',
+        text: () => Promise.resolve('Server error'),
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve({ data: 'success' }),
+      });
+
+    const client = new HttpClient('https://api.example.com', {
+      fetch: mockFetch,
+      maxRetries: 3,
+      baseDelayMs: 1,
+    });
+
+    const result = await client.get('/endpoint');
+
+    expect(mockFetch).toHaveBeenCalledTimes(2);
+    expect(result).toEqual({ data: 'success' });
+  });
+
+  it('should not retry on 400 status', async () => {
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 400,
+      statusText: 'Bad Request',
+      text: () => Promise.resolve('Bad request'),
+    });
+
+    const client = new HttpClient('https://api.example.com', {
+      fetch: mockFetch,
+      maxRetries: 3,
+      baseDelayMs: 1,
+    });
+
+    await expect(client.get('/endpoint')).rejects.toThrow(HttpError);
+    expect(mockFetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('should not retry on 404 status', async () => {
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 404,
+      statusText: 'Not Found',
+      text: () => Promise.resolve('Not found'),
+    });
+
+    const client = new HttpClient('https://api.example.com', {
+      fetch: mockFetch,
+      maxRetries: 3,
+      baseDelayMs: 1,
+    });
+
+    await expect(client.get('/endpoint')).rejects.toThrow(HttpError);
+    expect(mockFetch).toHaveBeenCalledTimes(1);
+  });
+
+  it('should exhaust retries and throw on persistent 500', async () => {
+    const mockFetch = vi.fn().mockResolvedValue({
+      ok: false,
+      status: 500,
+      statusText: 'Internal Server Error',
+      text: () => Promise.resolve('Server error'),
+    });
+
+    const client = new HttpClient('https://api.example.com', {
+      fetch: mockFetch,
+      maxRetries: 2,
+      baseDelayMs: 1,
+    });
+
+    await expect(client.get('/endpoint')).rejects.toThrow(HttpError);
+    expect(mockFetch).toHaveBeenCalledTimes(3); // Initial + 2 retries
+  });
+
+  it('should retry on network errors', async () => {
+    const mockFetch = vi.fn()
+      .mockRejectedValueOnce(new Error('Network error'))
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: () => Promise.resolve({ data: 'recovered' }),
+      });
+
+    const client = new HttpClient('https://api.example.com', {
+      fetch: mockFetch,
+      maxRetries: 3,
+      baseDelayMs: 1,
+    });
+
+    const result = await client.get('/endpoint');
+
+    expect(mockFetch).toHaveBeenCalledTimes(2);
+    expect(result).toEqual({ data: 'recovered' });
+  });
+
+  it('should use default retry settings', () => {
+    const client = new HttpClient('https://api.example.com');
+    // Just verify it can be instantiated with defaults
+    expect(client).toBeDefined();
+  });
+});
+
 describe('HttpError', () => {
   it('should store status and body', () => {
     const error = new HttpError('Not found', 404, '{"error": "Not found"}');

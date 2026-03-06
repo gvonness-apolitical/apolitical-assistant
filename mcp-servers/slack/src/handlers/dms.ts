@@ -6,15 +6,30 @@ import { SlackClient, type SlackResponse, type SlackMessage } from '../client.js
 
 export const ListDmsSchema = z.object({
   limit: z.number().optional().default(50).describe('Maximum number of DM conversations to return'),
+  types: z
+    .string()
+    .optional()
+    .default('im')
+    .describe('Comma-separated conversation types: im (1:1 DMs), mpim (group DMs), or both: im,mpim'),
 });
 
 export const ReadDmSchema = z.object({
-  userId: z.string().describe('User ID to read DMs with (e.g., U1234567890)'),
+  userId: z
+    .union([z.string(), z.array(z.string())])
+    .describe(
+      'User ID(s) to read DMs with. Pass a single ID (e.g., "U1234567890") for a 1:1 DM, or an array of IDs (e.g., ["U111", "U222"]) for a group DM.'
+    ),
   limit: z.number().optional().default(20).describe('Number of messages to retrieve'),
+  oldest: z.string().optional().describe('Only return messages after this Unix timestamp'),
+  latest: z.string().optional().describe('Only return messages before this Unix timestamp'),
 });
 
 export const SendDmSchema = z.object({
-  userId: z.string().describe('User ID to send DM to (e.g., U1234567890)'),
+  userId: z
+    .union([z.string(), z.array(z.string())])
+    .describe(
+      'User ID(s) to send DM to. Pass a single ID (e.g., "U1234567890") for a 1:1 DM, or an array of IDs (e.g., ["U111", "U222"]) for a group DM.'
+    ),
   text: z.string().describe('Message text (supports Slack markdown)'),
 });
 
@@ -29,7 +44,7 @@ export async function handleListDms(
   }
 
   const data = await client.call<DmListResponse>('conversations.list', {
-    types: 'im',
+    types: args.types,
     limit: args.limit,
   });
 
@@ -52,13 +67,15 @@ export async function handleReadDm(
   args: z.infer<typeof ReadDmSchema>,
   client: SlackClient
 ): Promise<unknown> {
-  // Open/get the DM channel with this user
+  // Normalize userId to comma-separated string for conversations.open
+  const users = Array.isArray(args.userId) ? args.userId.join(',') : args.userId;
+
   interface OpenResponse extends SlackResponse {
     channel: { id: string };
   }
 
   const openData = await client.call<OpenResponse>('conversations.open', {
-    users: args.userId,
+    users,
   });
 
   const channelId = openData.channel.id;
@@ -67,10 +84,14 @@ export async function handleReadDm(
     messages: SlackMessage[];
   }
 
-  const data = await client.call<HistoryResponse>('conversations.history', {
+  const historyParams: Record<string, unknown> = {
     channel: channelId,
     limit: Math.min(args.limit, 100),
-  });
+  };
+  if (args.oldest) historyParams.oldest = args.oldest;
+  if (args.latest) historyParams.latest = args.latest;
+
+  const data = await client.call<HistoryResponse>('conversations.history', historyParams);
 
   const messages = await Promise.all(
     data.messages.map(async (msg) => {
@@ -94,13 +115,16 @@ export async function handleSendDm(
   args: z.infer<typeof SendDmSchema>,
   client: SlackClient
 ): Promise<unknown> {
-  // First open/get the DM channel
+  // Normalize userId to comma-separated string for conversations.open
+  const users = Array.isArray(args.userId) ? args.userId.join(',') : args.userId;
+
+  // Open/get the DM channel (single user = 1:1, multiple = group DM)
   interface OpenResponse extends SlackResponse {
     channel: { id: string };
   }
 
   const openData = await client.call<OpenResponse>('conversations.open', {
-    users: args.userId,
+    users,
   });
 
   const channelId = openData.channel.id;
@@ -120,7 +144,7 @@ export async function handleSendDm(
     success: true,
     timestamp: data.ts,
     channel: data.channel,
-    userId: args.userId,
+    userIds: Array.isArray(args.userId) ? args.userId : [args.userId],
     text: data.message.text,
   };
 }
@@ -139,7 +163,8 @@ export const dmDefs = defineHandlers<SlackClient>()({
     handler: handleReadDm,
   },
   slack_send_dm: {
-    description: 'Send a direct message to a user. Requires chat:write scope.',
+    description:
+      'Send a direct message to one or more users. Pass a single user ID for a 1:1 DM, or an array of user IDs for a group DM. Requires chat:write scope.',
     schema: SendDmSchema,
     handler: handleSendDm,
   },

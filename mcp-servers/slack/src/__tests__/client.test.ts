@@ -44,7 +44,7 @@ describe('SlackClient.call', () => {
 
   beforeEach(() => {
     mockFetch = vi.fn();
-    client = new SlackClient('xoxp-test-token', mockFetch);
+    client = new SlackClient('xoxp-test-token', mockFetch, { maxRetries: 0 });
   });
 
   it('should use GET for GET methods and pass params as query string', async () => {
@@ -141,7 +141,7 @@ describe('SlackClient.resolveChannelId', () => {
 
   beforeEach(() => {
     mockFetch = vi.fn();
-    client = new SlackClient('xoxp-test-token', mockFetch);
+    client = new SlackClient('xoxp-test-token', mockFetch, { maxRetries: 0 });
   });
 
   it('should return channel ID directly if it matches ID pattern', async () => {
@@ -225,7 +225,7 @@ describe('SlackClient.enrichUserInfo', () => {
 
   beforeEach(() => {
     mockFetch = vi.fn();
-    client = new SlackClient('xoxp-test-token', mockFetch);
+    client = new SlackClient('xoxp-test-token', mockFetch, { maxRetries: 0 });
   });
 
   it('should fetch and return user info', async () => {
@@ -275,7 +275,7 @@ describe('SlackClient.fetchRaw', () => {
       text: async () => 'file content',
     } as Response);
 
-    const client = new SlackClient('xoxp-test-token', mockFetch);
+    const client = new SlackClient('xoxp-test-token', mockFetch, { maxRetries: 0 });
     const response = await client.fetchRaw('https://files.slack.com/files-pri/T123/download');
 
     expect(mockFetch).toHaveBeenCalledWith('https://files.slack.com/files-pri/T123/download', {

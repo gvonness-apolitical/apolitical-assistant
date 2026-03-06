@@ -175,6 +175,20 @@ export const CalendarUpdateEventSchema = z.object({
   ),
 });
 
+export const CalendarDeleteEventSchema = z.object({
+  eventId: z.string().describe('The calendar event ID to delete'),
+  calendarId: z
+    .string()
+    .optional()
+    .default('primary')
+    .describe('Calendar ID (defaults to primary)'),
+  sendNotifications: z
+    .boolean()
+    .optional()
+    .default(true)
+    .describe('Send cancellation notifications to attendees'),
+});
+
 // ==================== HANDLER FUNCTIONS ====================
 
 export async function handleCalendarListEvents(
@@ -206,6 +220,16 @@ export async function handleCalendarListEvents(
       attendees?: Array<{ email: string; displayName?: string; responseStatus: string }>;
       location?: string;
       hangoutLink?: string;
+      status?: string;
+      organizer?: { email: string; displayName?: string; self?: boolean };
+      recurringEventId?: string;
+      conferenceData?: {
+        entryPoints?: Array<{
+          entryPointType: string;
+          uri: string;
+          label?: string;
+        }>;
+      };
     }>;
   };
 
@@ -217,6 +241,16 @@ export async function handleCalendarListEvents(
     end: event.end.dateTime || event.end.date,
     location: event.location,
     meetLink: event.hangoutLink,
+    status: event.status,
+    organizer: event.organizer
+      ? { email: event.organizer.email, name: event.organizer.displayName, self: event.organizer.self }
+      : undefined,
+    recurringEventId: event.recurringEventId,
+    conferenceEntryPoints: event.conferenceData?.entryPoints?.map((ep) => ({
+      type: ep.entryPointType,
+      uri: ep.uri,
+      label: ep.label,
+    })),
     attendees: event.attendees?.map((a) => ({
       email: a.email,
       name: a.displayName,
@@ -452,6 +486,31 @@ export async function handleCalendarUpdateEvent(
   };
 }
 
+export async function handleCalendarDeleteEvent(
+  args: z.infer<typeof CalendarDeleteEventSchema>,
+  auth: GoogleAuth
+): Promise<unknown> {
+  const url = new URL(
+    `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(args.calendarId)}/events/${encodeURIComponent(args.eventId)}`
+  );
+  url.searchParams.set('sendUpdates', args.sendNotifications ? 'all' : 'none');
+
+  const response = await auth.fetch(url.toString(), {
+    method: 'DELETE',
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Calendar delete error: ${response.status} - ${errorText}`);
+  }
+
+  return {
+    success: true,
+    eventId: args.eventId,
+    deleted: true,
+  };
+}
+
 // ==================== HANDLER BUNDLE ====================
 
 export const calendarDefs = defineHandlers<GoogleAuth>()({
@@ -486,5 +545,10 @@ export const calendarDefs = defineHandlers<GoogleAuth>()({
     description: 'Update an existing calendar event',
     schema: CalendarUpdateEventSchema,
     handler: handleCalendarUpdateEvent,
+  },
+  calendar_delete_event: {
+    description: 'Delete a calendar event. Can optionally send cancellation notifications to attendees.',
+    schema: CalendarDeleteEventSchema,
+    handler: handleCalendarDeleteEvent,
   },
 });

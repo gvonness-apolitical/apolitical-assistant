@@ -83,6 +83,16 @@ describe('Slack Schemas', () => {
       expect(result.limit).toBe(50);
     });
 
+    it('should accept oldest parameter', () => {
+      const result = ReadChannelSchema.parse({ channel: 'C123', oldest: '1234567890.000000' });
+      expect(result.oldest).toBe('1234567890.000000');
+    });
+
+    it('should accept latest parameter', () => {
+      const result = ReadChannelSchema.parse({ channel: 'C123', latest: '1234567899.000000' });
+      expect(result.latest).toBe('1234567899.000000');
+    });
+
     it('should reject missing channel', () => {
       expect(() => ReadChannelSchema.parse({})).toThrow(ZodError);
     });
@@ -121,19 +131,45 @@ describe('Slack Schemas', () => {
     it('should validate with defaults', () => {
       const result = ListDmsSchema.parse({});
       expect(result.limit).toBe(50);
+      expect(result.types).toBe('im');
     });
 
     it('should accept custom limit', () => {
       const result = ListDmsSchema.parse({ limit: 100 });
       expect(result.limit).toBe(100);
     });
+
+    it('should accept mpim type for group DMs', () => {
+      const result = ListDmsSchema.parse({ types: 'mpim' });
+      expect(result.types).toBe('mpim');
+    });
+
+    it('should accept both im and mpim types', () => {
+      const result = ListDmsSchema.parse({ types: 'im,mpim' });
+      expect(result.types).toBe('im,mpim');
+    });
   });
 
   describe('ReadDmSchema', () => {
-    it('should validate with required userId', () => {
+    it('should validate with required userId as string', () => {
       const result = ReadDmSchema.parse({ userId: 'U1234567890' });
       expect(result.userId).toBe('U1234567890');
       expect(result.limit).toBe(20);
+    });
+
+    it('should accept userId as array for group DMs', () => {
+      const result = ReadDmSchema.parse({ userId: ['U111', 'U222'] });
+      expect(result.userId).toEqual(['U111', 'U222']);
+    });
+
+    it('should accept oldest parameter', () => {
+      const result = ReadDmSchema.parse({ userId: 'U123', oldest: '1234567890.000000' });
+      expect(result.oldest).toBe('1234567890.000000');
+    });
+
+    it('should accept latest parameter', () => {
+      const result = ReadDmSchema.parse({ userId: 'U123', latest: '1234567899.000000' });
+      expect(result.latest).toBe('1234567899.000000');
     });
 
     it('should accept custom limit', () => {
@@ -219,13 +255,22 @@ describe('Slack Schemas', () => {
   });
 
   describe('SendDmSchema', () => {
-    it('should validate with required fields', () => {
+    it('should validate with single userId string', () => {
       const result = SendDmSchema.parse({
         userId: 'U1234567890',
         text: 'Hello!',
       });
       expect(result.userId).toBe('U1234567890');
       expect(result.text).toBe('Hello!');
+    });
+
+    it('should validate with array of userIds for group DM', () => {
+      const result = SendDmSchema.parse({
+        userId: ['U111', 'U222'],
+        text: 'Hey both!',
+      });
+      expect(result.userId).toEqual(['U111', 'U222']);
+      expect(result.text).toBe('Hey both!');
     });
 
     it('should reject missing userId', () => {

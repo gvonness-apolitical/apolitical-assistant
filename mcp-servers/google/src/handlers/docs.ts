@@ -29,6 +29,11 @@ export const DocsCreateSchema = z.object({
     ),
 });
 
+export const DocsAddCommentSchema = z.object({
+  documentId: z.string().describe('The Google Doc ID'),
+  content: z.string().describe('The comment text to add'),
+});
+
 export const DocsUpdateSchema = z.object({
   documentId: z.string().describe('The Google Doc ID to update'),
   content: z
@@ -58,23 +63,158 @@ export async function handleDocsGetContent(
     body: {
       content: Array<{
         paragraph?: {
+          paragraphStyle?: { namedStyleType?: string };
+          bullet?: { listId: string; nestingLevel?: number };
           elements: Array<{
-            textRun?: { content: string };
+            textRun?: {
+              content: string;
+              textStyle?: {
+                bold?: boolean;
+                italic?: boolean;
+                strikethrough?: boolean;
+                underline?: boolean;
+                link?: { url: string };
+              };
+            };
+          }>;
+        };
+        table?: {
+          rows: number;
+          columns: number;
+          tableRows: Array<{
+            tableCells: Array<{
+              content: Array<{
+                paragraph?: {
+                  elements: Array<{
+                    textRun?: { content: string };
+                  }>;
+                };
+              }>;
+            }>;
           }>;
         };
       }>;
     };
+    lists?: Record<
+      string,
+      {
+        listProperties: {
+          nestingLevels: Array<{ glyphType?: string; glyphFormat?: string }>;
+        };
+      }
+    >;
   };
 
-  // Extract text content
-  const textContent = doc.body.content
-    .filter((block) => block.paragraph)
-    .map((block) => block.paragraph!.elements.map((el) => el.textRun?.content || '').join(''))
-    .join('');
+  const lines: string[] = [];
+  const listCounters: Record<string, number[]> = {};
+
+  for (const block of doc.body.content) {
+    if (block.table) {
+      // Process table
+      const tableRows: string[][] = [];
+      for (const row of block.table.tableRows) {
+        const cells: string[] = [];
+        for (const cell of row.tableCells) {
+          const cellText = cell.content
+            .map((c) =>
+              c.paragraph?.elements.map((el) => el.textRun?.content || '').join('') || ''
+            )
+            .join('')
+            .trim();
+          cells.push(cellText);
+        }
+        tableRows.push(cells);
+      }
+
+      if (tableRows.length > 0) {
+        // Header row
+        const headerRow = tableRows[0]!;
+        lines.push('| ' + headerRow.join(' | ') + ' |');
+        lines.push('| ' + headerRow.map(() => '---').join(' | ') + ' |');
+        // Data rows
+        for (let i = 1; i < tableRows.length; i++) {
+          lines.push('| ' + tableRows[i]!.join(' | ') + ' |');
+        }
+        lines.push('');
+      }
+      continue;
+    }
+
+    if (!block.paragraph) continue;
+
+    const para = block.paragraph;
+    const styleType = para.paragraphStyle?.namedStyleType;
+
+    // Build text with inline formatting
+    let text = '';
+    for (const el of para.elements) {
+      if (!el.textRun) continue;
+      let content = el.textRun.content;
+      const style = el.textRun.textStyle;
+
+      if (style) {
+        const trimmed = content.replace(/\n$/, '');
+        const trailing = content.endsWith('\n') ? '\n' : '';
+
+        if (style.link?.url) {
+          content = `[${trimmed}](${style.link.url})${trailing}`;
+        } else if (style.bold && style.italic) {
+          content = `***${trimmed}***${trailing}`;
+        } else if (style.bold) {
+          content = `**${trimmed}**${trailing}`;
+        } else if (style.italic) {
+          content = `*${trimmed}*${trailing}`;
+        } else if (style.strikethrough) {
+          content = `~~${trimmed}~~${trailing}`;
+        }
+      }
+
+      text += content;
+    }
+
+    // Remove trailing newline
+    text = text.replace(/\n$/, '');
+
+    // Apply heading prefixes
+    if (styleType === 'HEADING_1') {
+      lines.push(`# ${text}`);
+    } else if (styleType === 'HEADING_2') {
+      lines.push(`## ${text}`);
+    } else if (styleType === 'HEADING_3') {
+      lines.push(`### ${text}`);
+    } else if (styleType === 'HEADING_4') {
+      lines.push(`#### ${text}`);
+    } else if (styleType === 'HEADING_5') {
+      lines.push(`##### ${text}`);
+    } else if (styleType === 'HEADING_6') {
+      lines.push(`###### ${text}`);
+    } else if (para.bullet) {
+      const listId = para.bullet.listId;
+      const level = para.bullet.nestingLevel || 0;
+      const indent = '  '.repeat(level);
+
+      // Check if ordered list
+      const listDef = doc.lists?.[listId];
+      const nestingLevel = listDef?.listProperties?.nestingLevels?.[level];
+      const isOrdered = nestingLevel?.glyphType === 'DECIMAL' ||
+                        nestingLevel?.glyphFormat === '%0.';
+
+      if (isOrdered) {
+        if (!listCounters[listId]) listCounters[listId] = [];
+        if (!listCounters[listId][level]) listCounters[listId][level] = 0;
+        listCounters[listId][level]++;
+        lines.push(`${indent}${listCounters[listId][level]}. ${text}`);
+      } else {
+        lines.push(`${indent}- ${text}`);
+      }
+    } else {
+      lines.push(text);
+    }
+  }
 
   return {
     title: doc.title,
-    content: textContent,
+    content: lines.join('\n'),
   };
 }
 
@@ -211,6 +351,34 @@ export async function handleDocsCreate(
   };
 }
 
+export async function handleDocsAddComment(
+  args: z.infer<typeof DocsAddCommentSchema>,
+  auth: GoogleAuth
+): Promise<unknown> {
+  const url = `https://www.googleapis.com/drive/v3/files/${args.documentId}/comments?fields=id,content,author,createdTime`;
+  const response = await auth.fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ content: args.content }),
+  });
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Drive API error adding comment: ${response.status} - ${error}`);
+  }
+  const comment = (await response.json()) as {
+    id: string;
+    content: string;
+    author: { displayName: string };
+    createdTime: string;
+  };
+  return {
+    commentId: comment.id,
+    content: comment.content,
+    author: comment.author.displayName,
+    createdTime: comment.createdTime,
+  };
+}
+
 export async function handleDocsUpdate(
   args: z.infer<typeof DocsUpdateSchema>,
   auth: GoogleAuth
@@ -330,5 +498,10 @@ export const docsDefs = defineHandlers<GoogleAuth>()({
     description: 'Update Google Doc content with markdown (replace or append)',
     schema: DocsUpdateSchema,
     handler: handleDocsUpdate,
+  },
+  docs_add_comment: {
+    description: 'Add a comment to a Google Doc',
+    schema: DocsAddCommentSchema,
+    handler: handleDocsAddComment,
   },
 });

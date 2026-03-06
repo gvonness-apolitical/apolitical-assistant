@@ -38,6 +38,11 @@ describe('Incident.io Schemas', () => {
       expect(result.limit).toBe(50);
     });
 
+    it('should accept since filter', () => {
+      const result = ListIncidentsSchema.parse({ since: '2026-03-01T00:00:00Z' });
+      expect(result.since).toBe('2026-03-01T00:00:00Z');
+    });
+
     it('should reject invalid status', () => {
       expect(() => ListIncidentsSchema.parse({ status: 'invalid' })).toThrow(ZodError);
     });

@@ -48,10 +48,14 @@ export class SlackClient {
   private channelCache = new Map<string, string>();
   private userCache = new Map<string, { name: string; realName: string }>();
 
-  constructor(token: string, fetchFn?: FetchFunction) {
+  constructor(
+    token: string,
+    fetchFn?: FetchFunction,
+    retryOptions?: { maxRetries?: number; baseDelayMs?: number }
+  ) {
     this.token = token;
     this.fetchFn = fetchFn ?? fetch;
-    this.httpClient = createBearerClient('https://slack.com/api', token, fetchFn);
+    this.httpClient = createBearerClient('https://slack.com/api', token, fetchFn, retryOptions);
   }
 
   /**

@@ -51,6 +51,35 @@ export async function handleGmailCreateDraft(
   };
 }
 
+export const GmailSendDraftSchema = z.object({
+  draftId: z.string().describe('The draft ID to send (created by gmail_create_draft)'),
+});
+
+export async function handleGmailSendDraft(
+  args: z.infer<typeof GmailSendDraftSchema>,
+  auth: GoogleAuth
+): Promise<unknown> {
+  const url = 'https://gmail.googleapis.com/gmail/v1/users/me/drafts/send';
+  const response = await auth.fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id: args.draftId }),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Gmail send draft error: ${response.status} - ${errorText}`);
+  }
+
+  const data = (await response.json()) as { id: string; threadId: string; labelIds: string[] };
+  return {
+    success: true,
+    messageId: data.id,
+    threadId: data.threadId,
+    labels: data.labelIds,
+  };
+}
+
 // ==================== HANDLER BUNDLE ====================
 
 export const gmailWriteDefs = defineHandlers<GoogleAuth>()({
@@ -59,5 +88,11 @@ export const gmailWriteDefs = defineHandlers<GoogleAuth>()({
       'Create a draft email (not sent). Useful for composing emails that need review before sending.',
     schema: GmailCreateDraftSchema,
     handler: handleGmailCreateDraft,
+  },
+  gmail_send_draft: {
+    description:
+      'Send a previously created draft email. The draft must exist (created by gmail_create_draft). This sends the email immediately.',
+    schema: GmailSendDraftSchema,
+    handler: handleGmailSendDraft,
   },
 });

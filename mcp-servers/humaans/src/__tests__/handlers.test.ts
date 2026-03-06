@@ -139,7 +139,11 @@ describe('Humaans Handlers', () => {
       expect(mockClient.get).toHaveBeenCalledWith('/people/emp-123');
       const data = JSON.parse((result.content[0] as { text: string }).text);
       expect(data.id).toBe('emp-123');
-      expect(data.firstName).toBe('John');
+      expect(data.name).toBe('John Doe');
+      expect(data.email).toBe('john@example.com');
+      expect(data.jobTitle).toBe('Senior Engineer');
+      expect(data.department).toBe('Engineering');
+      expect(data.status).toBe('active');
     });
   });
 
