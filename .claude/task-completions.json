@@ -746,6 +746,64 @@
       "sourceId": "1772530846.277199",
       "status": "completed",
       "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-05",
+      "subject": "Respond to Samuel — acknowledge OOO, reply to 6-point update",
+      "keywords": ["samuel", "ooo", "gsm", "gke", "argocd", "security", "roadmap", "pla-386", "pla-322"],
+      "source": "slack:dm-samuel-balogun",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-03-05",
+      "subject": "Loop Peter into AISM learning hours",
+      "keywords": ["peter", "aism", "learning", "hours"],
+      "source": "meeting:data-huddle",
+      "status": "completed",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-05",
+      "subject": "Respond to Khalifa — Borja London visit week of Mar 23 / Chelsea sync",
+      "keywords": ["khalifa", "borja", "london", "chelsea", "visit", "devops"],
+      "source": "slack:dm-khalifa-idris",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-03-05",
+      "subject": "Submit Jeremy Boon scorecard on Applied platform",
+      "keywords": ["jeremy", "boon", "scorecard", "applied", "screening"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-05",
+      "subject": "Add engineering contracts to Chelsey's audit sheet",
+      "keywords": ["chelsey", "contracts", "audit", "legal", "register", "vendors"],
+      "source": "slack:priv-management-team",
+      "status": "completed",
+      "completedVia": "claude"
+    },
+    {
+      "date": "2026-03-05",
+      "subject": "Complete quarterly engagement survey",
+      "keywords": ["engagement", "survey", "revolut", "people", "quarterly"],
+      "source": "slack:priv-managers",
+      "status": "completed",
+      "completedVia": "direct"
+    },
+    {
+      "date": "2026-03-06",
+      "subject": "Grant cloud SQL client permission for futura-api",
+      "keywords": ["cloud", "sql", "client", "permission", "futura-api", "dom", "renzo"],
+      "source": "slack:team-eng-think-tank",
+      "sourceId": "1772646987.735069",
+      "status": "completed",
+      "reason": "Renzo granted the permission. No action needed from Greg.",
+      "completedVia": "direct"
     }
   ]
 }
