@@ -135,6 +135,32 @@ Proceeding to Step 2: Fetch & Group Emails
 Proceeding to Step 3: Gather Sender Context
 ```
 
+### Step 2b: Server-Side Rule Application (if available)
+
+If the `gmail_apply_rules` MCP tool is available, use it for faster rule matching:
+
+1. **Load rules**: Read `.claude/email-rules.json`
+2. **Call `gmail_apply_rules`** with:
+   - `rules`: the `autoDelete`, `autoArchive`, and `alwaysKeep` arrays from the config (only `from`/`subject`/`to` fields — skip `bodyContains` and `tier` rules)
+   - `query`: `is:unread in:inbox`
+   - `maxResults`: 50
+3. **Process results**:
+   - `autoDelete` IDs → queue for trash in Step 8
+   - `autoArchive` IDs → queue for archive in Step 8
+   - `alwaysKeep` IDs → mark as keep, still categorize in Step 6
+   - `needsReview` → these are the only emails that need LLM-based categorization in Steps 4-6
+4. **Skip to Step 4** with only `needsReview` emails (dramatically reduces LLM processing)
+
+**Fallback**: If `gmail_apply_rules` is not available (tool doesn't exist or call fails), apply rules manually in Step 5 as before. The existing behavior is preserved.
+
+```
+✓ CHECKPOINT: Step 2b complete - Server-Side Rule Application
+  Tools: gmail_apply_rules ×1
+  Auto-delete: [N] | Auto-archive: [N] | Always-keep: [N] | Needs review: [N]
+
+Proceeding to Step 3: Gather Sender Context
+```
+
 ### Step 3: Gather Sender Context (skip with --quick)
 
 For each unique sender (excluding auto-delete matches):
@@ -205,9 +231,12 @@ Categorize each remaining email. Only **Respond** and **Snooze** items stay in t
 | **Respond** | Awaiting you, needs reply | **Stays unread in inbox** |
 | **Review** | Needs attention but no reply (PR reviews, doc comments, FYI) | Noted in summary, then **archived** |
 | **Delegate** | Should be handled by someone else (suggest who) | Noted in summary with delegate target, then **archived** |
+| **Monitor** | Incident updates, ongoing threads, monitoring alerts | **Marked read**, stays in inbox |
 | **Archive** | No action needed, keep for reference | **Archived** |
 | **Snooze** | Needs action later (prompt for date) | **Stays in inbox** (tracked in config) |
 | **Delete** | No value (confirm before acting) | **Trashed** |
+
+**Monitor implementation**: Use `gmail_mark_read` to remove the UNREAD label. The email stays in the inbox for ongoing visibility but doesn't contribute to unread count. Use for: incident.io notification threads, CI/CD monitoring digests, ongoing deployment threads.
 
 **The goal of triage is an empty inbox except for items requiring your direct response.** Everything else has been captured in the triage summary and daily context — it does not need to occupy inbox space.
 

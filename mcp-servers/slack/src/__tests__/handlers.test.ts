@@ -123,6 +123,41 @@ describe('Slack Handlers', () => {
     });
   });
 
+  describe('handleToolCall - slack_list_channels with cursor', () => {
+    it('should pass cursor to API and return next_cursor in response', async () => {
+      mockFetch.mockResolvedValueOnce(
+        mockSlackResponse({
+          channels: [
+            {
+              id: 'C789',
+              name: 'next-page',
+              is_private: false,
+              is_member: true,
+              num_members: 10,
+              purpose: { value: 'Next page channel' },
+            },
+          ],
+          response_metadata: { next_cursor: 'dGVhbTpDMDYxRkE1UEI=' },
+        })
+      );
+
+      const result = await handleToolCall(
+        'slack_list_channels',
+        { cursor: 'dXNlcjpVMEc5V0ZYTlo=' },
+        context
+      );
+
+      const data = JSON.parse((result.content[0] as { text: string }).text);
+      expect(data.channels).toHaveLength(1);
+      expect(data.channels[0].name).toBe('next-page');
+      expect(data.response_metadata.next_cursor).toBe('dGVhbTpDMDYxRkE1UEI=');
+
+      // Verify cursor was passed to API
+      const [url] = mockFetch.mock.calls[0]!;
+      expect(url).toContain('cursor=dXNlcjpVMEc5V0ZYTlo%3D');
+    });
+  });
+
   describe('handleToolCall - slack_read_channel', () => {
     it('should return channel messages with user info', async () => {
       const userId1 = uniqueUserId();
@@ -449,6 +484,39 @@ describe('Slack Handlers', () => {
       expect(data).toHaveLength(1);
       expect(data[0].channelId).toBe('D123');
       expect(data[0].userName).toBe('testuser');
+    });
+  });
+
+  describe('handleToolCall - slack_list_dms with cursor', () => {
+    it('should pass cursor to API and return next_cursor in response', async () => {
+      const userId = uniqueUserId();
+
+      mockFetch.mockResolvedValueOnce(
+        mockSlackResponse({
+          channels: [{ id: 'D999', user: userId }],
+          response_metadata: { next_cursor: 'bmV4dEN1cnNvcg==' },
+        })
+      );
+
+      // User enrichment
+      mockFetch.mockResolvedValueOnce(
+        mockSlackResponse({ user: { name: 'nextuser', real_name: 'Next User' } })
+      );
+
+      const result = await handleToolCall(
+        'slack_list_dms',
+        { limit: 50, cursor: 'cHJldkN1cnNvcg==' },
+        context
+      );
+
+      const data = JSON.parse((result.content[0] as { text: string }).text);
+      expect(data.dms).toHaveLength(1);
+      expect(data.dms[0].channelId).toBe('D999');
+      expect(data.response_metadata.next_cursor).toBe('bmV4dEN1cnNvcg==');
+
+      // Verify cursor was passed to API
+      const [url] = mockFetch.mock.calls[0]!;
+      expect(url).toContain('cursor=cHJldkN1cnNvcg%3D%3D');
     });
   });
 

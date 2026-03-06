@@ -12,6 +12,8 @@ import {
   GmailCreateDraftSchema,
   GmailSendDraftSchema,
   GmailGetAttachmentsSchema,
+  GmailApplyRulesSchema,
+  GmailBatchArchiveSchema,
   // Calendar schemas
   CalendarListEventsSchema,
   CalendarGetEventSchema,
@@ -153,6 +155,66 @@ describe('Gmail Schemas', () => {
 
     it('should reject non-array messageIds', () => {
       expect(() => GmailMarkReadSchema.parse({ messageIds: 'msg1' })).toThrow(ZodError);
+    });
+  });
+
+  describe('GmailApplyRulesSchema', () => {
+    it('should validate with rules object', () => {
+      const result = GmailApplyRulesSchema.parse({
+        rules: {
+          autoDelete: [{ from: '*@spam.com' }],
+          autoArchive: [{ subject: '*newsletter*' }],
+          alwaysKeep: [{ from: '*@important.com' }],
+        },
+      });
+      expect(result.rules.autoDelete).toHaveLength(1);
+      expect(result.rules.autoArchive).toHaveLength(1);
+      expect(result.rules.alwaysKeep).toHaveLength(1);
+      expect(result.query).toBe('is:unread in:inbox');
+      expect(result.maxResults).toBe(50);
+    });
+
+    it('should accept empty arrays', () => {
+      const result = GmailApplyRulesSchema.parse({
+        rules: { autoDelete: [], autoArchive: [], alwaysKeep: [] },
+      });
+      expect(result.rules.autoDelete).toEqual([]);
+    });
+
+    it('should validate rule conditions with unless', () => {
+      const result = GmailApplyRulesSchema.parse({
+        rules: {
+          autoDelete: [{ from: '*@noreply.com', unless: { from: '*@github.com' } }],
+        },
+      });
+      expect(result.rules.autoDelete[0]!.unless).toEqual({ from: '*@github.com' });
+    });
+
+    it('should accept custom query and maxResults', () => {
+      const result = GmailApplyRulesSchema.parse({
+        rules: {},
+        query: 'is:unread label:inbox',
+        maxResults: 100,
+      });
+      expect(result.query).toBe('is:unread label:inbox');
+      expect(result.maxResults).toBe(100);
+    });
+  });
+
+  describe('GmailBatchArchiveSchema', () => {
+    it('should validate with query', () => {
+      const result = GmailBatchArchiveSchema.parse({ query: 'from:notifications@github.com' });
+      expect(result.query).toBe('from:notifications@github.com');
+      expect(result.maxResults).toBe(100);
+    });
+
+    it('should accept maxResults', () => {
+      const result = GmailBatchArchiveSchema.parse({ query: 'is:read', maxResults: 50 });
+      expect(result.maxResults).toBe(50);
+    });
+
+    it('should reject missing query', () => {
+      expect(() => GmailBatchArchiveSchema.parse({})).toThrow(ZodError);
     });
   });
 

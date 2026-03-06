@@ -219,6 +219,42 @@ describe('SlackClient.resolveChannelId', () => {
   });
 });
 
+describe('SlackClient.setChannelCache', () => {
+  let mockFetch: ReturnType<typeof vi.fn>;
+  let client: SlackClient;
+
+  beforeEach(() => {
+    mockFetch = vi.fn();
+    client = new SlackClient('xoxp-test-token', mockFetch, { maxRetries: 0 });
+  });
+
+  it('should pre-populate cache and avoid API call during resolveChannelId', async () => {
+    client.setChannelCache([
+      { name: 'general', id: 'C111' },
+      { name: 'engineering', id: 'C222' },
+    ]);
+
+    const result = await client.resolveChannelId('general');
+    expect(result).toBe('C111');
+    expect(mockFetch).not.toHaveBeenCalled();
+  });
+
+  it('should fall through to API for unknown channel', async () => {
+    const channelName = uniqueChannelName();
+    client.setChannelCache([{ name: 'known-channel', id: 'C333' }]);
+
+    mockFetch.mockResolvedValueOnce(
+      mockSlackOk({
+        channels: [{ id: 'C444', name: channelName }],
+      })
+    );
+
+    const result = await client.resolveChannelId(channelName);
+    expect(result).toBe('C444');
+    expect(mockFetch).toHaveBeenCalledOnce();
+  });
+});
+
 describe('SlackClient.enrichUserInfo', () => {
   let mockFetch: ReturnType<typeof vi.fn>;
   let client: SlackClient;

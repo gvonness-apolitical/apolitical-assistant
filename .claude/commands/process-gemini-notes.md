@@ -267,9 +267,16 @@ Skip if `--dry-run` mode is active.
     Progress saved. Resume with: /process-gemini-notes --resume
 ```
 
-After successful processing, archive each Gemini notes email.
+**Batch archive (preferred):** If `gmail_batch_archive` tool is available, use a single query-based archive:
+```
+gmail_batch_archive({ query: "from:gemini-notes@google.com before:YYYY-MM-DD is:unread" })
+```
+This is more efficient than archiving individual message IDs.
 
-If `--dry-run`, skip this step and show what would be archived.
+**Fallback:** If `gmail_batch_archive` is not available, archive individual message IDs using `gmail_archive`:
+```
+gmail_archive({ messageIds: [collected IDs from Step 1] })
+```
 
 ```
 ✓ CHECKPOINT: Step 9 complete - Archive Emails

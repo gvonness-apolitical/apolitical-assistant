@@ -16,6 +16,10 @@ export const ListChannelsSchema = z.object({
     .default('public_channel,private_channel')
     .describe('Comma-separated channel types: public_channel, private_channel, mpim, im'),
   limit: z.number().optional().default(100).describe('Maximum number of channels to return'),
+  cursor: z
+    .string()
+    .optional()
+    .describe('Pagination cursor from previous response for fetching next page'),
 });
 
 export const ReadChannelSchema = z.object({
@@ -37,15 +41,19 @@ export async function handleListChannels(
 ): Promise<unknown> {
   interface ChannelListResponse extends SlackResponse {
     channels: SlackChannel[];
+    response_metadata?: { next_cursor?: string };
   }
 
-  const data = await client.call<ChannelListResponse>('conversations.list', {
+  const params: Record<string, unknown> = {
     types: args.types,
     limit: args.limit,
     exclude_archived: true,
-  });
+  };
+  if (args.cursor) params.cursor = args.cursor;
 
-  return data.channels.map((ch) => ({
+  const data = await client.call<ChannelListResponse>('conversations.list', params);
+
+  const channels = data.channels.map((ch) => ({
     id: ch.id,
     name: ch.name,
     isPrivate: ch.is_private,
@@ -53,6 +61,12 @@ export async function handleListChannels(
     memberCount: ch.num_members,
     purpose: ch.purpose.value,
   }));
+
+  const nextCursor = data.response_metadata?.next_cursor;
+  if (nextCursor) {
+    return { channels, response_metadata: { next_cursor: nextCursor } };
+  }
+  return channels;
 }
 
 export async function handleReadChannel(

@@ -36,10 +36,14 @@ export {
   GmailDeleteSchema,
   GmailArchiveSchema,
   GmailMarkReadSchema,
+  GmailApplyRulesSchema,
+  GmailBatchArchiveSchema,
   handleGmailTrash,
   handleGmailDelete,
   handleGmailArchive,
   handleGmailMarkRead,
+  handleGmailApplyRules,
+  handleGmailBatchArchive,
   gmailManageDefs,
 } from './gmail-manage.js';
 

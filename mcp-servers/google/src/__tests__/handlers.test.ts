@@ -6,6 +6,8 @@ import {
   handleGmailSearch,
   handleGmailGetMessage,
   handleGmailListLabels,
+  handleGmailApplyRules,
+  handleGmailBatchArchive,
   handleCalendarListEvents,
   handleCalendarGetFreeBusy,
   handleDriveSearch,
@@ -172,6 +174,212 @@ describe('Gmail Handlers', () => {
       expect(result).toHaveLength(2);
       expect(result[0]?.name).toBe('INBOX');
       expect(result[1]?.type).toBe('user');
+    });
+  });
+
+  describe('handleGmailApplyRules', () => {
+    it('should categorize messages using wildcard matching', async () => {
+      // Search returns 3 messages
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          messages: [{ id: 'msg1' }, { id: 'msg2' }, { id: 'msg3' }],
+        })
+      );
+
+      // Message 1: from spam
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          id: 'msg1',
+          payload: {
+            headers: [
+              { name: 'From', value: 'noreply@spam.com' },
+              { name: 'Subject', value: 'Buy now!' },
+              { name: 'To', value: 'me@example.com' },
+              { name: 'Date', value: 'Mon, 1 Jan 2026' },
+            ],
+          },
+        })
+      );
+
+      // Message 2: from important
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          id: 'msg2',
+          payload: {
+            headers: [
+              { name: 'From', value: 'ceo@important.com' },
+              { name: 'Subject', value: 'Q1 Review' },
+              { name: 'To', value: 'me@example.com' },
+              { name: 'Date', value: 'Mon, 1 Jan 2026' },
+            ],
+          },
+        })
+      );
+
+      // Message 3: newsletter
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          id: 'msg3',
+          payload: {
+            headers: [
+              { name: 'From', value: 'news@letters.com' },
+              { name: 'Subject', value: 'Weekly newsletter update' },
+              { name: 'To', value: 'me@example.com' },
+              { name: 'Date', value: 'Mon, 1 Jan 2026' },
+            ],
+          },
+        })
+      );
+
+      const result = (await handleGmailApplyRules(
+        {
+          rules: {
+            autoDelete: [{ from: '*@spam.com' }],
+            autoArchive: [{ subject: '*newsletter*' }],
+            alwaysKeep: [{ from: '*@important.com' }],
+          },
+          query: 'is:unread in:inbox',
+          maxResults: 50,
+        },
+        auth
+      )) as {
+        autoDelete: string[];
+        autoArchive: string[];
+        alwaysKeep: string[];
+        needsReview: unknown[];
+        stats: { total: number; matched: number; unmatched: number };
+      };
+
+      expect(result.autoDelete).toEqual(['msg1']);
+      expect(result.alwaysKeep).toEqual(['msg2']);
+      expect(result.autoArchive).toEqual(['msg3']);
+      expect(result.needsReview).toHaveLength(0);
+      expect(result.stats).toEqual({ total: 3, matched: 3, unmatched: 0 });
+    });
+
+    it('should demote to needsReview when unless condition matches', async () => {
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({ messages: [{ id: 'msg1' }] }));
+
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          id: 'msg1',
+          payload: {
+            headers: [
+              { name: 'From', value: 'noreply@github.com' },
+              { name: 'Subject', value: 'PR review' },
+              { name: 'To', value: 'me@example.com' },
+              { name: 'Date', value: 'Mon, 1 Jan 2026' },
+            ],
+          },
+        })
+      );
+
+      const result = (await handleGmailApplyRules(
+        {
+          rules: {
+            autoDelete: [{ from: '*noreply*', unless: { from: '*@github.com' } }],
+            autoArchive: [],
+            alwaysKeep: [],
+          },
+          query: 'is:unread',
+          maxResults: 50,
+        },
+        auth
+      )) as {
+        autoDelete: string[];
+        needsReview: Array<{ id: string }>;
+      };
+
+      expect(result.autoDelete).toHaveLength(0);
+      expect(result.needsReview).toHaveLength(1);
+      expect(result.needsReview[0]!.id).toBe('msg1');
+    });
+
+    it('should prioritize alwaysKeep over autoDelete', async () => {
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({ messages: [{ id: 'msg1' }] }));
+
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          id: 'msg1',
+          payload: {
+            headers: [
+              { name: 'From', value: 'boss@company.com' },
+              { name: 'Subject', value: 'Important' },
+              { name: 'To', value: 'me@example.com' },
+              { name: 'Date', value: 'Mon, 1 Jan 2026' },
+            ],
+          },
+        })
+      );
+
+      const result = (await handleGmailApplyRules(
+        {
+          rules: {
+            autoDelete: [{ from: '*@company.com' }],
+            autoArchive: [],
+            alwaysKeep: [{ from: '*@company.com' }],
+          },
+          query: 'is:unread',
+          maxResults: 50,
+        },
+        auth
+      )) as {
+        autoDelete: string[];
+        alwaysKeep: string[];
+      };
+
+      expect(result.alwaysKeep).toEqual(['msg1']);
+      expect(result.autoDelete).toHaveLength(0);
+    });
+
+    it('should return empty results when no messages found', async () => {
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({ messages: [] }));
+
+      const result = (await handleGmailApplyRules(
+        {
+          rules: { autoDelete: [], autoArchive: [], alwaysKeep: [] },
+          query: 'is:unread',
+          maxResults: 50,
+        },
+        auth
+      )) as { stats: { total: number } };
+
+      expect(result.stats.total).toBe(0);
+    });
+  });
+
+  describe('handleGmailBatchArchive', () => {
+    it('should search and archive messages', async () => {
+      // Search returns messages
+      fetchMock.mockResolvedValueOnce(
+        mockJsonResponse({
+          messages: [{ id: 'msg1' }, { id: 'msg2' }],
+        })
+      );
+
+      // Archive calls (modify endpoint)
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({}));
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({}));
+
+      const result = (await handleGmailBatchArchive(
+        { query: 'from:notifications@github.com', maxResults: 100 },
+        auth
+      )) as { archived: number; failed: number; query: string };
+
+      expect(result.archived).toBe(2);
+      expect(result.failed).toBe(0);
+      expect(result.query).toBe('from:notifications@github.com');
+    });
+
+    it('should return zero when no messages match', async () => {
+      fetchMock.mockResolvedValueOnce(mockJsonResponse({ messages: [] }));
+
+      const result = (await handleGmailBatchArchive(
+        { query: 'from:nobody@example.com', maxResults: 100 },
+        auth
+      )) as { archived: number };
+
+      expect(result.archived).toBe(0);
     });
   });
 });
