@@ -33,7 +33,7 @@
       "displayName": "Peter Shatwell",
       "aliases": ["Peter", "Pete"],
       "identifiers": {
-        "slackUserId": null,
+        "slackUserId": "U075ZCQKX4J",
         "slackDmChannelId": "D09G7378JPR",
         "githubUsername": "pshatwell-apolitical",
         "linearUserId": "24197789-fc25-45da-99e2-d80e972aef2a",
@@ -73,7 +73,7 @@
       "displayName": "Khalifa Idris",
       "aliases": ["Khalifa"],
       "identifiers": {
-        "slackUserId": null,
+        "slackUserId": "U02N7RBV3JS",
         "slackDmChannelId": "D08HZGW1DFX",
         "githubUsername": "kidris-apolitical",
         "linearUserId": "76ade67c-9e39-4782-a385-a9a53aba2f03",
@@ -93,7 +93,7 @@
       "displayName": "Yang",
       "aliases": ["Yang", "Chih-Yuan"],
       "identifiers": {
-        "slackUserId": null,
+        "slackUserId": "URD8PEDJ9",
         "slackDmChannelId": "D09KYGBU5FW",
         "githubUsername": "cyang-apolitical",
         "linearUserId": "3fdb6de8-c4a4-421c-98ef-1499cbfffdf9",
@@ -293,7 +293,7 @@
         "slackDmChannelId": "D09DDLT0Z8C",
         "githubUsername": "kseth-apolitical",
         "linearUserId": "6d069cb4-4eac-4fe9-921f-803407276477",
-        "humaansEmployeeId": null,
+        "humaansEmployeeId": "4AVABSvw2XQURAEBiNMdrBEG",
         "asanaUserId": null
       },
       "metadata": {
@@ -369,7 +369,7 @@
       "displayName": "Borja Hidalgo",
       "aliases": ["Borja"],
       "identifiers": {
-        "slackUserId": null,
+        "slackUserId": "U02J9S4QUD7",
         "slackDmChannelId": "D08S06UBYC9",
         "githubUsername": "bhidalgo-apolitical",
         "linearUserId": "099ca17b-1503-4178-b0ab-512ad215f7d8",
@@ -562,6 +562,64 @@
       },
       "lastVerified": "2026-01-28"
     },
+    "sonali.singh@apolitical.co": {
+      "displayName": "Sonali Singh",
+      "aliases": ["Sonali"],
+      "identifiers": {
+        "slackUserId": "U0ADBLG5NHJ",
+        "slackDmChannelId": "D0AFBM53RKP",
+        "githubUsername": null,
+        "linearUserId": null,
+        "humaansEmployeeId": "BQeF8duz2cBB6rGokcTZofYg",
+        "asanaUserId": null
+      },
+      "metadata": {
+        "team": "Engineering",
+        "role": "Software Engineer",
+        "squad": null,
+        "managerId": null,
+        "isDirectReport": true
+      },
+      "lastVerified": "2026-02-25"
+    },
+    "mark.douglas@apolitical.co": {
+      "displayName": "Mark Douglas",
+      "aliases": ["Mark"],
+      "identifiers": {
+        "slackUserId": "U09JRJSBZ0E",
+        "slackDmChannelId": "D0A97PY51BJ",
+        "githubUsername": null,
+        "linearUserId": null,
+        "humaansEmployeeId": null,
+        "asanaUserId": null
+      },
+      "metadata": {
+        "team": "Operations",
+        "role": "Operations Manager",
+        "managerId": null,
+        "isDirectReport": false
+      },
+      "lastVerified": "2026-02-25"
+    },
+    "lily.fox@apolitical.co": {
+      "displayName": "Lily Fox",
+      "aliases": ["Lily"],
+      "identifiers": {
+        "slackUserId": "U0A3WUR6DKK",
+        "slackDmChannelId": "D0A3T6QMWUV",
+        "githubUsername": null,
+        "linearUserId": null,
+        "humaansEmployeeId": null,
+        "asanaUserId": null
+      },
+      "metadata": {
+        "team": "Partnerships",
+        "role": null,
+        "managerId": null,
+        "isDirectReport": false
+      },
+      "lastVerified": "2026-02-25"
+    },
     "onuchukwu.adebayo@apolitical.co": {
       "displayName": "Onuchukwu Adebayo",
       "aliases": ["Onu"],
@@ -624,7 +682,11 @@
       "amber": "amber.keates@apolitical.co",
       "dec": "dec.burns@apolitical.co",
       "dom g": "dom.gaulton@apolitical.co",
-      "onu": "onuchukwu.adebayo@apolitical.co"
+      "onu": "onuchukwu.adebayo@apolitical.co",
+      "sonali": "sonali.singh@apolitical.co",
+      "mark": "mark.douglas@apolitical.co",
+      "mark douglas": "mark.douglas@apolitical.co",
+      "lily": "lily.fox@apolitical.co"
     },
     "bySlackUserId": {
       "U04A8BBTBEC": "joel.patrick@apolitical.co",
@@ -638,7 +700,14 @@
       "U0143B3HQTB": "renzo.rozza@apolitical.co",
       "U05BBP2MW5B": "annika.chauhan@apolitical.co",
       "U09RR0S5X5L": "samuel.balogun@apolitical.co",
-      "U09T58D5K5K": "dom.gaulton@apolitical.co"
+      "U09T58D5K5K": "dom.gaulton@apolitical.co",
+      "U0ADBLG5NHJ": "sonali.singh@apolitical.co",
+      "U09JRJSBZ0E": "mark.douglas@apolitical.co",
+      "U0A3WUR6DKK": "lily.fox@apolitical.co",
+      "U075ZCQKX4J": "peter.shatwell@apolitical.co",
+      "URD8PEDJ9": "yang.chih-yuan@apolitical.co",
+      "U02N7RBV3JS": "khalifa.idris@apolitical.co",
+      "U02J9S4QUD7": "borja.hidalgo@apolitical.co"
     },
     "byGithubUsername": {
       "pshatwell-apolitical": "peter.shatwell@apolitical.co",
@@ -728,7 +797,9 @@
       ],
       "Data": ["peter.shatwell@apolitical.co"],
       "People": ["lauren.benson-armer@apolitical.co"],
-      "Commercial": ["amber.keates@apolitical.co"]
+      "Commercial": ["amber.keates@apolitical.co"],
+      "Operations": ["mark.douglas@apolitical.co"],
+      "Partnerships": ["lily.fox@apolitical.co"]
     },
     "bySquad": {
       "Platform": [

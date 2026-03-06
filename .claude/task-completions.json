@@ -824,6 +824,42 @@
       "reason": "Drata already chosen, commercial meeting done, Amber handling Vanta follow-up",
       "completedVia": "direct",
       "date": "2026-03-06"
+    },
+    {
+      "subject": "Review Borja's AI Deployment Failure Diagnostics proposal",
+      "keywords": ["rfc", "review", "borja", "ai", "deployment", "failure", "diagnostics", "notion"],
+      "source": "notion",
+      "sourceId": null,
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-06"
+    },
+    {
+      "subject": "Schedule Pillar 2 review with Jessica Duval next week",
+      "keywords": ["pillar", "review", "jessica", "duval", "calendar", "schedule"],
+      "source": "calendar",
+      "sourceId": null,
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-06"
+    },
+    {
+      "subject": "Prep for Samuel 1:1 — security roadmap, GSM, GKE/ArgoCD",
+      "keywords": ["samuel", "balogun", "1:1", "prep", "security", "roadmap", "gsm", "gke"],
+      "source": "calendar",
+      "sourceId": null,
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-06"
+    },
+    {
+      "subject": "Follow up with Khalifa and Pete re ThoughtSpot GCP permissions",
+      "keywords": ["thoughtspot", "gcp", "permissions", "bigquery", "khalifa", "pete", "column-level", "security"],
+      "source": "slack",
+      "sourceId": null,
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-06"
     }
   ]
 }
