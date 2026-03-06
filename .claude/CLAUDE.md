@@ -84,6 +84,7 @@ Use `/[skill-name]` to invoke these workflows:
 - `/sync-slack` - Refresh Slack channels cache (IDs, names, categories)
 - `/sync-figma` - Verify and maintain Figma sources cache (discover new links, cleanup stale entries)
 - `/sync-asana` - Refresh Asana workspace structure cache (teams, projects, goals, portfolios)
+- `/tech-news` - Scan tech news for security, AI, compliance, GovTech, open source, cloud headlines
 - `/catchup [days]` - Rebuild context for days you were away (vacation, absence)
 
 ### Meetings
