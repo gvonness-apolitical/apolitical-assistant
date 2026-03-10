@@ -569,7 +569,7 @@
         "slackUserId": "U0ADBLG5NHJ",
         "slackDmChannelId": "D0AFBM53RKP",
         "githubUsername": null,
-        "linearUserId": null,
+        "linearUserId": "d02ec425-9fe6-493b-bf8c-470f9f823e65",
         "humaansEmployeeId": "BQeF8duz2cBB6rGokcTZofYg",
         "asanaUserId": null
       },
@@ -580,7 +580,7 @@
         "managerId": null,
         "isDirectReport": true
       },
-      "lastVerified": "2026-02-25"
+      "lastVerified": "2026-03-09"
     },
     "mark.douglas@apolitical.co": {
       "displayName": "Mark Douglas",

@@ -860,6 +860,110 @@
       "status": "completed",
       "completedVia": "claude",
       "date": "2026-03-06"
+    },
+    {
+      "subject": "Discuss salary review results with direct reports",
+      "keywords": ["salary", "review", "results", "direct reports", "leonardo", "romilly", "khalifa", "dom", "charles", "pete"],
+      "source": "canvas:1:1s",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-09"
+    },
+    {
+      "subject": "Acknowledge Renzo's SSO sprint",
+      "keywords": ["renzo", "sso", "sprint", "acknowledge", "121"],
+      "source": "carry-forward",
+      "status": "completed",
+      "reason": "Added to renzo-next-121-topics.md for next 1:1",
+      "completedVia": "claude",
+      "date": "2026-03-09"
+    },
+    {
+      "subject": "Mark Think Tank canvas eng management meeting item as complete",
+      "keywords": ["think-tank", "canvas", "eng", "management", "meeting", "cleanup"],
+      "source": "canvas:think-tank",
+      "status": "completed",
+      "reason": "Checked off unchecked item on Think Tank canvas — was completed 2026-03-04",
+      "completedVia": "claude",
+      "date": "2026-03-09"
+    },
+    {
+      "subject": "Chase Khalifa/Pete on ThoughtSpot column-level security",
+      "keywords": ["khalifa", "pete", "thoughtspot", "column-level", "security", "bigquery"],
+      "source": "slack",
+      "status": "completed",
+      "reason": "Sent Slack messages to both on Friday. Awaiting responses.",
+      "completedVia": "direct",
+      "date": "2026-03-09"
+    },
+    {
+      "subject": "Pleo — add missing expense details",
+      "keywords": ["pleo", "expenses", "missing", "details"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-09"
+    },
+    {
+      "subject": "Chase Joel on EM JD approval",
+      "keywords": ["joel", "em", "jd", "approval", "engineering", "manager", "applied"],
+      "source": "slack:dm-joel",
+      "status": "completed",
+      "reason": "Sent nudge DM. Diagram + JD sent Mar 6, awaiting approval to open on Applied.",
+      "completedVia": "claude",
+      "date": "2026-03-09"
+    },
+    {
+      "subject": "Respond to Romilly re 1:1 reschedule",
+      "keywords": ["romilly", "1:1", "reschedule", "skip"],
+      "source": "slack:dm-romilly",
+      "status": "completed",
+      "reason": "Agreed to skip this week — nothing pressing for either side.",
+      "completedVia": "claude",
+      "date": "2026-03-09"
+    },
+    {
+      "subject": "Review Samuel's Security Roadmap Draft 1",
+      "keywords": ["samuel", "security", "roadmap", "review", "slides", "threats", "phased"],
+      "source": "slack:dm-samuel-balogun",
+      "status": "completed",
+      "reason": "Reviewed 22-slide deck. Sent detailed feedback DM covering framing, resourcing, technical gaps, presentation, and quick wins.",
+      "completedVia": "claude",
+      "date": "2026-03-09"
+    },
+    {
+      "subject": "Follow up on Mustafa Gecmen Data Lead interview",
+      "keywords": ["mustafa", "gecmen", "data lead", "interview", "applied", "technical round"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-09"
+    },
+    {
+      "subject": "Submit Applied feedback for Data Lead candidates",
+      "keywords": ["applied", "feedback", "data lead", "natalia", "simon", "mustafa", "martin", "burch", "screening"],
+      "source": "gmail",
+      "status": "completed",
+      "reason": "Drafted candidate-facing feedback for Natalia Batishcheva, Simon Crossan, Mustafa Gecmen, and Carl Martin Burch. User submitting on Applied.",
+      "completedVia": "claude",
+      "date": "2026-03-09"
+    },
+    {
+      "subject": "Submit Applied feedback for Jeremy Boon (Data Lead)",
+      "keywords": ["jeremy", "boon", "applied", "feedback", "data lead", "screening"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-09"
+    },
+    {
+      "subject": "Data Lead screening feedback with Lauren",
+      "keywords": ["lauren", "data lead", "screening", "feedback", "applied", "sync"],
+      "source": "carry-forward",
+      "status": "dismissed",
+      "reason": "Lauren has admin access to Applied and can see all scorecards directly. No sync needed.",
+      "completedVia": "direct",
+      "date": "2026-03-09"
     }
   ]
 }
