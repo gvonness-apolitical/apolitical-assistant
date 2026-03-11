@@ -964,6 +964,38 @@
       "reason": "Lauren has admin access to Applied and can see all scorecards directly. No sync needed.",
       "completedVia": "direct",
       "date": "2026-03-09"
+    },
+    {
+      "subject": "Prep for Jess McEvoy/Jayna delivery automation meeting (14:30 today)",
+      "keywords": ["jess", "mcevoy", "jayna", "delivery", "automation", "meeting"],
+      "source": "calendar",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-10"
+    },
+    {
+      "subject": "Investigate GitHub Actions 100% minutes usage",
+      "keywords": ["github", "actions", "minutes", "usage", "ci", "platform-v2"],
+      "source": "investigation",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-10"
+    },
+    {
+      "subject": "Review Pete's data governance RFC (Notion link in DM)",
+      "keywords": ["pete", "rfc", "data", "governance", "thoughtspot", "bigquery", "pii"],
+      "source": "notion:31968a6e3b92801f9512c4868efa9c87",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-10"
+    },
+    {
+      "subject": "Review Lowell's Player Piano project (Linear link in DM)",
+      "keywords": ["lowell", "player", "piano", "project", "linear", "review"],
+      "source": "linear",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-10"
     }
   ]
 }
