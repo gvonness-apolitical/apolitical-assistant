@@ -44,8 +44,15 @@ Slack read means calling `slack_read_channel` and `slack_read_dm` for each sourc
 
 If `/orient` was run earlier in this session, you still read the channels. Orient provides counts; slack-read processes the content.
 
+**CRITICAL — DM reading:**
+- `slack_read_dm` takes a **userId** (e.g., `U04A8BBTBEC`), NOT a channel ID
+- `slack_list_dms` returns **channel IDs** — these CANNOT be passed to `slack_read_dm`
+- `slack_read_channel` with a DM channel ID may return empty even when messages exist
+- **The correct approach**: Load user IDs from `people.json` `indices.bySlackUserId` and call `slack_read_dm(userId=<ID>)` for each person. See Step 1a below.
+
 **WRONG:** "7 DMs checked — 2 action items from Jess and Dom" (paraphrased from orient)
-**RIGHT:** slack_read_dm ×7 → extract action items → TaskCreate ×2 → checkpoint: "DMs: 7 | Action items: 2 | Tasks: #8, #12 | Tools: slack_read_dm ×7, TaskCreate ×2"
+**WRONG:** `slack_read_channel(channel=C08HBVC4RN2)` for a 1:1 DM — wrong tool, will miss messages
+**RIGHT:** `slack_read_dm(userId=U04A8BBTBEC)` ×19 → extract action items → TaskCreate ×2 → checkpoint
 
 ## Core Patterns Used
 
@@ -97,16 +104,37 @@ This prevents re-reading messages that were already processed in an earlier slac
 Collect unread messages from all sources (last 30 days max):
 
 **DMs (prioritized):**
-- Use `slack_list_dms` with `types: 'im,mpim'` to include both 1:1 and group DMs
-- Load `.claude/people.json` to identify sender tiers
-- Process DMs in priority order:
-  1. **P0 — Exec tier**: DMs from `senderTiers.exec` in `email-rules.json`
-  2. **P1 — Direct reports**: DMs from people where `isDirectReport: true` in `people.json`
-  3. **P2 — Others**: All remaining DMs
-- For each DM, use `slack_read_dm` to get recent messages
+
+**IMPORTANT:** `slack_read_dm` takes a **userId**, not a channel ID. `slack_list_dms` returns channel IDs. These are different tools with different inputs. Always read DMs by user ID.
+
+**Step 1a — Read known DMs:**
+1. Load `people.json` and extract all entries from `indices.bySlackUserId`
+2. Load `email-rules.json` to identify sender tiers (exec, directReports)
+3. For each known user ID, call `slack_read_dm(userId=<ID>)` with the `oldest` parameter
+4. Process in priority order:
+   - **P0 — Exec tier**: Match user's email against `senderTiers.exec`
+   - **P1 — Direct reports**: Match user's email against `senderTiers.directReports`
+   - **P2 — Others**: All remaining known users
+5. Batch into parallel subagents for speed (e.g., 10 users per agent)
+
+**Step 1b — Discover unknown DMs:**
+1. Call `slack_list_dms` with `types: 'im'` to get all 1:1 DM channel IDs
+2. Build a set of **known DM channel IDs** from `people.json` (each person's `slackDmChannelId` field)
+3. For each DM channel NOT in the known set:
+   - Call `slack_get_channel_info(channel=<channelId>)` to discover the other user
+   - Call `slack_read_dm(userId=<discoveredUserId>)` with the `oldest` parameter
+   - **Cache the discovery**: Update `people.json` with the new user's `slackUserId` and `slackDmChannelId` (add to `indices.bySlackUserId` and the person's entry if they exist, or note in output if unknown)
+4. If no unknown channels, skip this step
+
+**Step 1c — Cache discovered identifiers:**
+After all DMs are read, update `people.json` with any newly discovered data:
+- `slackDmChannelId` for people where it was missing (extracted from successful `slack_read_dm` responses)
+- New `slackUserId` entries from Step 1b discoveries
+- Rebuild `indices.bySlackUserId` if entries were added
 
 **Group DM handling:**
-- For `mpim` (group DM) entries from `slack_list_dms`, read using `slack_read_channel` with the channel ID (not `slack_read_dm`, which expects a userId)
+- Call `slack_list_dms` with `types: 'mpim'` separately to get group DMs
+- For `mpim` (group DM) entries, read using `slack_read_channel` with the channel ID (not `slack_read_dm`, which expects a single userId)
 - Group DMs are identified by their channel ID prefix (typically `G` prefix)
 - Include all group DM participants in the summary
 
