@@ -996,6 +996,74 @@
       "status": "completed",
       "completedVia": "claude",
       "date": "2026-03-10"
+    },
+    {
+      "subject": "Update Lily's pulse tracker spreadsheet (due tomorrow 10am)",
+      "keywords": ["lily", "pulse", "tracker", "engineering", "balanced", "scorecard", "management"],
+      "source": "slack:priv-management-team",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-11"
+    },
+    {
+      "subject": "Reply to Amber — Auth0 plan renewal",
+      "keywords": ["amber", "auth0", "plan", "renewal", "re-forward", "renzo", "okta"],
+      "source": "gmail",
+      "sourceId": "19cd7ade5d172cad",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-11"
+    },
+    {
+      "subject": "Ask Lowell about Customer Support Improvements project intent",
+      "keywords": ["lowell", "customer", "support", "improvements", "project", "bug-hunt", "automation"],
+      "source": "slack:dm-lowell-weisbord",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-11"
+    },
+    {
+      "subject": "Respond to Jessica Duval FUTURA action items",
+      "keywords": ["jessica", "duval", "futura", "curriculum", "pillar", "feedback", "modules"],
+      "source": "google-docs:1mGcK3dSo8Ute5ANzzZFaPe3uU1mxnkBXk33RCOg8rHo",
+      "status": "completed",
+      "reason": "Already reviewed and commented on Mar 9. Jessica acknowledged feedback, resolved all comments, marked action items done.",
+      "completedVia": "direct",
+      "date": "2026-03-11"
+    },
+    {
+      "subject": "Follow up with Renzo on prototype-to-prod credentials",
+      "keywords": ["renzo", "prototype", "prod", "credentials", "gsm", "1password", "borja", "dev", "setup"],
+      "source": "slack:dm-renzo-rozza",
+      "sourceId": "1772800365.959589",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-11"
+    },
+    {
+      "subject": "Review Lauren's Analytics Engineer CV invitation",
+      "keywords": ["lauren", "analytics", "engineer", "cv", "invitation", "review"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-11"
+    },
+    {
+      "subject": "Approve/deny Nx Cloud GitHub permissions update",
+      "keywords": ["nx", "cloud", "github", "permissions", "update", "platform"],
+      "source": "gmail",
+      "status": "dismissed",
+      "reason": "Delegated to Platform team — Borja owns Nx Cloud.",
+      "completedVia": "direct",
+      "date": "2026-03-11"
+    },
+    {
+      "subject": "Review data challenge repo before tech interviews",
+      "keywords": ["data", "challenge", "repo", "interview", "review", "dbt", "airflow"],
+      "source": "calendar",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-11"
     }
   ]
 }
