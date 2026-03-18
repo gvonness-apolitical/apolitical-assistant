@@ -1236,6 +1236,82 @@
       "status": "completed",
       "completedVia": "direct",
       "date": "2026-03-16"
+    },
+    {
+      "subject": "Submit interview scorecards on Applied (Carl Martin + Simon)",
+      "keywords": ["applied", "scorecard", "interview", "carl", "martin", "simon", "crossan", "data", "lead"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-18"
+    },
+    {
+      "subject": "Delegate Contentful token rotation to platform team",
+      "keywords": ["contentful", "token", "rotation", "futura", "curriculum"],
+      "source": "gmail:engineering@apolitical.co",
+      "status": "dismissed",
+      "reason": "Sent to engineering@ shared inbox, not personal. Team will pick up directly — no delegation needed.",
+      "completedVia": "direct",
+      "date": "2026-03-18"
+    },
+    {
+      "subject": "RSVP to LDX3 London dinner invitations",
+      "keywords": ["ldx3", "leaddev", "dinner", "fusionauth", "identity", "gaucho", "rsvp"],
+      "source": "gmail",
+      "sourceId": "19ce7adad11a0857",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-18"
+    },
+    {
+      "subject": "Coordinate with Renzo on Ory SSO test environment offer",
+      "keywords": ["renzo", "ory", "sso", "test", "environment", "pricing", "auth0", "kratos"],
+      "source": "gmail",
+      "status": "dismissed",
+      "reason": "Ory enterprise pricing ~2x Auth0 ($70k vs £30k). Renzo handling vendor conversation. May push back toward Auth0 or open-source Kratos. Monitoring, not actively driving.",
+      "completedVia": "direct",
+      "date": "2026-03-18"
+    },
+    {
+      "subject": "Discuss skills matrix companion page placement with Lauren",
+      "keywords": ["lauren", "skills", "matrix", "companion", "notion", "revolut", "people", "placement"],
+      "source": "slack:dm-lauren",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-18"
+    },
+    {
+      "subject": "Escalate Yang on Gemini opt-out at Data Huddle",
+      "keywords": ["yang", "gemini", "opt-out", "data", "huddle", "newsletter", "cloudaicompanion"],
+      "source": "slack:dm-yang",
+      "status": "completed",
+      "reason": "Yang confirmed at Data Huddle that opting out of cloudaicompanion will not impact email/newsletter flows.",
+      "completedVia": "direct",
+      "date": "2026-03-18"
+    },
+    {
+      "subject": "Submit All Hands topics to Lily Fox",
+      "keywords": ["lily", "fox", "all", "hands", "engineering", "highlights", "february", "metrics"],
+      "source": "slack:dm-lily-fox",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-18"
+    },
+    {
+      "subject": "Review Sonali's Canvas feedback on engineering matrix definitions",
+      "keywords": ["sonali", "canvas", "feedback", "engineering", "matrix", "definitions", "skills"],
+      "source": "slack:canvas-sonali-121",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-18"
+    },
+    {
+      "subject": "Assess Data Lead candidates Maf Rahman and Adomas Puzelevicius",
+      "keywords": ["maf", "rahman", "adomas", "puzelevicius", "data", "lead", "candidate", "screening", "lauren"],
+      "source": "google-drive",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-18"
     }
   ]
 }

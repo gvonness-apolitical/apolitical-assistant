@@ -143,23 +143,30 @@ export async function handleSendDm(
 
   const channelId = openData.channel.id;
 
-  interface PostMessageResponse extends SlackResponse {
-    ts: string;
+  const postAt = Math.floor(Date.now() / 1000) + 1800; // 30 minutes from now
+
+  interface ScheduleMessageResponse extends SlackResponse {
+    scheduled_message_id: string;
+    post_at: number;
     channel: string;
-    message: { text: string };
   }
 
-  const data = await client.call<PostMessageResponse>('chat.postMessage', {
+  const data = await client.call<ScheduleMessageResponse>('chat.scheduleMessage', {
     channel: channelId,
     text: args.text,
+    post_at: postAt,
   });
 
+  const sendTime = new Date(data.post_at * 1000);
+
   return {
-    success: true,
-    timestamp: data.ts,
+    draft: true,
+    scheduledMessageId: data.scheduled_message_id,
     channel: data.channel,
     userIds: Array.isArray(args.userId) ? args.userId : [args.userId],
-    text: data.message.text,
+    text: args.text,
+    postAt: sendTime.toISOString(),
+    hint: `DM scheduled for ${sendTime.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}. Review and delete in Slack if needed, or it sends automatically.`,
   };
 }
 
