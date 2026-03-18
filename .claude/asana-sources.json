@@ -1,6 +1,6 @@
 {
   "description": "Asana workspace structure and priority sources. Hybrid config: caches workspace structure AND marks priority items for targeted skill access. Populated by /sync-asana.",
-  "lastUpdated": "2026-02-18T11:30:00Z",
+  "lastUpdated": "2026-03-12T00:00:00Z",
   "workspace": {
     "gid": "54982618788923",
     "name": "apolitical.co"
@@ -210,6 +210,12 @@
           "owner": "Nic Yeeles",
           "status": null,
           "dueOn": null
+        },
+        "1201779073720324": {
+          "name": "Empower expertise in Community Engagement principles",
+          "owner": "Ilana Munckton",
+          "status": null,
+          "dueOn": "2022-05-20"
         }
       },
       "priority": [],
@@ -389,7 +395,7 @@
           "teamName": "Avengers"
         },
         "1204571664086552": {
-          "name": "Social Media Requests 2025",
+          "name": "Social Media Requests 2026",
           "teamGid": "1200205977735539",
           "teamName": "Avengers"
         },
@@ -574,7 +580,7 @@
           "teamName": "Avengers"
         },
         "1211839165399434": {
-          "name": "[WIP] Data and Reporting Requests",
+          "name": "Data and Reporting Requests",
           "teamGid": "1200205977735539",
           "teamName": "Avengers"
         },
@@ -594,7 +600,7 @@
           "teamName": "Avengers"
         },
         "1212937336625033": {
-          "name": "Q1, 2026 | Segmentation/New Member Journeys",
+          "name": "Q1, 2026 | Segmentation Update",
           "teamGid": "1200205977735539",
           "teamName": "Avengers"
         },
@@ -615,6 +621,16 @@
         },
         "1213180984444913": {
           "name": "Bid Plan - FCDO Economics for Foreign Policy",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1213497263867682": {
+          "name": "Julia's Event Marketing Handover",
+          "teamGid": "1200205977735539",
+          "teamName": "Avengers"
+        },
+        "1213537395902669": {
+          "name": "Estonia Event | In-Person | 11-05-26",
           "teamGid": "1200205977735539",
           "teamName": "Avengers"
         },
@@ -1658,6 +1674,16 @@
           "teamGid": "1206139192423737",
           "teamName": "Events at Apolitical"
         },
+        "1213516075707379": {
+          "name": "SSDN 2026 ANNUAL MEETING - Sustainability Showcase | EXHIBITION | 04-05-26",
+          "teamGid": "1206139192423737",
+          "teamName": "Events at Apolitical"
+        },
+        "1213554107415628": {
+          "name": "EY - The Adoption Gap: Turning AI Ambition into Delivery | In-Person | 03-06-26",
+          "teamGid": "1206139192423737",
+          "teamName": "Events at Apolitical"
+        },
         "1205549031420408": {
           "name": "Campaigns and Commissioning",
           "teamGid": "1205549031420400",
@@ -1853,11 +1879,6 @@
           "teamGid": "1203283783507589",
           "teamName": "Team of the Year 2022"
         },
-        "1212870761884222": {
-          "name": "Q1, 2026 | Futura Final Page Validation",
-          "teamGid": "1211920859305993",
-          "teamName": "User Research"
-        },
         "1212881716716723": {
           "name": "User research requests",
           "teamGid": "1211920859305993",
@@ -1879,7 +1900,7 @@
           "teamName": "User Research"
         },
         "1212937336625044": {
-          "name": "Q1, 2026 | Futura Value Proposition Discovery",
+          "name": "Q1, 2026 | AI Barriers Discovery",
           "teamGid": "1211920859305993",
           "teamName": "User Research"
         },
@@ -1911,7 +1932,6 @@
         "1212937336625049",
         "1212937336625057",
         "1212937336625083",
-        "1212870761884222",
         "1212937327293423",
         "1212937336625025",
         "1212937336625044",
@@ -1985,7 +2005,7 @@
       "q2 tasks 2023": "1204314933705257",
       "daily briefing": "1204321035286260",
       "course audit": "1204563485618502",
-      "social media requests 2025": "1204571664086552",
+      "social media requests 2026": "1204571664086552",
       "civil service live": "1204590258480338",
       "content operations weekly": "1204594168783742",
       "dep curriculum planning": "1204698689036346",
@@ -2022,15 +2042,17 @@
       "nature finance action group: milestones": "1210730878271117",
       "community management": "1210799614242520",
       "[igot] digital fundamentals for government": "1211100613602441",
-      "[wip] data and reporting requests": "1211839165399434",
+      "data and reporting requests": "1211839165399434",
       "sustainable finance | jan 2026 | cohort 17": "1212457270944250",
       "tess handover | dec 17 - jan 15": "1212457270944324",
       "ai 100 interviews": "1212855917344118",
-      "q1, 2026 | segmentation/new member journeys": "1212937336625033",
+      "q1, 2026 | segmentation update": "1212937336625033",
       "q1, 2026 | navigator design": "1212937336625049",
       "q1 2026 | ux research for events on platform": "1212937336625057",
       "q1 2026 | upgrade platform usability": "1212937336625083",
       "bid plan - fcdo economics for foreign policy": "1213180984444913",
+      "julia's event marketing handover": "1213497263867682",
+      "estonia event | in-person | 11-05-26": "1213537395902669",
       "q4 - will spurr": "1203066507837041",
       "q1 2023 - will": "1203657455508718",
       "democracy & public service 2024": "1204595235020764",
@@ -2238,6 +2260,8 @@
       "nature leaders roundtable 2 (terrestrial investment)": "1210827335105594",
       "wip (in person events) - roundtable/bespoke gathering": "1212202613166968",
       "hmrc civil service leaders workshop | 10-02-26": "1212457986255255",
+      "ssdn 2026 annual meeting - sustainability showcase": "1213516075707379",
+      "ey - the adoption gap: turning ai ambition into delivery": "1213554107415628",
       "campaigns and commissioning": "1205549031420408",
       "the weekly briefing": "1205549031420415",
       "l&d lead newsletter": "1206646825879748",
@@ -2277,12 +2301,11 @@
       "writing of training video scripts on ai for local government": "1205957183432066",
       "ta-10209 phi: supporting digital transformation of civil service": "1206297546755766",
       "toty": "1203283783507592",
-      "q1, 2026 | futura final page validation": "1212870761884222",
       "user research requests": "1212881716716723",
       "weekly user research tasks": "1212898962512419",
       "q1, 2026 | public servants have no time to use apolitical": "1212937327293423",
       "q1, 2026 | policy nova design": "1212937336625025",
-      "q1, 2026 | futura value proposition discovery": "1212937336625044",
+      "q1, 2026 | ai barriers discovery": "1212937336625044",
       "q1, 2026 | onboarding instructions testing": "1212966140249919",
       "q1 2026 | future of ai tools in government": "1212971627070612",
       "design kanban": "1202153856609724",
@@ -2367,7 +2390,9 @@
         "1212937336625049",
         "1212937336625057",
         "1212937336625083",
-        "1213180984444913"
+        "1213180984444913",
+        "1213497263867682",
+        "1213537395902669"
       ],
       "1202613806800356": [
         "1203066507837041",
@@ -2587,7 +2612,9 @@
         "1210823997041449",
         "1210827335105594",
         "1212202613166968",
-        "1212457986255255"
+        "1212457986255255",
+        "1213516075707379",
+        "1213554107415628"
       ],
       "1205549031420400": ["1205549031420408", "1205549031420415", "1206646825879748"],
       "1200181608204374": [
@@ -2630,7 +2657,6 @@
       ],
       "1203283783507589": ["1203283783507592"],
       "1211920859305993": [
-        "1212870761884222",
         "1212881716716723",
         "1212898962512419",
         "1212937327293423",

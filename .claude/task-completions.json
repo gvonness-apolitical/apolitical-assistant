@@ -1064,6 +1064,178 @@
       "status": "completed",
       "completedVia": "claude",
       "date": "2026-03-11"
+    },
+    {
+      "subject": "Send recruiter feedback on Analytics Engineer CV quality",
+      "keywords": ["recruiter", "feedback", "analytics", "engineer", "cv", "quality"],
+      "source": "gmail",
+      "status": "dismissed",
+      "reason": "CVs were organic applications, not from a recruiter. No recruiter feedback to send. CV review work product still useful.",
+      "completedVia": "direct",
+      "date": "2026-03-12"
+    },
+    {
+      "subject": "Update Feb RAG columns in PANTHEON for 5 engineering-owned OKR initiatives",
+      "keywords": ["pantheon", "okr", "rag", "february", "initiatives", "engineering", "spreadsheet"],
+      "source": "google-sheets:1DAQkiXe5WISbTA0aEqUBlVCQ595CG61Vwosk9ZfAc2w",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-12"
+    },
+    {
+      "subject": "Review Jeremy Boon interview booking",
+      "keywords": ["jeremy", "boon", "interview", "booking", "data", "lead"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-12"
+    },
+    {
+      "subject": "Review Mark Irvine direct application email",
+      "keywords": ["mark", "irvine", "direct", "application", "email"],
+      "source": "gmail",
+      "status": "dismissed",
+      "reason": "Direct email applications are not reviewed — candidates should go through the standard pipeline.",
+      "completedVia": "direct",
+      "date": "2026-03-12"
+    },
+    {
+      "subject": "GSM (PLA-305) — unblock Samuel merge conflicts, Renzo prerequisites",
+      "keywords": ["gsm", "pla-305", "samuel", "renzo", "merge", "conflicts", "secrets", "adc"],
+      "source": "linear:PLA-305",
+      "status": "dismissed",
+      "reason": "Situation is progressing — Renzo refactored the approach (PR #6996), awaiting review from Christoph and Dom. No intervention needed; they'll escalate if blocked.",
+      "completedVia": "direct",
+      "date": "2026-03-12"
+    },
+    {
+      "subject": "Share interview script with Pete and Yang",
+      "keywords": ["interview", "script", "pete", "yang", "data", "lead"],
+      "source": "eod-2026-03-11",
+      "status": "dismissed",
+      "reason": "Greg is running the interviews himself — Pete and Yang just need to ask guiding questions, no formal script sharing needed.",
+      "completedVia": "direct",
+      "date": "2026-03-12"
+    },
+    {
+      "subject": "Respond to Molly Bridge FUTURA curriculum comment",
+      "keywords": ["molly", "bridge", "futura", "curriculum", "shadow", "ai", "comment"],
+      "source": "google-docs:1mGcK3dSo8Ute5ANzzZFaPe3uU1mxnkBXk33RCOg8rHo",
+      "status": "dismissed",
+      "reason": "Thread moved on — Molly acknowledged shadow AI is covered in later lessons, conversation shifted to title wording between Molly and Jessica. No response needed.",
+      "completedVia": "direct",
+      "date": "2026-03-12"
+    },
+    {
+      "subject": "Complete Amber's CyberEssentials external IP address doc",
+      "keywords": ["amber", "cyberessentials", "ip", "address", "external", "audit"],
+      "source": "slack:amber-dm",
+      "sourceId": "1752828493.150889",
+      "status": "dismissed",
+      "reason": "Already completed months ago (Jul/Aug 2025). Stale Slack message resurfaced as new task due to missing completion log entry.",
+      "completedVia": "direct",
+      "date": "2026-03-12"
+    },
+    {
+      "subject": "Respond to Tanya — confirm her as second interviewer for Data Lead",
+      "keywords": ["tanya", "interviewer", "data", "lead", "second"],
+      "source": "slack:tanya-dm",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-12"
+    },
+    {
+      "subject": "Apply Sonali's competency matrix feedback",
+      "keywords": ["sonali", "competency", "matrix", "feedback", "skills", "progression", "revolut"],
+      "source": "slack:sonali-dm",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-12"
+    },
+    {
+      "subject": "Pleo — add missing expense details",
+      "keywords": ["pleo", "expenses", "missing", "details"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-16"
+    },
+    {
+      "subject": "Check with Lauren — skills matrix Revolut People permissions",
+      "keywords": ["lauren", "skills", "matrix", "revolut", "people", "permissions", "leonardo"],
+      "source": "gemini-notes:leonardo-121",
+      "status": "dismissed",
+      "reason": "Already showed Leonardo how to view the skills directly. Non-issue.",
+      "completedVia": "direct",
+      "date": "2026-03-16"
+    },
+    {
+      "subject": "Chase Yang — Gemini newsletter dependency",
+      "keywords": ["yang", "gemini", "newsletter", "bigquery", "cloudaicompanion", "amber"],
+      "source": "slack:dm-yang",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-16"
+    },
+    {
+      "subject": "Graphite subscription renewal decision",
+      "keywords": ["graphite", "subscription", "renewal", "code review"],
+      "source": "gmail",
+      "status": "dismissed",
+      "reason": "Team likes the workflow — letting it auto-renew Mar 18.",
+      "completedVia": "direct",
+      "date": "2026-03-16"
+    },
+    {
+      "subject": "Respond to Amber — Sohail Ahmed security disclosure follow-up",
+      "keywords": ["amber", "sohail", "ahmed", "security", "disclosure", "bug bounty"],
+      "source": "gmail",
+      "sourceId": "19ce8889ede5e3fb",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-16"
+    },
+    {
+      "subject": "Contribute technical content to AI usage training deck",
+      "keywords": ["amber", "ai", "training", "deck", "vibe", "coding", "compliance", "slides"],
+      "source": "slack:amber-dm",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-16"
+    },
+    {
+      "subject": "Review Samuel's GKE Audit Image Security Supply Chain Control RFC",
+      "keywords": ["samuel", "gke", "audit", "image", "security", "supply chain", "kyverno", "cosign", "rfc"],
+      "source": "notion:31f68a6e3b9280f2a3c3cb20f848f749",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-16"
+    },
+    {
+      "subject": "Raise feedback mechanisms topic in next Think Tank",
+      "keywords": ["think-tank", "feedback", "mechanisms", "retros", "squad", "sonali"],
+      "source": "canvas:think-tank",
+      "status": "completed",
+      "reason": "Added as upcoming discussion topic on Think Tank canvas.",
+      "completedVia": "direct",
+      "date": "2026-03-16"
+    },
+    {
+      "subject": "White-Label LLM migration spike — decide timeline or push",
+      "keywords": ["white-label", "llm", "migration", "sovereign", "cloud", "azure", "dge", "uae", "futura"],
+      "source": "slack:priv-management-team",
+      "status": "dismissed",
+      "reason": "Dom making progress on sovereign cloud work. LLM availability flagged to leadership. Pinecone less of a concern — vector store is more substitutable than the LLM. Monitoring, not actively driving.",
+      "completedVia": "direct",
+      "date": "2026-03-16"
+    },
+    {
+      "subject": "Prep for Simon Crossan Data Lead tech interview",
+      "keywords": ["simon", "crossan", "data", "lead", "interview", "tech", "scorecard"],
+      "source": "calendar",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-16"
     }
   ]
 }
