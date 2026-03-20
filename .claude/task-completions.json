@@ -1370,6 +1370,54 @@
       "status": "completed",
       "completedVia": "claude",
       "date": "2026-03-19"
+    },
+    {
+      "subject": "Submit Mustafa Gecmen scorecard on Applied",
+      "keywords": ["mustafa", "gecmen", "scorecard", "applied", "data lead", "interview"],
+      "source": "applied",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-20"
+    },
+    {
+      "subject": "Update Revolut People skills matrix entries",
+      "keywords": ["revolut", "people", "skills", "matrix", "owning outcomes", "delivery"],
+      "source": "canvas:sonali-feedback",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-20"
+    },
+    {
+      "subject": "Delegate GKE node upgrade to platform team",
+      "keywords": ["gke", "node", "upgrade", "platform", "khalifa", "data-europe-west2"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-20"
+    },
+    {
+      "subject": "Review Lowell's AI evaluation process doc in Notion",
+      "keywords": ["lowell", "ai", "evaluation", "process", "review", "notion", "rfc"],
+      "source": "notion",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-20"
+    },
+    {
+      "subject": "Read Jonathan Clark (Ory) SSO pricing reply and prepare for follow-up",
+      "keywords": ["ory", "sso", "pricing", "jonathan", "clark", "follow-up", "growth", "enterprise"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-20"
+    },
+    {
+      "subject": "Confirm Ory follow-up call availability Tue 24 Mar",
+      "keywords": ["ory", "call", "renzo", "availability", "sso"],
+      "source": "slack:dm-renzo",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-20"
     }
   ]
 }

@@ -65,33 +65,25 @@ export async function handleSendMessage(
 ): Promise<unknown> {
   const channelId = await client.resolveChannelId(args.channel);
 
-  const postAt = Math.floor(Date.now() / 1000) + 1800; // 30 minutes from now
-
   const params: Record<string, unknown> = {
     channel: channelId,
     text: args.text,
-    post_at: postAt,
     unfurl_links: args.unfurlLinks,
   };
   if (args.threadTs) params.thread_ts = args.threadTs;
 
-  interface ScheduleMessageResponse extends SlackResponse {
-    scheduled_message_id: string;
-    post_at: number;
+  interface PostMessageResponse extends SlackResponse {
+    ts: string;
     channel: string;
   }
 
-  const data = await client.call<ScheduleMessageResponse>('chat.scheduleMessage', params);
-
-  const sendTime = new Date(data.post_at * 1000);
+  const data = await client.call<PostMessageResponse>('chat.postMessage', params);
 
   return {
-    draft: true,
-    scheduledMessageId: data.scheduled_message_id,
+    ok: true,
     channel: data.channel,
+    timestamp: data.ts,
     text: args.text,
-    postAt: sendTime.toISOString(),
-    hint: `Message scheduled for ${sendTime.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}. Review and delete in Slack if needed, or it sends automatically.`,
   };
 }
 
