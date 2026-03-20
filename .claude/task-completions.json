@@ -1312,6 +1312,64 @@
       "status": "completed",
       "completedVia": "claude",
       "date": "2026-03-18"
+    },
+    {
+      "subject": "Escalate Yang on Gemini opt-out at Data Huddle",
+      "keywords": ["yang", "gemini", "opt-out", "data", "huddle", "cloudaicompanion"],
+      "source": "calendar:data-huddle",
+      "status": "completed",
+      "reason": "Yang confirmed disabling cloudaicompanion is safe for newsletter flows.",
+      "completedVia": "direct",
+      "date": "2026-03-18"
+    },
+    {
+      "subject": "Respond to Samuel — acknowledge GSM progress + review security roadmap Draft 2",
+      "keywords": ["samuel", "gsm", "security", "roadmap", "draft", "review", "121"],
+      "source": "slack:dm-samuel-balogun",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-19"
+    },
+    {
+      "subject": "Post GSM prerequisite nudge in team-engineering for gcloud auth setup",
+      "keywords": ["gsm", "gcloud", "auth", "team-engineering", "pla-305", "secret-manager"],
+      "source": "slack:team-engineering",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-19"
+    },
+    {
+      "subject": "Update companion Notion page with Sonali's feedback — core skills per category + glossary fixes",
+      "keywords": ["sonali", "notion", "companion", "skills", "matrix", "glossary", "core", "self-assessment"],
+      "source": "notion:32168a6e3b9281669f8ad763d40436b6",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-19"
+    },
+    {
+      "subject": "Respond to Amber — confirm CoWork MCP permission revocation in Claude",
+      "keywords": ["amber", "cowork", "mcp", "permissions", "claude", "connectors"],
+      "source": "slack:dm-amber",
+      "status": "completed",
+      "reason": "Advised audit first, keep connectors enabled with usage guidelines. Visualize connector needs further investigation.",
+      "completedVia": "claude",
+      "date": "2026-03-19"
+    },
+    {
+      "subject": "Prep for Mustafa Gecmen Data Lead tech interview",
+      "keywords": ["mustafa", "gecmen", "data", "lead", "interview", "scorecard"],
+      "source": "calendar",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-19"
+    },
+    {
+      "subject": "Draft 4 screening questions for Analytics Engineer and send to Lauren",
+      "keywords": ["analytics", "engineer", "screening", "questions", "lauren", "applied"],
+      "source": "slack:dm-lauren",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-19"
     }
   ]
 }
