@@ -85,7 +85,14 @@ export function extractTextRuns(tokens: Token[]): TextRun[] {
   const runs: TextRun[] = [];
 
   for (const token of tokens) {
-    if (token.type === 'text' || token.type === 'codespan') {
+    if (token.type === 'text') {
+      // Text tokens in list items may have nested inline tokens (bold, italic)
+      if ('tokens' in token && Array.isArray(token.tokens) && token.tokens.length > 0) {
+        runs.push(...extractTextRuns(token.tokens));
+      } else {
+        runs.push({ text: convertEmojiShortcodes(token.raw) });
+      }
+    } else if (token.type === 'codespan') {
       const rawText = token.raw.replace(/`/g, '');
       runs.push({ text: convertEmojiShortcodes(rawText) });
     } else if (token.type === 'strong') {
