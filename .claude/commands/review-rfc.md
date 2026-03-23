@@ -6,6 +6,7 @@ Perform a comprehensive technical review of an RFC in Notion, providing structur
 - [Adversarial Debate](../patterns/adversarial-debate.md) - Competitive review mode
 - [Team Lifecycle](../patterns/team-lifecycle.md) - Agent team setup, coordination, and cleanup
 - [Cross-Examination](../patterns/cross-examination.md) - Cross-reference round for specialised reviewers
+- [Dossier Context](../patterns/dossier-context.md) - Reviewer voice calibration from professional dossier
 
 ## Usage
 - `/review-rfc [notion-url]` - standard review of the RFC
@@ -15,6 +16,7 @@ Perform a comprehensive technical review of an RFC in Notion, providing structur
 - `/review-rfc [rfc-title]` - search for and review an RFC by title
 - `/review-rfc [notion-url] --compete` - force competitive mode (Advocate vs Challenger) at any depth
 - `/review-rfc [notion-url] --single` - force single-agent mode (override auto-enable)
+- `/review-rfc [notion-url] --resume` - resume from last completed step if previous run was interrupted
 
 ## Review Depth
 
@@ -329,6 +331,37 @@ After each competitive review, emit:
 
 ---
 
+## Checkpointing
+
+References: [Checkpointing](../patterns/checkpointing.md) pattern
+
+This skill uses **3 checkpoints** at natural transitions. Progress is tracked in `context/YYYY-MM-DD/index.md`. Resume with `--resume`.
+
+| Checkpoint | After Step | What's Saved |
+|-----------|-----------|--------------|
+| Step 4: Context Gathered | 4. Research Industry Context | RFC content, architecture docs, related RFCs, industry sources |
+| Step 6: Feedback Structured | 6. Structure Feedback | Planned inline comments with targets and categories |
+| Step 7: Comments Posted | 7. Post Inline Comments | Posted/edited/skipped counts |
+
+**CP at Step 6 is the most valuable** — it preserves the full analysis so posting can restart without re-evaluation.
+
+### Required Tools Per Step
+
+| Step | Required Tools | Can Skip |
+|------|---------------|----------|
+| 1. Fetch RFC | notion-fetch | Never |
+| 2. Architecture Context | Read (tech-notes/architecture.md) | If file missing |
+| 3. Technical Context | GitHub search, notion-search | Per source on failure |
+| 4. Industry Research | WebSearch/WebFetch | --quick |
+| 5. Evaluate | Task agents (competitive) or inline (single) | Never |
+| 6. Structure Feedback | Read (dossiers.json) | Never |
+| 7. Post Inline Comments | notion-create-comment ×N (interactive) | Never |
+| 7b. Post Summary Comment | notion-create-comment ×1 | Never |
+| 7c. Save Local Copy | Write | Never |
+| 8. Provide Summary | — (output only) | Never |
+
+---
+
 ## Process
 
 ### 1. Fetch & Understand the RFC
@@ -375,6 +408,15 @@ Focus on:
 - Known pitfalls or anti-patterns to avoid
 - Industry direction and future-proofing considerations
 
+```
+✓ CHECKPOINT: Step 4 complete - Context Gathered
+  RFC: [title] by [author] | Status: [status] | Type: [type]
+  Architecture docs: [loaded/not found] | Related RFCs: [N] | Industry sources: [N]
+  Tools: notion-fetch ×1, Read ×1, notion-search ×[N], github_search_code ×[N], WebSearch ×[N]
+
+Proceeding to Step 5: Evaluate
+```
+
 ### 5. Evaluate (Single-Agent, Adversarial, or Specialised Team)
 
 **Check mode activation** (see Competitive Review Mode section above):
@@ -406,15 +448,123 @@ Fallback chain: specialised team → adversarial debate → single-agent.
 
 ### 6. Structure Feedback
 
-Using the evaluation output (from either single-agent or Judge synthesis), structure the feedback according to the Output Format below. If competitive mode was used, the Judge's **key themes** should guide which concerns lead the Blocking Concerns and Recommendations sections — these are the arguments that survived adversarial scrutiny and carry highest confidence.
+Using the evaluation output (from either single-agent or Judge synthesis), structure the feedback into two tiers:
 
-### 7. Post to Notion
+1. **Inline comments** — targeted feedback anchored to specific RFC content
+2. **Summary comment** — page-level overview tying the review together
 
-Post the structured review as a comment using `notion-create-comment`.
+If competitive mode was used, the Judge's **key themes** should guide which concerns lead the Blocking Concerns and Recommendations sections — these are the arguments that survived adversarial scrutiny and carry highest confidence.
 
-### 7b. Save Local Copy (Competitive Mode Only)
+#### Inline Comment Planning
 
-When competitive mode was active, save the full debate locally to `work/YYYY-MM-DD-rfc-review-[slug].md` for future reference (Causantic recall, revision tracking). The slug is derived from the RFC title (lowercase, hyphens, truncated to ~40 chars).
+For each concern, recommendation, or question, identify the specific RFC text it relates to. Map each piece of feedback to a `selection_with_ellipsis` target:
+
+```
+Feedback Item → RFC Section/Text → selection_with_ellipsis
+"OpenAI vs Vertex" → "sends it all to OpenAI for analysis" → "sends it all...for analysis"
+"Log sanitisation" → "kubectl logs <failing-pod>" → "kubectl logs...all-containers"
+```
+
+**Rules for inline comments:**
+- Each inline comment should be self-contained — a reader should understand the concern without needing the summary
+- Use the format: **[Category]**: [Feedback]. Categories: `Blocking`, `Recommendation`, `Question`, `Suggestion`, `Positive`
+- Keep inline comments concise (1-3 sentences + suggestion if applicable)
+- Group related feedback into a single inline comment if they target the same text
+- If the `selection_with_ellipsis` target isn't unique enough, expand the snippet to include more context
+
+```
+✓ CHECKPOINT: Step 6 complete - Feedback Structured
+  Planned comments: [N] (Blocking: [N], Recommendation: [N], Question: [N], Suggestion: [N], Positive: [N])
+  Mode: [single-agent / adversarial / specialised team]
+  Tools: Read ×1 (dossiers.json)
+
+Proceeding to Step 7: Post Inline Comments
+```
+
+### 7. Post Inline Comments to Notion (Interactive)
+
+Present each inline comment to the user **one at a time** for approval before posting. This ensures the reviewer controls exactly what goes on the RFC.
+
+**Ordering**: Present blocking concerns first, then recommendations, then questions, then suggestions, then positive feedback.
+
+For each comment, display:
+
+```
+Comment [N/total] — [Category]
+
+Target: "[selection_with_ellipsis snippet]"
+
+> [Category]: [feedback text]
+
+[Send] [Edit] [Skip]
+```
+
+- **Send**: Post as-is via `notion-create-comment`
+- **Edit**: User provides revised text, then post the edited version
+- **Skip**: Do not post this comment (still include in local copy)
+
+```
+On Send or Edit:
+  notion-create-comment(
+    page_id: RFC_PAGE_ID,
+    selection_with_ellipsis: "start of text...end of text",
+    rich_text: [{ text: { content: "[Category]: feedback text" } }]
+  )
+```
+
+After all comments are reviewed, show a summary: `Posted: N | Edited: N | Skipped: N`
+
+**Error handling**: If a `selection_with_ellipsis` fails to match (content changed, or snippet not unique), fall back to a page-level comment for that item and note the intended target in the comment text.
+
+```
+✓ CHECKPOINT: Step 7 complete - Comments Posted
+  Posted: [N] | Edited: [N] | Skipped: [N] | Fallback (page-level): [N]
+  Tools: notion-create-comment ×[N]
+
+Proceeding to Step 7b: Post Summary Comment
+```
+
+### 7b. Post Summary Comment to Notion
+
+After all inline comments are posted, post a single **page-level summary comment** that ties the review together.
+
+**NOTE**: Notion inline comments (with `selection_with_ellipsis`) render as plain text only. However, page-level summary comments DO support `rich_text` annotations (bold, italic, etc.).
+
+**Template** — use `rich_text` segments with `annotations: { bold: true }` for section headers and labels:
+
+```json
+[
+  { "text": { "content": "Technical Review Summary\n\n" }, "annotations": { "bold": true } },
+  { "text": { "content": "Outcome: " }, "annotations": { "bold": true } },
+  { "text": { "content": "[Accept | Accept with Changes | Revise and Resubmit | Reject]\n" } },
+  { "text": { "content": "Depth: " }, "annotations": { "bold": true } },
+  { "text": { "content": "[quick/standard/deep] | " } },
+  { "text": { "content": "Type: " }, "annotations": { "bold": true } },
+  { "text": { "content": "[infrastructure/api/etc.] | " } },
+  { "text": { "content": "Inline comments: " }, "annotations": { "bold": true } },
+  { "text": { "content": "[N]\n\n" } },
+  { "text": { "content": "Overall Assessment\n" }, "annotations": { "bold": true } },
+  { "text": { "content": "[2-3 sentence assessment]\n\n" } },
+  { "text": { "content": "Blocking Concerns ([N])\n" }, "annotations": { "bold": true } },
+  { "text": { "content": "1. [Concern title] — see inline comment on \"[section]\"\n\n" } },
+  { "text": { "content": "Recommendations ([N])\n" }, "annotations": { "bold": true } },
+  { "text": { "content": "1. [Recommendation title] — see inline comment on \"[section]\"\n\n" } },
+  { "text": { "content": "Questions ([N])\n" }, "annotations": { "bold": true } },
+  { "text": { "content": "1. [Question] — see inline comment on \"[section]\"\n\n" } },
+  { "text": { "content": "What Works Well\n" }, "annotations": { "bold": true } },
+  { "text": { "content": "- [Brief positive feedback]\n\n" } },
+  { "text": { "content": "Industry Context\n" }, "annotations": { "bold": true } },
+  { "text": { "content": "[Relevant patterns or tools from research]" } }
+]
+```
+
+**Implementation**: Build the `rich_text` array with multiple segments. Use `annotations: { bold: true }` for section headers and labels. Keep content in each segment under 2000 chars.
+
+The summary is intentionally lighter than the inline comments — it serves as an index, not a repeat. The inline comments are the primary record.
+
+### 7c. Save Local Copy
+
+Save the full review locally to `work/YYYY-MM-DD-rfc-review-[slug].md` for future reference (Causantic recall, revision tracking). The slug is derived from the RFC title (lowercase, hyphens, truncated to ~40 chars).
 
 **Frontmatter:**
 ```yaml
@@ -422,20 +572,51 @@ When competitive mode was active, save the full debate locally to `work/YYYY-MM-
 type: work
 subtype: rfc-review
 date: YYYY-MM-DD
-tags: [rfc-review, competitive]
+tags: [rfc-review]
 related:
   - [notion URL of RFC]
 status: final
 ---
 ```
 
-**Content:** Standard review header, Advocate position, Challenger position, Judge synthesis with key themes, agreement/contested zones. This mirrors the Notion comment content but includes the full debate context.
+**Content includes:**
+- Standard review header and metadata
+- All inline comments with their targets (for local reference)
+- Summary comment content
+- If competitive mode was active: full Advocate position, Challenger position, Judge synthesis with key themes, agreement/contested zones
 
-This is in addition to the Notion comment — the local copy preserves the adversarial debate for future runs on related RFCs.
+The local copy preserves the complete review context including the adversarial debate (if applicable) for future runs on related RFCs.
 
 ### 8. Provide Summary
 
-Confirm the review was posted with a link, key concerns summary, recommended next steps, and offer to discuss.
+```
+# RFC Review Complete - YYYY-MM-DD
+
+## Steps Completed
+✓ 1. Fetch RFC        ✓ 2. Architecture    ✓ 3. Technical Context
+✓ 4. Industry Research ✓ 5. Evaluate        ✓ 6. Structure Feedback
+✓ 7. Post Comments     ✓ 7b. Summary        ✓ 7c. Local Copy
+✓ 8. Summary
+
+## Key Results
+- **RFC**: [title] by [author]
+- **Outcome**: [Accept / Accept with Changes / Revise and Resubmit / Reject]
+- **Comments**: Posted [N] | Edited [N] | Skipped [N]
+- **Blocking concerns**: [N]
+- **Mode**: [single-agent / adversarial / specialised team]
+
+## Saved to
+work/YYYY-MM-DD-rfc-review-[slug].md
+
+---
+RFC review complete.
+```
+
+Display to the user:
+- Link to RFC
+- Key concerns summary (1-2 sentences)
+- Recommended next steps
+- Offer to discuss any complex feedback
 
 ---
 
@@ -565,68 +746,33 @@ Flag if you see signs of:
 
 ## Output Format
 
-### Comment Structure
+### Inline Comment Format
 
-Post to Notion using `notion-create-comment`:
+Each inline comment posted via `notion-create-comment` with `selection_with_ellipsis`:
 
-```markdown
-## Technical Review
-
-**Depth**: [quick/standard/deep]
-**RFC Type**: [api/data-model/infrastructure/feature]
-
-### Summary
-[2-3 sentence overall assessment - is this ready to proceed, needs work, or needs rethink?]
-
----
-
-### Blocking Concerns
-[Issues that must be addressed before approval]
-
-**[Concern Title]**
-- Issue: [What's wrong]
-- Impact: [Why it matters]
-- Suggestion: [How to address]
-
----
-
-### Recommendations
-[Significant improvements to consider]
-
-**[Area]**
-- [Recommendation and rationale]
-
----
-
-### Questions
-[Clarifications needed to complete review]
-
-- [Question]?
-
----
-
-### Minor Suggestions
-- [Small improvements, style/convention items]
-
----
-
-### What Works Well
-- [Positive feedback - acknowledge good decisions]
-
----
-
-### Industry Context
-[Relevant patterns, trends, or learnings from research]
-
----
-
-*Review based on: architecture principles (FP, clean architecture, DDD), established patterns, and industry research.*
+```
+[Category]: [Concise feedback]. [Suggestion if applicable].
 ```
 
-### Post-Review Summary
+**Categories and formatting:**
 
-After posting, provide:
+| Category | When to Use | Example |
+|----------|-------------|---------|
+| **Blocking** | Must fix before approval | `Blocking: Pod logs may contain secrets leaked on startup. These are sent to OpenAI without sanitisation. Add a log scrubbing step or document the risk.` |
+| **Recommendation** | Significant improvement | `Recommendation: Consider using Vertex/Gemini instead of OpenAI for consistency with existing AI moderation infrastructure.` |
+| **Question** | Clarification needed | `Question: What happens if the watcher hangs? Is there a kill timeout to prevent CI runner resource exhaustion?` |
+| **Suggestion** | Minor improvement | `Suggestion: The "Immediate Next Steps" section is blank — add tasks, owners, and timeline before moving to Accepted.` |
+| **Positive** | Good decision to acknowledge | `Positive: Smart design keeping --atomic untouched. The watcher being purely observational means zero risk to existing deploy behaviour.` |
+
+### Summary Comment Format
+
+Page-level comment posted after all inline comments (see Step 7b for full template). The summary serves as an **index** to the inline comments — it should not repeat feedback verbatim but instead reference the inline comments by section.
+
+### Post-Review Output
+
+After posting, display to the user:
 - Confirmation with link to RFC
+- Count of inline comments posted by category
 - Key concerns summary (1-2 sentences)
 - Recommended next steps
 - Offer to discuss any complex feedback
@@ -635,13 +781,25 @@ After posting, provide:
 
 ## Tone Guidelines
 
-- **Constructive, not critical** - we're improving the design together
-- **Explain the "why"** - rationale helps more than just "don't do X"
-- **Offer alternatives** - when flagging issues, suggest solutions
-- **Acknowledge trade-offs** - most decisions involve compromise
-- **Respect effort** - the author has thought about this
-- **Questions over statements** - "Have you considered X?" not "X is wrong"
-- **Balance** - ensure positive feedback, not just criticism
+### Voice Calibration
+
+Before drafting comments, load the reviewer's dossier from `.claude/dossiers.json` (key: `greg.vonness@apolitical.co`) and align comment voice to their communication style:
+
+- **Acknowledge before pivoting** — lead with what works, then pivot to the concern. "Smart design keeping --atomic untouched. One thing to watch: ..."
+- **Name structural problems precisely** — not "this could be better" but "this creates a sync call chain that could cascade"
+- **Always pair criticism with a counter-proposal** — never flag an issue without suggesting a fix
+- **Em dashes, semicolons, bold for emphasis** — match the reviewer's natural writing style
+- **Concise and direct** — no filler, no hedging. If it's blocking, say so plainly
+- **Questions as genuine exploration** — "Have you considered X?" when genuinely curious, not as a softened criticism
+
+### General Principles
+
+- **Constructive, not critical** — we're improving the design together
+- **Explain the "why"** — rationale helps more than just "don't do X"
+- **Offer alternatives** — when flagging issues, suggest solutions
+- **Acknowledge trade-offs** — most decisions involve compromise
+- **Respect effort** — the author has thought about this
+- **Balance** — ensure positive feedback, not just criticism
 
 ---
 

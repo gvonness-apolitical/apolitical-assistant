@@ -824,6 +824,600 @@
       "reason": "Drata already chosen, commercial meeting done, Amber handling Vanta follow-up",
       "completedVia": "direct",
       "date": "2026-03-06"
+    },
+    {
+      "subject": "Review Borja's AI Deployment Failure Diagnostics proposal",
+      "keywords": ["rfc", "review", "borja", "ai", "deployment", "failure", "diagnostics", "notion"],
+      "source": "notion",
+      "sourceId": null,
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-06"
+    },
+    {
+      "subject": "Schedule Pillar 2 review with Jessica Duval next week",
+      "keywords": ["pillar", "review", "jessica", "duval", "calendar", "schedule"],
+      "source": "calendar",
+      "sourceId": null,
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-06"
+    },
+    {
+      "subject": "Prep for Samuel 1:1 — security roadmap, GSM, GKE/ArgoCD",
+      "keywords": ["samuel", "balogun", "1:1", "prep", "security", "roadmap", "gsm", "gke"],
+      "source": "calendar",
+      "sourceId": null,
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-06"
+    },
+    {
+      "subject": "Follow up with Khalifa and Pete re ThoughtSpot GCP permissions",
+      "keywords": ["thoughtspot", "gcp", "permissions", "bigquery", "khalifa", "pete", "column-level", "security"],
+      "source": "slack",
+      "sourceId": null,
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-06"
+    },
+    {
+      "subject": "Discuss salary review results with direct reports",
+      "keywords": ["salary", "review", "results", "direct reports", "leonardo", "romilly", "khalifa", "dom", "charles", "pete"],
+      "source": "canvas:1:1s",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-09"
+    },
+    {
+      "subject": "Acknowledge Renzo's SSO sprint",
+      "keywords": ["renzo", "sso", "sprint", "acknowledge", "121"],
+      "source": "carry-forward",
+      "status": "completed",
+      "reason": "Added to renzo-next-121-topics.md for next 1:1",
+      "completedVia": "claude",
+      "date": "2026-03-09"
+    },
+    {
+      "subject": "Mark Think Tank canvas eng management meeting item as complete",
+      "keywords": ["think-tank", "canvas", "eng", "management", "meeting", "cleanup"],
+      "source": "canvas:think-tank",
+      "status": "completed",
+      "reason": "Checked off unchecked item on Think Tank canvas — was completed 2026-03-04",
+      "completedVia": "claude",
+      "date": "2026-03-09"
+    },
+    {
+      "subject": "Chase Khalifa/Pete on ThoughtSpot column-level security",
+      "keywords": ["khalifa", "pete", "thoughtspot", "column-level", "security", "bigquery"],
+      "source": "slack",
+      "status": "completed",
+      "reason": "Sent Slack messages to both on Friday. Awaiting responses.",
+      "completedVia": "direct",
+      "date": "2026-03-09"
+    },
+    {
+      "subject": "Pleo — add missing expense details",
+      "keywords": ["pleo", "expenses", "missing", "details"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-09"
+    },
+    {
+      "subject": "Chase Joel on EM JD approval",
+      "keywords": ["joel", "em", "jd", "approval", "engineering", "manager", "applied"],
+      "source": "slack:dm-joel",
+      "status": "completed",
+      "reason": "Sent nudge DM. Diagram + JD sent Mar 6, awaiting approval to open on Applied.",
+      "completedVia": "claude",
+      "date": "2026-03-09"
+    },
+    {
+      "subject": "Respond to Romilly re 1:1 reschedule",
+      "keywords": ["romilly", "1:1", "reschedule", "skip"],
+      "source": "slack:dm-romilly",
+      "status": "completed",
+      "reason": "Agreed to skip this week — nothing pressing for either side.",
+      "completedVia": "claude",
+      "date": "2026-03-09"
+    },
+    {
+      "subject": "Review Samuel's Security Roadmap Draft 1",
+      "keywords": ["samuel", "security", "roadmap", "review", "slides", "threats", "phased"],
+      "source": "slack:dm-samuel-balogun",
+      "status": "completed",
+      "reason": "Reviewed 22-slide deck. Sent detailed feedback DM covering framing, resourcing, technical gaps, presentation, and quick wins.",
+      "completedVia": "claude",
+      "date": "2026-03-09"
+    },
+    {
+      "subject": "Follow up on Mustafa Gecmen Data Lead interview",
+      "keywords": ["mustafa", "gecmen", "data lead", "interview", "applied", "technical round"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-09"
+    },
+    {
+      "subject": "Submit Applied feedback for Data Lead candidates",
+      "keywords": ["applied", "feedback", "data lead", "natalia", "simon", "mustafa", "martin", "burch", "screening"],
+      "source": "gmail",
+      "status": "completed",
+      "reason": "Drafted candidate-facing feedback for Natalia Batishcheva, Simon Crossan, Mustafa Gecmen, and Carl Martin Burch. User submitting on Applied.",
+      "completedVia": "claude",
+      "date": "2026-03-09"
+    },
+    {
+      "subject": "Submit Applied feedback for Jeremy Boon (Data Lead)",
+      "keywords": ["jeremy", "boon", "applied", "feedback", "data lead", "screening"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-09"
+    },
+    {
+      "subject": "Data Lead screening feedback with Lauren",
+      "keywords": ["lauren", "data lead", "screening", "feedback", "applied", "sync"],
+      "source": "carry-forward",
+      "status": "dismissed",
+      "reason": "Lauren has admin access to Applied and can see all scorecards directly. No sync needed.",
+      "completedVia": "direct",
+      "date": "2026-03-09"
+    },
+    {
+      "subject": "Prep for Jess McEvoy/Jayna delivery automation meeting (14:30 today)",
+      "keywords": ["jess", "mcevoy", "jayna", "delivery", "automation", "meeting"],
+      "source": "calendar",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-10"
+    },
+    {
+      "subject": "Investigate GitHub Actions 100% minutes usage",
+      "keywords": ["github", "actions", "minutes", "usage", "ci", "platform-v2"],
+      "source": "investigation",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-10"
+    },
+    {
+      "subject": "Review Pete's data governance RFC (Notion link in DM)",
+      "keywords": ["pete", "rfc", "data", "governance", "thoughtspot", "bigquery", "pii"],
+      "source": "notion:31968a6e3b92801f9512c4868efa9c87",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-10"
+    },
+    {
+      "subject": "Review Lowell's Player Piano project (Linear link in DM)",
+      "keywords": ["lowell", "player", "piano", "project", "linear", "review"],
+      "source": "linear",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-10"
+    },
+    {
+      "subject": "Update Lily's pulse tracker spreadsheet (due tomorrow 10am)",
+      "keywords": ["lily", "pulse", "tracker", "engineering", "balanced", "scorecard", "management"],
+      "source": "slack:priv-management-team",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-11"
+    },
+    {
+      "subject": "Reply to Amber — Auth0 plan renewal",
+      "keywords": ["amber", "auth0", "plan", "renewal", "re-forward", "renzo", "okta"],
+      "source": "gmail",
+      "sourceId": "19cd7ade5d172cad",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-11"
+    },
+    {
+      "subject": "Ask Lowell about Customer Support Improvements project intent",
+      "keywords": ["lowell", "customer", "support", "improvements", "project", "bug-hunt", "automation"],
+      "source": "slack:dm-lowell-weisbord",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-11"
+    },
+    {
+      "subject": "Respond to Jessica Duval FUTURA action items",
+      "keywords": ["jessica", "duval", "futura", "curriculum", "pillar", "feedback", "modules"],
+      "source": "google-docs:1mGcK3dSo8Ute5ANzzZFaPe3uU1mxnkBXk33RCOg8rHo",
+      "status": "completed",
+      "reason": "Already reviewed and commented on Mar 9. Jessica acknowledged feedback, resolved all comments, marked action items done.",
+      "completedVia": "direct",
+      "date": "2026-03-11"
+    },
+    {
+      "subject": "Follow up with Renzo on prototype-to-prod credentials",
+      "keywords": ["renzo", "prototype", "prod", "credentials", "gsm", "1password", "borja", "dev", "setup"],
+      "source": "slack:dm-renzo-rozza",
+      "sourceId": "1772800365.959589",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-11"
+    },
+    {
+      "subject": "Review Lauren's Analytics Engineer CV invitation",
+      "keywords": ["lauren", "analytics", "engineer", "cv", "invitation", "review"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-11"
+    },
+    {
+      "subject": "Approve/deny Nx Cloud GitHub permissions update",
+      "keywords": ["nx", "cloud", "github", "permissions", "update", "platform"],
+      "source": "gmail",
+      "status": "dismissed",
+      "reason": "Delegated to Platform team — Borja owns Nx Cloud.",
+      "completedVia": "direct",
+      "date": "2026-03-11"
+    },
+    {
+      "subject": "Review data challenge repo before tech interviews",
+      "keywords": ["data", "challenge", "repo", "interview", "review", "dbt", "airflow"],
+      "source": "calendar",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-11"
+    },
+    {
+      "subject": "Send recruiter feedback on Analytics Engineer CV quality",
+      "keywords": ["recruiter", "feedback", "analytics", "engineer", "cv", "quality"],
+      "source": "gmail",
+      "status": "dismissed",
+      "reason": "CVs were organic applications, not from a recruiter. No recruiter feedback to send. CV review work product still useful.",
+      "completedVia": "direct",
+      "date": "2026-03-12"
+    },
+    {
+      "subject": "Update Feb RAG columns in PANTHEON for 5 engineering-owned OKR initiatives",
+      "keywords": ["pantheon", "okr", "rag", "february", "initiatives", "engineering", "spreadsheet"],
+      "source": "google-sheets:1DAQkiXe5WISbTA0aEqUBlVCQ595CG61Vwosk9ZfAc2w",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-12"
+    },
+    {
+      "subject": "Review Jeremy Boon interview booking",
+      "keywords": ["jeremy", "boon", "interview", "booking", "data", "lead"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-12"
+    },
+    {
+      "subject": "Review Mark Irvine direct application email",
+      "keywords": ["mark", "irvine", "direct", "application", "email"],
+      "source": "gmail",
+      "status": "dismissed",
+      "reason": "Direct email applications are not reviewed — candidates should go through the standard pipeline.",
+      "completedVia": "direct",
+      "date": "2026-03-12"
+    },
+    {
+      "subject": "GSM (PLA-305) — unblock Samuel merge conflicts, Renzo prerequisites",
+      "keywords": ["gsm", "pla-305", "samuel", "renzo", "merge", "conflicts", "secrets", "adc"],
+      "source": "linear:PLA-305",
+      "status": "dismissed",
+      "reason": "Situation is progressing — Renzo refactored the approach (PR #6996), awaiting review from Christoph and Dom. No intervention needed; they'll escalate if blocked.",
+      "completedVia": "direct",
+      "date": "2026-03-12"
+    },
+    {
+      "subject": "Share interview script with Pete and Yang",
+      "keywords": ["interview", "script", "pete", "yang", "data", "lead"],
+      "source": "eod-2026-03-11",
+      "status": "dismissed",
+      "reason": "Greg is running the interviews himself — Pete and Yang just need to ask guiding questions, no formal script sharing needed.",
+      "completedVia": "direct",
+      "date": "2026-03-12"
+    },
+    {
+      "subject": "Respond to Molly Bridge FUTURA curriculum comment",
+      "keywords": ["molly", "bridge", "futura", "curriculum", "shadow", "ai", "comment"],
+      "source": "google-docs:1mGcK3dSo8Ute5ANzzZFaPe3uU1mxnkBXk33RCOg8rHo",
+      "status": "dismissed",
+      "reason": "Thread moved on — Molly acknowledged shadow AI is covered in later lessons, conversation shifted to title wording between Molly and Jessica. No response needed.",
+      "completedVia": "direct",
+      "date": "2026-03-12"
+    },
+    {
+      "subject": "Complete Amber's CyberEssentials external IP address doc",
+      "keywords": ["amber", "cyberessentials", "ip", "address", "external", "audit"],
+      "source": "slack:amber-dm",
+      "sourceId": "1752828493.150889",
+      "status": "dismissed",
+      "reason": "Already completed months ago (Jul/Aug 2025). Stale Slack message resurfaced as new task due to missing completion log entry.",
+      "completedVia": "direct",
+      "date": "2026-03-12"
+    },
+    {
+      "subject": "Respond to Tanya — confirm her as second interviewer for Data Lead",
+      "keywords": ["tanya", "interviewer", "data", "lead", "second"],
+      "source": "slack:tanya-dm",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-12"
+    },
+    {
+      "subject": "Apply Sonali's competency matrix feedback",
+      "keywords": ["sonali", "competency", "matrix", "feedback", "skills", "progression", "revolut"],
+      "source": "slack:sonali-dm",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-12"
+    },
+    {
+      "subject": "Pleo — add missing expense details",
+      "keywords": ["pleo", "expenses", "missing", "details"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-16"
+    },
+    {
+      "subject": "Check with Lauren — skills matrix Revolut People permissions",
+      "keywords": ["lauren", "skills", "matrix", "revolut", "people", "permissions", "leonardo"],
+      "source": "gemini-notes:leonardo-121",
+      "status": "dismissed",
+      "reason": "Already showed Leonardo how to view the skills directly. Non-issue.",
+      "completedVia": "direct",
+      "date": "2026-03-16"
+    },
+    {
+      "subject": "Chase Yang — Gemini newsletter dependency",
+      "keywords": ["yang", "gemini", "newsletter", "bigquery", "cloudaicompanion", "amber"],
+      "source": "slack:dm-yang",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-16"
+    },
+    {
+      "subject": "Graphite subscription renewal decision",
+      "keywords": ["graphite", "subscription", "renewal", "code review"],
+      "source": "gmail",
+      "status": "dismissed",
+      "reason": "Team likes the workflow — letting it auto-renew Mar 18.",
+      "completedVia": "direct",
+      "date": "2026-03-16"
+    },
+    {
+      "subject": "Respond to Amber — Sohail Ahmed security disclosure follow-up",
+      "keywords": ["amber", "sohail", "ahmed", "security", "disclosure", "bug bounty"],
+      "source": "gmail",
+      "sourceId": "19ce8889ede5e3fb",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-16"
+    },
+    {
+      "subject": "Contribute technical content to AI usage training deck",
+      "keywords": ["amber", "ai", "training", "deck", "vibe", "coding", "compliance", "slides"],
+      "source": "slack:amber-dm",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-16"
+    },
+    {
+      "subject": "Review Samuel's GKE Audit Image Security Supply Chain Control RFC",
+      "keywords": ["samuel", "gke", "audit", "image", "security", "supply chain", "kyverno", "cosign", "rfc"],
+      "source": "notion:31f68a6e3b9280f2a3c3cb20f848f749",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-16"
+    },
+    {
+      "subject": "Raise feedback mechanisms topic in next Think Tank",
+      "keywords": ["think-tank", "feedback", "mechanisms", "retros", "squad", "sonali"],
+      "source": "canvas:think-tank",
+      "status": "completed",
+      "reason": "Added as upcoming discussion topic on Think Tank canvas.",
+      "completedVia": "direct",
+      "date": "2026-03-16"
+    },
+    {
+      "subject": "White-Label LLM migration spike — decide timeline or push",
+      "keywords": ["white-label", "llm", "migration", "sovereign", "cloud", "azure", "dge", "uae", "futura"],
+      "source": "slack:priv-management-team",
+      "status": "dismissed",
+      "reason": "Dom making progress on sovereign cloud work. LLM availability flagged to leadership. Pinecone less of a concern — vector store is more substitutable than the LLM. Monitoring, not actively driving.",
+      "completedVia": "direct",
+      "date": "2026-03-16"
+    },
+    {
+      "subject": "Prep for Simon Crossan Data Lead tech interview",
+      "keywords": ["simon", "crossan", "data", "lead", "interview", "tech", "scorecard"],
+      "source": "calendar",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-16"
+    },
+    {
+      "subject": "Submit interview scorecards on Applied (Carl Martin + Simon)",
+      "keywords": ["applied", "scorecard", "interview", "carl", "martin", "simon", "crossan", "data", "lead"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-18"
+    },
+    {
+      "subject": "Delegate Contentful token rotation to platform team",
+      "keywords": ["contentful", "token", "rotation", "futura", "curriculum"],
+      "source": "gmail:engineering@apolitical.co",
+      "status": "dismissed",
+      "reason": "Sent to engineering@ shared inbox, not personal. Team will pick up directly — no delegation needed.",
+      "completedVia": "direct",
+      "date": "2026-03-18"
+    },
+    {
+      "subject": "RSVP to LDX3 London dinner invitations",
+      "keywords": ["ldx3", "leaddev", "dinner", "fusionauth", "identity", "gaucho", "rsvp"],
+      "source": "gmail",
+      "sourceId": "19ce7adad11a0857",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-18"
+    },
+    {
+      "subject": "Coordinate with Renzo on Ory SSO test environment offer",
+      "keywords": ["renzo", "ory", "sso", "test", "environment", "pricing", "auth0", "kratos"],
+      "source": "gmail",
+      "status": "dismissed",
+      "reason": "Ory enterprise pricing ~2x Auth0 ($70k vs £30k). Renzo handling vendor conversation. May push back toward Auth0 or open-source Kratos. Monitoring, not actively driving.",
+      "completedVia": "direct",
+      "date": "2026-03-18"
+    },
+    {
+      "subject": "Discuss skills matrix companion page placement with Lauren",
+      "keywords": ["lauren", "skills", "matrix", "companion", "notion", "revolut", "people", "placement"],
+      "source": "slack:dm-lauren",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-18"
+    },
+    {
+      "subject": "Escalate Yang on Gemini opt-out at Data Huddle",
+      "keywords": ["yang", "gemini", "opt-out", "data", "huddle", "newsletter", "cloudaicompanion"],
+      "source": "slack:dm-yang",
+      "status": "completed",
+      "reason": "Yang confirmed at Data Huddle that opting out of cloudaicompanion will not impact email/newsletter flows.",
+      "completedVia": "direct",
+      "date": "2026-03-18"
+    },
+    {
+      "subject": "Submit All Hands topics to Lily Fox",
+      "keywords": ["lily", "fox", "all", "hands", "engineering", "highlights", "february", "metrics"],
+      "source": "slack:dm-lily-fox",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-18"
+    },
+    {
+      "subject": "Review Sonali's Canvas feedback on engineering matrix definitions",
+      "keywords": ["sonali", "canvas", "feedback", "engineering", "matrix", "definitions", "skills"],
+      "source": "slack:canvas-sonali-121",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-18"
+    },
+    {
+      "subject": "Assess Data Lead candidates Maf Rahman and Adomas Puzelevicius",
+      "keywords": ["maf", "rahman", "adomas", "puzelevicius", "data", "lead", "candidate", "screening", "lauren"],
+      "source": "google-drive",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-18"
+    },
+    {
+      "subject": "Escalate Yang on Gemini opt-out at Data Huddle",
+      "keywords": ["yang", "gemini", "opt-out", "data", "huddle", "cloudaicompanion"],
+      "source": "calendar:data-huddle",
+      "status": "completed",
+      "reason": "Yang confirmed disabling cloudaicompanion is safe for newsletter flows.",
+      "completedVia": "direct",
+      "date": "2026-03-18"
+    },
+    {
+      "subject": "Respond to Samuel — acknowledge GSM progress + review security roadmap Draft 2",
+      "keywords": ["samuel", "gsm", "security", "roadmap", "draft", "review", "121"],
+      "source": "slack:dm-samuel-balogun",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-19"
+    },
+    {
+      "subject": "Post GSM prerequisite nudge in team-engineering for gcloud auth setup",
+      "keywords": ["gsm", "gcloud", "auth", "team-engineering", "pla-305", "secret-manager"],
+      "source": "slack:team-engineering",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-19"
+    },
+    {
+      "subject": "Update companion Notion page with Sonali's feedback — core skills per category + glossary fixes",
+      "keywords": ["sonali", "notion", "companion", "skills", "matrix", "glossary", "core", "self-assessment"],
+      "source": "notion:32168a6e3b9281669f8ad763d40436b6",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-19"
+    },
+    {
+      "subject": "Respond to Amber — confirm CoWork MCP permission revocation in Claude",
+      "keywords": ["amber", "cowork", "mcp", "permissions", "claude", "connectors"],
+      "source": "slack:dm-amber",
+      "status": "completed",
+      "reason": "Advised audit first, keep connectors enabled with usage guidelines. Visualize connector needs further investigation.",
+      "completedVia": "claude",
+      "date": "2026-03-19"
+    },
+    {
+      "subject": "Prep for Mustafa Gecmen Data Lead tech interview",
+      "keywords": ["mustafa", "gecmen", "data", "lead", "interview", "scorecard"],
+      "source": "calendar",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-19"
+    },
+    {
+      "subject": "Draft 4 screening questions for Analytics Engineer and send to Lauren",
+      "keywords": ["analytics", "engineer", "screening", "questions", "lauren", "applied"],
+      "source": "slack:dm-lauren",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-19"
+    },
+    {
+      "subject": "Submit Mustafa Gecmen scorecard on Applied",
+      "keywords": ["mustafa", "gecmen", "scorecard", "applied", "data lead", "interview"],
+      "source": "applied",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-20"
+    },
+    {
+      "subject": "Update Revolut People skills matrix entries",
+      "keywords": ["revolut", "people", "skills", "matrix", "owning outcomes", "delivery"],
+      "source": "canvas:sonali-feedback",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-20"
+    },
+    {
+      "subject": "Delegate GKE node upgrade to platform team",
+      "keywords": ["gke", "node", "upgrade", "platform", "khalifa", "data-europe-west2"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-20"
+    },
+    {
+      "subject": "Review Lowell's AI evaluation process doc in Notion",
+      "keywords": ["lowell", "ai", "evaluation", "process", "review", "notion", "rfc"],
+      "source": "notion",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-20"
+    },
+    {
+      "subject": "Read Jonathan Clark (Ory) SSO pricing reply and prepare for follow-up",
+      "keywords": ["ory", "sso", "pricing", "jonathan", "clark", "follow-up", "growth", "enterprise"],
+      "source": "gmail",
+      "status": "completed",
+      "completedVia": "claude",
+      "date": "2026-03-20"
+    },
+    {
+      "subject": "Confirm Ory follow-up call availability Tue 24 Mar",
+      "keywords": ["ory", "call", "renzo", "availability", "sso"],
+      "source": "slack:dm-renzo",
+      "status": "completed",
+      "completedVia": "direct",
+      "date": "2026-03-20"
     }
   ]
 }

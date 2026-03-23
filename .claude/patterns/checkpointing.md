@@ -403,6 +403,7 @@ Skills that implement checkpointing:
 | `/archive-old` | 7 | No | Step 6 (file deletion) |
 | `/weekly-review` | 8 | No (daily index) | None |
 | `/executive-report` | 6 | No (daily index) | None |
+| `/review-rfc` | 8 (+ 7b, 7c) | No (daily index) | Step 7 (post comments — interactive gate) |
 | `/prep-meeting` | 5-7 | No (meeting-config) | None |
 | `/sync-people` | 7 | No | None |
 | `/sync-figma` | 5 | No | Step 4 (cleanup) |

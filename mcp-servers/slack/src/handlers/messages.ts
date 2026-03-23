@@ -75,16 +75,15 @@ export async function handleSendMessage(
   interface PostMessageResponse extends SlackResponse {
     ts: string;
     channel: string;
-    message: { text: string };
   }
 
   const data = await client.call<PostMessageResponse>('chat.postMessage', params);
 
   return {
-    success: true,
-    timestamp: data.ts,
+    ok: true,
     channel: data.channel,
-    text: data.message.text,
+    timestamp: data.ts,
+    text: args.text,
   };
 }
 

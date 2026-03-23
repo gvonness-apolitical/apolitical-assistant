@@ -378,7 +378,7 @@ describe('Slack Handlers', () => {
       );
 
       const data = JSON.parse((result.content[0] as { text: string }).text);
-      expect(data.success).toBe(true);
+      expect(data.ok).toBe(true);
       expect(data.timestamp).toBe('1234567890.123456');
       expect(data.text).toBe('Hello!');
     });
@@ -410,7 +410,7 @@ describe('Slack Handlers', () => {
       );
 
       const data = JSON.parse((result.content[0] as { text: string }).text);
-      expect(data.success).toBe(true);
+      expect(data.ok).toBe(true);
       expect(data.channel).toBe('D123');
       expect(data.userIds).toEqual([uid]);
     });
@@ -441,7 +441,7 @@ describe('Slack Handlers', () => {
       );
 
       const data = JSON.parse((result.content[0] as { text: string }).text);
-      expect(data.success).toBe(true);
+      expect(data.ok).toBe(true);
       expect(data.channel).toBe('G456');
       expect(data.userIds).toEqual([uid1, uid2]);
     });

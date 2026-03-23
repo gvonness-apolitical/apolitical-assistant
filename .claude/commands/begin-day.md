@@ -718,6 +718,23 @@ When `--resume` is used:
 
 **Parallelization note:** Steps 4 (Email Triage), 5 (Gemini Notes), and 6 (Slack Read) are independent of each other and can be run as parallel subagents for faster execution. Sequential execution remains the default. When running in parallel, each subagent writes its own checkpoint and context file; the main agent waits for all three to complete before proceeding to Step 7.
 
+**CRITICAL — Agent completion gate before Step 7:**
+Before starting Step 7, verify ALL parallel agents have returned results:
+1. Check that context files exist for each agent: `context/YYYY-MM-DD/email-*.md`, `context/YYYY-MM-DD/slack-*.md`, and Gemini notes output
+2. If any agent is still running (background), WAIT — do not proceed with partial data
+3. If a context break caused agents to be lost, relaunch the missing agents and wait for completion
+4. Only after all three agents have returned should Step 7 begin
+
+**Late reconciliation (after Step 7):**
+If additional agent results arrive after Step 7 has completed (e.g., duplicate agents from a session restart, or a slower thorough agent), apply the [Late Reconciliation](../patterns/late-reconciliation.md) pattern:
+1. Extract new action items from the late-arriving results
+2. Dedup against existing tasks and task-completions.json
+3. Create tasks via TaskCreate for genuinely new items
+4. Update the briefing in-place
+5. Log a reconciliation marker
+
+This ensures no action items are lost due to timing gaps in parallel execution.
+
 ### Step Order Rationale
 
 1. **Session Context** - Causantic recall + EOD files to establish context from where you left off, detect missed days

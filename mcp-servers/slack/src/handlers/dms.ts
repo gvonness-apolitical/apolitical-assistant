@@ -146,7 +146,6 @@ export async function handleSendDm(
   interface PostMessageResponse extends SlackResponse {
     ts: string;
     channel: string;
-    message: { text: string };
   }
 
   const data = await client.call<PostMessageResponse>('chat.postMessage', {
@@ -155,11 +154,11 @@ export async function handleSendDm(
   });
 
   return {
-    success: true,
-    timestamp: data.ts,
+    ok: true,
     channel: data.channel,
+    timestamp: data.ts,
     userIds: Array.isArray(args.userId) ? args.userId : [args.userId],
-    text: data.message.text,
+    text: args.text,
   };
 }
 

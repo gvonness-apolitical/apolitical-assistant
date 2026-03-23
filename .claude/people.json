@@ -12,7 +12,10 @@
   "people": {
     "joel.patrick@apolitical.co": {
       "displayName": "Joel Patrick",
-      "aliases": ["Joel", "JP"],
+      "aliases": [
+        "Joel",
+        "JP"
+      ],
       "identifiers": {
         "slackUserId": "U04A8BBTBEC",
         "slackDmChannelId": "D08FQJLTBPF",
@@ -27,13 +30,17 @@
         "managerId": null,
         "isDirectReport": false
       },
-      "lastVerified": "2026-01-27"
+      "lastVerified": "2026-01-27",
+      "linearUserId": "0a54804f-c3d0-4688-ba6c-f1d37c4317a7"
     },
     "peter.shatwell@apolitical.co": {
       "displayName": "Peter Shatwell",
-      "aliases": ["Peter", "Pete"],
+      "aliases": [
+        "Peter",
+        "Pete"
+      ],
       "identifiers": {
-        "slackUserId": null,
+        "slackUserId": "U075ZCQKX4J",
         "slackDmChannelId": "D09G7378JPR",
         "githubUsername": "pshatwell-apolitical",
         "linearUserId": "24197789-fc25-45da-99e2-d80e972aef2a",
@@ -47,11 +54,17 @@
         "managerId": null,
         "isDirectReport": true
       },
-      "lastVerified": "2026-01-28"
+      "lastVerified": "2026-01-28",
+      "linearUserId": "24197789-fc25-45da-99e2-d80e972aef2a",
+      "slackUserId": "U075ZCQKX4J",
+      "slackDmChannelId": "D09G7378JPR"
     },
     "romilly.eveleigh@apolitical.co": {
       "displayName": "Romilly Eveleigh",
-      "aliases": ["Romilly", "Rom"],
+      "aliases": [
+        "Romilly",
+        "Rom"
+      ],
       "identifiers": {
         "slackUserId": null,
         "slackDmChannelId": "D08GZVDMG81",
@@ -67,13 +80,16 @@
         "managerId": null,
         "isDirectReport": true
       },
-      "lastVerified": "2026-01-28"
+      "lastVerified": "2026-01-28",
+      "linearUserId": "4fd54801-a733-4924-9077-123f41e84e26"
     },
     "khalifa.idris@apolitical.co": {
       "displayName": "Khalifa Idris",
-      "aliases": ["Khalifa"],
+      "aliases": [
+        "Khalifa"
+      ],
       "identifiers": {
-        "slackUserId": null,
+        "slackUserId": "U02N7RBV3JS",
         "slackDmChannelId": "D08HZGW1DFX",
         "githubUsername": "kidris-apolitical",
         "linearUserId": "76ade67c-9e39-4782-a385-a9a53aba2f03",
@@ -87,13 +103,17 @@
         "managerId": null,
         "isDirectReport": true
       },
-      "lastVerified": "2026-01-28"
+      "lastVerified": "2026-01-28",
+      "linearUserId": "76ade67c-9e39-4782-a385-a9a53aba2f03"
     },
     "yang.chih-yuan@apolitical.co": {
       "displayName": "Yang",
-      "aliases": ["Yang", "Chih-Yuan"],
+      "aliases": [
+        "Yang",
+        "Chih-Yuan"
+      ],
       "identifiers": {
-        "slackUserId": null,
+        "slackUserId": "URD8PEDJ9",
         "slackDmChannelId": "D09KYGBU5FW",
         "githubUsername": "cyang-apolitical",
         "linearUserId": "3fdb6de8-c4a4-421c-98ef-1499cbfffdf9",
@@ -107,11 +127,15 @@
         "managerId": null,
         "isDirectReport": true
       },
-      "lastVerified": "2026-01-28"
+      "lastVerified": "2026-01-28",
+      "linearUserId": "3fdb6de8-c4a4-421c-98ef-1499cbfffdf9"
     },
     "dominic.harries@apolitical.co": {
       "displayName": "Dom Harries",
-      "aliases": ["Dom", "Dominic"],
+      "aliases": [
+        "Dom",
+        "Dominic"
+      ],
       "identifiers": {
         "slackUserId": "U07SWU59XPH",
         "slackDmChannelId": "D08G544NWGL",
@@ -127,11 +151,15 @@
         "managerId": null,
         "isDirectReport": true
       },
-      "lastVerified": "2026-01-28"
+      "lastVerified": "2026-01-28",
+      "linearUserId": "8c4f13e3-74f3-49f7-ba08-685fe0a8a383"
     },
     "charles.killer@apolitical.co": {
       "displayName": "Charles Killer",
-      "aliases": ["Charles", "Charlie"],
+      "aliases": [
+        "Charles",
+        "Charlie"
+      ],
       "identifiers": {
         "slackUserId": "U07RWGEBG4D",
         "slackDmChannelId": "D08FU78CKT9",
@@ -147,11 +175,15 @@
         "managerId": null,
         "isDirectReport": true
       },
-      "lastVerified": "2026-01-28"
+      "lastVerified": "2026-01-28",
+      "linearUserId": "ab1c81ac-cdbc-4795-904e-9fb38249ff39"
     },
     "che.thomson@apolitical.co": {
       "displayName": "Ché Thomson",
-      "aliases": ["Ché", "Che"],
+      "aliases": [
+        "Ché",
+        "Che"
+      ],
       "identifiers": {
         "slackUserId": "U01DGBELKQ8",
         "slackDmChannelId": "D08JNFURRC3",
@@ -170,7 +202,10 @@
     },
     "jessica.vanonselen@apolitical.co": {
       "displayName": "Jess van Onselen",
-      "aliases": ["Jess", "Jessica"],
+      "aliases": [
+        "Jess",
+        "Jessica"
+      ],
       "identifiers": {
         "slackUserId": null,
         "slackDmChannelId": "D08LQQ1QJGM",
@@ -189,7 +224,9 @@
     },
     "byron.sorgdrager@apolitical.co": {
       "displayName": "Byron Sorgdrager",
-      "aliases": ["Byron"],
+      "aliases": [
+        "Byron"
+      ],
       "identifiers": {
         "slackUserId": "U0A64FC556E",
         "slackDmChannelId": "D0A7WTSR1ME",
@@ -205,11 +242,14 @@
         "managerId": null,
         "isDirectReport": true
       },
-      "lastVerified": "2026-01-28"
+      "lastVerified": "2026-01-28",
+      "linearUserId": "540b669b-f0dc-4fd7-8256-189174e0d303"
     },
     "tanya.riordan@apolitical.co": {
       "displayName": "Tanya Riordan",
-      "aliases": ["Tanya"],
+      "aliases": [
+        "Tanya"
+      ],
       "identifiers": {
         "slackUserId": "U09ECJKFLV7",
         "slackDmChannelId": "D09EAG8454N",
@@ -224,11 +264,14 @@
         "managerId": null,
         "isDirectReport": false
       },
-      "lastVerified": "2026-01-27"
+      "lastVerified": "2026-01-27",
+      "linearUserId": "0b36c1e6-d34a-40b4-abe4-ed254709b177"
     },
     "rihards.jukna@apolitical.co": {
       "displayName": "Rihards Jukna",
-      "aliases": ["Rihards"],
+      "aliases": [
+        "Rihards"
+      ],
       "identifiers": {
         "slackUserId": null,
         "slackDmChannelId": "D08H4SS7WH3",
@@ -244,11 +287,14 @@
         "managerId": null,
         "isDirectReport": false
       },
-      "lastVerified": "2026-01-28"
+      "lastVerified": "2026-01-28",
+      "linearUserId": "c1280687-5ef9-4eea-94b1-6449b81fd581"
     },
     "lowell.weisbord@apolitical.co": {
       "displayName": "Lowell Weisbord",
-      "aliases": ["Lowell"],
+      "aliases": [
+        "Lowell"
+      ],
       "identifiers": {
         "slackUserId": "UBZSLAWP9",
         "slackDmChannelId": null,
@@ -263,11 +309,14 @@
         "managerId": null,
         "isDirectReport": false
       },
-      "lastVerified": "2026-01-27"
+      "lastVerified": "2026-01-27",
+      "linearUserId": "17c8d52b-08a2-41f9-8951-bf7b767b61c1"
     },
     "annika.chauhan@apolitical.co": {
       "displayName": "Annika Chauhan",
-      "aliases": ["Annika"],
+      "aliases": [
+        "Annika"
+      ],
       "identifiers": {
         "slackUserId": "U05BBP2MW5B",
         "slackDmChannelId": "D08HH9BEJSZ",
@@ -283,17 +332,20 @@
         "managerId": null,
         "isDirectReport": false
       },
-      "lastVerified": "2026-01-28"
+      "lastVerified": "2026-01-28",
+      "linearUserId": "dbd81a0b-e059-49a2-b50e-1b01e4e3eb16"
     },
     "kabir.seth@apolitical.co": {
       "displayName": "Kabir Seth",
-      "aliases": ["Kabir"],
+      "aliases": [
+        "Kabir"
+      ],
       "identifiers": {
         "slackUserId": null,
         "slackDmChannelId": "D09DDLT0Z8C",
         "githubUsername": "kseth-apolitical",
         "linearUserId": "6d069cb4-4eac-4fe9-921f-803407276477",
-        "humaansEmployeeId": null,
+        "humaansEmployeeId": "4AVABSvw2XQURAEBiNMdrBEG",
         "asanaUserId": null
       },
       "metadata": {
@@ -303,11 +355,15 @@
         "managerId": null,
         "isDirectReport": false
       },
-      "lastVerified": "2026-01-28"
+      "lastVerified": "2026-01-28",
+      "linearUserId": "6d069cb4-4eac-4fe9-921f-803407276477"
     },
     "samuel.balogun@apolitical.co": {
       "displayName": "Samuel Balogun",
-      "aliases": ["Samuel", "Sam"],
+      "aliases": [
+        "Samuel",
+        "Sam"
+      ],
       "identifiers": {
         "slackUserId": "U09RR0S5X5L",
         "slackDmChannelId": "D09S9BYD9JQ",
@@ -323,11 +379,14 @@
         "managerId": null,
         "isDirectReport": true
       },
-      "lastVerified": "2026-01-28"
+      "lastVerified": "2026-01-28",
+      "linearUserId": "c4efb321-37e9-44bd-8f51-73589ba4f718"
     },
     "fatimat.gbajabiamila@apolitical.co": {
       "displayName": "Fatimat Gbajabiamila",
-      "aliases": ["Fatimat"],
+      "aliases": [
+        "Fatimat"
+      ],
       "identifiers": {
         "slackUserId": null,
         "slackDmChannelId": null,
@@ -343,11 +402,14 @@
         "managerId": null,
         "isDirectReport": false
       },
-      "lastVerified": "2026-01-28"
+      "lastVerified": "2026-01-28",
+      "linearUserId": "50761c6b-e0f0-4568-99b6-a831ca7dd98e"
     },
     "riccardo.altieri@apolitical.co": {
       "displayName": "Riccardo Altieri",
-      "aliases": ["Riccardo"],
+      "aliases": [
+        "Riccardo"
+      ],
       "identifiers": {
         "slackUserId": null,
         "slackDmChannelId": "D0A266QBPU2",
@@ -363,13 +425,16 @@
         "managerId": null,
         "isDirectReport": false
       },
-      "lastVerified": "2026-01-28"
+      "lastVerified": "2026-01-28",
+      "linearUserId": "3e47b8ef-bcfa-4a3c-9931-c3adb8bbdf66"
     },
     "borja.hidalgo@apolitical.co": {
       "displayName": "Borja Hidalgo",
-      "aliases": ["Borja"],
+      "aliases": [
+        "Borja"
+      ],
       "identifiers": {
-        "slackUserId": null,
+        "slackUserId": "U02J9S4QUD7",
         "slackDmChannelId": "D08S06UBYC9",
         "githubUsername": "bhidalgo-apolitical",
         "linearUserId": "099ca17b-1503-4178-b0ab-512ad215f7d8",
@@ -383,11 +448,14 @@
         "managerId": null,
         "isDirectReport": false
       },
-      "lastVerified": "2026-01-28"
+      "lastVerified": "2026-01-28",
+      "linearUserId": "099ca17b-1503-4178-b0ab-512ad215f7d8"
     },
     "penny.lam@apolitical.co": {
       "displayName": "Penny Lam",
-      "aliases": ["Penny"],
+      "aliases": [
+        "Penny"
+      ],
       "identifiers": {
         "slackUserId": null,
         "slackDmChannelId": "D099RU5HW81",
@@ -403,11 +471,14 @@
         "managerId": null,
         "isDirectReport": false
       },
-      "lastVerified": "2026-01-28"
+      "lastVerified": "2026-01-28",
+      "linearUserId": "2b0c9934-d552-4b00-906d-05f49c9ede18"
     },
     "robbie.ho@apolitical.co": {
       "displayName": "Robbie Ho",
-      "aliases": ["Robbie"],
+      "aliases": [
+        "Robbie"
+      ],
       "identifiers": {
         "slackUserId": null,
         "slackDmChannelId": "D09FE0EAE7M",
@@ -423,11 +494,14 @@
         "managerId": null,
         "isDirectReport": false
       },
-      "lastVerified": "2026-01-28"
+      "lastVerified": "2026-01-28",
+      "linearUserId": "e2f939ab-3f4d-4bf1-9156-2db85f5962cd"
     },
     "renzo.rozza@apolitical.co": {
       "displayName": "Renzo Rozza",
-      "aliases": ["Renzo"],
+      "aliases": [
+        "Renzo"
+      ],
       "identifiers": {
         "slackUserId": "U0143B3HQTB",
         "slackDmChannelId": "D08GH9FGXT2",
@@ -443,11 +517,14 @@
         "managerId": null,
         "isDirectReport": true
       },
-      "lastVerified": "2026-01-28"
+      "lastVerified": "2026-01-28",
+      "linearUserId": "58a826b5-49c8-4aac-b193-efab62a30f12"
     },
     "noah.edmunds@apolitical.co": {
       "displayName": "Noah Edmunds",
-      "aliases": ["Noah"],
+      "aliases": [
+        "Noah"
+      ],
       "identifiers": {
         "slackUserId": null,
         "slackDmChannelId": "D08JZ2ETGDV",
@@ -462,11 +539,15 @@
         "managerId": null,
         "isDirectReport": false
       },
-      "lastVerified": "2026-01-27"
+      "lastVerified": "2026-01-27",
+      "linearUserId": "07027aae-fd2c-458a-abff-c2f884209a6c"
     },
     "leonardo.maglio@apolitical.co": {
       "displayName": "Leonardo Maglio",
-      "aliases": ["Leonardo", "Leo"],
+      "aliases": [
+        "Leonardo",
+        "Leo"
+      ],
       "identifiers": {
         "slackUserId": "U07UJU7CBLL",
         "slackDmChannelId": "D08GD5934R3",
@@ -482,11 +563,14 @@
         "managerId": null,
         "isDirectReport": true
       },
-      "lastVerified": "2026-01-28"
+      "lastVerified": "2026-01-28",
+      "linearUserId": "acebe5ad-709d-4886-90a6-34bb602534c9"
     },
     "lauren.benson-armer@apolitical.co": {
       "displayName": "Lauren Benson-Armer",
-      "aliases": ["Lauren"],
+      "aliases": [
+        "Lauren"
+      ],
       "identifiers": {
         "slackUserId": "U023PQ65QSU",
         "slackDmChannelId": "D08FNBWS83Y",
@@ -505,7 +589,9 @@
     },
     "amber.keates@apolitical.co": {
       "displayName": "Amber Keates",
-      "aliases": ["Amber"],
+      "aliases": [
+        "Amber"
+      ],
       "identifiers": {
         "slackUserId": "U03RQ9S67T7",
         "slackDmChannelId": "D08G2SG5010",
@@ -524,7 +610,9 @@
     },
     "dec.burns@apolitical.co": {
       "displayName": "Dec Burns",
-      "aliases": ["Dec"],
+      "aliases": [
+        "Dec"
+      ],
       "identifiers": {
         "slackUserId": null,
         "slackDmChannelId": null,
@@ -540,11 +628,14 @@
         "managerId": null,
         "isDirectReport": false
       },
-      "lastVerified": "2026-01-28"
+      "lastVerified": "2026-01-28",
+      "linearUserId": "0e4dd6b3-e4ff-45f0-8172-6e6efbec4008"
     },
     "dom.gaulton@apolitical.co": {
       "displayName": "Dom Gaulton",
-      "aliases": ["Dom G"],
+      "aliases": [
+        "Dom G"
+      ],
       "identifiers": {
         "slackUserId": "U09T58D5K5K",
         "slackDmChannelId": "D0AF5JLMKT2",
@@ -560,11 +651,79 @@
         "managerId": null,
         "isDirectReport": false
       },
-      "lastVerified": "2026-01-28"
+      "lastVerified": "2026-01-28",
+      "linearUserId": "3b1e36db-1403-4ee5-927b-e9d68f9aade5"
+    },
+    "sonali.singh@apolitical.co": {
+      "displayName": "Sonali Singh",
+      "aliases": [
+        "Sonali"
+      ],
+      "identifiers": {
+        "slackUserId": "U0ADBLG5NHJ",
+        "slackDmChannelId": "D0AFBM53RKP",
+        "githubUsername": null,
+        "linearUserId": "d02ec425-9fe6-493b-bf8c-470f9f823e65",
+        "humaansEmployeeId": "BQeF8duz2cBB6rGokcTZofYg",
+        "asanaUserId": null
+      },
+      "metadata": {
+        "team": "Engineering",
+        "role": "Software Engineer",
+        "squad": null,
+        "managerId": null,
+        "isDirectReport": true
+      },
+      "lastVerified": "2026-03-09",
+      "linearUserId": "d02ec425-9fe6-493b-bf8c-470f9f823e65"
+    },
+    "mark.douglas@apolitical.co": {
+      "displayName": "Mark Douglas",
+      "aliases": [
+        "Mark"
+      ],
+      "identifiers": {
+        "slackUserId": "U09JRJSBZ0E",
+        "slackDmChannelId": "D0A97PY51BJ",
+        "githubUsername": null,
+        "linearUserId": null,
+        "humaansEmployeeId": null,
+        "asanaUserId": null
+      },
+      "metadata": {
+        "team": "Operations",
+        "role": "Operations Manager",
+        "managerId": null,
+        "isDirectReport": false
+      },
+      "lastVerified": "2026-02-25"
+    },
+    "lily.fox@apolitical.co": {
+      "displayName": "Lily Fox",
+      "aliases": [
+        "Lily"
+      ],
+      "identifiers": {
+        "slackUserId": "U0A3WUR6DKK",
+        "slackDmChannelId": "D0A3T6QMWUV",
+        "githubUsername": null,
+        "linearUserId": null,
+        "humaansEmployeeId": null,
+        "asanaUserId": null
+      },
+      "metadata": {
+        "team": "Partnerships",
+        "role": null,
+        "managerId": null,
+        "isDirectReport": false
+      },
+      "lastVerified": "2026-02-25"
     },
     "onuchukwu.adebayo@apolitical.co": {
       "displayName": "Onuchukwu Adebayo",
-      "aliases": ["Onu"],
+      "aliases": [
+        "Onu"
+      ],
       "identifiers": {
         "slackUserId": null,
         "slackDmChannelId": null,
@@ -580,7 +739,8 @@
         "managerId": null,
         "isDirectReport": false
       },
-      "lastVerified": "2026-01-28"
+      "lastVerified": "2026-01-28",
+      "linearUserId": "22e088ce-ffc1-4153-92b6-20e9a754e04b"
     }
   },
   "contacts": {},
@@ -624,7 +784,11 @@
       "amber": "amber.keates@apolitical.co",
       "dec": "dec.burns@apolitical.co",
       "dom g": "dom.gaulton@apolitical.co",
-      "onu": "onuchukwu.adebayo@apolitical.co"
+      "onu": "onuchukwu.adebayo@apolitical.co",
+      "sonali": "sonali.singh@apolitical.co",
+      "mark": "mark.douglas@apolitical.co",
+      "mark douglas": "mark.douglas@apolitical.co",
+      "lily": "lily.fox@apolitical.co"
     },
     "bySlackUserId": {
       "U04A8BBTBEC": "joel.patrick@apolitical.co",
@@ -638,7 +802,14 @@
       "U0143B3HQTB": "renzo.rozza@apolitical.co",
       "U05BBP2MW5B": "annika.chauhan@apolitical.co",
       "U09RR0S5X5L": "samuel.balogun@apolitical.co",
-      "U09T58D5K5K": "dom.gaulton@apolitical.co"
+      "U09T58D5K5K": "dom.gaulton@apolitical.co",
+      "U0ADBLG5NHJ": "sonali.singh@apolitical.co",
+      "U09JRJSBZ0E": "mark.douglas@apolitical.co",
+      "U0A3WUR6DKK": "lily.fox@apolitical.co",
+      "U075ZCQKX4J": "peter.shatwell@apolitical.co",
+      "URD8PEDJ9": "yang.chih-yuan@apolitical.co",
+      "U02N7RBV3JS": "khalifa.idris@apolitical.co",
+      "U02J9S4QUD7": "borja.hidalgo@apolitical.co"
     },
     "byGithubUsername": {
       "pshatwell-apolitical": "peter.shatwell@apolitical.co",
@@ -726,9 +897,21 @@
         "dom.gaulton@apolitical.co",
         "onuchukwu.adebayo@apolitical.co"
       ],
-      "Data": ["peter.shatwell@apolitical.co"],
-      "People": ["lauren.benson-armer@apolitical.co"],
-      "Commercial": ["amber.keates@apolitical.co"]
+      "Data": [
+        "peter.shatwell@apolitical.co"
+      ],
+      "People": [
+        "lauren.benson-armer@apolitical.co"
+      ],
+      "Commercial": [
+        "amber.keates@apolitical.co"
+      ],
+      "Operations": [
+        "mark.douglas@apolitical.co"
+      ],
+      "Partnerships": [
+        "lily.fox@apolitical.co"
+      ]
     },
     "bySquad": {
       "Platform": [
@@ -758,7 +941,10 @@
         "leonardo.maglio@apolitical.co",
         "dom.gaulton@apolitical.co"
       ],
-      "Data": ["peter.shatwell@apolitical.co", "yang.chih-yuan@apolitical.co"]
+      "Data": [
+        "peter.shatwell@apolitical.co",
+        "yang.chih-yuan@apolitical.co"
+      ]
     }
   }
 }

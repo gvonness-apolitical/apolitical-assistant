@@ -84,6 +84,7 @@ Use `/[skill-name]` to invoke these workflows:
 - `/sync-slack` - Refresh Slack channels cache (IDs, names, categories)
 - `/sync-figma` - Verify and maintain Figma sources cache (discover new links, cleanup stale entries)
 - `/sync-asana` - Refresh Asana workspace structure cache (teams, projects, goals, portfolios)
+- `/tech-news` - Scan tech news for security, AI, compliance, GovTech, open source, cloud headlines
 - `/catchup [days]` - Rebuild context for days you were away (vacation, absence)
 
 ### Meetings
@@ -737,6 +738,7 @@ Reusable patterns in `.claude/patterns/` reduce duplication across skills and en
 | [team-lifecycle](patterns/team-lifecycle.md) | Agent team setup, coordination, and cleanup | evaluate, rubberduck, mbr, review-rfc, war-game |
 | [cross-examination](patterns/cross-examination.md) | Targeted evidence challenges after analysis | mbr, review-rfc, war-game |
 | [skill-structure](patterns/skill-structure.md) | Three-tier skill maturity (Heavy/Medium/Light) | Reference for all skills |
+| [late-reconciliation](patterns/late-reconciliation.md) | Create tasks from late-arriving parallel agent results | begin-day |
 
 ### Using Patterns
 
